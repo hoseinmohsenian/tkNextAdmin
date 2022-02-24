@@ -1,0 +1,51 @@
+.not-found {
+    margin: 1.5rem 0;
+}
+.image {
+    display: flex;
+    justify-content: center;
+}
+.title {
+    color: #212529;
+    text-align: center;
+    margin: 1.25rem 0;
+    font-weight: 400;
+}
+.link-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.link {
+    background-color: #fff;
+    padding: 0.5rem 0.7rem;
+    border-radius: 10px;
+    border: 1px solid #989a9c;
+    text-align: center;
+    color: #515050;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    margin: 0.3rem 0;
+}
+.link:hover {
+    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 27%);
+}
+.link span {
+    margin-right: 0.4rem;
+}
+
+@media all and (min-width: 586px) {
+    .link-wrapper {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .link {
+        margin: 0 0.3rem;
+    }
+}

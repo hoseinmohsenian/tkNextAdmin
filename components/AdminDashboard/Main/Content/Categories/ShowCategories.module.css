@@ -1,0 +1,9 @@
+.category-img {
+    min-width: 100px;
+    min-height: 40px;
+    max-width: 100px;
+    max-height: 40px;
+}
+.table-item {
+    padding-bottom: 0;
+}

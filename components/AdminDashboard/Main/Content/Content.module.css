@@ -1,0 +1,17 @@
+.content {
+    margin-right: 0;
+    transition: var(--transition);
+    margin-top: 3.8rem;
+    width: 100%;
+}
+
+@media all and (min-width: 768px) {
+    .content {
+        margin-right: 3.1rem;
+        width: calc(100% - 3.1rem);
+    }
+    .content--open-side {
+        margin-right: 17rem !important;
+        width: calc(100% - 17rem);
+    }
+}

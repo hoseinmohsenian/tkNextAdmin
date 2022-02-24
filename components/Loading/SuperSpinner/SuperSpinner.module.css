@@ -1,0 +1,39 @@
+.super-spinner {
+    box-sizing: border-box;
+    position: relative;
+    margin: auto;
+    width: 128px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 16px solid transparent;
+    border-top-color: #0094ff;
+    border-bottom-color: #00ff94;
+    transform: rotateZ(-45deg);
+    animation: super-spinner 5s linear infinite;
+}
+.super-spinner::after {
+    box-sizing: border-box;
+    content: "";
+    position: absolute;
+    inset: -16px;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 16px solid transparent;
+    border-right-color: #01af8f;
+    border-left-color: #712be5;
+    animation: super-spinner 5s linear infinite;
+}
+@keyframes super-spinner {
+    0% {
+        transform: rotateZ(0deg);
+    }
+    25% {
+        transform: rotateZ(360deg);
+    }
+    75% {
+        transform: rotateZ(720deg);
+    }
+    100% {
+        transform: rotateZ(1080deg);
+    }
+}

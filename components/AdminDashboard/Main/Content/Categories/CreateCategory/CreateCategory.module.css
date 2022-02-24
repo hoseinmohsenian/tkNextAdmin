@@ -1,0 +1,95 @@
+.subtitle {
+    font-size: 1.4rem;
+}
+.form-control-searchselect {
+    padding: 0;
+    border: none;
+}
+
+.question-row {
+    display: flex;
+    align-items: flex-end;
+    margin: 0.4rem 0 0.8rem;
+}
+.question-row-wrapper {
+    flex: 1;
+}
+.question-col {
+    padding-left: 0.4rem;
+}
+.question-input-wrapper {
+    margin: 0;
+}
+.question-btn {
+    min-height: 1.8rem;
+    min-width: 1.8rem;
+    max-height: 1.8rem;
+    max-width: 1.8rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 50%;
+    transition: var(--transition);
+    cursor: pointer;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.question-btn:disabled {
+    opacity: 0.7;
+}
+.question-btn:disabled:hover {
+    cursor: not-allowed;
+}
+.question-btn--delete {
+    background-color: #dc3545;
+}
+.question-btn--delete:hover {
+    background-color: #dd2235;
+}
+.question-btn--delete:disabled:hover {
+    background-color: #dc3545;
+}
+.question-btn--add {
+    background-color: #28a745;
+}
+.question-btn--add:hover {
+    background-color: #1b9b39;
+}
+.question-btn--add:disabled {
+    background-color: #28a745;
+}
+.question-btn--edit {
+    background-color: #007bff;
+}
+.question-btn--edit:hover {
+    background-color: #0059ff;
+}
+.question-btn--edit:disabled:hover {
+    background-color: #007bff;
+}
+.question-addbtn-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    margin: 1rem 0;
+}
+
+@media all and (min-width: 768px) {
+    .question-row {
+        align-items: center;
+        flex-direction: row;
+    }
+    .question-label {
+        min-width: 45px;
+        max-width: 45px;
+    }
+    .question-row-btn-wrapper {
+        display: flex;
+        align-items: center;
+    }
+    .question-btn {
+        margin-bottom: 0rem;
+    }
+}

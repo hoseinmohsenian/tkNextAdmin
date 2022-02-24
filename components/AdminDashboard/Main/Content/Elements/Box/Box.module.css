@@ -1,0 +1,35 @@
+.box {
+    margin: 1rem 0.6rem 1rem;
+    background-color: white;
+    box-shadow: 0 0.46875rem 2.1875rem rgb(247 185 36 / 3%),
+        0 0.9375rem 1.40625rem rgb(247 185 36 / 3%),
+        0 0.25rem 0.53125rem rgb(247 185 36 / 5%),
+        0 0.125rem 0.1875rem rgb(247 185 36 / 3%);
+    border: 1px solid rgba(32, 39, 140, 0.1);
+    border-radius: 0.25rem;
+}
+.header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+.title {
+    color: #495057;
+    font-size: 1.6rem;
+    font-weight: normal;
+    margin-right: 0.5rem;
+    padding: 0.7rem 0;
+}
+.btn-wrapper {
+    margin-bottom: 0.7rem;
+    margin-right: 1rem;
+}
+.btn {
+    color: white;
+    padding: 0.1rem 0.55rem;
+    margin: 0 0.3rem;
+    font-size: 1.05rem;
+    border-radius: 0.3rem;
+    transition: var(--transition);
+    cursor: pointer;
+}

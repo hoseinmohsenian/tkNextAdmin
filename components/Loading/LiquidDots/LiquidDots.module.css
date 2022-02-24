@@ -1,0 +1,58 @@
+.liquid-dots {
+    border-radius: 50%;
+    width: 16px;
+    aspect-ratio: 1/1;
+    background-color: #01af8f;
+    position: relative;
+    margin: auto;
+    box-shadow: 32px 0px 0px 0px #01af8f, -32px 0px 0px 0px #01af8f;
+}
+.liquid-dots::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    width: 16px;
+    aspect-ratio: 1/1;
+    background-color: #01af8f;
+    animation: liquid-dots 2s linear infinite;
+}
+@keyframes liquid-dots {
+    0% {
+        opacity: 0;
+        transform: translateX(-32px) scale(1, 1);
+    }
+    10% {
+        opacity: 1;
+        transform: translateX(-32px) scale(1, 1);
+    }
+    20% {
+        transform: translateX(-24px) scale(1.2, 0.8);
+    }
+    30% {
+        transform: translateX(-16px) scale(0.7, 0.7);
+    }
+    40% {
+        transform: translateX(-8px) scale(1.2, 0.7);
+    }
+    50% {
+        transform: translateX(0px) scale(1, 1);
+    }
+    60% {
+        transform: translateX(8px) scale(1.2, 0.7);
+    }
+    70% {
+        transform: translateX(16px) scale(0.7, 0.7);
+    }
+    80% {
+        transform: translateX(24px) scale(1.2, 0.8);
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(32px) scale(1, 1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(32px) scale(0.9, 0.9);
+    }
+}

@@ -1,0 +1,22 @@
+.toggle {
+    width: 26px;
+    margin: 10px auto;
+    cursor: pointer;
+}
+.toggle div {
+    background-color: #6d767e;
+    width: 100%;
+    height: 3px;
+    margin: 5px auto;
+    transition: all 0.3s;
+    backface-visibility: hidden;
+}
+.toggle.toggle--active .one {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+.toggle.toggle--active .two {
+    opacity: 0;
+}
+.toggle.toggle--active .three {
+    transform: rotate(-45deg) translate(7px, -8px);
+}

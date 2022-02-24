@@ -1,0 +1,118 @@
+.group {
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+}
+.group-header-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    transition: var(--transition);
+    border-radius: 0.3rem;
+    color: #90969d;
+}
+.group-header-wrapper:hover {
+    color: #343a40 !important;
+    background-color: #e0f3ff;
+}
+.group--active .group-header-wrapper {
+    color: #343a40 !important;
+}
+.group-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+}
+.group-icon {
+    display: flex;
+    margin-left: 0.8rem;
+}
+.group-title {
+    display: none;
+    opacity: 0;
+}
+.sidebar--show .group-title {
+    opacity: 1;
+    display: inline;
+}
+.group-arrow {
+    display: none;
+    transition: var(--transition);
+    display: flex !important;
+}
+.sidebar--show .group-arrow {
+    display: block;
+}
+.group--active .group-arrow {
+    transform: rotate(180deg);
+}
+.sublist {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0.3rem 0 0.4rem;
+    transition: var(--transition);
+    overflow: hidden;
+    height: 0;
+}
+.group--active .sublist {
+    padding: 0.25rem 1.6rem 0 0.25rem;
+    height: auto;
+}
+.group--active .sublist::before {
+    opacity: 1;
+}
+.sublist::before {
+    content: "";
+    height: 100%;
+    opacity: 0;
+    width: 3px;
+    background-color: #e0f3ff;
+    position: absolute;
+    right: 1rem;
+    top: 0;
+    border-radius: 1rem;
+}
+.subnav {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0.3rem 0 0.4rem;
+    transition: var(--transition);
+    overflow: hidden;
+    height: 0;
+}
+.group--active .subnav {
+    padding: 0.25rem 0.6rem 0 0.25rem;
+    height: auto;
+}
+.subnav__title {
+    margin-right: -0.1rem;
+    color: #495057;
+}
+.subnav__title span:first-child {
+    margin-left: 0.4rem;
+}
+.subitem {
+    margin: 0.1rem 0;
+}
+.subitem-link {
+    display: flex;
+    color: #90969d;
+    transition: var(--transition);
+    border-radius: 0.3rem;
+    padding: 0.1rem 0.3rem;
+}
+.subitem-link:hover,
+.subitem-link--active {
+    background-color: #e0f3ff;
+}
+.subitem-link span:first-child {
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+}

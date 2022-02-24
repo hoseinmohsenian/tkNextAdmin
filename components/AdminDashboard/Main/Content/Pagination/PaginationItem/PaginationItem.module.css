@@ -1,0 +1,19 @@
+.paginationItem {
+    color: #545cd8;
+    background-color: #ededee;
+    min-height: 2.3rem;
+    min-width: 2.3rem;
+    margin: 0 5px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.paginationItem:hover,
+.paginationItem--active {
+    background-color: #545cd8;
+    color: #f8f9fa;
+}

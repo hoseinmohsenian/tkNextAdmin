@@ -1,0 +1,36 @@
+.primary {
+    background-color: #007bff;
+}
+.primary:hover {
+    background-color: #0059ff;
+}
+.primary:disabled:hover {
+    background-color: #007bff;
+}
+.warning {
+    background-color: #ffc107;
+}
+.warning:hover {
+    background-color: #ffae00;
+}
+.warning:disabled:hover {
+    background-color: #ffc107;
+}
+.danger {
+    background-color: #dc3545;
+}
+.danger:hover {
+    background-color: #dd2235;
+}
+.danger:disabled:hover {
+    background-color: #dc3545;
+}
+.success {
+    background-color: #28a745;
+}
+.success:hover {
+    background-color: #1b9b39;
+}
+.success:disabled {
+    background-color: #28a745;
+}

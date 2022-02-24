@@ -1,0 +1,138 @@
+/* Font */
+@font-face {
+    font-family: "IranianSans";
+    src: url("../public/fonts/iransans.ttf");
+}
+@font-face {
+    font-family: "Lalezar";
+    src: url("../public/fonts/Lalezar-Regular.ttf");
+}
+
+/* VARIABLES */
+:root {
+    --ff-primary: "IranianSans", tahoma;
+    --ff-secondary: "Lalezar", tahoma;
+    --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    --heavy-shadow: 0 5px 20px rgba(0, 0, 0, 0.35);
+    --bg-color: #eee;
+    --transition: all 0.2s linear;
+}
+
+/* GLOBAL STYLES */
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    direction: rtl;
+}
+html {
+    font-family: var(--ff-primary);
+    scroll-behavior: smooth;
+}
+body {
+    background-color: var(--bg-color);
+    color: var(--grey-color-1);
+}
+a {
+    text-decoration: none;
+}
+ul {
+    list-style-type: none;
+}
+img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+}
+button {
+    all: unset;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+.container {
+    width: 100%;
+    max-width: 90vw;
+    margin: 0 auto;
+}
+
+.gradient {
+    background-image: linear-gradient(#01af8f, #0fecc3);
+    position: relative;
+    z-index: 1;
+}
+.gradient--hoverable::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    opacity: 0;
+    background-image: linear-gradient(#04967b, #0cdfb8);
+    transition: var(--transition);
+}
+.gradient--hoverable:hover::before {
+    opacity: 1;
+}
+.gradient--purple {
+    background-image: linear-gradient(to bottom, #712be5, #9065d8);
+}
+
+.title {
+    text-align: center;
+    font-size: 1.8rem;
+}
+.subtitle {
+    color: #515050;
+    font-size: 1.4rem;
+    text-align: center;
+}
+.primary-btn {
+    margin: 0 auto;
+    color: #fff;
+    transition: var(--transition);
+    font-size: 1.25rem;
+    padding: 0.6rem 3.6rem;
+    cursor: pointer;
+}
+.primary-btn,
+.primary-btn:before {
+    border-radius: 0.7rem;
+}
+.align-right {
+    text-align: right;
+}
+
+.box {
+    background-color: #fff;
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.65rem;
+    margin-bottom: 0.25rem;
+    box-shadow: 0 3px 8px 0 rgb(39 39 39 / 16%);
+}
+
+@media all and (min-width: 768px) {
+    .container {
+        max-width: 45rem;
+    }
+}
+@media all and (min-width: 992px) {
+    .container {
+        max-width: 59rem;
+    }
+}
+@media all and (min-width: 1200px) {
+    .container {
+        max-width: 71rem;
+    }
+}
