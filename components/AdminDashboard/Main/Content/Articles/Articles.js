@@ -1,5 +1,5 @@
 import { useState } from "react";
-import cstyles from "./Articles.module.css";
+import styles from "./Articles.module.css";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Pagination from "../Pagination/Pagination";
@@ -213,16 +213,14 @@ function Articles(props) {
                     color: "primary",
                 }}
             >
-                <div className={cstyles["search"]}>
-                    <form className={cstyles.form}>
-                        <div className={`row ${cstyles["search-row"]}`}>
-                            <div
-                                className={`col-sm-6 ${cstyles["search-col"]}`}
-                            >
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]}>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">
                                     <label
                                         htmlFor="language_id"
-                                        className={`form__label ${cstyles["search-label"]}`}
+                                        className={`form__label ${styles["search-label"]}`}
                                     >
                                         زبان :
                                     </label>
@@ -249,13 +247,11 @@ function Articles(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div
-                                className={`col-sm-6 ${cstyles["search-col"]}`}
-                            >
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">
                                     <label
                                         htmlFor="admin_id"
-                                        className={`form__label ${cstyles["search-label"]}`}
+                                        className={`form__label ${styles["search-label"]}`}
                                     >
                                         ادمین :
                                     </label>
@@ -284,16 +280,14 @@ function Articles(props) {
                             </div>
                         </div>
 
-                        <div className={`row ${cstyles["search-row"]}`}>
-                            <div
-                                className={`col-sm-6 ${cstyles["search-col"]}`}
-                            >
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
-                                    className={`input-wrapper ${cstyles["search-input-wrapper"]}`}
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
                                 >
                                     <label
                                         htmlFor="title"
-                                        className={`form__label ${cstyles["search-label"]}`}
+                                        className={`form__label ${styles["search-label"]}`}
                                     >
                                         عنوان :
                                     </label>
@@ -311,15 +305,13 @@ function Articles(props) {
                                     </div>
                                 </div>
                             </div>
-                            <div
-                                className={`col-sm-6 ${cstyles["search-col"]}`}
-                            >
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
-                                    className={`input-wrapper ${cstyles["search-input-wrapper"]}`}
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
                                 >
                                     <label
                                         htmlFor="draft"
-                                        className={`form__label ${cstyles["search-label"]}`}
+                                        className={`form__label ${styles["search-label"]}`}
                                     >
                                         مرتب :
                                     </label>
@@ -384,16 +376,16 @@ function Articles(props) {
                             </div>
                         </div>
 
-                        <div className={`row ${cstyles["search-row"]}`}>
+                        <div className={`row ${styles["search-row"]}`}>
                             <div
-                                className={`col-sm-12 ${cstyles["search-col"]}`}
+                                className={`col-sm-12 ${styles["search-col"]}`}
                             >
                                 <div
-                                    className={`input-wrapper ${cstyles["search-input-wrapper"]}`}
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
                                 >
                                     <label
                                         htmlFor="draft"
-                                        className={`form__label ${cstyles["search-label"]}`}
+                                        className={`form__label ${styles["search-label"]}`}
                                     >
                                         وضعیت :
                                     </label>
@@ -421,10 +413,10 @@ function Articles(props) {
                             </div>
                         </div>
 
-                        <div className={cstyles["btn-wrapper"]}>
+                        <div className={styles["btn-wrapper"]}>
                             <button
                                 type="button"
-                                className={`btn primary ${cstyles["btn"]}`}
+                                className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
                                 onClick={() => readArticles()}
                             >
@@ -506,10 +498,9 @@ function Articles(props) {
                                             textAlign: "right",
                                         }}
                                     >
-                                        {/* {moment(article?.created_at).format(
-                                        "YYYY/MM/DD hh:mm:ss"
-                                    )} */}
-                                        {article?.created_at}
+                                        {moment(article?.created_at).format(
+                                            "YYYY/MM/DD hh:mm:ss"
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         <button

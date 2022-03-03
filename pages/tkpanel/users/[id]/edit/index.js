@@ -1,23 +1,24 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import Users from "../../../components/AdminDashboard/Main/Content/Users/Users";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
+import EditUser from "../../../../../components/AdminDashboard/Main/Content/Users/EditUser/EditUser";
+import Header from "../../../../../components/Head/Head";
+import { BASE_URL } from "../../../../../constants";
 
-function UsersPage({ admins }) {
+function EditUserPage({ admin, token }) {
     return (
         <div>
-            <Header title="کاربران | تیکا"></Header>
+            <Header title="ویرایش ادمین | تیکا"></Header>
             <AdminDashboard>
-                <Users admins={admins} />
+                <EditUser token={token} admin={admin} />
             </AdminDashboard>
         </div>
     );
 }
 
-export default UsersPage;
+export default EditUserPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const id = context.params.id;
 
     if (!token) {
         return {
@@ -29,7 +30,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/action/return`, {
+        fetch(`${BASE_URL}/admin/action/return/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -42,7 +43,8 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            admins: dataArr[0].data,
+            admin: dataArr[0].data,
+            token,
         },
     };
 }

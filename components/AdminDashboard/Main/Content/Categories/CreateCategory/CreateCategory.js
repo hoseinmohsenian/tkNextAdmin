@@ -356,7 +356,7 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
                                 <span className="form__star">*</span>
                             </label>
                             <div
-                                className={`form-control ${cstyles["form-control-searchselect"]}`}
+                                className={`form-control form-control-searchselect`}
                             >
                                 <SearchSelect
                                     list={categoriesLevel1}
@@ -385,7 +385,7 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
                                 <span className="form__star">*</span>
                             </label>
                             <div
-                                className={`form-control ${cstyles["form-control-searchselect"]}`}
+                                className={`form-control form-control-searchselect`}
                             >
                                 <SearchSelect
                                     list={subCategories}

@@ -1,10 +1,6 @@
 .subtitle {
     font-size: 1.4rem;
 }
-.form-control-searchselect {
-    padding: 0;
-    border: none;
-}
 
 .question-row {
     display: flex;

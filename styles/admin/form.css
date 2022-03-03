@@ -29,6 +29,14 @@
     width: 100%;
     position: relative;
 }
+.input-precode {
+    direction: ltr;
+    min-width: 2rem;
+    width: 100%;
+    max-width: 3rem;
+    color: #4d4d4d;
+    user-select: none;
+}
 .form__star {
     position: absolute;
     bottom: 50%;
@@ -42,6 +50,14 @@
     outline: none;
     background-color: transparent;
     color: #4d4d4d;
+}
+.form__input::placeholder,
+.form__textarea::placeholder {
+    color: #bdbdbd;
+}
+.form__input--ltr {
+    direction: ltr;
+    text-align: right;
 }
 .form-control .form__input:disabled {
     opacity: 0.3;

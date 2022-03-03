@@ -1,20 +1,20 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import Users from "../../../components/AdminDashboard/Main/Content/Users/Users";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
+import CreateProfile from "../../../../components/AdminDashboard/Main/Content/Profiles/CreateProfile/CreateProfile";
+import Header from "../../../../components/Head/Head";
+import { BASE_URL } from "../../../../constants";
 
-function UsersPage({ admins }) {
+function CreateProfilePage({ token, countries }) {
     return (
         <div>
-            <Header title="کاربران | تیکا"></Header>
+            <Header title="ایجاد زبان آموز | تیکا"></Header>
             <AdminDashboard>
-                <Users admins={admins} />
+                <CreateProfile token={token} countries={countries} />
             </AdminDashboard>
         </div>
     );
 }
 
-export default UsersPage;
+export default CreateProfilePage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -27,11 +27,9 @@ export async function getServerSideProps(context) {
             },
         };
     }
-
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/action/return`, {
+        fetch(`${BASE_URL}/data/country`, {
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
                 "Access-Control-Allow-Origin": "*",
             },
@@ -40,9 +38,5 @@ export async function getServerSideProps(context) {
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
-    return {
-        props: {
-            admins: dataArr[0].data,
-        },
-    };
+    return { props: { token, countries: dataArr[0].data } };
 }

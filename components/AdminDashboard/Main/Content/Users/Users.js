@@ -1,9 +1,54 @@
-import styles from "./Users.module.css";
+import Box from "../Elements/Box/Box";
+import Link from "next/link";
 
-function Users() {
+function Users({ admins }) {
     return (
         <div>
-            <h1>Users</h1>
+            <Box
+                title="لیست ادمین ها"
+                buttonInfo={{
+                    name: "ایجاد ادمین",
+                    url: "/tkpanel/users/create",
+                    color: "primary",
+                }}
+            >
+                <div className="table__wrapper">
+                    <table className="table">
+                        <thead className="table__head">
+                            <tr>
+                                <th className="table__head-item">نام</th>
+                                <th className="table__head-item">ایمیل</th>
+                                <th className="table__head-item">سطح کاربر</th>
+                                <th className="table__head-item">اقدامات</th>
+                            </tr>
+                        </thead>
+                        <tbody className="table__body">
+                            {admins?.map((admin) => (
+                                <tr className="table__body-row" key={admin?.id}>
+                                    <td className="table__body-item">
+                                        {admin?.name || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {admin?.email}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {admin?.role || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        <Link
+                                            href={`/tkpanel/users/${admin?.id}/edit`}
+                                        >
+                                            <a className={`action-btn warning`}>
+                                                ویرایش
+                                            </a>
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </Box>
         </div>
     );
 }

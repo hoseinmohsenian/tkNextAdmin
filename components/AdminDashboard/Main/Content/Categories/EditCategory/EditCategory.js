@@ -369,7 +369,7 @@ function EditCategory({ token, categoriesLevel1, category, title, mainPage }) {
                                 دسته بندی اول :
                             </label>
                             <div
-                                className={`form-control ${cstyles["form-control-searchselect"]}`}
+                                className={`form-control form-control-searchselect`}
                             >
                                 <SearchSelect
                                     list={categoriesLevel1}
@@ -396,7 +396,7 @@ function EditCategory({ token, categoriesLevel1, category, title, mainPage }) {
                                 دسته بندی دوم :
                             </label>
                             <div
-                                className={`form-control ${cstyles["form-control-searchselect"]}`}
+                                className={`form-control form-control-searchselect`}
                             >
                                 <SearchSelect
                                     list={subCategories}

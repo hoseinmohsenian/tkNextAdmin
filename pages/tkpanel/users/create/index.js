@@ -1,19 +1,19 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
-import CreateUser from "../../../../components/AdminDashboard/Main/Content/CreateUser/CreateUser";
+import CreateUser from "../../../../components/AdminDashboard/Main/Content/Users/CreateUser/CreateUser";
 import Header from "../../../../components/Head/Head";
 
-function AdminLoginPage() {
+function CreateUserPage({ token }) {
     return (
         <div>
             <Header title="ایجاد ادمین | تیکا"></Header>
             <AdminDashboard>
-                <CreateUser />
+                <CreateUser token={token} />
             </AdminDashboard>
         </div>
     );
 }
 
-export default AdminLoginPage;
+export default CreateUserPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -28,6 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {},
+        props: { token },
     };
 }

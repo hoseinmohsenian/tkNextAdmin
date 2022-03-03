@@ -3,8 +3,6 @@ import { FaUserPlus } from "react-icons/fa";
 import { IoIosListBox } from "react-icons/io";
 import { FaUserSecret } from "react-icons/fa";
 import { FaChalkboardTeacher } from "react-icons/fa";
-import { FaUserTie } from "react-icons/fa";
-import { FaSortAlphaDown } from "react-icons/fa";
 import { FaUserMinus } from "react-icons/fa";
 import { FaSearch } from "react-icons/fa";
 import { MdSchool } from "react-icons/md";
@@ -77,16 +75,6 @@ export default [
                 title: "لیست اساتید",
                 path: "/tkpanel/teachers",
                 icon: <IoIosListBox />,
-            },
-            {
-                title: "استادهای جدید",
-                path: "/tkpanel/newTeacher",
-                icon: <FaUserTie />,
-            },
-            {
-                title: "sort کردن لیست اساتید",
-                path: "/tkpanel/teacher/sort",
-                icon: <FaSortAlphaDown />,
             },
             {
                 title: "امتیاز منفی اساتید",

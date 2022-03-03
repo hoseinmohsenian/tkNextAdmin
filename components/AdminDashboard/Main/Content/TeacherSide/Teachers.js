@@ -5,17 +5,20 @@ import { useGlobalContext } from "../../../../../context";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
+import styles from "./Teachers.module.css"
 
-function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
+function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fetchedData }) {
     const [teachers, setTeachers] = useState(data);
     const [formData, setFormData] = useState(data);
     const [pagData, setPagData] = useState(restData);
+    const [filters, setFilters] = useState(fetchedData);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
         type: "",
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [loading, setLoading] = useState(false)
     const { generateKey } = useGlobalContext();
     const router = useRouter();
 
@@ -57,16 +60,61 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
     };
 
     const readTeachers = async (page = 1) => {
+        let searchParams = {};
+
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== 0 &&
+            filters[key] !== undefined &&
+            filters[key];
+        const findItem = (data, id) =>
+            data?.find((item) => item?.id === Number(id));
+
+        // Constructing search parameters
+        let searchQuery = "";
+        Object.keys(filters).forEach((key) => {
+            if (Number(filters[key]) !== 0) {
+                if (key === "draft" && filters["draft"]) {
+                    searchQuery += `draft=1&`;
+                } else {
+                    searchQuery += `${key}=${filters[key]}&`;
+                }
+            }
+        });
+        searchQuery += `page=${page}`;
+
+        if (isFilterEnabled("name")) {
+            searchParams = {
+                ...searchParams,
+                name: filters?.name,
+            };
+        }
+        if (isFilterEnabled("email")) {
+            searchParams = {
+                ...searchParams,
+                email: filters?.email,
+            };
+        }
+        if (isFilterEnabled("mobile")) {
+            searchParams = {
+                ...searchParams,
+                mobile: filters?.mobile,
+            };
+        }
         if (page !== 1) {
-            router.push({
-                pathname: `/tkpanel/teachers`,
-                query: { page },
-            });
+            searchParams = {
+                ...searchParams,
+                page,
+            };
         }
 
+        router.push({
+            pathname: `/tkpanel/teachers`,
+            query: searchParams,
+        });
+
         try {
-            let params = `page=${page}`;
-            const res = await fetch(`${BASE_URL}/admin/teacher?${params}`, {
+            setLoading(true)
+            const res = await fetch(`${BASE_URL}/admin/teacher/search?${searchQuery}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-type": "application/json",
@@ -82,6 +130,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
+            setLoading(false)
         } catch (error) {
             console.log("Error reading teachers", error);
         }
@@ -175,6 +224,15 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
         }
     };
 
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -186,6 +244,111 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
             <Box
                 title="لیست اساتید"
             >
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]}>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            id="name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.name}
+                                            autoComplete="off"
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="mobile"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        موبایل :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="number"
+                                            name="mobile"
+                                            id="mobile"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.mobile}
+                                            autoComplete="off"
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="email"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        ایمیل :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.email}
+                                            autoComplete="off"
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className={styles["btn-wrapper"]}>
+                                    <button
+                                        type="button"
+                                        className={`btn primary ${styles["btn"]}`}
+                                        disabled={loading}
+                                        onClick={() => readTeachers()}
+                                    >
+                                        {loading
+                                            ? "در حال جستجو ..."
+                                            : "اعمال فیلتر"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -193,6 +356,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
                                 <th className="table__head-item">نام</th>
                                 <th className="table__head-item">نام خانوادگی</th>
                                 <th className="table__head-item">موبایل</th>
+                                <th className="table__head-item">ایمیل</th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
@@ -213,6 +377,9 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
                                     </td>
                                     <td className="table__body-item">
                                         {teacher?.mobile || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {teacher?.email || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {teacher?.language_name?.map((lan, ind) => (
@@ -324,12 +491,21 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token }) {
                                 </tr>
                             ))}
 
+                            {teachers.length === 0 && 
+                                (  
+                                    <tr className="table__body-row">
+                                        <td className="table__body-item" colSpan={11}>
+                                            استادی پیدا نشد
+                                        </td>
+                                    </tr>
+                                )
+                            }
                         </tbody>
                     </table>
                 </div>
             </Box>
 
-            {teachers && (
+            {teachers.length !== 0 && (
                 <Pagination read={readTeachers} pagData={pagData} />
             )}
         </div>

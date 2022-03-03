@@ -1,0 +1,19 @@
+.row {
+    margin: 0.4rem 0 0.8rem;
+}
+
+@media all and (min-width: 576px) {
+    .col:first-child {
+        padding-left: 0.7rem;
+    }
+    .col:last-child {
+        padding-right: 0.7rem;
+    }
+}
+
+@media all and (min-width: 768px) {
+    .row {
+        align-items: center;
+        flex-direction: row;
+    }
+}

@@ -138,23 +138,6 @@ function CreatePlatform({ token }) {
                                     id="active"
                                 />
                             </div>
-
-                            <div className="input-radio-wrapper">
-                                {/* <label
-                                htmlFor="deactive"
-                                className="radio-title"
-                            >
-                                غیر فعال
-                            </label>
-                            <input
-                                type="radio"
-                                name="status"
-                                onChange={handleOnChange}
-                                value={0}
-                                checked={Number(formData.status) === 0}
-                                id="deactive"
-                            /> */}
-                            </div>
                         </div>
                     </div>
                     <div className="input-wrapper">

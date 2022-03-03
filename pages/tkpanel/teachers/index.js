@@ -3,12 +3,16 @@ import Teachers from "../../../components/AdminDashboard/Main/Content/TeacherSid
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
 
-function TeacherSidePage({ teachers, token }) {
+function TeacherSidePage({ teachers, token, searchData }) {
     return (
         <div>
             <Header title="اساتید | تیکا"></Header>
             <AdminDashboard>
-                <Teachers fetchedTeachers={teachers} token={token} />
+                <Teachers
+                    fetchedTeachers={teachers}
+                    token={token}
+                    searchData={searchData}
+                />
             </AdminDashboard>
         </div>
     );
@@ -29,15 +33,37 @@ export async function getServerSideProps(context) {
     }
 
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
-    const { page } = context?.query;
-    let params = "";
+    const findItem = (list, key, target) =>
+        list.find((item) => item[key] === target);
+    const { name, mobile, email, page } = context?.query;
+    let searchData = {
+        name: "",
+        mobile: "",
+        email: "",
+    };
+    let searchParams = "";
+
+    if (isKeyValid(name)) {
+        searchParams += `name=${name}&`;
+        searchData = { ...searchData, name: name };
+    }
+    if (isKeyValid(email)) {
+        searchParams += `email=${email}&`;
+        searchData = { ...searchData, email: email };
+    }
+    if (isKeyValid(mobile)) {
+        searchParams += `mobile=${mobile}&`;
+        searchData = { ...searchData, mobile: mobile };
+    }
     if (isKeyValid(page)) {
         if (Number(page) > 0) {
-            params += `page=${page}`;
+            searchParams += `page=${page}`;
+            searchParams = { ...searchParams, page: page };
         }
     }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/teacher?${params}`, {
+        fetch(`${BASE_URL}/admin/teacher/search?${searchParams}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -49,6 +75,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { teachers: dataArr[0]?.data, token },
+        props: { teachers: dataArr[0]?.data, token, searchData },
     };
 }
