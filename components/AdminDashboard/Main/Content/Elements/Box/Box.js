@@ -9,11 +9,23 @@ function Box({ title, children, buttonInfo }) {
 
                 {buttonInfo && (
                     <div className={styles["btn-wrapper"]}>
-                        <Link href={buttonInfo.url}>
-                            <a className={`${styles.btn} ${buttonInfo.color}`}>
+                        {buttonInfo.url ? (
+                            <Link href={buttonInfo.url}>
+                                <a
+                                    className={`${styles.btn} ${buttonInfo.color}`}
+                                >
+                                    {buttonInfo.name}
+                                </a>
+                            </Link>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => buttonInfo.onClick()}
+                                className={`${styles.btn} ${buttonInfo.color}`}
+                            >
                                 {buttonInfo.name}
-                            </a>
-                        </Link>
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

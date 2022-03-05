@@ -14,6 +14,7 @@ function SearchSelect({
     listSchema,
     background,
     disabled = false,
+    displayPattern,
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -62,6 +63,17 @@ function SearchSelect({
         }, [ref]);
     }
 
+    // To Show items in the list and the selected one
+    const ShowItem = ({ item }) => {
+        if (!displayPattern) {
+            return item[displayKey];
+        } else {
+            return displayPattern?.map((patternItem) =>
+                patternItem.member ? item[patternItem.key] : patternItem.key
+            );
+        }
+    };
+
     return (
         <div
             className={`${styles["search-select"]} ${
@@ -76,9 +88,11 @@ function SearchSelect({
                 onClick={() => setOpen(!open)}
             >
                 <span className={styles["search-select__selected-label"]}>
-                    {selected[displayKey] === "" || list?.length === 0
-                        ? defaultText
-                        : selected[displayKey]}
+                    {selected[displayKey] === "" || list?.length === 0 ? (
+                        defaultText
+                    ) : (
+                        <ShowItem item={selected} />
+                    )}
                 </span>
                 <span className={styles["search-select__selected-icon"]}>
                     v
@@ -135,7 +149,7 @@ function SearchSelect({
                                     setOpen(false);
                                 }}
                             >
-                                {item[displayKey]}
+                                <ShowItem item={item} />
                             </div>
                         );
                     })}

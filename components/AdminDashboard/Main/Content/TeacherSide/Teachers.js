@@ -66,9 +66,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
             Number(filters[key]) !== 0 &&
             filters[key] !== undefined &&
             filters[key];
-        const findItem = (data, id) =>
-            data?.find((item) => item?.id === Number(id));
-
+            
         // Constructing search parameters
         let searchQuery = "";
         Object.keys(filters).forEach((key) => {

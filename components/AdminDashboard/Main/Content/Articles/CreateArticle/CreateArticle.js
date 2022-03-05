@@ -384,7 +384,6 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                         onChange={setSelectedDate}
                                         shouldHighlightWeekends
                                         locale="fa"
-                                        inputPlaceholder=" "
                                         wrapperClassName="date-input-wrapper"
                                         inputClassName="date-input"
                                         colorPrimary="#545cd8"

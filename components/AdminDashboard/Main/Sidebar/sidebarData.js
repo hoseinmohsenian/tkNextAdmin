@@ -42,6 +42,7 @@ import { FaQuestionCircle } from "react-icons/fa";
 import { MdCategory } from "react-icons/md";
 import { RiArticleFill } from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
+import { FiPercent } from "react-icons/fi";
 
 export default [
     {
@@ -75,6 +76,11 @@ export default [
                 title: "لیست اساتید",
                 path: "/tkpanel/teachers",
                 icon: <IoIosListBox />,
+            },
+            {
+                title: "کمیسیون متغیر استاد",
+                path: "/tkpanel/teacher/commission",
+                icon: <FiPercent />,
             },
             {
                 title: "امتیاز منفی اساتید",
