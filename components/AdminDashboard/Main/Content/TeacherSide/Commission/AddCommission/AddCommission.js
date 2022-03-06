@@ -21,10 +21,6 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
         name: "",
         family: "",
     });
-    const [selectedCatg1, setSelectedCatg1] = useState({
-        id: "",
-        title: "",
-    });
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -146,7 +142,10 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
     useEffect(() => {
         if (selectedTeacher.id) {
             readStudents();
+        } else {
+            setStudents([]);
         }
+        setSelectedStudent(studentSchema);
     }, [selectedTeacher]);
 
     return (

@@ -142,6 +142,73 @@ function TeachersFreeHours({ token, languages }) {
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">
                                     <label
+                                        htmlFor="language_id"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        زبان:
+                                    </label>
+                                    <div className="form-control">
+                                        <select
+                                            name="language_id"
+                                            id="language_id"
+                                            className="form__input input-select"
+                                            onChange={handleOnChange}
+                                            value={filters.language_id}
+                                        >
+                                            <option value={0}>
+                                                انتخاب کنید
+                                            </option>
+                                            {languages?.map((lan) => (
+                                                <option
+                                                    key={lan.id}
+                                                    value={lan.id}
+                                                >
+                                                    {lan.persian_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className="input-wrapper">
+                                    <label
+                                        htmlFor="publish_time"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        روز:
+                                    </label>
+                                    <div className="form-control">
+                                        <DatePicker
+                                            value={selectedDate}
+                                            onChange={setSelectedDate}
+                                            shouldHighlightWeekends
+                                            locale="fa"
+                                            wrapperClassName="date-input-wrapper"
+                                            inputClassName="date-input"
+                                            colorPrimary="#545cd8"
+                                            minimumDate={{
+                                                year: moment().year(),
+                                                month: Number(
+                                                    moment().format("M")
+                                                ),
+                                                day: Number(
+                                                    moment().format("DD")
+                                                ),
+                                            }}
+                                            inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className="input-wrapper">
+                                    <label
                                         htmlFor="from"
                                         className={`form__label ${styles["search-label"]}`}
                                     >
@@ -256,37 +323,6 @@ function TeachersFreeHours({ token, languages }) {
 
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
-                                <div className="input-wrapper">
-                                    <label
-                                        htmlFor="language_id"
-                                        className={`form__label ${styles["search-label"]}`}
-                                    >
-                                        زبان:
-                                    </label>
-                                    <div className="form-control">
-                                        <select
-                                            name="language_id"
-                                            id="language_id"
-                                            className="form__input input-select"
-                                            onChange={handleOnChange}
-                                            value={filters.language_id}
-                                        >
-                                            <option value={0}>
-                                                انتخاب کنید
-                                            </option>
-                                            {languages?.map((lan) => (
-                                                <option
-                                                    key={lan.id}
-                                                    value={lan.id}
-                                                >
-                                                    {lan.persian_name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
                                     className={`input-wrapper ${styles["search-input-wrapper"]}`}
                                 >
@@ -351,40 +387,6 @@ function TeachersFreeHours({ token, languages }) {
                                                 id="both"
                                             />
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className={`row ${styles["search-row"]}`}>
-                            <div className={`col-sm-6 ${styles["search-col"]}`}>
-                                <div className="input-wrapper">
-                                    <label
-                                        htmlFor="publish_time"
-                                        className={`form__label ${styles["search-label"]}`}
-                                    >
-                                        روز:
-                                    </label>
-                                    <div className="form-control">
-                                        <DatePicker
-                                            value={selectedDate}
-                                            onChange={setSelectedDate}
-                                            shouldHighlightWeekends
-                                            locale="fa"
-                                            wrapperClassName="date-input-wrapper"
-                                            inputClassName="date-input"
-                                            colorPrimary="#545cd8"
-                                            minimumDate={{
-                                                year: moment().year(),
-                                                month: Number(
-                                                    moment().format("M")
-                                                ),
-                                                day: Number(
-                                                    moment().format("DD")
-                                                ),
-                                            }}
-                                            inputPlaceholder="انتخاب کنید"
-                                        />
                                     </div>
                                 </div>
                             </div>

@@ -24,6 +24,7 @@
 .search-select__selected-icon {
     font-size: 1.2rem;
     transition: var(--transition);
+    display: flex;
 }
 .search-select--open .search-select__selected-icon {
     transform: rotate(180deg);

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./SearchSelect.module.css";
+import { IoIosArrowDown } from "react-icons/io";
 
 function SearchSelect({
     list,
@@ -15,6 +16,7 @@ function SearchSelect({
     background,
     disabled = false,
     displayPattern,
+    fontSize,
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -87,7 +89,10 @@ function SearchSelect({
                 style={{ background: background }}
                 onClick={() => setOpen(!open)}
             >
-                <span className={styles["search-select__selected-label"]}>
+                <span
+                    className={styles["search-select__selected-label"]}
+                    style={{ fontSize: `${fontSize}px` }}
+                >
                     {selected[displayKey] === "" || list?.length === 0 ? (
                         defaultText
                     ) : (
@@ -95,7 +100,7 @@ function SearchSelect({
                     )}
                 </span>
                 <span className={styles["search-select__selected-icon"]}>
-                    v
+                    <IoIosArrowDown />
                 </span>
             </div>
             <div
@@ -128,6 +133,7 @@ function SearchSelect({
                                 setSelected(listSchema);
                                 setOpen(false);
                             }}
+                            style={{ fontSize: `${fontSize}px` }}
                         >
                             {defaultText}
                         </div>
@@ -148,6 +154,7 @@ function SearchSelect({
                                     setSelected(item);
                                     setOpen(false);
                                 }}
+                                style={{ fontSize: `${fontSize}px` }}
                             >
                                 <ShowItem item={item} />
                             </div>
