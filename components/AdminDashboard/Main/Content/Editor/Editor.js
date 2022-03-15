@@ -4,7 +4,15 @@ import styles from "./Editor.module.css";
 import SunEditor from "suneditor-react";
 import { BASE_URL } from "../../../../../constants";
 
-function Editor({ value, setValue, disabled, token, uploadImageUrl }) {
+function Editor(props) {
+    const {
+        value,
+        setValue,
+        disabled,
+        token,
+        uploadImageUrl,
+        placeholder = "توضیحات",
+    } = props;
     const addImage = async (fd) => {
         try {
             const res = await fetch(`${BASE_URL}${uploadImageUrl}`, {
@@ -96,7 +104,7 @@ function Editor({ value, setValue, disabled, token, uploadImageUrl }) {
                         maxWidth: "100%",
                         height: "100%",
                         minHeight: "200px",
-                        placeholder: "متن مقاله...",
+                        placeholder: placeholder,
                         requestHeaders: {
                             Authorization: `Bearer ${token}`,
                             "Access-Control-Allow-Origin": "*",

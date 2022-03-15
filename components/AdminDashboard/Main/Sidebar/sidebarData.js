@@ -130,6 +130,23 @@ export default [
                 icon: <GrStatusWarningSmall />,
             },
             {
+                title: "کلاس گروهی",
+                path: "#",
+                icon: <AiTwotoneUnlock />,
+                subNav: [
+                    {
+                        title: "لیست کلاس ها",
+                        path: "/tkpanel/groupClass",
+                        icon: <IoIosListBox />,
+                    },
+                    {
+                        title: "ایجاد کلاس",
+                        path: "/tkpanel/groupClass/create",
+                        icon: <FaPlusCircle />,
+                    },
+                ],
+            },
+            {
                 title: "کلاس نیمه خصوصی",
                 path: "/tkpanel/newTeacher/addStudent",
                 icon: <AiTwotoneUnlock />,

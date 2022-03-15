@@ -491,13 +491,7 @@ function Articles(props) {
                                     <td className="table__body-item">
                                         {article?.admin_id}
                                     </td>
-                                    <td
-                                        className="table__body-item"
-                                        style={{
-                                            direction: "ltr",
-                                            textAlign: "right",
-                                        }}
-                                    >
+                                    <td className="table__body-item table__body-item--ltr">
                                         {moment(article?.created_at).format(
                                             "YYYY/MM/DD hh:mm:ss"
                                         )}

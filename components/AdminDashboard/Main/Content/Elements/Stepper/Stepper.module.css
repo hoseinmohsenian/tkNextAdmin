@@ -1,0 +1,61 @@
+/* Stepper Header */
+.stepper__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.2rem 0 1rem;
+    padding: 0 1rem;
+    position: relative;
+}
+.stepper__header::after {
+    content: "";
+    height: 2px;
+    width: calc(100%-2rem);
+    background-color: #cbd5e0;
+    opacity: 0.3;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+}
+.stepper__header-item {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    align-items: center;
+}
+.stepper__header-item:first-child {
+    align-items: flex-start;
+}
+.stepper__header-item:last-child {
+    align-items: flex-end;
+}
+.stepper__header-item--active .stepper__header-number {
+    background-color: #712be5;
+}
+.stepper__header-item--active .stepper__header-title {
+    color: #712be5;
+}
+.stepper__header-number {
+    color: white;
+    background-color: #cbd5e0;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.stepper__header-title {
+    color: #cbd5e0;
+    margin-top: 0.3rem;
+    cursor: pointer;
+}
+
+.stepper__body-item {
+    display: none;
+}
+.stepper__body-item--active {
+    display: block;
+}
