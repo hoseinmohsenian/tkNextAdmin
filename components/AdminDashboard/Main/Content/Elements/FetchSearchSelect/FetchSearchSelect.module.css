@@ -1,13 +1,11 @@
 .search-select {
-    cursor: pointer;
     position: relative;
     width: 170px;
     user-select: none;
-    text-transform: capitalize;
 }
 .search-select__selected {
     width: 100%;
-    min-height: 35px;
+    height: 35px;
     color: #666;
     background-color: #fff;
     display: flex;
@@ -15,44 +13,20 @@
     justify-content: space-between;
     border: 1px solid #dcdee2;
     border-radius: 0.25rem;
-    padding: 0.2rem 0.4rem;
+    padding: 0.4rem;
     width: 100%;
     transition: var(--transition);
 }
-.search-select__selected-list {
+.search-select__selected-label {
     font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.search-select__selected-item {
-    background-image: linear-gradient(to right, #8c2ce2, #4b01e0);
-    border-radius: 1rem;
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0px 5px;
-    margin: 3px 5px 3px 0;
-    font-size: 0.9rem;
-}
-.search-select__selected-item-close {
-    width: 1rem;
-    height: 1rem;
-    background-color: white;
-    color: rgb(41, 41, 41);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 0.2rem;
-    font-size: 0.5rem;
 }
 .search-select__selected-icon {
-    font-size: 1.2rem;
+    font-size: 1rem;
     transition: var(--transition);
+    display: flex;
 }
 .search-select--open .search-select__selected-icon {
-    transform: rotate(45deg);
+    transform: rotate(180deg);
 }
 .search-select__content {
     position: absolute;
@@ -81,15 +55,18 @@
 }
 .search-select__content-search {
     display: flex;
-    padding: 0.5rem 0.5rem 0.4rem;
+    width: 100%;
 }
 .search-select__content-search input {
-    border: 1px solid #dcdee2;
+    border: none;
     height: 1.9rem;
     width: 100%;
-    padding: 0.4rem 0.5rem;
+    padding: 0.4rem 0;
     outline: none;
     border-radius: 0.25rem;
+    font: unset;
+    color: #4d4d4d;
+    background-color: transparent;
 }
 .search-select__content-search input:focus {
     border-color: #712be5;
@@ -114,8 +91,6 @@
     text-align: right;
     padding: 0.3rem 0.5rem;
     font-size: 1.1rem;
-    display: block;
-    width: 100%;
 }
 .search-select__content-item:not(.search-select__content-item--disabled):hover {
     background-color: #dedede;

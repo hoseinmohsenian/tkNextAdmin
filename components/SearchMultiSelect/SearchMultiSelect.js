@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./SearchMultiSelect.module.css";
+import { ImCross } from "react-icons/im";
 
 function SearchMultiSelect(props) {
     const {
@@ -18,6 +19,8 @@ function SearchMultiSelect(props) {
         showAlert,
         onAdd,
         disabled = false,
+        fontSize = 19.2,
+        background,
     } = props;
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -100,8 +103,12 @@ function SearchMultiSelect(props) {
             <div
                 className={styles["search-select__selected"]}
                 onClick={() => setOpen(!open)}
+                style={{ background: background }}
             >
-                <div className={styles["search-select__selected-list"]}>
+                <div
+                    className={styles["search-select__selected-list"]}
+                    style={{ fontSize: `${fontSize}px` }}
+                >
                     {selected?.length === 0
                         ? defaultText
                         : selected?.map((item, ind) => (
@@ -128,7 +135,7 @@ function SearchMultiSelect(props) {
                                           setOpen(false);
                                       }}
                                   >
-                                      X
+                                      <ImCross />
                                   </span>
                               </div>
                           ))}
@@ -165,6 +172,7 @@ function SearchMultiSelect(props) {
                                 setSelected([]);
                                 setOpen(false);
                             }}
+                            style={{ fontSize: `${fontSize}px` }}
                         >
                             {defaultText}
                         </div>
@@ -186,6 +194,7 @@ function SearchMultiSelect(props) {
                                     setOpen(false);
                                 }}
                                 disabled={findItem(item) !== undefined}
+                                style={{ fontSize: `${fontSize}px` }}
                             >
                                 {displayKeySecond !== undefined && (
                                     <>{item[displayKeySecond]} - </>

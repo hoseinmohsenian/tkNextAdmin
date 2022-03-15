@@ -16,7 +16,7 @@ function SearchSelect({
     background,
     disabled = false,
     displayPattern,
-    fontSize,
+    fontSize = 19.2,
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -144,7 +144,7 @@ function SearchSelect({
                                 className={`${
                                     styles["search-select__content-item"]
                                 } ${
-                                    selected === item &&
+                                    selected[id] === item[id] &&
                                     styles[
                                         "search-select__content-item--disabled"
                                     ]

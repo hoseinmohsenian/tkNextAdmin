@@ -432,7 +432,6 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                                         onChange={setSelectedDate}
                                         shouldHighlightWeekends
                                         locale="fa"
-                                        inputPlaceholder=" "
                                         wrapperClassName="date-input-wrapper"
                                         inputClassName="date-input"
                                         colorPrimary="#545cd8"

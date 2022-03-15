@@ -1,0 +1,47 @@
+.row {
+    margin: 0.4rem 0 0.8rem;
+}
+.category-delete-btn {
+    color: white;
+    border-radius: 0.4rem;
+    font-size: 0.9rem;
+    padding: 0.05rem 0.3rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.category-delete-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+.search-btn {
+    color: #4d4d4d;
+    display: flex;
+    cursor: pointer;
+}
+.search-btn:disabled {
+    cursor: not-allowed;
+}
+
+.form__second-label-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #7c7c7c;
+}
+.form-control-container {
+    width: 100%;
+}
+
+@media all and (min-width: 576px) {
+    .col {
+        padding-left: 0.5rem;
+    }
+}
+
+@media all and (min-width: 768px) {
+    .row {
+        align-items: center;
+        flex-direction: row;
+    }
+}
