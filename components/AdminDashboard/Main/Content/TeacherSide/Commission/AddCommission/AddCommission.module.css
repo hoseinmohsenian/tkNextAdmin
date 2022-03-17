@@ -1,11 +1,6 @@
 .title {
     color: #353535;
 }
-.search-btn {
-    color: #4d4d4d;
-    display: flex;
-    cursor: pointer;
-}
 .form__label {
     text-align: right;
 }
