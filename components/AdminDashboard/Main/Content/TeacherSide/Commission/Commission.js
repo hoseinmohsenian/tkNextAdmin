@@ -6,10 +6,12 @@ import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
 import AddCommission from "./AddCommission/AddCommission";
+import moment from "jalali-moment";
 
 function Commission({ fetchedCommissions: { data, ...restData }, token }) {
     const [commissions, setCommissions] = useState(data);
     const [pagData, setPagData] = useState(restData);
+    const [formData, setFormData] = useState(data);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -137,17 +139,17 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         }
     };
 
-    const changeCommission = async (e, teacher_id, i) => {
+    const changeCommission = async (e, id, i) => {
         try {
             let temp = [...loadings];
             temp[i] = true;
             setLoadings(() => temp);
 
             const res = await fetch(
-                `${BASE_URL}/admin/teacher/commission/${teacher_id}`,
+                `${BASE_URL}/admin/teacher/changeable/commission/${id}`,
                 {
                     method: "POST",
-                    body: JSON.stringify({ commission: e.target.value }),
+                    body: JSON.stringify({ commission: Number(e.target.value) }),
                     headers: {
                         "Content-type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -158,8 +160,14 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
             if (res.ok) {
                 let message = `کمیسیون به ${e.target.value} تغییر کرد`;
                 showAlert(true, "success", message);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-
             temp = [...loadings];
             temp[i] = false;
             setLoadings(() => temp);
@@ -168,9 +176,29 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         }
     };
 
+    const changeCommissionHandler = async (e, id, i) => {
+        if (
+            Number(e.target.value) !== commissions[i]?.commission &&
+            e.target.value
+        ) {
+            await changeCommission(e, id, i);
+            let temp = [...commissions];
+            temp[i]?.commission = Number(e.target.value);
+            setCommissions(() => temp);
+        }
+    };
+
     const openModal = () => {
         setIsModalOpen(true);
     };
+
+    const handleOnChange = (e, rowInd, name) => {
+        let updated = [...formData];
+        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
+        setFormData(() => updated);
+    };
+
+    
 
     return (
         <div>
@@ -209,6 +237,9 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان آموز</th>
                                 <th className="table__head-item">کمیسیون</th>
+                                <th className="table__head-item">
+                                    تاریخ ایجاد
+                                </th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -222,21 +253,49 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
                                         {commission?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {commission?.student_name}
+                                        {commission?.user_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {commission?.commission}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <button
-                                            type="button"
-                                            className={`action-btn warning`}
-                                            onClick={() =>
-                                                alert("edit commission")
-                                            }
+                                        <div
+                                            className="form-control"
+                                            style={{ width: "60px", margin: 0 }}
                                         >
-                                            ویرایش
-                                        </button>
+                                            <input
+                                                type="number"
+                                                name="commission"
+                                                id="commission"
+                                                className="form__input"
+                                                onChange={(e) =>
+                                                    handleOnChange(
+                                                        e,
+                                                        i,
+                                                        "commission"
+                                                    )
+                                                }
+                                                value={
+                                                    formData[i]?.commission ||
+                                                    ""
+                                                }
+                                                onBlur={(e) =>
+                                                    changeCommissionHandler(
+                                                        e,
+                                                        commission?.id,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
+                                                autoComplete="off"
+                                                spellCheck={false}
+                                                required
+                                            />
+                                        </div>
+                                    </td>
+                                    <td className="table__body-item table__body-item--ltr">
+                                        {moment(commission?.created_at).format(
+                                            "YYYY/MM/DD hh:mm:ss"
+                                        )}
+                                    </td>
+                                    <td className="table__body-item">
                                         <button
                                             type="button"
                                             className={`action-btn danger`}
@@ -258,7 +317,7 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
-                                        colSpan={4}
+                                        colSpan={5}
                                     >
                                         کمیسیونی پیدا نشد
                                     </td>
