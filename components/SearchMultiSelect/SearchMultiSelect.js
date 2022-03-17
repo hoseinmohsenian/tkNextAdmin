@@ -12,15 +12,15 @@ function SearchMultiSelect(props) {
         selected,
         setSelected,
         noResText,
-        width,
         onRemove,
-        min,
         max,
         showAlert,
         onAdd,
         disabled = false,
         fontSize = 19.2,
         background,
+        displayPattern,
+        stylesProps,
     } = props;
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -92,12 +92,23 @@ function SearchMultiSelect(props) {
         }
     };
 
+    // To Show items in the list and the selected one
+    const ShowItem = ({ item }) => {
+        if (!displayPattern) {
+            return item[displayKey];
+        } else {
+            return displayPattern?.map((patternItem) =>
+                patternItem.member ? item[patternItem.key] : patternItem.key
+            );
+        }
+    };
+
     return (
         <div
             className={`${styles["search-select"]} ${
                 open && !disabled && styles["search-select--open"]
             }`}
-            style={{ width: `${width}` }}
+            style={stylesProps}
             ref={selectRef}
         >
             <div

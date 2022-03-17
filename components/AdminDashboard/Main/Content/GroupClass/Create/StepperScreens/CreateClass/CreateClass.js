@@ -528,7 +528,9 @@ function CreateClass(props) {
                                     selected={selectedSpecialitys}
                                     setSelected={setSelectedSpecialitys}
                                     noResText="یافت نشد"
-                                    width="100%"
+                                    stylesProps={{
+                                        width: "100%",
+                                    }}
                                     // onRemove={deleteSpecialityHandler}
                                     min={2}
                                     max={3}

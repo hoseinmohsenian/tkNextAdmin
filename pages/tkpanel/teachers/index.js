@@ -33,8 +33,6 @@ export async function getServerSideProps(context) {
     }
 
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
-    const findItem = (list, key, target) =>
-        list.find((item) => item[key] === target);
     const { name, mobile, email, page } = context?.query;
     let searchData = {
         name: "",

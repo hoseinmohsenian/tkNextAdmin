@@ -1,0 +1,50 @@
+.form__second-label-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #7c7c7c;
+}
+.form-control-container {
+    width: 100%;
+}
+
+.inputs-container {
+    position: relative;
+}
+.inputs-container::before {
+    content: "";
+    position: absolute;
+    right: 1rem;
+    top: 2rem;
+    background-color: #ddd;
+    width: 3px;
+    height: 85%;
+    z-index: 1;
+}
+.row-wrapper {
+    display: flex;
+    align-items: center;
+}
+.input-wrapper {
+    width: 100%;
+    margin-right: 1.5rem;
+}
+.number {
+    background-color: #712be5;
+    min-height: 2rem;
+    min-width: 2rem;
+    max-height: 2rem;
+    max-width: 2rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    position: relative;
+    z-index: 100;
+    cursor: default;
+    user-select: none;
+}
