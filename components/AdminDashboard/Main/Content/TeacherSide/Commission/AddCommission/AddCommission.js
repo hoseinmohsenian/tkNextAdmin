@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Alert from "../../../../../../Alert/Alert";
 import SearchSelect from "../../../../../../SearchSelect/SearchSelect";
 import { BASE_URL } from "../../../../../../../constants";
-import { FaSearch } from "react-icons/fa";
 import styles from "./AddCommission.module.css";
+import FetchSearchSelect from "../../../Elements/FetchSearchSelect/FetchSearchSelect";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
@@ -21,11 +21,11 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
         name: "",
         family: "",
     });
-    const [alertData, setAlertData] = useState({
+    const alertData = {
         show: false,
         message: "",
         type: "",
-    });
+    };
     const [loading, setLoading] = useState(false);
 
     const handleOnChange = (e) => {
@@ -39,7 +39,7 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
             const fd = new FormData();
             fd.append("teacher_id", selectedTeacher.id);
             fd.append("user_id", selectedStudent.id);
-            fd.append("commission", formData.commission);
+            fd.append("commission", Number(formData.commission));
 
             await addCommission(fd);
         } else {
@@ -79,11 +79,11 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
         }
     };
 
-    const searchTeachers = async () => {
+    const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${formData.teacher_name}`,
+                `${BASE_URL}/admin/teacher/name/search?name=${teacher_name}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -162,41 +162,16 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
             <form className="form">
                 <div className="input-wrapper">
                     <label
-                        htmlFor="teacher_name"
-                        className={`form__label ${styles.form__label}`}
-                    >
-                        نام استاد :
-                    </label>
-                    <div className="form-control">
-                        <input
-                            type="text"
-                            name="teacher_name"
-                            id="teacher_name"
-                            className="form__input"
-                            onChange={handleOnChange}
-                        />
-                        <button
-                            type="button"
-                            onClick={searchTeachers}
-                            disabled={!Boolean(formData.teacher_name)}
-                            className={styles["search-btn"]}
-                            title="جستجو استاد"
-                        >
-                            <FaSearch />
-                        </button>
-                    </div>
-                </div>
-                <div className="input-wrapper">
-                    <label
                         htmlFor="language_id"
                         className={`form__label ${styles.form__label}`}
                     >
-                        اساتید :
+                        استاد :<span className="form__star">*</span>
                     </label>
                     <div className={`form-control form-control-searchselect`}>
-                        <SearchSelect
+                        <FetchSearchSelect
                             list={teachers}
-                            defaultText="انتخاب کنید"
+                            setList={setTeachers}
+                            placeholder="جستجو کنید"
                             selected={selectedTeacher}
                             displayKey="family"
                             displayPattern={[
@@ -207,12 +182,14 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                                 { member: true, key: "mobile" },
                             ]}
                             setSelected={setSelectedTeacher}
-                            noResText="یافت نشد"
+                            noResText="استادی پیدا نشد"
                             listSchema={teacherSchema}
                             stylesProps={{
                                 width: "100%",
                             }}
                             background="#fafafa"
+                            fontSize={16}
+                            onSearch={(value) => searchTeachers(value)}
                         />
                     </div>
                 </div>
@@ -221,7 +198,7 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                         htmlFor="teacher_name"
                         className={`form__label ${styles.form__label}`}
                     >
-                        زبان آموزان‌ :
+                        زبان آموز :<span className="form__star">*</span>
                     </label>
                     <div className={`form-control form-control-searchselect`}>
                         <SearchSelect
@@ -244,7 +221,7 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                         htmlFor="commission"
                         className={`form__label ${styles.form__label}`}
                     >
-                        کمیسیون :
+                        کمیسیون :<span className="form__star">*</span>
                     </label>
                     <div className="form-control">
                         <input
