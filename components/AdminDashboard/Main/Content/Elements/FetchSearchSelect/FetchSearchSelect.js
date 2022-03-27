@@ -19,17 +19,20 @@ function FetchSearchSelect({
     displayPattern,
     fontSize = 19.2,
     onSearch,
+    openBottom = false,
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const selectRef = useRef(null);
-    const [openTop, setOpenTop] = useState(true);
+    const [openTop, setOpenTop] = useState(!!openBottom);
     const [isSearching, setIsSearching] = useState(false);
     const { useOutsideAlerter } = useGlobalContext();
 
     useEffect(() => {
-        let pos = selectRef.current?.getBoundingClientRect();
-        setOpenTop(document.body.scrollHeight - pos?.bottom > 250);
+        if (!openBottom) {
+            let pos = selectRef.current?.getBoundingClientRect();
+            setOpenTop(document.body.scrollHeight - pos?.bottom > 250);
+        }
     }, []);
 
     useOutsideAlerter(selectRef, () => setOpen(false));

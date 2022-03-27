@@ -310,18 +310,18 @@ function EditClass(props) {
         }
     };
 
-    const deleteSpecialityHandler = async (specId) => {
+    const deleteSpecialityHandler = async (spec_id) => {
         // Deleting skills related to deleted speciality
+        const filteredSkills = [];
         for (let i = 0; i < selectedSkills?.length; i++) {
-            if (selectedSkills[i]?.speciality_id === specId) {
+            if (selectedSkills[i]?.speciality_id === spec_id) {
                 await deleteSkill(selectedSkills[i]?.id);
+            } else {
+                filteredSkills.push(selectedSkills[i]);
             }
         }
-        let updatedSkills = selectedSkills?.filter(
-            (item) => item?.speciality_id !== specId
-        );
-        setSelectedSkills(() => updatedSkills);
-        await deleteSpeciality(specId);
+        setSelectedSkills(() => filteredSkills);
+        await deleteSpeciality(spec_id);
     };
 
     const deleteSkill = async (skill_id) => {
@@ -350,8 +350,9 @@ function EditClass(props) {
     useEffect(() => {
         if (selectedSpecialitys.length !== 0) {
             fetchSkills();
+        } else {
+            setSkills([]);
         }
-        // setSelectedSkills([]);
     }, [selectedSpecialitys]);
 
     useEffect(() => {
@@ -534,7 +535,9 @@ function EditClass(props) {
                                     selected={selectedSpecialitys}
                                     setSelected={setSelectedSpecialitys}
                                     noResText="یافت نشد"
-                                    width="100%"
+                                    stylesProps={{
+                                        width: "100%",
+                                    }}
                                     onRemove={deleteSpecialityHandler}
                                     min={2}
                                     max={3}
@@ -567,7 +570,9 @@ function EditClass(props) {
                                     selected={selectedSkills}
                                     setSelected={setSelectedSkills}
                                     noResText="یافت نشد"
-                                    width="100%"
+                                    stylesProps={{
+                                        width: "100%",
+                                    }}
                                     onRemove={deleteSkill}
                                     min={3}
                                     max={5}

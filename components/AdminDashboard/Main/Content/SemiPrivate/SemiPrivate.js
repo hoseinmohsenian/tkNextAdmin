@@ -172,7 +172,7 @@ function SemiPrivate(props) {
                                             href={`/tkpanel/semi-private-admin/${cls?.id}/edit`}
                                         >
                                             <a className={`action-btn primary`}>
-                                                ویرایش
+                                                ویرایش&nbsp;
                                             </a>
                                         </Link>
                                         <Link
