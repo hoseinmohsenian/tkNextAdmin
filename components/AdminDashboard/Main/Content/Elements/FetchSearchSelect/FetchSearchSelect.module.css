@@ -38,20 +38,22 @@
     transform-origin: center top;
     transition: var(--transition);
     border: 1px solid #dcdee2;
-    border-top: none;
     background-color: white;
 }
 .top {
     bottom: 35px;
     transform-origin: center bottom;
+    border-bottom: none;
 }
 .bottom {
     top: 35px;
     transform-origin: center top;
+    border-top: none;
 }
 .search-select--open .search-select__content {
     transform: scaleY(1);
     opacity: 1;
+    cursor: pointer;
 }
 .search-select__content-search {
     display: flex;

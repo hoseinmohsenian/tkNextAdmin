@@ -77,11 +77,41 @@ function CreateClass(props) {
                 if (Number(formData.price) !== addedData.price) {
                     fd.append("price", Number(formData.price));
                 }
+                let counter = 0;
                 for (let i = 0; i < selectedSpecialitys.length; i++) {
-                    fd.append(`speciality_id[${i}]`, selectedSpecialitys[i].id);
+                    let exsist = false;
+                    for (let j = 0; j < addedData.speciality.length; j++) {
+                        if (
+                            selectedSpecialitys[i].id ===
+                            addedData.speciality[j].speciality_id
+                        ) {
+                            exsist = true;
+                            break;
+                        }
+                    }
+                    if (!exsist) {
+                        fd.append(
+                            `speciality_id[${counter}]`,
+                            selectedSpecialitys[i].id
+                        );
+                        counter++;
+                    }
                 }
+                counter = 0;
                 for (let i = 0; i < selectedSkills.length; i++) {
-                    fd.append(`skill_id[${i}]`, selectedSkills[i].id);
+                    let exsist = false;
+                    for (let j = 0; j < addedData.skill.length; j++) {
+                        if (
+                            selectedSkills[i].id === addedData.skill[j].skill_id
+                        ) {
+                            exsist = true;
+                            break;
+                        }
+                    }
+                    if (!exsist) {
+                        fd.append(`skill_id[${counter}]`, selectedSkills[i].id);
+                        counter++;
+                    }
                 }
                 if (desc && desc !== addedData.desc) {
                     fd.append("desc", desc);
@@ -310,6 +340,48 @@ function CreateClass(props) {
         }
     };
 
+    const deleteSpeciality = async (speciality_id) => {
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/group-class/${formData.id}/speciality/${speciality_id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+        } catch (error) {
+            console.log("Error deleting speciality", error);
+        }
+    };
+
+    const deleteSkill = async (skill_id) => {
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/group-class/${formData.id}/skill/${skill_id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+        } catch (error) {
+            console.log("Error deleting skill ", error);
+        }
+    };
+
+    const deleteSkillHandler = async (skill_id) => {
+        if (formData.id) {
+            await deleteSkill(skill_id);
+        }
+    };
+
     const readClassData = async () => {
         try {
             const res = await fetch(
@@ -368,6 +440,30 @@ function CreateClass(props) {
         }
     };
 
+    const deleteSpecialityHandler = async (spec_id) => {
+        if (formData.id) {
+            // API delete
+
+            const filteredSkills = [];
+            for (let i = 0; i < selectedSkills?.length; i++) {
+                if (selectedSkills[i]?.speciality_id === spec_id) {
+                    await deleteSkill(selectedSkills[i]?.id);
+                } else {
+                    filteredSkills.push(selectedSkills[i]);
+                }
+            }
+            setSelectedSkills(() => filteredSkills);
+            await deleteSpeciality(spec_id);
+        } else {
+            // Just remove item without API calls
+
+            const filteredSkills = selectedSkills.filter(
+                (skill) => skill.speciality_id !== spec_id
+            );
+            setSelectedSkills(() => filteredSkills);
+        }
+    };
+
     useEffect(() => {
         fetchSpecialitys();
         setSelectedSpecialitys([]);
@@ -376,8 +472,9 @@ function CreateClass(props) {
     useEffect(() => {
         if (selectedSpecialitys.length !== 0) {
             fetchSkills();
+        } else {
+            setSkills([]);
         }
-        setSelectedSkills([]);
     }, [selectedSpecialitys]);
 
     useEffect(() => {
@@ -531,7 +628,7 @@ function CreateClass(props) {
                                     stylesProps={{
                                         width: "100%",
                                     }}
-                                    // onRemove={deleteSpecialityHandler}
+                                    onRemove={deleteSpecialityHandler}
                                     min={2}
                                     max={3}
                                     showAlert={showAlert}
@@ -563,8 +660,10 @@ function CreateClass(props) {
                                     selected={selectedSkills}
                                     setSelected={setSelectedSkills}
                                     noResText="یافت نشد"
-                                    width="100%"
-                                    // onRemove={deleteSkill}
+                                    stylesProps={{
+                                        width: "100%",
+                                    }}
+                                    onRemove={deleteSkillHandler}
                                     min={3}
                                     max={5}
                                     showAlert={showAlert}

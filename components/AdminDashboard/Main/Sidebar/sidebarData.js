@@ -130,6 +130,16 @@ export default [
                 icon: <GrStatusWarningSmall />,
             },
             {
+                title: "کلاس پرداخت نشده",
+                path: "/tkpanel/class/notPaymentForClass",
+                icon: <FaMoneyBill />,
+            },
+            {
+                title: "کلاس برگزار نشده",
+                path: "/tkpanel/class/paymentForClassNotStatus",
+                icon: <MdSchool />,
+            },
+            {
                 title: "کلاس گروهی",
                 path: "#",
                 icon: <AiTwotoneUnlock />,
@@ -220,11 +230,6 @@ export default [
                 icon: <AiFillInteraction />,
             },
             {
-                title: "تیکت ها",
-                path: "/tkpanel/ticketing/index",
-                icon: <HiTicket />,
-            },
-            {
                 title: "لیست درخواست مشاوره",
                 path: "/tkpanel/adviceRequests/list",
                 icon: <IoIosListBox />,
@@ -235,29 +240,9 @@ export default [
                 icon: <BiGitPullRequest />,
             },
             {
-                title: "کلاس پرداخت نشده",
-                path: "/tkpanel/class/notPaymentForClass",
-                icon: <FaMoneyBill />,
-            },
-            {
-                title: "کلاس برگزار نشده",
-                path: "/tkpanel/class/paymentForClassNotStatus",
-                icon: <MdSchool />,
-            },
-            {
-                title: "گزارش تخلف",
-                path: "/panel/report",
-                icon: <MdReport />,
-            },
-            {
                 title: "کامنت اساتید",
                 path: "/tkpanel/teacherComments",
                 icon: <FaCommentDots />,
-            },
-            {
-                title: "چت گفتینو",
-                path: "https://www.goftino.com/",
-                icon: <BsFillChatDotsFill />,
             },
             {
                 title: "5جلسه / 10 جلسه",

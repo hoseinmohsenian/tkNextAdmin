@@ -21,16 +21,19 @@ function SearchMultiSelect(props) {
         background,
         displayPattern,
         stylesProps,
+        openBottom = true,
     } = props;
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [filteredList, setFilteredList] = useState(list);
     const selectRef = useRef(null);
-    const [openTop, setOpenTop] = useState(true);
+    const [openTop, setOpenTop] = useState(!!openBottom);
 
     useEffect(() => {
-        let pos = selectRef.current?.getBoundingClientRect();
-        setOpenTop(document.body.scrollHeight - pos?.bottom > 250);
+        if (!openBottom) {
+            let pos = selectRef.current?.getBoundingClientRect();
+            setOpenTop(document.body.scrollHeight - pos?.bottom > 250);
+        }
     }, []);
 
     useOutsideAlerter(selectRef);
