@@ -230,6 +230,11 @@ export default [
                 icon: <AiFillInteraction />,
             },
             {
+                title: "لندینگ کاربران",
+                path: "/tkpanel/landing/users/list",
+                icon: <AiFillInteraction />,
+            },
+            {
                 title: "لیست درخواست مشاوره",
                 path: "/tkpanel/adviceRequests/list",
                 icon: <IoIosListBox />,
