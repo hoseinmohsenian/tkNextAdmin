@@ -135,7 +135,6 @@ function CreateSemiPrivate({ token, languages }) {
             if (res.ok) {
                 const { data } = await res.json();
                 setStudents(data);
-                showAlert(true, "success", "اکنون زبان آموزان را انتخاب کنید");
             } else {
                 showAlert(
                     true,
@@ -150,18 +149,22 @@ function CreateSemiPrivate({ token, languages }) {
         }
     };
 
-    const clacPrice = (rate) => {
-        let rt = rate || formData.rate;
+    const clacPrice = () => {
+        let rt = formData.rate;
         let len = selectedStudents.length;
-        if (len === 2) {
-            setFormData({ ...formData, price: rt * 1.3 });
-        }
-        if (len === 3) {
-            setFormData({ ...formData, price: rt * 1.6 });
-        }
-        if (len === 4) {
-            setFormData({ ...formData, price: rt * 2 });
-        } else if (len <= 1) {
+        if (rt !== null) {
+            if (len === 2) {
+                setFormData({ ...formData, price: rt * 1.3 });
+            }
+            if (len === 3) {
+                setFormData({ ...formData, price: rt * 1.6 });
+            }
+            if (len === 4) {
+                setFormData({ ...formData, price: rt * 2 });
+            } else if (len <= 1) {
+                setFormData({ ...formData, price: 0 });
+            }
+        } else {
             setFormData({ ...formData, price: 0 });
         }
     };
@@ -180,8 +183,7 @@ function CreateSemiPrivate({ token, languages }) {
             );
             if (res.ok) {
                 const { data } = await res.json();
-                setFormData({ ...formData, rate: data });
-                clacPrice(data);
+                setFormData({ ...formData, rate: data === null ? 0 : data });
             } else {
                 showAlert(
                     true,
@@ -204,6 +206,7 @@ function CreateSemiPrivate({ token, languages }) {
             setStudents([]);
         }
         setSelectedStudents([]);
+        setFormData({ ...formData, price: 0 });
     }, [selectedTeacher]);
 
     // Reading price based on teacher_id and language_id

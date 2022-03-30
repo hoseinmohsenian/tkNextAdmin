@@ -1,6 +1,7 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import AddSessions from "../../../../../components/AdminDashboard/Main/Content/SemiPrivate/Sessions/AddSession/AddSession";
 import Header from "../../../../../components/Head/Head";
+import { BASE_URL } from "../../../../../constants";
 
 function GroupClassPage({ token, id, theClass }) {
     return (
@@ -42,7 +43,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            token: "",
+            token,
             id,
             theClass: dataArr[0].data,
         },

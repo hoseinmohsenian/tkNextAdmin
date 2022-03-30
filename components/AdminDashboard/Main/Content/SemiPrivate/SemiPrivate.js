@@ -68,7 +68,7 @@ function SemiPrivate(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/semi-private/price/${class_id}`,
+                `${BASE_URL}/admin/semi-private/${class_id}`,
                 {
                     method: "POST",
                     body: JSON.stringify({ status: status === 0 ? 1 : 0 }),
@@ -127,9 +127,6 @@ function SemiPrivate(props) {
                                 <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">
-                                    جلسات برگزار شده
-                                </th>
-                                <th className="table__head-item">
                                     تاریخ ایجاد
                                 </th>
                                 <th className="table__head-item">اقدامات</th>
@@ -145,17 +142,15 @@ function SemiPrivate(props) {
                                         {cls.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {/* {cls.language_name} */}
-                                        {cls.language_id}
+                                        {cls.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.status === 1 ? "فعال" : "غیرفعال"}
+                                        {cls.finished === 1
+                                            ? "پایان یافته"
+                                            : "درحال برگزاری"}
                                     </td>
                                     <td className="table__body-item">
                                         {cls.price}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {cls.held_session}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
