@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./AddSessions.module.css";
 import Box from "../../../Elements/Box/Box";
 import Alert from "../../../../../../Alert/Alert";
@@ -13,7 +13,7 @@ import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { BASE_URL } from "../../../../../../../constants";
 
 function AddSessions({ token, id, theClass }) {
-    const [formData, setFormData] = useState([]);
+    const [formData, setFormData] = useState(theClass.session);
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(
         Array(formData.length).fill(false)
@@ -24,6 +24,7 @@ function AddSessions({ token, id, theClass }) {
         message: "",
         type: "",
     });
+    moment.locale("fa", { useGregorianParser: true });
 
     const handleRouter = () => {
         router.push("/tkpanel/semi-private-admin");
@@ -34,7 +35,7 @@ function AddSessions({ token, id, theClass }) {
     };
 
     const addNewRow = () => {
-        let newRow = ["title", "time", "date"].reduce(
+        let newRow = ["title", "time", "day", "hour"].reduce(
             (acc, curr) => ((acc[curr] = ""), acc),
             {}
         );
@@ -50,7 +51,7 @@ function AddSessions({ token, id, theClass }) {
 
     const dateOnChange = (value, rowInd) => {
         let updated = [...formData];
-        updated[rowInd] = { ...updated[rowInd], date: value };
+        updated[rowInd] = { ...updated[rowInd], day: value };
         setFormData(() => updated);
     };
 
@@ -60,7 +61,7 @@ function AddSessions({ token, id, theClass }) {
         setFormData(() => updated);
     };
 
-    const addSession = async (body) => {
+    const addSession = async (body, rowInd) => {
         setLoading(true);
         try {
             const res = await fetch(
@@ -76,7 +77,15 @@ function AddSessions({ token, id, theClass }) {
                 }
             );
             if (res.ok) {
-                // **************************** Adding the id to formData
+                const {
+                    data: { id },
+                } = await res.json();
+                let updated = [...formData];
+                updated[rowInd] = {
+                    ...updated[rowInd],
+                    id,
+                };
+                setFormData(() => updated);
                 let message = "جلسه جدید باموفقیت ثبت شد";
                 showAlert(true, "success", message);
             } else {
@@ -129,10 +138,34 @@ function AddSessions({ token, id, theClass }) {
 
     const onEditHandler = async (rowInd, id) => {
         if (!isEmpty(rowInd)) {
-            if (!isMinuteValid(formData[rowInd].time)) {
+            if (!isMinuteValid(formData[rowInd].hour)) {
                 showAlert(true, "danger", "دقیقه باید ۳۰ یا ۰ باشد");
             } else {
-                await editSession(rowInd, id);
+                let body = {};
+                let date = moment
+                    .from(
+                        `${formData[rowInd].day.year}/${formData[rowInd].day.month}/${formData[rowInd].day.day}`,
+                        "fa",
+                        "YYYY/MM/DD"
+                    )
+                    .locale("en")
+                    .format("YYYY/MM/DD")
+                    .replace("/", "-")
+                    .replace("/", "-");
+                if (formData[rowInd].title !== theClass.session[rowInd].title) {
+                    body = { ...body, title: formData[rowInd].title };
+                }
+                if (
+                    Number(formData[rowInd].time) !==
+                    theClass.session[rowInd].time
+                ) {
+                    body = { ...body, time: Number(formData[rowInd].time) };
+                }
+                date = `${date} ${formData[rowInd].hour}:00`;
+                if (date !== theClass.session[rowInd].date) {
+                    body = { ...body, date };
+                }
+                await editSession(body, id);
             }
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
@@ -141,7 +174,7 @@ function AddSessions({ token, id, theClass }) {
 
     const onAddHandler = async (rowInd) => {
         if (!isEmpty(rowInd)) {
-            if (!isMinuteValid(formData[rowInd].time)) {
+            if (!isMinuteValid(formData[rowInd].hour)) {
                 showAlert(true, "danger", "دقیقه باید ۳۰ یا ۰ باشد");
             } else {
                 let date = moment
@@ -157,25 +190,56 @@ function AddSessions({ token, id, theClass }) {
                 let body = {
                     title: formData[rowInd].title,
                     time: Number(formData[rowInd].time),
-                    date: `${date} ${formData[rowInd].time}:00`,
+                    date: `${date} ${formData[rowInd].hour}:00`,
                 };
-                await addSession(body, id);
+                await addSession(body, rowInd);
             }
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
         }
     };
 
+    const isMinuteValid = (time) => {
+        return Number(time.substring(3, 5)) % 30 === 0;
+    };
+
     const isEmpty = (rowInd) => {
         if (
             !formData[rowInd]?.title ||
             !formData[rowInd]?.time ||
-            !formData[rowInd]?.date
+            !formData[rowInd]?.day.year ||
+            !formData[rowInd]?.hour
         ) {
             return true;
         }
         return false;
     };
+
+    useEffect(() => {
+        // Filling date for inputs
+        let updated = [...formData];
+        for (let i = 0; i < formData.length; i++) {
+            let shamsi_date = moment
+                .from(
+                    `${formData[i].date.substring(0, 10)}`,
+                    "en",
+                    "YYYY/MM/DD"
+                )
+                .locale("fa")
+                .format("YYYY/MM/DD");
+
+            updated[i] = {
+                ...updated[i],
+                day: {
+                    year: Number(shamsi_date?.substring(0, 4)),
+                    month: Number(shamsi_date?.substring(5, 7)),
+                    day: Number(shamsi_date?.substring(8, 10)),
+                },
+                hour: formData[i].date?.substring(11, 16),
+            };
+        }
+        setFormData(() => updated);
+    }, []);
 
     return (
         <div>
@@ -236,30 +300,64 @@ function AddSessions({ token, id, theClass }) {
                             </div>
                             <div className={styles["session-row"]}>
                                 <div className={styles["inputs-container"]}>
-                                    <div
-                                        className={`input-wrapper ${styles["session-input-wrapper"]}`}
-                                    >
-                                        <label
-                                            htmlFor="title"
-                                            className={`form__label ${styles["session-label"]}`}
+                                    <div className="row">
+                                        <div
+                                            className={`col-md-6 ${styles["session-col"]}`}
                                         >
-                                            عنوان :
-                                        </label>
-                                        <div className="form-control">
-                                            <input
-                                                type="text"
-                                                name="title"
-                                                id="title"
-                                                className="form__input"
-                                                onChange={(e) =>
-                                                    handleOnChange(e, i)
-                                                }
-                                                value={item?.title}
-                                                required
-                                                placeholder="عنوان"
-                                                spellCheck={false}
-                                                autoComplete="off"
-                                            />
+                                            <div
+                                                className={`input-wrapper ${styles["session-input-wrapper"]}`}
+                                            >
+                                                <label
+                                                    htmlFor="title"
+                                                    className={`form__label ${styles["session-label"]}`}
+                                                >
+                                                    عنوان :
+                                                </label>
+                                                <div className="form-control">
+                                                    <input
+                                                        type="text"
+                                                        name="title"
+                                                        id="title"
+                                                        className="form__input"
+                                                        onChange={(e) =>
+                                                            handleOnChange(e, i)
+                                                        }
+                                                        value={item?.title}
+                                                        required
+                                                        placeholder="عنوان"
+                                                        spellCheck={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            className={`col-md-6 ${styles["session-col"]}`}
+                                        >
+                                            <div
+                                                className={`input-wrapper ${styles["session-input-wrapper"]}`}
+                                            >
+                                                <label
+                                                    htmlFor="time"
+                                                    className={`form__label ${styles["session-label"]}`}
+                                                >
+                                                    مدت :
+                                                </label>
+                                                <div className="form-control">
+                                                    <input
+                                                        type="number"
+                                                        name="time"
+                                                        id="time"
+                                                        className="form__input"
+                                                        onChange={(e) =>
+                                                            handleOnChange(e, i)
+                                                        }
+                                                        value={item?.time}
+                                                        required
+                                                        placeholder="دقیقه"
+                                                        spellCheck={false}
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -278,7 +376,7 @@ function AddSessions({ token, id, theClass }) {
                                                 </label>
                                                 <div className="form-control">
                                                     <DatePicker
-                                                        value={item.date}
+                                                        value={item.day}
                                                         onChange={(date) =>
                                                             dateOnChange(
                                                                 date,
@@ -315,7 +413,7 @@ function AddSessions({ token, id, theClass }) {
                                                 className={`input-wrapper ${styles["session-input-wrapper"]}`}
                                             >
                                                 <label
-                                                    htmlFor="time"
+                                                    htmlFor="hour"
                                                     className={`form__label ${styles["session-label"]}`}
                                                 >
                                                     ساعت :
@@ -323,13 +421,13 @@ function AddSessions({ token, id, theClass }) {
                                                 <div className="form-control">
                                                     <input
                                                         type="time"
-                                                        name="time"
-                                                        id="time"
+                                                        name="hour"
+                                                        id="hour"
                                                         className={`form__input form__input-time ${styles["form__input-time"]}`}
                                                         onChange={(e) =>
                                                             handleOnChange(e, i)
                                                         }
-                                                        value={item?.time}
+                                                        value={item?.hour || ""}
                                                         spellCheck={false}
                                                         required
                                                         placeholder="ساعت"
@@ -365,7 +463,7 @@ function AddSessions({ token, id, theClass }) {
                         disabled={loading}
                         onClick={handleRouter}
                     >
-                        {loading ? "در حال انجام ..." : "ثبت جلسات"}
+                        {loading ? "در حال انجام ..." : "لیست کلاس ها"}
                     </button>
                 </div>
             </Box>

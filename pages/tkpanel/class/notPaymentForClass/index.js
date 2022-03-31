@@ -1,24 +1,23 @@
-import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import AddSessions from "../../../../../components/AdminDashboard/Main/Content/SemiPrivate/Sessions/AddSession/AddSession";
-import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
+import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
+import NotPaidClasses from "../../../../components/AdminDashboard/Main/Content/NotPaidClasses/NotPaidClasses";
+import Header from "../../../../components/Head/Head";
+import { BASE_URL } from "../../../../constants";
 
-function GroupClassPage({ token, id, theClass }) {
+function NotPaidClassesPage({ classes, token }) {
     return (
         <>
-            <Header title="جلسات کلاس نیمه خصوصی | تیکا"></Header>
+            <Header title="لیست کلاس های پرداخت نشده | تیکا"></Header>
             <AdminDashboard>
-                <AddSessions token={token} id={id} theClass={theClass} />
+                <NotPaidClasses fetchedClasses={classes} token={token} />
             </AdminDashboard>
         </>
     );
 }
 
-export default GroupClassPage;
+export default NotPaidClassesPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
-    const id = context.params.id;
 
     if (!token) {
         return {
@@ -30,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/semi-private/${id}`, {
+        fetch(`${BASE_URL}/admin/classroom/not-payed`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -43,9 +42,8 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
+            classes: dataArr[0].data,
             token,
-            id,
-            theClass: dataArr[0].data,
         },
     };
 }

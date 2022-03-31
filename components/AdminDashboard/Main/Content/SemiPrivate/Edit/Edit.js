@@ -46,7 +46,7 @@ function EditSemiPrivate({ token, theClass }) {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/semi-private/price/${formData.id}`,
+                `${BASE_URL}/admin/semi-private/${formData.id}`,
                 {
                     method: "POST",
                     body: fd,
@@ -94,7 +94,7 @@ function EditSemiPrivate({ token, theClass }) {
                                     htmlFor="persian_name"
                                     className="form__label"
                                 >
-                                    زبان :<span className="form__star">*</span>
+                                    زبان :
                                 </label>
                                 <div className="form-control">
                                     <select
@@ -107,8 +107,7 @@ function EditSemiPrivate({ token, theClass }) {
                                         disabled
                                     >
                                         <option value={formData.language_id}>
-                                            {formData.language_name ||
-                                                "زبان انتخاب شده"}
+                                            {formData.language_name}
                                         </option>
                                     </select>
                                 </div>
