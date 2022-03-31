@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import styles from "./Sessions.module.css";
-import Link from "next/link";
 import Box from "../../Elements/Box/Box";
-import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Alert from "../../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../../constants";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 
-const teacherSchema = { id: "", name: "", family: "" };
-const studentSchema = { id: "", name: "", family: "" };
+const teacherSchema = { id: "", name: "", family: "", mobile: "" };
+const studentSchema = { id: "", name_family: "", mobile: "" };
 
 function SemiPrivateSessions({ token }) {
     const [formData, setFromData] = useState({ type: 1 });
@@ -19,9 +17,7 @@ function SemiPrivateSessions({ token }) {
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [students, setStudents] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(studentSchema);
-    const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [loadings, setLoadings] = useState([]);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -40,12 +36,6 @@ function SemiPrivateSessions({ token }) {
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
-    };
-
-    const loadingHandler = (ind, value) => {
-        let temp = [...loadings];
-        temp[ind] = value;
-        setLoadings(() => temp);
     };
 
     const searchTeachers = async (teacher_name) => {
@@ -90,7 +80,9 @@ function SemiPrivateSessions({ token }) {
                 }
             );
             if (res.ok) {
-                const { data } = await res.json();
+                const {
+                    data: { data },
+                } = await res.json();
                 setStudents(data);
             } else {
                 showAlert(
@@ -203,20 +195,23 @@ function SemiPrivateSessions({ token }) {
     };
 
     useEffect(() => {
-        if (selectedTeacher.id) {
-            readStudents();
-        } else {
-            setStudents([]);
-        }
-        setSelectedStudent(studentSchema);
-    }, [selectedTeacher]);
-
-    useEffect(() => {
         setSelectedStudent(studentSchema);
         setSelectedTeacher(teacherSchema);
         setStudents([]);
         setTeachers([]);
     }, [formData.type]);
+
+    useEffect(() => {
+        if (selectedStudent.id && Number(formData.type) === 2) {
+            getStudentTeachers();
+        }
+    }, [selectedStudent]);
+
+    useEffect(() => {
+        if (selectedTeacher.id && Number(formData.type) === 1) {
+            getTeacherStudents();
+        }
+    }, [selectedTeacher]);
 
     return (
         <div>
@@ -342,16 +337,11 @@ function SemiPrivateSessions({ token }) {
                                                 setList={setStudents}
                                                 placeholder="جستجو کنید"
                                                 selected={selectedStudent}
-                                                displayKey="family"
+                                                displayKey="name_family"
                                                 displayPattern={[
                                                     {
                                                         member: true,
-                                                        key: "name",
-                                                    },
-                                                    { member: false, key: " " },
-                                                    {
-                                                        member: true,
-                                                        key: "family",
+                                                        key: "name_family",
                                                     },
                                                     {
                                                         member: false,
@@ -399,8 +389,15 @@ function SemiPrivateSessions({ token }) {
                                             <SearchSelect
                                                 list={students}
                                                 defaultText="انتخاب کنید"
+                                                id="id"
                                                 selected={selectedStudent}
-                                                displayKey="title"
+                                                displayKey="name_family"
+                                                displayPattern={[
+                                                    {
+                                                        member: true,
+                                                        key: "name_family",
+                                                    },
+                                                ]}
                                                 setSelected={setSelectedStudent}
                                                 noResText="یافت نشد"
                                                 listSchema={studentSchema}
@@ -409,6 +406,7 @@ function SemiPrivateSessions({ token }) {
                                                 }}
                                                 background="#fafafa"
                                                 openBottom={true}
+                                                fontSize={16}
                                             />
                                         </div>
                                     </div>
@@ -431,8 +429,31 @@ function SemiPrivateSessions({ token }) {
                                             <SearchSelect
                                                 list={teachers}
                                                 defaultText="انتخاب کنید"
+                                                id="id"
                                                 selected={selectedTeacher}
                                                 displayKey="title"
+                                                displayPattern={[
+                                                    {
+                                                        member: true,
+                                                        key: "name",
+                                                    },
+                                                    {
+                                                        member: false,
+                                                        key: " ",
+                                                    },
+                                                    {
+                                                        member: true,
+                                                        key: "family",
+                                                    },
+                                                    {
+                                                        member: false,
+                                                        key: " - ",
+                                                    },
+                                                    {
+                                                        member: true,
+                                                        key: "mobile",
+                                                    },
+                                                ]}
                                                 setSelected={setSelectedTeacher}
                                                 noResText="یافت نشد"
                                                 listSchema={teacherSchema}
@@ -441,6 +462,7 @@ function SemiPrivateSessions({ token }) {
                                                 }}
                                                 background="#fafafa"
                                                 openBottom={true}
+                                                fontSize={16}
                                             />
                                         </div>
                                     </div>
@@ -467,10 +489,10 @@ function SemiPrivateSessions({ token }) {
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">عنوان</th>
-                                <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">زبان‌</th>
                                 <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">اقدامات</th>
+                                <th className="table__head-item">وضعیت حضور</th>
+                                <th className="table__head-item">مدت زمان</th>
+                                <th className="table__head-item">تاریخ</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
@@ -483,42 +505,27 @@ function SemiPrivateSessions({ token }) {
                                         {session.title}
                                     </td>
                                     <td className="table__body-item">
-                                        {session.teacher_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {/* {session.language_name} */}
-                                        {session.language_id}
-                                    </td>
-                                    <td className="table__body-item">
                                         {session.status === 1
                                             ? "فعال"
                                             : "غیرفعال"}
                                     </td>
+                                    <td className="table__body-item">
+                                        {session.attendance_status === 1
+                                            ? "حاضر"
+                                            : "غایب"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {session.time}
+                                    </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
                                             .from(
-                                                session.created_at,
+                                                session.date,
                                                 "en",
                                                 "YYYY/MM/DD hh:mm:ss"
                                             )
                                             .locale("fa")
                                             .format("YYYY/MM/DD hh:mm:ss")}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <Link
-                                            href={`/tkpanel/semi-private-admin/${session?.id}/edit`}
-                                        >
-                                            <a className={`action-btn primary`}>
-                                                ویرایش&nbsp;
-                                            </a>
-                                        </Link>
-                                        <Link
-                                            href={`/tkpanel/semi-private-admin/${session?.id}/sessions`}
-                                        >
-                                            <a className={`action-btn warning`}>
-                                                جلسات
-                                            </a>
-                                        </Link>
                                     </td>
                                 </tr>
                             ))}
@@ -527,7 +534,7 @@ function SemiPrivateSessions({ token }) {
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
-                                        colSpan={2}
+                                        colSpan={5}
                                     >
                                         جلسه ای پیدا نشد.
                                     </td>

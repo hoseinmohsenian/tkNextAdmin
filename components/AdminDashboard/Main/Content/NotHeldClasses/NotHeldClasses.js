@@ -7,7 +7,7 @@ import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 
-function SemiPrivate(props) {
+function NotHeldClasses(props) {
     const {
         fetchedClasses: { data, ...restData },
         token,
@@ -34,12 +34,12 @@ function SemiPrivate(props) {
         }
 
         router.push({
-            pathname: `/tkpanel/semi-private-admin`,
+            pathname: `/tkpanel/class/notPaymentForClass`,
             query: searchParams,
         });
 
         try {
-            const res = await fetch(`${BASE_URL}/admin/semi-private`, {
+            const res = await fetch(`${BASE_URL}/admin/classroom/not-payed`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-type": "application/json",
@@ -55,7 +55,7 @@ function SemiPrivate(props) {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
         } catch (error) {
-            console.log("Error reading semi-private classes", error);
+            console.log("Error reading not payed classes", error);
         }
     };
 
@@ -109,26 +109,26 @@ function SemiPrivate(props) {
                 envoker={changeStatus}
             />
 
-            <Box
-                title="لیست کلاس های نیمه خصوصی"
-                buttonInfo={{
-                    name: "ایجاد کلاس نیمه خصوصی",
-                    url: "/tkpanel/semi-private-admin/create",
-                    color: "primary",
-                }}
-            >
+            <Box title="لیست کلاس های برگزار نشده">
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">عنوان</th>
-                                <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">زبان‌</th>
-                                <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">
-                                    تاریخ ایجاد
+                                    نام زبان آموز
                                 </th>
+                                <th className="table__head-item">موبایل</th>
+                                <th className="table__head-item">
+                                    اعتبار زبان آموز
+                                </th>
+                                <th className="table__head-item">استاد</th>
+                                <th className="table__head-item">وضعیت کلاس</th>
+                                <th className="table__head-item">
+                                    وضعیت پرداخت
+                                </th>
+                                <th className="table__head-item">قیمت</th>
+                                <th className="table__head-item">تاریخ کلاس</th>
+                                <th className="table__head-item">زمان کلاس</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -136,16 +136,22 @@ function SemiPrivate(props) {
                             {classes?.map((cls, i) => (
                                 <tr className="table__body-row" key={cls.id}>
                                     <td className="table__body-item">
-                                        {cls.title}
+                                        {cls.user_name}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {cls.mobile}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {cls.credit}
                                     </td>
                                     <td className="table__body-item">
                                         {cls.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.language_name}
+                                        {cls.status === 1 ? "ac sts" : "ds sts"}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.finished === 1
+                                        {cls.payment === 1
                                             ? "پایان یافته"
                                             : "درحال برگزاری"}
                                     </td>
@@ -155,12 +161,15 @@ function SemiPrivate(props) {
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
                                             .from(
-                                                cls.created_at,
+                                                cls.date,
                                                 "en",
                                                 "YYYY/MM/DD hh:mm:ss"
                                             )
                                             .locale("fa")
                                             .format("YYYY/MM/DD hh:mm:ss")}
+                                    </td>
+                                    <td className="table__body-item table__body-item--ltr">
+                                        {cls.time}
                                     </td>
                                     <td className="table__body-item">
                                         <Link
@@ -168,13 +177,6 @@ function SemiPrivate(props) {
                                         >
                                             <a className={`action-btn primary`}>
                                                 ویرایش&nbsp;
-                                            </a>
-                                        </Link>
-                                        <Link
-                                            href={`/tkpanel/semi-private-admin/${cls?.id}/sessions`}
-                                        >
-                                            <a className={`action-btn warning`}>
-                                                جلسات
                                             </a>
                                         </Link>
                                         <button
@@ -223,4 +225,4 @@ function SemiPrivate(props) {
     );
 }
 
-export default SemiPrivate;
+export default NotHeldClasses;
