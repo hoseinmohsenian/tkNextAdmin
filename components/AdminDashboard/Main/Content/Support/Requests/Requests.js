@@ -4,14 +4,14 @@ import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
+import { useRouter } from "next/router";
 
 function Requests(props) {
     const {
         fetchedRequests: { data, ...restData },
         token,
     } = props;
-    const [formData, setFormData] = useState(data);
-    const [Requests, setRequests] = useState(data);
+    const [requests, setRequests] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
         show: false,
@@ -19,6 +19,7 @@ function Requests(props) {
         type: "",
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const router = useRouter();
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -30,7 +31,7 @@ function Requests(props) {
         setLoadings(() => temp);
     };
 
-    const changeStatus = async (request_id, status, i) => {
+    const changeStatus = async (request_id, i) => {
         handleLoadings(i, true);
 
         try {
@@ -46,12 +47,9 @@ function Requests(props) {
                 }
             );
             if (res.ok) {
-                let message = `این درخواست ${
-                    status === 1 ? "فعال" : "غیرفعال"
-                } شد`;
-                showAlert(true, status === 1 ? "success" : "warning", message);
-                let updated = [...Requests];
-                updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
+                let message = "تغییر وضعیت اعمال شد";
+                showAlert(true, "success", message);
+                let updated = requests.filter((item) => item.id !== request_id);
                 setRequests(() => updated);
             }
             handleLoadings(i, false);
@@ -61,6 +59,8 @@ function Requests(props) {
     };
 
     const readRequests = async (page = 1) => {
+        let params = { page };
+
         try {
             const res = await fetch(
                 `${BASE_URL}/admin/support/reserve/not-finished?page=${page}`,
@@ -72,6 +72,15 @@ function Requests(props) {
                     },
                 }
             );
+            if (res.status === 500) {
+                showAlert(true, "danger", "مشکلی پیش آمده: خطای ۵۰۰");
+            }
+            if (res.ok) {
+                router.push({
+                    pathname: `/tkpanel/requestFailed`,
+                    query: params,
+                });
+            }
             const {
                 data: { data, ...restData },
             } = await res.json();
@@ -106,22 +115,63 @@ function Requests(props) {
                                 <th className="table__head-item">
                                     شماره موبایل زبان آموز
                                 </th>
-                                <th className="table__head-item">نوع کلاس</th>
+                                <th className="table__head-item">زبان</th>
+                                <th className="table__head-item">زمان</th>
+                                <th className="table__head-item">
+                                    قابل پرداخت
+                                </th>
+                                <th className="table__head-item">تخفیف</th>
                                 <th className="table__head-item">وضعیت</th>
+                                <th className="table__head-item">استپ</th>
+                                <th className="table__head-item">کلاس اول</th>
+                                <th className="table__head-item">
+                                    نمایش ادمین
+                                </th>
                                 <th className="table__head-item">تاریخ ثبت</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {Requests?.map((req, i) => (
+                            {requests?.map((req, i) => (
                                 <tr className="table__body-row" key={req?.id}>
                                     <td className="table__body-item">
-                                        {req?.mobile}
+                                        {req?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {req?.status === 1
-                                            ? "انجام شده"
-                                            : "انجام نشده"}
+                                        {req?.user_name}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req?.user_mobile}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req?.language_id}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req?.time} دقیقه
+                                    </td>
+                                    <td className="table__body-item">
+                                        {Intl.NumberFormat().format(
+                                            req?.payable
+                                        )}{" "}
+                                        تومان
+                                    </td>
+                                    <td className="table__body-item">
+                                        {Intl.NumberFormat().format(
+                                            req?.discount
+                                        )}{" "}
+                                        تومان
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req?.status === 1 ? "فعال" : "غیرفعال"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req?.step}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req?.first_class === 1 ? "1" : "0"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req?.show_admin === 1 ? "1" : "0"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment(req?.created_at).format(
@@ -131,33 +181,23 @@ function Requests(props) {
                                     <td className="table__body-item">
                                         <button
                                             type="button"
-                                            className={`action-btn ${
-                                                req?.status === 1
-                                                    ? "success"
-                                                    : "warning"
-                                            }`}
+                                            className={`action-btn warning`}
                                             onClick={() =>
-                                                changeStatus(
-                                                    req?.id,
-                                                    req?.status,
-                                                    i
-                                                )
+                                                changeStatus(req?.id, i)
                                             }
                                             disabled={loadings[i]}
                                         >
-                                            {req?.status === 0
-                                                ? "فعال"
-                                                : "غیرفعال"}
+                                            تغییر وضعیت
                                         </button>
                                     </td>
                                 </tr>
                             ))}
 
-                            {Requests?.length === 0 && (
+                            {requests?.length === 0 && (
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
-                                        colSpan={5}
+                                        colSpan={13}
                                     >
                                         درخواستی وجود ندارد
                                     </td>
@@ -167,7 +207,7 @@ function Requests(props) {
                     </table>
                 </div>
 
-                {Requests.length !== 0 && (
+                {requests.length !== 0 && (
                     <Pagination read={readRequests} pagData={pagData} />
                 )}
             </Box>

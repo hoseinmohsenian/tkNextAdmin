@@ -1,9 +1,9 @@
 import { useState } from "react";
-import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
-import Pagination from "../Pagination/Pagination";
+import Alert from "../../../../../Alert/Alert";
+import { BASE_URL } from "../../../../../../constants";
+import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
-import Box from "../Elements/Box/Box";
+import Box from "../../Elements/Box/Box";
 import styles from "./MultiSession.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";

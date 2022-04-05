@@ -1,20 +1,20 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import TodayClass from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/TodayClass/TodayClass";
+import RequestDetailsList from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/RequestDetailsList/RequestDetailsList";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function TodayClassPage({ classes, token }) {
+function RequestDetailsListPage({ classes, token }) {
     return (
         <div>
-            <Header title="کلاس های امروز | تیکا"></Header>
+            <Header title="وضعیت کلی کلاس ها | تیکا"></Header>
             <AdminDashboard>
-                <TodayClass fetchedClasses={classes} token={token} />
+                <RequestDetailsList fetchedClasses={classes} token={token} />
             </AdminDashboard>
         </div>
     );
 }
 
-export default TodayClassPage;
+export default RequestDetailsListPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 
     // const responses = await Promise.all([
-    //     fetch(`${BASE_URL}/admin/classroom/today`, {
+    //     fetch(`${BASE_URL}/admin/classroom`, {
     //         headers: {
     //             Authorization: `Bearer ${token}`,
     //             "Content-type": "application/json",

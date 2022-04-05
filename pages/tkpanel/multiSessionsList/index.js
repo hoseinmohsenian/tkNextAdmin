@@ -1,5 +1,5 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import MultiSession from "../../../components/AdminDashboard/Main/Content/MultiSession/MultiSession";
+import MultiSession from "../../../components/AdminDashboard/Main/Content/Support/MultiSession/MultiSession";
 import Header from "../../../components/Head/Head";
 
 function MultiSessionPage({ token }) {

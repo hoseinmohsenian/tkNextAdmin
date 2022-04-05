@@ -1,9 +1,9 @@
 import { useState } from "react";
 import styles from "./TodayClass.module.css";
-import { BASE_URL } from "../../../../../constants";
-import Pagination from "../Pagination/Pagination";
+import { BASE_URL } from "../../../../../../constants";
+import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
-import Box from "../Elements/Box/Box";
+import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
 
 function TodayClass(props) {
@@ -89,7 +89,7 @@ function TodayClass(props) {
 
     return (
         <div>
-            <Box title="لیست تغییر قیمت کلاس">
+            <Box title="کلاس های امروز">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -357,26 +357,23 @@ function TodayClass(props) {
                                 </th>
                                 <th className="table__head-item">نام استاد</th>
                                 <th className="table__head-item">
-                                    شماره استاد
-                                </th>
-                                <th className="table__head-item">
                                     اعتبار زبان آموز
                                 </th>
-                                <th className="table__head-item">
-                                    وضعیت درخواست
-                                </th>
+                                <th className="table__head-item">زبان</th>
+                                <th className="table__head-item">کورس</th>
+                                <th className="table__head-item">پلتفرم</th>
                                 <th className="table__head-item">وضعیت کلاس</th>
+                                <th className="table__head-item">جلسه اول</th>
                                 <th className="table__head-item">
                                     وضعیت پرداخت
                                 </th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">زمان کلاس</th>
                                 <th className="table__head-item">تاریخ کلاس</th>
-                                <th className="table__head-item">جلسه</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((item, i) => (
+                            {classes?.map((item) => (
                                 <tr className="table__body-row" key={item?.id}>
                                     <td className="table__body-item">
                                         {item?.user_name}
@@ -385,21 +382,29 @@ function TodayClass(props) {
                                         {item?.user_mobile}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.teacher_mobile}
-                                    </td>
-                                    <td className="table__body-item">
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.user_wallet}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.status === 1 ? "one" : "zero"}
+                                        {item?.language_id}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.held === 1
-                                            ? "برگزار شده"
-                                            : "کنسل"}
+                                        {item?.course_id}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.platform_id}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.status === 1
+                                            ? "فعال"
+                                            : "غیرفعال"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.first_class === 1
+                                            ? "است"
+                                            : "نیست"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.pay === 1
@@ -407,7 +412,7 @@ function TodayClass(props) {
                                             : "پرداخت نشده"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item.price}
+                                        {item.price || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.time}
@@ -417,9 +422,6 @@ function TodayClass(props) {
                                             "YYYY/MM/DD"
                                         )}
                                     </td>
-                                    <td className="table__body-item">
-                                        {item?.sessions}
-                                    </td>
                                 </tr>
                             ))}
 
@@ -427,7 +429,7 @@ function TodayClass(props) {
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
-                                        colSpan={12}
+                                        colSpan={13}
                                     >
                                         کلاسی پیدا نشد
                                     </td>

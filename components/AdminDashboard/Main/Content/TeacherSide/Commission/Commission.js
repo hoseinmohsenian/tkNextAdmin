@@ -61,45 +61,10 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         }
     };
 
-    const readTeachers = async (page = 1) => {
+    const readCommissions = async (page = 1) => {
         let searchParams = {};
-
-        const isFilterEnabled = (key) =>
-            Number(filters[key]) !== 0 &&
-            filters[key] !== undefined &&
-            filters[key];
-
-        // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                if (key === "draft" && filters["draft"]) {
-                    searchQuery += `draft=1&`;
-                } else {
-                    searchQuery += `${key}=${filters[key]}&`;
-                }
-            }
-        });
         searchQuery += `page=${page}`;
-
-        if (isFilterEnabled("name")) {
-            searchParams = {
-                ...searchParams,
-                name: filters?.name,
-            };
-        }
-        if (isFilterEnabled("email")) {
-            searchParams = {
-                ...searchParams,
-                email: filters?.email,
-            };
-        }
-        if (isFilterEnabled("mobile")) {
-            searchParams = {
-                ...searchParams,
-                mobile: filters?.mobile,
-            };
-        }
         if (page !== 1) {
             searchParams = {
                 ...searchParams,
@@ -108,14 +73,13 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         }
 
         router.push({
-            pathname: `/tkpanel/teachers`,
+            pathname: `/tkpanel/teacher/commission`,
             query: searchParams,
         });
 
         try {
-            setLoading(true);
             const res = await fetch(
-                `${BASE_URL}/admin/teacher/search?${searchQuery}`,
+                `${BASE_URL}/admin/teacher/changeable/commission?${searchQuery}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -127,15 +91,13 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
             const {
                 data: { data, ...restData },
             } = await res.json();
-            setTeachers(data);
             setFormData(data);
             setPagData(restData);
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
-            setLoading(false);
         } catch (error) {
-            console.log("Error reading teachers", error);
+            console.log("Error reading commissions", error);
         }
     };
 
@@ -197,8 +159,6 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
         setFormData(() => updated);
     };
-
-    
 
     return (
         <div>
@@ -329,7 +289,7 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
             </Box>
 
             {commissions.length !== 0 && (
-                <Pagination read={readTeachers} pagData={pagData} />
+                <Pagination read={readCommissions} pagData={pagData} />
             )}
         </div>
     );
