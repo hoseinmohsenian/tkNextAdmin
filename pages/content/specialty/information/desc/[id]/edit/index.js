@@ -1,20 +1,20 @@
-import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import EditLanguage from "../../../../../components/AdminDashboard/Main/Content/EditLanguage/EditLanguage";
-import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
+import AdminDashboard from "../../../../../../../components/AdminDashboard/Dashboard";
+import EditSpecialitiesDesc from "../../../../../../../components/AdminDashboard/Main/Content/Specialities/SpecialitiesDesc/EditSpecialitiesDesc/EditSpecialitiesDesc";
+import Header from "../../../../../../../components/Head/Head";
+import { BASE_URL } from "../../../../../../../constants";
 
-function EditLanguagePage({ language, token }) {
+function EditSpecialtyDescPage({ token, specialty }) {
     return (
         <>
-            <Header title="ویرایش زبان | تیکا"></Header>
+            <Header title="ویرایش توضیحات تخصص | تیکا"></Header>
             <AdminDashboard>
-                <EditLanguage language={language} token={token} />
+                <EditSpecialitiesDesc token={token} specialty={specialty} />
             </AdminDashboard>
         </>
     );
 }
 
-export default EditLanguagePage;
+export default EditSpecialtyDescPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -30,7 +30,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/language/${id}`, {
+        fetch(`${BASE_URL}/admin/teaching/speciality/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            language: dataArr[0].data,
+            specialty: dataArr[0].data,
             token,
         },
     };

@@ -1,20 +1,20 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import Skills from "../../../components/AdminDashboard/Main/Content/Skills/Skills";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
+import SpecialitiesDesc from "../../../../../components/AdminDashboard/Main/Content/Specialities/SpecialitiesDesc/SpecialitiesDesc";
+import Header from "../../../../../components/Head/Head";
+import { BASE_URL } from "../../../../../constants";
 
-function SkillsPage({ token, skills }) {
+function SpecialitiesDescPage({ specialitys }) {
     return (
         <>
-            <Header title="مهارت ها | تیکا"></Header>
+            <Header title="توضیحات تخصص ها | تیکا"></Header>
             <AdminDashboard>
-                <Skills fetchedSkills={skills} token={token} />
+                <SpecialitiesDesc specialitys={specialitys} />
             </AdminDashboard>
         </>
     );
 }
 
-export default SkillsPage;
+export default SpecialitiesDescPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/teaching/skill`, {
+        fetch(`${BASE_URL}/admin/teaching/speciality`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -41,6 +41,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { token, skills: dataArr[0].data },
+        props: { specialitys: dataArr[0].data },
     };
 }

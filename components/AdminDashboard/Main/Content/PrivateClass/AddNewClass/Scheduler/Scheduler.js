@@ -29,7 +29,7 @@ class Scheduler extends Component {
             //console.log(this.state.dataFromServer);
             if (onDataUpdated) {
                 //**********day */
-                var now = moment(new Date(2020, 2, 7)); //todays date
+                var now = moment(new Date(2022, 2, 7)); //todays date
                 var end = moment(ev.start_date); // another date
                 var duration = moment.duration(end.diff(now));
                 var diffDays = Math.abs(Math.round(duration.asDays()));
@@ -69,45 +69,24 @@ class Scheduler extends Component {
                     "day",
                     Number(this.state.day)
                 );
-                console.log(this.state.dataFromServer);
 
                 // this.dataFromServer.map(function(data){this.setState({dataFromServer: day:""})})
 
+                // ******************* I CHANGED HERE ********************************
                 let oldHourRange = this.state.dataFromServer[x].hour_range;
                 console.log(oldHourRange);
                 oldHourRange = [...oldHourRange, ...this.state.hour_range];
 
-                console.log(oldHourRange);
+                console.log("old rng", oldHourRange);
 
                 let oldDataServer = this.state.dataFromServer;
                 oldDataServer[x].hour_range = oldHourRange;
 
                 this.setState({ dataFromServer: oldDataServer });
                 this.setState({ sendData: oldDataServer[x] });
-                // this.onAddTeacherFreeTime();
-
-                // console.log(this.state.sendData);
-                // });
+                this.onAddTeacherFreeTime();
 
                 this.setState({ day: "", hour_range: [], sendData: {} });
-
-                // this.state.dataFromServer.map(function (data) {
-                //
-                //     this.setState({ day: "", hour_range: [] });
-                //   }
-
-                //   this.setState({
-                //     dataFromServer: [
-                //       ...this.state.dataFromServer,
-                //       {
-                //         day: this.state.day,
-                //         hour_range: this.state.hour_range,
-                //       },
-                //     ],
-                //   });
-                // });
-
-                // console.log(moment.from(ev.start_date).format("yyy-dddd-mmm"));
             }
         });
 
@@ -130,14 +109,11 @@ class Scheduler extends Component {
         scheduler.config.header = [
             "day",
             "week",
-            // "month",
             "date",
-            "prev",
-            "today",
             "next",
+            "today",
+            "prev",
         ];
-        // scheduler.config.agenda_start = new Date(2022, 19, 3);
-        // scheduler.config.agenda_end = new Date(2022, 9, 3);
 
         scheduler.config.icons_select = ["icon_delete"];
 
@@ -146,7 +122,14 @@ class Scheduler extends Component {
         scheduler.config.event_duration = 30;
         scheduler.config.timeline_swap_resize = false;
         scheduler.config.time_step = 30;
-        // scheduler.config.displayed_event_color= "#000";
+        // scheduler.config.displayed_event_color = "orange";
+        scheduler.config.displayed_event_text_color = "green";
+
+        scheduler.config.dblclick_create = false;
+        scheduler.config.drag_resize = false;
+        scheduler.config.drag_move = false;
+        scheduler.config.drag_create = false;
+
         scheduler.config.positive_closing = true;
         scheduler.config.start_on_today = true;
         scheduler.xy.min_event_height = 35;
@@ -178,16 +161,8 @@ class Scheduler extends Component {
 
         this.initSchedulerEvents();
 
-        //current.getFullYear(), current.getMonth(), current.getDate()
-        //const current = new Date();
-
         const { events } = this.props;
-        let date = new Date();
-        scheduler.init(
-            this.schedulerContainer,
-            new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()),
-            "week"
-        );
+        scheduler.init(this.schedulerContainer, new Date(), "week");
         scheduler.clearAll();
         scheduler.parse(events);
     }
@@ -210,9 +185,10 @@ class Scheduler extends Component {
     onAddTeacherFreeTime = (values) => {
         //console.log(this.state);
         let Data = this.state.sendData;
-        console.log(Data);
+        console.log("data ", Data);
+        console.log("values", values);
         const { dispatch } = this.props;
-
+        console.log("addTeacherFreeTime");
         // dispatch(addTeacherFreeTime(Data));
     };
 
@@ -243,24 +219,3 @@ class Scheduler extends Component {
 }
 
 export default Scheduler;
-// export default connect()(Scheduler);
-// export function postData(context) {
-//   console.log(context);
-//   const token = context.req.cookies["tutor_token"];
-
-//   const requestOptions = {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//       "My-Custom-Header": "foobar",
-//     },
-//     body: JSON.stringify({
-//       day: "1",
-//       hour_range: ["28", "29", "33"],
-//     }),
-//   };
-//   fetch("https://api.barmansms.ir/api/teacher/time", requestOptions)
-//     .then((response) => response.json())
-//     .then((data) => (element.innerHTML = data.id));
-// }

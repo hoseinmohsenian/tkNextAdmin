@@ -16,11 +16,8 @@ import { MdOutlineMonitor } from "react-icons/md";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { BiSupport } from "react-icons/bi";
 import { AiFillInteraction } from "react-icons/ai";
-import { HiTicket } from "react-icons/hi";
 import { BiGitPullRequest } from "react-icons/bi";
-import { MdReport } from "react-icons/md";
 import { FaCommentDots } from "react-icons/fa";
-import { BsFillChatDotsFill } from "react-icons/bs";
 import { FaListUl } from "react-icons/fa";
 import { MdAccountBalance } from "react-icons/md";
 import { MdPayment } from "react-icons/md";
@@ -403,11 +400,6 @@ export default [
                                 path: "/content/level",
                                 icon: <FaLevelUpAlt />,
                             },
-                            {
-                                title: "توضیحات سطح",
-                                path: "/content/level/description/inf",
-                                icon: <MdDescription />,
-                            },
                         ],
                     },
                     {
@@ -419,11 +411,6 @@ export default [
                                 title: "کورس ها",
                                 path: "/content/course",
                                 icon: <MdGolfCourse />,
-                            },
-                            {
-                                title: "توضیحات کورس",
-                                path: "/content/course/description/inf",
-                                icon: <MdDescription />,
                             },
                         ],
                     },

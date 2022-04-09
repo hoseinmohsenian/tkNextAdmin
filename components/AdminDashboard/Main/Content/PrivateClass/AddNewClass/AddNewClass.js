@@ -14,10 +14,17 @@ const Scheduler = dynamic(() => import("./Scheduler/Scheduler"), {
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
 
-function AddNewClass({ token, languages, platforms, courses, schedulerData }) {
+function AddNewClass({
+    token,
+    languages,
+    platforms,
+    courses,
+    day,
+    schedulerData,
+}) {
     const [formData, setFormData] = useState({});
     const [teachers, setTeachers] = useState([]);
-    const [data, setData] = useState();
+    let data = day;
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [students, setStudents] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState({
@@ -158,9 +165,6 @@ function AddNewClass({ token, languages, platforms, courses, schedulerData }) {
         }
     };
     const logDataUpdate = (action, ev, id) => {
-        const text = ev && ev.text ? ` (${ev.text})` : "";
-
-        // const message = `event ${action}: ${id} ${text}`;
         const message = `event ${action}: ${new Date(
             ev.start_date
         ).toLocaleDateString()} ${new Date(ev.end_date).toLocaleTimeString(
@@ -171,59 +175,7 @@ function AddNewClass({ token, languages, platforms, courses, schedulerData }) {
             }
         )}  `;
         console.log(message);
-        // this.addMessage(message);
-
-        // ('fa-IR');
-        //  let  end = new Date( ev.end_date ).toLocaleTimeString(navigator.language, {
-        //   hour: '2-digit',
-        //   minute:'2-digit'
-        // })
-        //  let  start = new Date( ev.start_date ).toLocaleDateString()
-        //  console.log(start)
-        //  console.log(end)
-
-        // console.log(this.props.dataArr);
-        // console.log("hiiii");
-        // console.log(this.props.hour);
     };
-    function addTask() {
-        var allResults = [];
-        schedulerData.map(function (data) {
-            var result = new Date(2022, 3, 7);
-            // console.log(data.hour_range);
-            result.setDate(result.getDate() + data.day);
-            var start = [];
-            var end = [];
-            //var resultTime = {};
-            data.hour_range.map(function (time, index) {
-                if (!start.length) {
-                    start = [time];
-                    end = [time];
-                } else if (start.length && time - end[end.length - 1] === 1) {
-                    end[end.length - 1] = time;
-                } else if (time - end[end.length - 1] !== 1) {
-                    start[index] = time;
-                    end[index] = time;
-                }
-            });
-            start.map(function (start, index) {
-                allResults = [
-                    ...allResults,
-                    returnWholeStringDate(start, end[index], result),
-                ];
-            });
-
-            //console.log(allResults);
-            start.length = 0;
-            end.length = 0;
-        });
-
-        return allResults;
-    }
-
-    useEffect(() => {
-        addTask();
-    }, []);
 
     useEffect(() => {
         if (selectedTeacher.id) {

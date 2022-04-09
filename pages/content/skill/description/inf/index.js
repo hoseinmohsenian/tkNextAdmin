@@ -1,20 +1,20 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import Skills from "../../../components/AdminDashboard/Main/Content/Skills/Skills";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
+import SkillsDesc from "../../../../../components/AdminDashboard/Main/Content/Skills/SkillsDesc/SkillsDesc";
+import Header from "../../../../../components/Head/Head";
+import { BASE_URL } from "../../../../../constants";
 
-function SkillsPage({ token, skills }) {
+function SkillsDescPage({ skills }) {
     return (
         <>
-            <Header title="مهارت ها | تیکا"></Header>
+            <Header title="توضیحات مهارت ها | تیکا"></Header>
             <AdminDashboard>
-                <Skills fetchedSkills={skills} token={token} />
+                <SkillsDesc skills={skills} />
             </AdminDashboard>
         </>
     );
 }
 
-export default SkillsPage;
+export default SkillsDescPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -41,6 +41,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { token, skills: dataArr[0].data },
+        props: { skills: dataArr[0].data },
     };
 }

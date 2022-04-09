@@ -1,8 +1,6 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../../constants";
-import Pagination from "../../Pagination/Pagination";
-import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import styles from "./MultiSession.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
@@ -19,14 +17,13 @@ function MultiSession({ token }) {
         type: "",
     });
     const [loading, setLoading] = useState(false);
-    const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
 
-    const readClasses = async (page = 1) => {
+    const readClasses = async () => {
         let searchParams = {};
 
         // Constructing search parameters
@@ -42,19 +39,6 @@ function MultiSession({ token }) {
             .replace("/", "-")
             .replace("/", "-");
         searchQuery = `date=${date}&`;
-        searchQuery += `page=${page}`;
-
-        if (page !== 1) {
-            searchParams = {
-                ...searchParams,
-                page,
-            };
-        }
-
-        router.push({
-            pathname: `/tkpanel/multiSessionsList`,
-            query: searchParams,
-        });
 
         try {
             setLoading(true);
@@ -68,12 +52,8 @@ function MultiSession({ token }) {
                     },
                 }
             );
-            const {
-                data: { data, ...restData },
-            } = await res.json();
+            const { data } = await res.json();
             setClasses(data);
-            setFormData(data);
-            setPagData(restData);
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -138,23 +118,21 @@ function MultiSession({ token }) {
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">زبان آموز</th>
-                                <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">موبایل</th>
-                                <th className="table__head-item">نوع جلسه</th>
-                                <th className="table__head-item">تعداد جلسه</th>
                                 <th className="table__head-item">
-                                    وضعیت برگزاری
+                                    موبایل زبان آموز
                                 </th>
                                 <th className="table__head-item">استاد</th>
+                                <th className="table__head-item">زبان</th>
+                                <th className="table__head-item">قیمت</th>
+                                <th className="table__head-item">پلتفرم</th>
+                                <th className="table__head-item">کورس</th>
+                                <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">
-                                    تاریخ آخرین جلسه ثبت شده
+                                    وضعیت پرداخت
                                 </th>
-                                <th className="table__head-item">
-                                    تاریخ آخرین پیگیری
-                                </th>
-                                <th className="table__head-item">
-                                    تاریخ آخرین پرداخت
-                                </th>
+                                <th className="table__head-item">کلاس اول</th>
+                                <th className="table__head-item">ساعت ها</th>
+                                <th className="table__head-item">تاریخ</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -165,38 +143,48 @@ function MultiSession({ token }) {
                                         {item?.user_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_name}
-                                    </td>
-                                    <td className="table__body-item">
                                         {item?.mobile || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.session_type === 1
-                                            ? "one"
-                                            : "zero"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item.session_count}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.status === 1 ? "one" : "zero"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {moment(item?.created_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
+                                        {item?.language_id}
                                     </td>
                                     <td className="table__body-item">
-                                        {moment(item?.created_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
+                                        {item?.price
+                                            ? `${Intl.NumberFormat().format(
+                                                  item?.price
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {moment(item?.created_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
+                                        {item?.platform_id || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.course_id || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.status === 1
+                                            ? "فعال"
+                                            : "غیرفعال"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.pay === 1
+                                            ? "پرداخت شده"
+                                            : "پرداخت نشده"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.first_class === 1
+                                            ? "است"
+                                            : "نیست"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.time}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {moment(item?.date).format(
+                                            "YYYY/MM/DD"
                                         )}
                                     </td>
                                     <td className="table__body-item">
@@ -232,10 +220,6 @@ function MultiSession({ token }) {
                     </table>
                 </div>
             </Box>
-
-            {classes.length !== 0 && (
-                <Pagination read={readClasses} pagData={pagData} />
-            )}
         </div>
     );
 }

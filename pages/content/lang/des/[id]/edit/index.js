@@ -1,23 +1,24 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import Languages from "../../../components/AdminDashboard/Main/Content/Languages/Languages";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import AdminDashboard from "../../../../../../components/AdminDashboard/Dashboard";
+import EditLangDesc from "../../../../../../components/AdminDashboard/Main/Content/Languages/LangDesc/EditLangDesc/EditLangDesc";
+import Header from "../../../../../../components/Head/Head";
+import { BASE_URL } from "../../../../../../constants";
 
-function LanguagesPage({ languages }) {
+function EditLanguageDescPage({ language, token }) {
     return (
         <>
-            <Header title="زبان ها | تیکا"></Header>
+            <Header title="ویرایش توضیحات زبان | تیکا"></Header>
             <AdminDashboard>
-                <Languages languages={languages} />
+                <EditLangDesc language={language} token={token} />
             </AdminDashboard>
         </>
     );
 }
 
-export default LanguagesPage;
+export default EditLanguageDescPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const id = context.params.id;
 
     if (!token) {
         return {
@@ -29,7 +30,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/language`, {
+        fetch(`${BASE_URL}/admin/language/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -42,7 +43,8 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            languages: dataArr[0].data,
+            language: dataArr[0].data,
+            token,
         },
     };
 }

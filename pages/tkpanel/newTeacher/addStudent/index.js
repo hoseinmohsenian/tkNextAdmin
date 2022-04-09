@@ -2,12 +2,14 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import AddNewClass from "../../../../components/AdminDashboard/Main/Content/PrivateClass/AddNewClass/AddNewClass";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import moment from "jalali-moment";
 
 function MultiSessionPage({
     token,
     languages,
     platforms,
     courses,
+    day,
     schedulerData,
 }) {
     return (
@@ -19,6 +21,7 @@ function MultiSessionPage({
                     languages={languages}
                     platforms={platforms}
                     courses={courses}
+                    day={day}
                     schedulerData={schedulerData}
                 />
             </AdminDashboard>
@@ -84,15 +87,56 @@ export async function getServerSideProps(context) {
     ]);
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
-
+    const day11 = addTask(dataArr);
     return {
         props: {
             token,
             languages: dataArr[0].data,
             platforms: dataArr[1].data,
             courses: dataArr[2].data,
-            // schedulerData: dataArr[3].data,
-            schedulerData: [],
+            day: day11,
+            schedulerData: dataArr[3].data,
         },
     };
+}
+
+function addTask(dataArr) {
+    let times = [];
+    moment.locale("fa", { useGregorianParser: true });
+    console.log(times);
+    // Constructing times array for time filter inputs
+    const m = moment();
+    m.set("hour", 24);
+    m.set("minute", 0);
+    for (let i = 1; i <= 48; i++) {
+        let startHour = m.format("HH");
+        let startMinute = m.format("mm");
+        m.add(30, "minute");
+        let endHour = m.format("HH");
+        let endMinute = m.format("mm");
+        let newItem = { key: i, startHour, startMinute, endHour, endMinute };
+        times.push(newItem);
+    }
+
+    var allResults = [];
+    const dayKeys = Object.keys(dataArr[3].data);
+    Object.values(dataArr[3].data).map(function (data, i) {
+        let dateItem = { start_date: "", end_date: "" };
+
+        data.map((timeItem) => {
+            dateItem = {
+                start_date: `${dayKeys[i]} ${
+                    times[timeItem.time[0] - 1].startHour
+                }:${times[timeItem.time[0] - 1].startMinute}`,
+                end_date: `${dayKeys[i]} ${
+                    times[timeItem.time[timeItem.time.length - 1] - 1].endHour
+                }:${
+                    times[timeItem.time[timeItem.time.length - 1] - 1].endMinute
+                }`,
+            };
+            allResults.push(dateItem);
+        });
+    });
+
+    return allResults;
 }
