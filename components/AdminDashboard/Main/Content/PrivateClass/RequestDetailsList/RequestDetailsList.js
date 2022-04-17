@@ -222,7 +222,7 @@ function RequestDetailsList(props) {
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((item, i) => (
+                            {classes?.map((item) => (
                                 <tr className="table__body-row" key={item?.id}>
                                     <td className="table__body-item">
                                         {item?.user_name}
@@ -239,13 +239,13 @@ function RequestDetailsList(props) {
                                         )} تومان`}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_id}
+                                        {item?.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.platform_id}
+                                        {item?.platform_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.course_id}
+                                        {item?.course_name}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.status === 1

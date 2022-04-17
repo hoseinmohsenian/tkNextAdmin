@@ -295,7 +295,7 @@ function ChangePrice(props) {
                                         {price?.user_wallet}
                                     </td>
                                     <td className="table__body-item">
-                                        {price?.status === 1 ? "one" : "zero"}
+                                        {price?.status === 1 ? "برگزار نشده" : "برگزار شده"}
                                     </td>
                                     <td className="table__body-item">
                                         <div className="form-control" style={{width:"60px",margin:0}}>
