@@ -1,20 +1,20 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import SubCategories from "../../../components/AdminDashboard/Main/Content/FAQ/SubCategories/SubCategories";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
+import CreateQuestion from "../../../../components/AdminDashboard/Main/Content/FAQ/FAQ/CreateQuestion/CreateQuestion";
+import Header from "../../../../components/Head/Head";
+import { BASE_URL } from "../../../../constants";
 
-function FAQSubCategoryPage({ token, categories }) {
+function FAQCreateEditPage({ token, categories }) {
     return (
         <>
-            <Header title="لیست زیرگروه دسته بندی FAQ | تیکا"></Header>
+            <Header title="ایجاد سوال جدید | تیکا"></Header>
             <AdminDashboard>
-                <SubCategories token={token} categories={categories} />
+                <CreateQuestion token={token} categories={categories} />
             </AdminDashboard>
         </>
     );
 }
 
-export default FAQSubCategoryPage;
+export default FAQCreateEditPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -37,12 +37,13 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
         props: {
-            token,
             categories: dataArr[0].data,
+            token,
         },
     };
 }

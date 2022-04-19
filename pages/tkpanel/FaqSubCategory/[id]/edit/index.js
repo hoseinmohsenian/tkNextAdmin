@@ -1,14 +1,18 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import EditCategory from "../../../../../components/AdminDashboard/Main/Content/FAQ/Categires/EditCategory/EditCategory";
+import EditSubCategory from "../../../../../components/AdminDashboard/Main/Content/FAQ/SubCategories/EditSubCategory/EditSubCategory";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function FAQCreateEditPage({ token, category }) {
+function FAQCreateEditPage({ token, category, categories }) {
     return (
         <>
-            <Header title="ویرایش دسته بندی FAQ | تیکا"></Header>
+            <Header title="ویرایش زیرگروه دسته بندی FAQ | تیکا"></Header>
             <AdminDashboard>
-                <EditCategory token={token} category={category} />
+                <EditSubCategory
+                    token={token}
+                    category={category}
+                    categories={categories}
+                />
             </AdminDashboard>
         </>
     );
@@ -37,6 +41,13 @@ export async function getServerSideProps(context) {
                 "Access-Control-Allow-Origin": "*",
             },
         }),
+        fetch(`${BASE_URL}/admin/faq/category`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
     ]);
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
@@ -44,6 +55,7 @@ export async function getServerSideProps(context) {
     return {
         props: {
             category: dataArr[0].data,
+            categories: dataArr[1].data,
             token,
         },
     };

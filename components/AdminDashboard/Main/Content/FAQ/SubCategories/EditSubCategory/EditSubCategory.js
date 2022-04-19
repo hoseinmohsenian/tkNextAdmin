@@ -4,15 +4,8 @@ import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
 
-function CreateCategory({ token }) {
-    const [formData, setFormData] = useState({
-        title: "",
-        url: "",
-        image: null,
-        meta_desc: "",
-        meta_key: "",
-        meta_title: "",
-    });
+function EditSubCategory({ token, category, categories }) {
+    const [formData, setFormData] = useState(category);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -24,20 +17,37 @@ function CreateCategory({ token }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.title.trim() && formData.url.trim()) {
+        if (
+            formData.title.trim() &&
+            formData.url.trim() &&
+            Number(formData.parent_id) !== 0
+        ) {
             const fd = new FormData();
-            fd.append("title", formData.title);
-            fd.append("url", formData.url);
-            if (formData.meta_desc) {
+            if (formData.title !== category.title) {
+                fd.append("title", formData.title);
+            }
+            if (Number(formData.parent_id) !== category.parent_id) {
+                fd.append("parent_id", Number(formData.parent_id));
+            }
+            if (formData.url !== category.url) {
+                fd.append("url", formData.url);
+            }
+            if (
+                formData.meta_desc &&
+                formData.meta_desc !== category.meta_desc
+            ) {
                 fd.append("meta_desc", formData.meta_desc);
             }
-            if (formData.meta_key) {
+            if (formData.meta_key && formData.meta_key !== category.meta_key) {
                 fd.append("meta_key", formData.meta_key);
             }
-            if (formData.meta_title) {
+            if (
+                formData.meta_title &&
+                formData.meta_title !== category.meta_title
+            ) {
                 fd.append("meta_title", formData.meta_title);
             }
-            if (formData.image) {
+            if (formData.image && typeof category.image !== "string") {
                 fd.append("image", formData.image);
             }
 
@@ -66,17 +76,20 @@ function CreateCategory({ token }) {
     const addCategory = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/faq/category`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
+            const res = await fetch(
+                `${BASE_URL}/admin/faq/category/${category.id}`,
+                {
+                    method: "POST",
+                    body: fd,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
             if (res.ok) {
-                showAlert(true, "success", "دسته بندی باموفقیت اضافه شد");
-                router.push("/tkpanel/FaqCategory");
+                showAlert(true, "success", "دسته بندی باموفقیت ویرایش شد");
+                router.push("/tkpanel/FaqSubCategory");
             } else {
                 const errData = await res.json();
                 showAlert(
@@ -88,7 +101,7 @@ function CreateCategory({ token }) {
             }
             setLoading(false);
         } catch (error) {
-            console.log("Error adding a new category", error);
+            console.log("Error editing category", error);
         }
     };
 
@@ -101,8 +114,30 @@ function CreateCategory({ token }) {
                 envoker={handleSubmit}
             />
 
-            <Box title="ایجاد دسته بندی">
+            <Box title="ویرایش دسته بندی">
                 <div className="form">
+                    <div className="input-wrapper">
+                        <label htmlFor="title" className="form__label">
+                            دسته بندی :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
+                            <select
+                                name="parent_id"
+                                id="parent_id"
+                                className="form__input input-select"
+                                onChange={handleOnChange}
+                                value={formData.parent_id}
+                                required
+                            >
+                                <option value={0}>انتخاب کنید</option>
+                                {categories?.map((catg) => (
+                                    <option key={catg?.id} value={catg?.id}>
+                                        {catg?.title}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <div className="input-wrapper">
                         <label htmlFor="title" className="form__label">
                             عنوان :<span className="form__star">*</span>
@@ -116,6 +151,7 @@ function CreateCategory({ token }) {
                                 onChange={handleOnChange}
                                 spellCheck={false}
                                 required
+                                value={formData.title}
                             />
                         </div>
                     </div>
@@ -131,6 +167,7 @@ function CreateCategory({ token }) {
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
                                 required
+                                value={formData.url}
                             />
                         </div>
                     </div>
@@ -166,6 +203,7 @@ function CreateCategory({ token }) {
                                 className="form__input"
                                 onChange={handleOnChange}
                                 spellCheck={false}
+                                value={formData.meta_title || ""}
                             />
                         </div>
                     </div>
@@ -184,6 +222,7 @@ function CreateCategory({ token }) {
                             className="form__textarea"
                             onChange={handleOnChange}
                             spellCheck={false}
+                            value={formData.meta_desc || ""}
                         />
                     </div>
                     <div className="input-wrapper">
@@ -202,6 +241,7 @@ function CreateCategory({ token }) {
                                 className="form__input"
                                 onChange={handleOnChange}
                                 spellCheck={false}
+                                value={formData.meta_key || ""}
                             />
                         </div>
                     </div>
@@ -218,4 +258,4 @@ function CreateCategory({ token }) {
     );
 }
 
-export default CreateCategory;
+export default EditSubCategory;

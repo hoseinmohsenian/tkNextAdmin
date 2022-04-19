@@ -24,7 +24,6 @@ function FAQ({ faqs }) {
                                     url
                                 </th>
                                 <th className="table__head-item">عنوان متا</th>
-                                <th className="table__head-item">تصویر</th>
                                 <th className="table__head-item">امتیاز</th>
                                 <th className="table__head-item">
                                     شماره امتیاز
@@ -47,13 +46,6 @@ function FAQ({ faqs }) {
                                     </td>
                                     <td className="table__body-item">
                                         {catg?.meta_title || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <img
-                                            src={catg.image}
-                                            alt={catg.title}
-                                            style={{ height: 40, width: 40 }}
-                                        />
                                     </td>
                                     <td className="table__body-item">
                                         {catg?.score}

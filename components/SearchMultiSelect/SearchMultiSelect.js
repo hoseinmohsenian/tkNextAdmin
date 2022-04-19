@@ -136,7 +136,7 @@ function SearchMultiSelect(props) {
                                       {displayKeySecond !== undefined && (
                                           <>{item[displayKeySecond]} - </>
                                       )}
-                                      {item[displayKey]}
+                                      <ShowItem item={item} />
                                   </span>
                                   <span
                                       className={
@@ -213,7 +213,7 @@ function SearchMultiSelect(props) {
                                 {displayKeySecond !== undefined && (
                                     <>{item[displayKeySecond]} - </>
                                 )}
-                                {item[displayKey]}
+                                <ShowItem item={item} />
                             </button>
                         );
                     })}
