@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import styles from "./Header.module.css";
 import Image from "next/image";
@@ -6,11 +6,14 @@ import DefaultImg from "../../../public/images/tikka-default.png";
 import Toggle from "../../Toggle/Toggle";
 import { useGlobalContext } from "../../../context";
 import { IoIosArrowDown } from "react-icons/io";
+import { useRouter } from "next/router";
 
 function Header({ showSidebar, setShowSidebar }) {
     const [openDD, setOpenDD] = useState(false);
+    const [adminName, setAdminName] = useState("");
     const dropdownRef = useRef(null);
-    const { useOutsideAlerter } = useGlobalContext();
+    const { useOutsideAlerter, getCookie, deleteCookie } = useGlobalContext();
+    const router = useRouter();
 
     const dropdownHandler = () => {
         setOpenDD(!openDD);
@@ -21,6 +24,16 @@ function Header({ showSidebar, setShowSidebar }) {
     };
 
     useOutsideAlerter(dropdownRef, closeDDHandler);
+
+    const logout = () => {
+        deleteCookie("admin_name");
+        deleteCookie("admin_token");
+        router.push("/tkcp/login");
+    };
+
+    useEffect(() => {
+        setAdminName(getCookie("admin_name"));
+    }, []);
 
     return (
         <header className={styles.header}>
@@ -51,7 +64,7 @@ function Header({ showSidebar, setShowSidebar }) {
                     <div className={styles["img-wrapper"]}>
                         <Image src={DefaultImg} height={40} width={40} />
                     </div>
-                    <span className={styles["user-name"]}>مهدی جلالی</span>
+                    <span className={styles["user-name"]}>{adminName}</span>
 
                     {/* Dropdown */}
                     <div
@@ -87,9 +100,13 @@ function Header({ showSidebar, setShowSidebar }) {
                                     تنظیمات
                                 </a>
                             </Link>
-                            <Link href="/">
-                                <a className={styles["dropdown__link"]}>خروج</a>
-                            </Link>
+                            <button
+                                type="button"
+                                className={styles["dropdown__link"]}
+                                onClick={logout}
+                            >
+                                خروج
+                            </button>
                         </div>
                     </div>
                 </div>

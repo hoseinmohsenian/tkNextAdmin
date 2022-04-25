@@ -18,9 +18,7 @@ const AppProvider = ({ children }) => {
         const d = new Date();
         d.setTime(d.getTime() * (expDays * 24 * 60 * 60 * 1000));
         let expires = `expires=${d.toUTCString()}`;
-        document.cookie = `${cName}=${JSON.stringify(
-            cValue
-        )};expires=${expires};path=/`;
+        document.cookie = `${cName}=${cValue};expires=${expires};path=/`;
     };
 
     const getCookie = (cName) => {

@@ -1,0 +1,211 @@
+.caresoul {
+    background-color: white;
+    padding: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    position: relative;
+    box-shadow: 0 5px 6px 0 rgb(39 39 39 / 16%);
+    transition: var(--transition);
+    width: 100%;
+}
+.caresoul:hover {
+    box-shadow: 0 5px 6px 0 rgb(230, 230, 230);
+}
+.caresoul__navigation-btn {
+    /*position: absolute;*/
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    color: #151812;
+    font-size: 0.8rem;
+    z-index: 2;
+}
+.caresoul__navigation-btn:disabled {
+    cursor: not-allowed;
+    color: #bebebe;
+}
+.caresoul__navigation-btn--prev {
+    right: 0.7rem;
+}
+.caresoul__navigation-btn--prev span {
+    margin-right: 0.25rem;
+}
+.caresoul__navigation-btn--next {
+    left: 0.7rem;
+}
+.caresoul__navigation-btn--next span {
+    margin-left: 0.25rem;
+}
+.carousel__wrapper {
+    position: relative;
+    /*overflow: hidden;*/
+    overflow-x: hidden;
+    overflow-y: auto;
+    /*min-height: 1200px;*/
+    height: 100%;
+    /* height: 60vh; */
+    z-index: 1;
+}
+.carousel__item {
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: var(--transition);
+}
+.carousel__item--active {
+    opacity: 1;
+    transform: translateX(0);
+}
+.carousel__item--next {
+    transform: translateX(100%);
+    display: none;
+}
+.carousel__item--last {
+    transform: translateX(-100%);
+    display: none;
+}
+.carousel__item-title {
+    text-align: center;
+    color: #151812;
+    font-size: 1rem;
+    min-height: 2.8rem;
+}
+.carousel__item-body {
+    padding-bottom: 2rem;
+}
+.caresoul__item-week {
+    display: flex;
+    width: 100%;
+    cursor: pointer;
+}
+.caresoul__item-weekday {
+    flex: 0 0 14.285714286%;
+    padding: 0 0.06rem;
+}
+.caresoul__item-weekday-date {
+    font-size: 0.7rem;
+    border-top: 4px solid #712be5;
+    padding: 1rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 700;
+}
+.caresoul__item-hours {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.caresoul__item-hours li {
+    border: 2px solid white;
+    transition: all 0.05s linear;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 2rem;
+    width: 100%;
+    max-width: 7.5rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.7rem;
+    position: relative;
+    border-radius: 0.4rem;
+}
+.caresoul__item-hour--active {
+    background-color: #712be5;
+    color: white;
+}
+.caresoul__item-hours li:hover {
+    border-color: #712be5;
+}
+.caresoul__item-hours li:hover .caresoul__item-hours-hover {
+    opacity: 1;
+    visibility: visible;
+}
+.caresoul__item-hours-hover {
+    position: absolute;
+    top: -0.25rem;
+    right: 80%;
+    width: 7.5rem;
+    color: #eee;
+    z-index: 10;
+    padding: 0.5rem 0;
+    border-radius: 0.4rem;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: 0 1em 2em -0.5em rgb(0 0 0 / 35%);
+    transition: all 0.2s cubic-bezier(0.35, 0.9, 0.4, 0.9);
+    background-color: #712be5;
+    display: flex;
+    flex-direction: column;
+}
+.caresoul__item-weekday:nth-child(6) .caresoul__item-hours-hover,
+.caresoul__item-weekday:nth-child(7) .caresoul__item-hours-hover {
+    left: 80%;
+    right: auto;
+}
+.caresoul__item-hours-hover::before {
+    content: "";
+    position: absolute;
+    top: 0.9rem;
+    right: -0.25rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: white;
+    transform: rotate(45deg);
+}
+.caresoul__item-weekday:nth-child(6) .caresoul__item-hours-hover::before,
+.caresoul__item-weekday:nth-child(7) .caresoul__item-hours-hover::before {
+    left: -0.25rem;
+    right: auto;
+}
+.teacher-profile__stepper-selected-wrapper {
+    background-color: white;
+    padding: 0.5rem;
+    margin: 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    box-shadow: 0 4px 5px 0 rgb(20 20 20 / 16%);
+}
+.teacher-profile__stepper-selected-hours {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.2rem;
+}
+.teacher-profile__stepper-selected-hour {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 1rem;
+    padding: 0rem 0.5rem;
+    margin: 0.25rem 0.75rem 0.1rem 0;
+    transition: var(--transition);
+    color: #151812;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+@media all and (min-width: 768px) {
+    .teacher-profile__stepper-heading {
+        font-size: 1.2rem;
+    }
+    .caresoul {
+        padding: 0.7rem;
+    }
+    .caresoul__navigation-btn {
+        font-size: 1rem;
+    }
+    .caresoul__item-weekday {
+        padding: 0 0.4rem;
+    }
+    .caresoul__item-weekday-date {
+        font-size: 1rem;
+    }
+    .caresoul__item-hours li {
+        font-size: 0.85rem;
+    }
+}

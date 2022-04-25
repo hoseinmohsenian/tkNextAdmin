@@ -560,7 +560,7 @@ function Articles(props) {
                     </table>
                 </div>
 
-                {articles && (
+                {articles.length !== 0 && (
                     <Pagination read={readArticles} pagData={pagData} />
                 )}
             </Box>

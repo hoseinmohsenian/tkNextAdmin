@@ -1,20 +1,20 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import FAQ from "../../../components/AdminDashboard/Main/Content/FAQ/FAQ/FAQ";
+import BlackList from "../../../components/AdminDashboard/Main/Content/BlackList/BlackList";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
 
-function FAQListPage({ faqs, token }) {
+function BlackListPage({ list, token }) {
     return (
         <>
-            <Header title="سوالات FAQ | تیکا"></Header>
+            <Header title="لیست سیاه | تیکا"></Header>
             <AdminDashboard>
-                <FAQ faqs={faqs} token={token} />
+                <BlackList fetchedList={list} token={token} />
             </AdminDashboard>
         </>
     );
 }
 
-export default FAQListPage;
+export default BlackListPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/faq/question`, {
+        fetch(`${BASE_URL}/admin/management/block-user`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -42,7 +42,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            faqs: dataArr[0].data,
+            list: dataArr[0].data,
             token,
         },
     };

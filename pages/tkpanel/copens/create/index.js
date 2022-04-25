@@ -1,20 +1,20 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import FAQ from "../../../components/AdminDashboard/Main/Content/FAQ/FAQ/FAQ";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
+import AddDiscount from "../../../../components/AdminDashboard/Main/Content/Discount/AddDiscount/AddDiscount";
+import Header from "../../../../components/Head/Head";
+import { BASE_URL } from "../../../../constants";
 
-function FAQListPage({ faqs, token }) {
+function AddDiscountPage({ token, courses }) {
     return (
         <>
-            <Header title="سوالات FAQ | تیکا"></Header>
+            <Header title="ایجاد کوپن تخفیف | تیکا"></Header>
             <AdminDashboard>
-                <FAQ faqs={faqs} token={token} />
+                <AddDiscount token={token} courses={courses} />
             </AdminDashboard>
         </>
     );
 }
 
-export default FAQListPage;
+export default AddDiscountPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -29,9 +29,8 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/faq/question`, {
+        fetch(`${BASE_URL}/data/course`, {
             headers: {
-                Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
                 "Access-Control-Allow-Origin": "*",
             },
@@ -42,7 +41,7 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            faqs: dataArr[0].data,
+            courses: dataArr[0].data,
             token,
         },
     };

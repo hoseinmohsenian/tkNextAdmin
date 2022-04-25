@@ -1,0 +1,16 @@
+.row {
+    margin: 0.4rem 0 0.8rem;
+}
+
+@media all and (min-width: 576px) {
+    .col {
+        padding-left: 0.5rem;
+    }
+}
+
+@media all and (min-width: 768px) {
+    .row {
+        align-items: center;
+        flex-direction: row;
+    }
+}

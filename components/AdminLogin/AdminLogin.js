@@ -13,6 +13,7 @@ function AdminLogin() {
         message: "",
         type: "",
     });
+    const [loading, setLoading] = useState(false);
     const { setCookie } = useGlobalContext();
     const router = useRouter();
 
@@ -34,6 +35,7 @@ function AdminLogin() {
 
     const login = async () => {
         try {
+            setLoading(true);
             const res = await fetch(`${BASE_URL}/admin/login`, {
                 method: "POST",
                 body: JSON.stringify(formData),
@@ -44,11 +46,13 @@ function AdminLogin() {
             const { data } = await res.json();
             if (data?.token) {
                 showAlert(true, "success", "لاگین با موفقیت انجام شد");
-                setCookie("admin_token", data?.token);
+                setCookie("admin_token", data?.token, 0.5);
+                setCookie("admin_name", data?.name, 0.5);
                 router.push("/tkpanel");
             } else {
                 showAlert(true, "danger", "اطلاعات وارد شده نادرست است");
             }
+            setLoading(false);
         } catch (error) {
             console.log("Error calling login API", error);
         }
@@ -93,6 +97,7 @@ function AdminLogin() {
                                         className={styles.form__input}
                                         onChange={handleOnChange}
                                         required
+                                        autoFocus
                                     />
                                 </div>
                             </div>
@@ -130,6 +135,7 @@ function AdminLogin() {
                             <button
                                 type="submit"
                                 className={`gradient--purple ${styles.btn}`}
+                                disabled={loading}
                             >
                                 Log in
                             </button>

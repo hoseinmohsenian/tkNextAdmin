@@ -20,18 +20,12 @@ const categorySchema = {
     meta_title: "",
 };
 
-function CreateQuestion({ token, categories }) {
-    const [formData, setFormData] = useState({
-        title: "",
-        url: "",
-        meta_desc: "",
-        meta_key: "",
-        meta_title: "",
-    });
+function EditQuestion({ token, categories, question }) {
+    const [formData, setFormData] = useState(question);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [subcategories, setSubcategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(categorySchema);
-    const [desc, setDesc] = useState("");
+    const [desc, setDesc] = useState(question.desc || "");
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -45,17 +39,28 @@ function CreateQuestion({ token, categories }) {
 
         if (formData.title.trim() && formData.url.trim()) {
             let body = {};
-            body = { title: formData.title, url: formData.url };
-            if (desc) {
+            if (formData.title && formData.title !== question.title) {
+                body = { ...body, title: formData.title };
+            }
+            if (formData.url && formData.url !== question.url) {
+                body = { ...body, url: formData.url };
+            }
+            if (desc && desc !== question.desc) {
                 body = { ...body, desc: desc };
             }
-            if (formData.meta_desc) {
+            if (
+                formData.meta_desc &&
+                formData.meta_desc !== question.meta_desc
+            ) {
                 body = { ...body, meta_desc: formData.meta_desc };
             }
-            if (formData.meta_key) {
+            if (formData.meta_key && formData.meta_key !== question.meta_key) {
                 body = { ...body, meta_key: formData.meta_key };
             }
-            if (formData.meta_title) {
+            if (
+                formData.meta_title &&
+                formData.meta_title !== question.meta_title
+            ) {
                 body = { ...body, meta_title: formData.meta_title };
             }
             let category_id = [];
@@ -63,7 +68,7 @@ function CreateQuestion({ token, categories }) {
                 category_id.push(selectedCategories[i].id);
             }
 
-            await addQuestion({ ...body, category_id });
+            await editQuestion({ ...body, category_id });
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
         }
@@ -111,20 +116,23 @@ function CreateQuestion({ token, categories }) {
         setAlertData({ show, type, message });
     };
 
-    const addQuestion = async (body) => {
+    const editQuestion = async (body) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/faq/question`, {
-                method: "POST",
-                body: JSON.stringify(body),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                    "Content-Type": "application/json",
-                },
-            });
+            const res = await fetch(
+                `${BASE_URL}/admin/faq/question/${question.id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify(body),
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
             if (res.ok) {
-                showAlert(true, "success", "سوال باموفقیت اضافه شد");
+                showAlert(true, "success", "سوال باموفقیت ویرایش شد");
                 router.push("/tkpanel/FaqSite");
             } else {
                 const errData = await res.json();
@@ -159,7 +167,7 @@ function CreateQuestion({ token, categories }) {
                 envoker={handleSubmit}
             />
 
-            <Box title="ایجاد سوال">
+            <Box title="ویرایش سوال">
                 <div className="form">
                     <div className={`input-wrapper input-wrapper`}>
                         <label
@@ -232,6 +240,7 @@ function CreateQuestion({ token, categories }) {
                                 onChange={handleOnChange}
                                 spellCheck={false}
                                 required
+                                value={formData.title}
                             />
                         </div>
                     </div>
@@ -247,6 +256,7 @@ function CreateQuestion({ token, categories }) {
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
                                 required
+                                value={formData.url}
                             />
                         </div>
                     </div>
@@ -279,6 +289,7 @@ function CreateQuestion({ token, categories }) {
                                 className="form__input"
                                 onChange={handleOnChange}
                                 spellCheck={false}
+                                value={formData.meta_title || ""}
                             />
                         </div>
                     </div>
@@ -297,6 +308,7 @@ function CreateQuestion({ token, categories }) {
                             className="form__textarea"
                             onChange={handleOnChange}
                             spellCheck={false}
+                            value={formData.meta_desc || ""}
                         />
                     </div>
                     <div className="input-wrapper">
@@ -315,6 +327,7 @@ function CreateQuestion({ token, categories }) {
                                 className="form__input"
                                 onChange={handleOnChange}
                                 spellCheck={false}
+                                value={formData.meta_key || ""}
                             />
                         </div>
                     </div>
@@ -323,7 +336,7 @@ function CreateQuestion({ token, categories }) {
                         className="btn primary"
                         disabled={loading}
                     >
-                        {loading ? "در حال انجام ..." : "ایجاد سوال‌"}
+                        {loading ? "در حال انجام ..." : "ویرایش سوال‌"}
                     </button>
                 </div>
             </Box>
@@ -331,4 +344,4 @@ function CreateQuestion({ token, categories }) {
     );
 }
 
-export default CreateQuestion;
+export default EditQuestion;

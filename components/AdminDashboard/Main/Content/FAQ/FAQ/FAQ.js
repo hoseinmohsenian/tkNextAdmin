@@ -1,7 +1,82 @@
+import { useState } from "react";
 import Link from "next/link";
 import Box from "../../Elements/Box/Box";
+import Alert from "../../../../../Alert/Alert";
+import { BASE_URL } from "../../../../../../constants";
 
-function FAQ({ faqs }) {
+function FAQ({ faqs: fetchedData, token }) {
+    const [faqs, setFaqs] = useState(fetchedData);
+    const [loadings, setLoadings] = useState(Array(faqs?.length).fill(false));
+    const [alertData, setAlertData] = useState({
+        show: false,
+        message: "",
+        type: "",
+    });
+
+    const showAlert = (show, type, message) => {
+        setAlertData({ show, type, message });
+    };
+
+    const changePin = async (q_id, pin, i) => {
+        loadingHandler(i, true);
+
+        try {
+            const res = await fetch(`${BASE_URL}/admin/faq/question/${q_id}`, {
+                method: "POST",
+                body: JSON.stringify({ pin: pin === 0 ? 1 : 0 }),
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+            if (res.ok) {
+                let message = `این سوال ${
+                    pin === 0 ? "پین شد" : "از پین درآمد"
+                }`;
+                showAlert(true, pin === 0 ? "success" : "warning", message);
+                let updated = [...faqs];
+                updated[i] = { ...updated[i], pin: pin === 0 ? 1 : 0 };
+                setFaqs(() => updated);
+            }
+            loadingHandler(i, false);
+        } catch (error) {
+            console.log("Error changing pin", error);
+        }
+    };
+
+    const changeShow = async (q_id, show, i) => {
+        loadingHandler(i, true);
+
+        try {
+            const res = await fetch(`${BASE_URL}/admin/faq/question/${q_id}`, {
+                method: "POST",
+                body: JSON.stringify({ show: show === 0 ? 1 : 0 }),
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+            if (res.ok) {
+                let message = `این سوال ${show === 0 ? "نمایان" : "پنهان"} شد`;
+                showAlert(true, show === 0 ? "success" : "warning", message);
+                let updated = [...faqs];
+                updated[i] = { ...updated[i], show: show === 0 ? 1 : 0 };
+                setFaqs(() => updated);
+            }
+            loadingHandler(i, false);
+        } catch (error) {
+            console.log("Error changing show", error);
+        }
+    };
+
+    const loadingHandler = (ind, value) => {
+        let temp = [...loadings];
+        temp[ind] = value;
+        setLoadings(() => temp);
+    };
+
     return (
         <div>
             <Box
@@ -12,6 +87,13 @@ function FAQ({ faqs }) {
                     color: "primary",
                 }}
             >
+                {/* Alert */}
+                <Alert
+                    {...alertData}
+                    removeAlert={showAlert}
+                    envoker={changeShow}
+                />
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -36,7 +118,7 @@ function FAQ({ faqs }) {
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {faqs?.map((catg) => (
+                            {faqs?.map((catg, i) => (
                                 <tr className="table__body-row" key={catg?.id}>
                                     <td className="table__body-item">
                                         {catg.title}
@@ -61,12 +143,50 @@ function FAQ({ faqs }) {
                                     </td>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`/tkpanel/FaqCategory/${catg.id}/edit`}
+                                            href={`/tkpanel/FaqSite/${catg.id}/edit`}
                                         >
                                             <a className={`action-btn warning`}>
                                                 ویرایش
                                             </a>
                                         </Link>
+                                        <button
+                                            type="button"
+                                            className={`action-btn ${
+                                                catg?.pin === 1
+                                                    ? "danger"
+                                                    : "success"
+                                            }`}
+                                            onClick={() =>
+                                                changePin(
+                                                    catg?.id,
+                                                    catg?.pin,
+                                                    i
+                                                )
+                                            }
+                                            disabled={loadings[i]}
+                                        >
+                                            {catg?.pin === 1 ? "غیرپین" : "پین"}
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className={`action-btn ${
+                                                catg?.show === 1
+                                                    ? "danger"
+                                                    : "success"
+                                            }`}
+                                            onClick={() =>
+                                                changeShow(
+                                                    catg?.id,
+                                                    catg?.show,
+                                                    i
+                                                )
+                                            }
+                                            disabled={loadings[i]}
+                                        >
+                                            {catg?.show === 1
+                                                ? "پنهان"
+                                                : "نمایش"}
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
