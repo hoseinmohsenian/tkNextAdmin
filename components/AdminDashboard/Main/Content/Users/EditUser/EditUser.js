@@ -1,28 +1,60 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
+import styles from "../CreateUser/CreateUser.module.css";
+import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
 
-function EditUser({ token, admin }) {
+const permissionsSchema = {
+    id: "",
+    persian_name: "",
+    english_name: "",
+    created_at: "",
+    updated_at: "",
+};
+
+function CreateUser({ token, permissions, admin }) {
     const [formData, setFormData] = useState(admin);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
         type: "",
     });
+    const [selectedPermissions, setSelectedPermissions] = useState([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const fd = new FormData();
-        for (const key in formData) {
-            if (admin[key] !== formData[key] && formData[key]) {
-                fd.append(key, formData[key]);
+
+        if (formData.email.trim() && formData.password.trim()) {
+            const fd = new FormData();
+            if (formData.email && formData.email !== admin.email) {
+                fd.append("email", formData.email);
             }
+            if (formData.password && formData.password !== admin.password) {
+                fd.append("password", formData.password);
+            }
+            if (Number(formData.status) !== admin.status) {
+                fd.append("status", Number(formData.status));
+            }
+            if (formData.name && formData.name !== admin.name) {
+                fd.append("name", formData.name);
+            }
+            if (formData.desc && formData.desc !== admin.desc) {
+                fd.append("desc", formData.desc);
+            }
+            if (formData.image && typeof formData.image !== "string") {
+                fd.append("image", formData.image);
+            }
+            for (let i = 0; i < selectedPermissions.length; i++) {
+                fd.append(`permission[${i}]`, selectedPermissions[i].id);
+            }
+            await editAdmin(fd);
+        } else {
+            showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
         }
-        await editAdmin(fd);
     };
 
     const handleOnChange = (e) => {
@@ -39,7 +71,7 @@ function EditUser({ token, admin }) {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/action/edit/${formData.id}`,
+                `${BASE_URL}/admin/management/edit/${formData.id}`,
                 {
                     method: "POST",
                     body: fd,
@@ -57,15 +89,52 @@ function EditUser({ token, admin }) {
                 showAlert(
                     true,
                     "warning",
+                    errData?.error?.invalid_params[0]?.message
+                );
+            }
+            setLoading(false);
+        } catch (error) {
+            console.log("Error editing admin", error);
+        }
+    };
+
+    const handleSelectFile = (e, name) => {
+        let file = e.target.files[0];
+        setFormData({ ...formData, [name]: file });
+    };
+
+    const deleteArticleCategory = async (permission_id) => {
+        setLoading(true);
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/management/permission?admin_id=${formData.id}&permission_id=${permission_id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (!res.ok) {
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
                     errData?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
             setLoading(false);
         } catch (error) {
-            console.log("Error adding a new admin", error);
+            console.log("Error deleting permission", error);
         }
     };
+
+    useEffect(() => {
+        setSelectedPermissions(admin.permission);
+    }, []);
 
     return (
         <div>
@@ -89,9 +158,8 @@ function EditUser({ token, admin }) {
                                 id="name"
                                 className="form__input"
                                 onChange={handleOnChange}
-                                value={formData.name || ""}
-                                autoComplete="off"
                                 spellCheck={false}
+                                value={formData.name || ""}
                             />
                         </div>
                     </div>
@@ -106,15 +174,14 @@ function EditUser({ token, admin }) {
                                 id="email"
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
-                                value={formData.email}
-                                autoComplete="off"
                                 required
+                                value={formData.email}
                             />
                         </div>
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="password" className="form__label">
-                            پسورد :
+                            پسورد :<span className="form__star">*</span>
                         </label>
                         <div className="form-control">
                             <input
@@ -123,28 +190,130 @@ function EditUser({ token, admin }) {
                                 id="password"
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
-                                value={formData.password}
-                                autoComplete="off"
                                 spellCheck={false}
+                                value={formData.password || ""}
+                            />
+                        </div>
+                    </div>
+                    <div className={`row ${styles["row"]}`}>
+                        <div className={`col-sm-6 ${styles["col"]}`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="status"
+                                    className={`form__label`}
+                                >
+                                    وضعیت :<span className="form__star">*</span>
+                                </label>
+                                <div className="form-control form-control-radio">
+                                    <div className="input-radio-wrapper">
+                                        <label
+                                            htmlFor="active"
+                                            className="radio-title"
+                                        >
+                                            فعال
+                                        </label>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            onChange={handleOnChange}
+                                            value={1}
+                                            checked={
+                                                Number(formData.status) === 1
+                                            }
+                                            id="active"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="input-radio-wrapper">
+                                        <label
+                                            htmlFor="inactive"
+                                            className="radio-title"
+                                        >
+                                            غیرفعال
+                                        </label>
+                                        <input
+                                            type="radio"
+                                            name="status"
+                                            onChange={handleOnChange}
+                                            value={0}
+                                            checked={
+                                                Number(formData.status) === 0
+                                            }
+                                            id="inactive"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`col-sm-6`}>
+                            <div className="input-wrapper">
+                                <label htmlFor="image" className="form__label">
+                                    تصویر :
+                                </label>
+                                <div
+                                    className="upload-btn"
+                                    onChange={(e) =>
+                                        handleSelectFile(e, "image")
+                                    }
+                                >
+                                    <span>آپلود تصویر</span>
+                                    <input
+                                        type="file"
+                                        className="upload-input"
+                                        accept="image/png, image/jpg, image/jpeg"
+                                    ></input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`input-wrapper ${styles["input-wrapper"]}`}>
+                        <label htmlFor="permissions" className="form__label">
+                            دسترسی ها :
+                        </label>
+                        <div
+                            className={`form-control form-control-searchselect`}
+                        >
+                            <SearchMultiSelect
+                                list={permissions}
+                                defaultText="انتخاب کنید"
+                                selected={selectedPermissions}
+                                displayKey="persian_name"
+                                id="id"
+                                setSelected={setSelectedPermissions}
+                                noResText="یافت نشد"
+                                listSchema={permissionsSchema}
+                                displayPattern={[
+                                    {
+                                        member: true,
+                                        key: "persian_name",
+                                    },
+                                ]}
+                                stylesProps={{
+                                    width: "100%",
+                                }}
+                                background="#fafafa"
+                                max={24}
+                                fontSize={16}
+                                openBottom={false}
+                                onRemove={deleteArticleCategory}
+                                showAlert={showAlert}
                             />
                         </div>
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="desc" className="form__label">
-                            توضیحات :
+                            توضیحات کوتاه :<span className="form__star">*</span>
                         </label>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                name="desc"
-                                id="desc"
-                                className="form__input"
-                                onChange={handleOnChange}
-                                value={formData.desc || ""}
-                                autoComplete="off"
-                                spellCheck={false}
-                            />
-                        </div>
+                        <textarea
+                            type="text"
+                            name="desc"
+                            id="desc"
+                            className="form__textarea"
+                            onChange={handleOnChange}
+                            spellCheck={false}
+                            value={formData.desc || ""}
+                        />
                     </div>
 
                     <button
@@ -160,4 +329,4 @@ function EditUser({ token, admin }) {
     );
 }
 
-export default EditUser;
+export default CreateUser;

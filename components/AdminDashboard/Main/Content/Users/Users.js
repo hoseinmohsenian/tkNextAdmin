@@ -18,7 +18,7 @@ function Users({ admins }) {
                             <tr>
                                 <th className="table__head-item">نام</th>
                                 <th className="table__head-item">ایمیل</th>
-                                <th className="table__head-item">سطح کاربر</th>
+                                <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -32,7 +32,7 @@ function Users({ admins }) {
                                         {admin?.email}
                                     </td>
                                     <td className="table__body-item">
-                                        {admin?.role || "-"}
+                                        {admin?.status ? "فعال" : "غیرفعال"}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/action/return`, {
+        fetch(`${BASE_URL}/admin/management/return`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

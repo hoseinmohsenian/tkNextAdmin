@@ -3,12 +3,16 @@ import EditUser from "../../../../../components/AdminDashboard/Main/Content/User
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function EditUserPage({ admin, token }) {
+function EditUserPage({ admin, token, permissions }) {
     return (
         <div>
             <Header title="ویرایش ادمین | تیکا"></Header>
             <AdminDashboard>
-                <EditUser token={token} admin={admin} />
+                <EditUser
+                    token={token}
+                    admin={admin}
+                    permissions={permissions}
+                />
             </AdminDashboard>
         </div>
     );
@@ -30,7 +34,14 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/action/return/${id}`, {
+        fetch(`${BASE_URL}/admin/management/return/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
+        fetch(`${BASE_URL}/admin/management/permissions`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -45,6 +56,7 @@ export async function getServerSideProps(context) {
         props: {
             admin: dataArr[0].data,
             token,
+            permissions: dataArr[1].data,
         },
     };
 }
