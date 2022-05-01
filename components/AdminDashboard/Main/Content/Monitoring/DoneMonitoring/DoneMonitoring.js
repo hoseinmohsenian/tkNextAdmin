@@ -6,12 +6,14 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import moment from "jalali-moment";
 import Link from "next/link";
+import { useGlobalContext } from "../../../../../../context";
 
 function DoneMonitoring({ token }) {
     const [monitoringList, setMonitoringList] = useState([]);
     const [selectedDate, setSelectedDate] = useState();
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
+    const { getTime } = useGlobalContext();
 
     const readMonitoring = async () => {
         // Constructing search parameters
@@ -119,7 +121,7 @@ function DoneMonitoring({ token }) {
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {monitoringList?.map((item, i) => (
+                            {monitoringList?.map((item) => (
                                 <tr className="table__body-row" key={item?.id}>
                                     <td className="table__body-item">
                                         {item?.user_name}
@@ -173,7 +175,19 @@ function DoneMonitoring({ token }) {
                                             : "نیست"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.time}
+                                        {`${getTime(item.time)[0].startHour}:${
+                                            getTime(item.time)[0].startMinute
+                                        }`}
+                                        &nbsp;تا &nbsp;
+                                        {`${
+                                            getTime(item.time)[
+                                                getTime(item.time).length - 1
+                                            ].startHour
+                                        }:${
+                                            getTime(item.time)[
+                                                getTime(item.time).length - 1
+                                            ].startMinute
+                                        }`}
                                     </td>
                                     <td className="table__body-item">
                                         {moment(item?.date).format(

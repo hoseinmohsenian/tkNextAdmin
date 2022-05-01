@@ -9,7 +9,7 @@
     transition: all 0.3s cubic-bezier(0, 0, 0.35, 0.94);
     padding: 1rem 0.5rem 0.8rem;
     overflow-y: auto;
-    z-index: 10;
+    z-index: 100;
 }
 .sidebar--show {
     right: 0;

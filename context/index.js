@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import moment from "jalali-moment";
 
 const AppContext = React.createContext("");
 
@@ -82,8 +83,27 @@ const AppProvider = ({ children }) => {
         return windowSize;
     }
 
+    // Constructing times array
+    let times = [];
+    moment.locale("fa", { useGregorianParser: true });
+    const m = moment();
+    m.set("hour", 24);
+    m.set("minute", 0);
+    for (let i = 1; i <= 48; i++) {
+        let startHour = m.format("HH");
+        let startMinute = m.format("mm");
+        m.add(30, "minute");
+        let endHour = m.format("HH");
+        let endMinute = m.format("mm");
+        let newItem = { key: i, startHour, startMinute, endHour, endMinute };
+        times.push(newItem);
+    }
+
     const getTime = (hourString) => {
-        //
+        const hoursArr = hourString
+            .substring(1, hourString.length - 1)
+            .split(",");
+        return hoursArr.map((hour) => times[Number(hour)]);
     };
 
     return (
@@ -99,6 +119,7 @@ const AppProvider = ({ children }) => {
                 useOutsideAlerter,
                 useWindowSize,
                 getTime,
+                times,
             }}
         >
             {children}

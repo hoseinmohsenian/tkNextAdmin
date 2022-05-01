@@ -6,6 +6,7 @@ import styles from "./TodayMonitoring.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import moment from "jalali-moment";
+import { useGlobalContext } from "../../../../../../context";
 
 function TodayMonitoring({ token }) {
     const [monitoringList, setMonitoringList] = useState([]);
@@ -18,6 +19,7 @@ function TodayMonitoring({ token }) {
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState([]);
     moment.locale("fa", { useGregorianParser: true });
+    const { getTime } = useGlobalContext();
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -221,7 +223,19 @@ function TodayMonitoring({ token }) {
                                             : "نیست"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.time}
+                                        {`${getTime(item.time)[0].startHour}:${
+                                            getTime(item.time)[0].startMinute
+                                        }`}
+                                        &nbsp;تا &nbsp;
+                                        {`${
+                                            getTime(item.time)[
+                                                getTime(item.time).length - 1
+                                            ].startHour
+                                        }:${
+                                            getTime(item.time)[
+                                                getTime(item.time).length - 1
+                                            ].startMinute
+                                        }`}
                                     </td>
                                     <td className="table__body-item">
                                         {moment(item?.date).format(
