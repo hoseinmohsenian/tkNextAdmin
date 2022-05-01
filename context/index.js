@@ -82,6 +82,10 @@ const AppProvider = ({ children }) => {
         return windowSize;
     }
 
+    const getTime = (hourString) => {
+        //
+    };
+
     return (
         <AppContext.Provider
             value={{
@@ -94,6 +98,7 @@ const AppProvider = ({ children }) => {
                 deleteCookie,
                 useOutsideAlerter,
                 useWindowSize,
+                getTime,
             }}
         >
             {children}

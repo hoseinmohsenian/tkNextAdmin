@@ -417,23 +417,6 @@ export default [
                 ],
             },
             {
-                title: "آزمون تعیین سطح",
-                icon: <RiTestTubeFill />,
-                path: "#",
-                subNav: [
-                    {
-                        title: "لیست سطح اول",
-                        path: "/tkpanel/levelingTests",
-                        icon: <FaLevelUpAlt />,
-                    },
-                    {
-                        title: "لیست سطح دوم",
-                        path: "/tkpanel/levelingTestDetails",
-                        icon: <FaLevelUpAlt />,
-                    },
-                ],
-            },
-            {
                 title: "سئو",
                 icon: <IoPulseOutline />,
                 path: "#",
