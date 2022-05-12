@@ -8,9 +8,9 @@ import moment from "jalali-moment";
 import Link from "next/link";
 import { useGlobalContext } from "../../../../../../context";
 
-function DoneMonitoring({ token }) {
-    const [monitoringList, setMonitoringList] = useState([]);
-    const [selectedDate, setSelectedDate] = useState();
+function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
+    const [monitoringList, setMonitoringList] = useState(monitorings);
+    const [selectedDate, setSelectedDate] = useState(shamsi_date_obj);
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
     const { getTime } = useGlobalContext();
@@ -142,10 +142,10 @@ function DoneMonitoring({ token }) {
                                         {item?.platform_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_id}
+                                        {item?.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.course_id || "-"}
+                                        {item?.course_name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.price

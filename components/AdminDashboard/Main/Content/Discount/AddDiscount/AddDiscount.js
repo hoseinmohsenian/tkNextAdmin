@@ -8,7 +8,7 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
 
-function AddDiscount({ token, courses }) {
+function AddDiscount({ token }) {
     const [formData, setFormData] = useState({
         name: "",
         percent: "",
@@ -19,8 +19,7 @@ function AddDiscount({ token, courses }) {
         min: "",
         max: "",
         active_status: 1,
-        type: 1,
-        course_id: 1,
+        type: 0,
         discount_type: 1,
     });
     const [alertData, setAlertData] = useState({
@@ -37,7 +36,6 @@ function AddDiscount({ token, courses }) {
 
         if (
             formData.name.trim() &&
-            Number(formData.course_id) !== 0 &&
             Number(formData.number) !== 0 &&
             formData.start_at.year &&
             formData.expired_at.year
@@ -45,7 +43,6 @@ function AddDiscount({ token, courses }) {
             const fd = new FormData();
             fd.append("name", formData.name);
             fd.append("number", Number(formData.number));
-            fd.append("course_id", Number(formData.course_id));
             fd.append("active_status", Number(formData.active_status));
             let date = moment
                 .from(
@@ -175,50 +172,9 @@ function AddDiscount({ token, courses }) {
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
                                 spellCheck={false}
+                                autoComplete="off"
                                 required
                             />
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="course_id" className="form__label">
-                            کورس :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control">
-                            <select
-                                name="course_id"
-                                id="course_id"
-                                className="form__input input-select"
-                                onChange={handleOnChange}
-                                value={formData.course_id}
-                                required
-                            >
-                                {courses?.map((course) => (
-                                    <option key={course?.id} value={course?.id}>
-                                        {course?.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="type" className="form__label">
-                            تایپ :
-                        </label>
-                        <div className="form-control">
-                            <select
-                                name="type"
-                                id="type"
-                                className="form__input input-select"
-                                onChange={handleOnChange}
-                                value={formData.type}
-                            >
-                                <option value={0}>همه</option>
-                                <option value={1}>کلاس خصوصی</option>
-                                <option value={2}>۵ جلسه</option>
-                                <option value={3}>۱۰ جلسه</option>
-                                <option value={4}>۱۶ جلسه</option>
-                                <option value={5}>اولین خرید</option>
-                            </select>
                         </div>
                     </div>
                     <div className={`row ${styles["row"]}`}>
@@ -251,6 +207,7 @@ function AddDiscount({ token, courses }) {
                                             day: Number(moment().format("DD")),
                                         }}
                                         inputPlaceholder="انتخاب کنید"
+                                        calendarPopperPosition="bottom"
                                     />
                                 </div>
                             </div>
@@ -284,9 +241,32 @@ function AddDiscount({ token, courses }) {
                                             day: Number(moment().format("DD")),
                                         }}
                                         inputPlaceholder="انتخاب کنید"
+                                        calendarPopperPosition="bottom"
                                     />
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="type" className="form__label">
+                            تایپ :
+                        </label>
+                        <div className="form-control">
+                            <select
+                                name="type"
+                                id="type"
+                                className="form__input input-select"
+                                onChange={handleOnChange}
+                                value={formData.type}
+                            >
+                                <option value={0}>همه</option>
+                                <option value={1}>جلسه آزمایشی</option>
+                                <option value={2}>کلاس خصوصی</option>
+                                <option value={3}>۵ جلسه</option>
+                                <option value={4}>۱۰ جلسه</option>
+                                <option value={5}>۱۶ جلسه</option>
+                                <option value={6}>اولین خرید</option>
+                            </select>
                         </div>
                     </div>
                     <div className={`row`}>
@@ -410,6 +390,7 @@ function AddDiscount({ token, courses }) {
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
                                         spellCheck={false}
+                                        autoComplete="off"
                                         disabled={
                                             Number(formData.discount_type) === 0
                                         }
@@ -433,6 +414,7 @@ function AddDiscount({ token, courses }) {
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
                                         spellCheck={false}
+                                        autoComplete="off"
                                         disabled={
                                             Number(formData.discount_type) === 1
                                         }
@@ -455,6 +437,7 @@ function AddDiscount({ token, courses }) {
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
                                         spellCheck={false}
+                                        autoComplete="off"
                                         disabled={
                                             Number(formData.discount_type) === 0
                                         }
@@ -475,6 +458,7 @@ function AddDiscount({ token, courses }) {
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
                                         spellCheck={false}
+                                        autoComplete="off"
                                         disabled={
                                             Number(formData.discount_type) === 1
                                         }

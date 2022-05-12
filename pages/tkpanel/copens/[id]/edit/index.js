@@ -41,12 +41,6 @@ export async function getServerSideProps(context) {
                 "Access-Control-Allow-Origin": "*",
             },
         }),
-        fetch(`${BASE_URL}/data/course`, {
-            headers: {
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }),
     ]);
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
@@ -54,7 +48,6 @@ export async function getServerSideProps(context) {
     return {
         props: {
             discount: dataArr[0].data,
-            courses: dataArr[1].data,
             token,
         },
     };

@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "./TeacherReporting.module.css";
 import { BASE_URL } from "../../../../../../constants";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
+import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 
 function TeacherReporting({ token }) {
     const [reportings, setReportings] = useState([]);
@@ -82,17 +83,6 @@ function TeacherReporting({ token }) {
             console.log("Error reading reportings", error);
         }
     };
-
-    useEffect(() => {
-        setFilters({
-            ...filters,
-            from: null,
-            to: null,
-            experimental: 0,
-            language_id: 0,
-        });
-        setReportings([]);
-    }, [filters.student]);
 
     return (
         <div>
@@ -172,9 +162,7 @@ function TeacherReporting({ token }) {
                                             onChange={handleOnChange}
                                             value={filters.step}
                                         >
-                                            <option value={0}>
-                                                انتخاب کنید
-                                            </option>
+                                            <option value={0}>همه</option>
                                             <option value={1}>1</option>
                                             <option value={2}>2</option>
                                             <option value={3}>3</option>
@@ -325,6 +313,20 @@ function TeacherReporting({ token }) {
                         </div>
                     </form>
                 </div>
+
+                {reportings.length !== 0 && (
+                    <ExportCSV
+                        data={reportings.map((report) => {
+                            return {
+                                name: report.name,
+                                family: report.family,
+                                mobile: report.mobile,
+                            };
+                        })}
+                        fileName={"Tikkaa__teachers-report"}
+                        fileExtension="xlsx"
+                    />
+                )}
 
                 <div className="table__wrapper">
                     <table className="table">

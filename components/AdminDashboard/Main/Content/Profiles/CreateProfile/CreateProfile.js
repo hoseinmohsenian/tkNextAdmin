@@ -5,6 +5,7 @@ import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import styles from "./CreateProfile.module.css";
+import PhoneInput from "../../../../../PhoneInput/PhoneInput";
 
 const countrySchema = {
     id: "",
@@ -30,7 +31,7 @@ function CreateProfile({ token, countries }) {
         name_family: "",
         mobile: "",
         gender: 1,
-        second_mobile: 0,
+        second_mobile: "",
         second_mobile_type: 0,
         email: "",
         country_id: "",
@@ -39,7 +40,14 @@ function CreateProfile({ token, countries }) {
         admin_desc: "",
         academy: 0,
     });
-    const [selectedCountry, setSelectedCountry] = useState(countrySchema);
+    const [selectedCountry, setSelectedCountry] = useState({
+        id: 89,
+        name_fa: "ایران",
+        name_en: "Iran",
+        code: "98",
+        initial: "IR",
+        flag: "https://api.barmansms.ir/public/credential/country-flags/ir.png",
+    });
     const [provinces, setProvinces] = useState([]);
     const [cities, setCities] = useState([]);
     const [selectedProvince, setSelectedProvince] = useState(provinceSchema);
@@ -52,7 +60,14 @@ function CreateProfile({ token, countries }) {
         initial: "IR",
         flag: "https://api.barmansms.ir/public/credential/country-flags/ir.png",
     });
-    const [selectedPreCode2, setSelectedPreCode2] = useState(countrySchema);
+    const [selectedPreCode2, setSelectedPreCode2] = useState({
+        id: 89,
+        name_fa: "ایران",
+        name_en: "Iran",
+        code: "98",
+        initial: "IR",
+        flag: "https://api.barmansms.ir/public/credential/country-flags/ir.png",
+    });
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -67,52 +82,41 @@ function CreateProfile({ token, countries }) {
         if (
             formData.name_family.trim() &&
             (Number(formData.gender) === 1 || Number(formData.gender) === 2) &&
-            formData.mobile.trim()
+            formData.mobile.trim() &&
+            selectedPreCode.id
         ) {
             const fd = new FormData();
-            for (const key in formData) {
-                if (
-                    formData[key] &&
-                    ![
-                        "country_id",
-                        "province_id",
-                        "city_id",
-                        "mobile",
-                        "second_mobile",
-                    ].includes(key)
-                ) {
-                    // Fields that should be numeric
-                    if (
-                        ["gender", "second_mobile_type", "academy"].includes(
-                            key
-                        )
-                    ) {
-                        fd.append(key, Number(formData[key]));
-                    } else {
-                        fd.append(key, formData[key]);
-                    }
-                }
+            fd.append("name_family", formData.name_family);
+            fd.append("mobile", formData.mobile);
+            fd.append("mobile_country", `+${selectedPreCode.code}`);
+            fd.append("gender", Number(formData.gender));
+            if (selectedPreCode2.id && formData.second_mobile) {
+                fd.append("second_mobile", formData.second_mobile);
+                fd.append("second_mobile_country", `+${selectedPreCode2.code}`);
+            }
+            if (Number(formData.second_mobile_type) !== 0) {
+                fd.append(
+                    "second_mobile_type",
+                    Number(formData.second_mobile_type)
+                );
+            }
+            if (formData.email) {
+                fd.append("email", formData.email);
+            }
+            if (formData.admin_desc) {
+                fd.append("admin_desc", formData.admin_desc);
+            }
+            if (Number(formData.academy) !== 0) {
+                fd.append("academy", Number(formData.academy));
             }
             if (selectedCountry.id) {
-                fd.append("country_id", Number(selectedCountry.id));
+                fd.append("country_id", selectedCountry.id);
             }
             if (selectedProvince.id) {
-                fd.append("province_id", Number(selectedProvince.id));
+                fd.append("province_id", selectedProvince.id);
             }
             if (selectedCity.id) {
-                fd.append("city_id", Number(selectedCity.id));
-            }
-            if (selectedPreCode.id && formData.mobile) {
-                fd.append(
-                    "mobile",
-                    `+${selectedPreCode.code}${formData.mobile}`
-                );
-            }
-            if (selectedPreCode2.id && formData.second_mobile) {
-                fd.append(
-                    "second_mobile",
-                    `+${selectedPreCode2.code}${formData.second_mobile}`
-                );
+                fd.append("city_id", selectedCity.id);
             }
 
             await addStudent(fd);
@@ -228,7 +232,8 @@ function CreateProfile({ token, countries }) {
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">
                         <label htmlFor="name_family" className="form__label">
-                            نام :<span className="form__star">*</span>
+                            نام و نام خانوادگی :
+                            <span className="form__star">*</span>
                         </label>
                         <div className="form-control">
                             <input
@@ -237,8 +242,8 @@ function CreateProfile({ token, countries }) {
                                 id="name_family"
                                 className="form__input"
                                 onChange={handleOnChange}
-                                autoComplete="off"
                                 spellCheck={false}
+                                required
                             />
                         </div>
                     </div>
@@ -249,54 +254,31 @@ function CreateProfile({ token, countries }) {
                                     موبایل :
                                     <span className="form__star">*</span>
                                 </label>
-                                <div className="form-control">
-                                    <input
-                                        type="number"
-                                        name="mobile"
-                                        id="mobile"
-                                        className="form__input form__input--ltr"
-                                        placeholder="9123456789"
-                                        maxLength={10}
-                                        onChange={handleOnChange}
-                                        autoComplete="off"
-                                        required
-                                    />
-                                    <span className="input-precode">
-                                        {selectedPreCode.code
-                                            ? `+${selectedPreCode.code}`
-                                            : ""}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className={`col-sm-6 ${styles["col"]}`}>
-                            <div className="input-wrapper">
-                                <label htmlFor="mobile" className="form__label">
-                                    پیش شماره :
-                                    <span className="form__star">*</span>
-                                </label>
                                 <div
                                     className={`form-control form-control-searchselect`}
                                 >
-                                    <SearchSelect
+                                    <PhoneInput
                                         list={countries}
-                                        defaultText="انتخاب کنید"
-                                        selected={selectedPreCode}
-                                        displayKey="name_fa"
-                                        setSelected={setSelectedPreCode}
-                                        noResText="یافت نشد"
+                                        mobile={formData.mobile}
+                                        mobileOnChange={(phone) =>
+                                            setFormData({
+                                                ...formData,
+                                                mobile: phone,
+                                            })
+                                        }
+                                        selectedCountry={selectedPreCode}
+                                        setSelectedCountry={setSelectedPreCode}
                                         listSchema={countrySchema}
                                         background="#fafafa"
                                         stylesProps={{
                                             width: "100%",
                                         }}
+                                        id="id"
                                     />
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className={`row ${styles["row"]}`}>
+
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
                                 <label
@@ -305,46 +287,26 @@ function CreateProfile({ token, countries }) {
                                 >
                                     موبایل دوم :
                                 </label>
-                                <div className="form-control">
-                                    <input
-                                        type="number"
-                                        name="second_mobile"
-                                        id="second_mobile"
-                                        className="form__input form__input--ltr"
-                                        maxLength={10}
-                                        placeholder="9123456789"
-                                        onChange={handleOnChange}
-                                        autoComplete="off"
-                                        required
-                                    />
-                                    <span className="input-precode">
-                                        {selectedPreCode2.code
-                                            ? `+${selectedPreCode2.code}`
-                                            : ""}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={`col-sm-6 ${styles["col"]}`}>
-                            <div className="input-wrapper">
-                                <label htmlFor="mobile" className="form__label">
-                                    پیش شماره :
-                                </label>
                                 <div
                                     className={`form-control form-control-searchselect`}
                                 >
-                                    <SearchSelect
+                                    <PhoneInput
                                         list={countries}
-                                        defaultText="انتخاب کنید"
-                                        selected={selectedPreCode2}
-                                        displayKey="name_fa"
-                                        setSelected={setSelectedPreCode2}
-                                        noResText="یافت نشد"
+                                        mobile={formData.second_mobile}
+                                        mobileOnChange={(phone) =>
+                                            setFormData({
+                                                ...formData,
+                                                second_mobile: phone,
+                                            })
+                                        }
+                                        selectedCountry={selectedPreCode2}
+                                        setSelectedCountry={setSelectedPreCode2}
                                         listSchema={countrySchema}
                                         background="#fafafa"
                                         stylesProps={{
                                             width: "100%",
                                         }}
+                                        id="id"
                                     />
                                 </div>
                             </div>
@@ -364,7 +326,6 @@ function CreateProfile({ token, countries }) {
                                 className="form__input input-select"
                                 onChange={handleOnChange}
                                 value={formData.second_mobile_type}
-                                required
                             >
                                 <option value={0}>انتخاب کنید</option>
                                 <option value={1}>والدین</option>
@@ -383,7 +344,7 @@ function CreateProfile({ token, countries }) {
                                 id="email"
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
-                                autoComplete="off"
+                                placeholder="example@domain.com"
                             />
                         </div>
                     </div>
@@ -442,6 +403,7 @@ function CreateProfile({ token, countries }) {
                                 stylesProps={{
                                     width: "100%",
                                 }}
+                                id="id"
                             />
                         </div>
                     </div>
@@ -464,6 +426,7 @@ function CreateProfile({ token, countries }) {
                                 stylesProps={{
                                     width: "100%",
                                 }}
+                                id="id"
                             />
                         </div>
                     </div>
@@ -486,6 +449,7 @@ function CreateProfile({ token, countries }) {
                                 stylesProps={{
                                     width: "100%",
                                 }}
+                                id="id"
                             />
                         </div>
                     </div>
@@ -507,7 +471,7 @@ function CreateProfile({ token, countries }) {
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="academy" className="form__label">
-                            آکادمی :
+                            تحصیلات :
                         </label>
                         <div className="form-control">
                             <select
@@ -516,7 +480,6 @@ function CreateProfile({ token, countries }) {
                                 className="form__input input-select"
                                 onChange={handleOnChange}
                                 value={formData.academy}
-                                required
                             >
                                 <option value={0}>انتخاب کنید</option>
                                 <option value={1}>دانش آموز</option>

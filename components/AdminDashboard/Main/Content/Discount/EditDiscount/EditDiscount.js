@@ -8,10 +8,12 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
 
-function EditDiscount({ token, courses, discount }) {
+function EditDiscount({ token, discount }) {
     const [formData, setFormData] = useState({
         ...discount,
         discount_type: 1,
+        start_at: null,
+        expired_at: null,
     });
     const [alertData, setAlertData] = useState({
         show: false,
@@ -27,7 +29,6 @@ function EditDiscount({ token, courses, discount }) {
 
         if (
             formData.name.trim() &&
-            Number(formData.course_id) !== 0 &&
             Number(formData.number) !== 0 &&
             formData.start_at.year &&
             formData.expired_at.year
@@ -38,9 +39,6 @@ function EditDiscount({ token, courses, discount }) {
             }
             if (Number(formData.number) !== discount.number) {
                 fd.append("number", Number(formData.number));
-            }
-            if (Number(formData.course_id) !== discount.course_id) {
-                fd.append("course_id", Number(formData.course_id));
             }
             if (Number(formData.active_status) !== discount.active_status) {
                 fd.append("active_status", Number(formData.active_status));
@@ -178,7 +176,6 @@ function EditDiscount({ token, courses, discount }) {
                 month: Number(shamsi_expired_at?.substring(5, 7)),
                 day: Number(shamsi_expired_at?.substring(8, 10)),
             },
-            course_id: discount.course.id,
         });
     }, []);
 
@@ -227,48 +224,6 @@ function EditDiscount({ token, courses, discount }) {
                             />
                         </div>
                     </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="course_id" className="form__label">
-                            کورس :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control">
-                            <select
-                                name="course_id"
-                                id="course_id"
-                                className="form__input input-select"
-                                onChange={handleOnChange}
-                                value={formData.course_id}
-                                required
-                            >
-                                {courses?.map((course) => (
-                                    <option key={course?.id} value={course?.id}>
-                                        {course?.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="type" className="form__label">
-                            تایپ :
-                        </label>
-                        <div className="form-control">
-                            <select
-                                name="type"
-                                id="type"
-                                className="form__input input-select"
-                                onChange={handleOnChange}
-                                value={formData.type}
-                            >
-                                <option value={0}>همه</option>
-                                <option value={1}>کلاس خصوصی</option>
-                                <option value={2}>۵ جلسه</option>
-                                <option value={3}>۱۰ جلسه</option>
-                                <option value={4}>۱۶ جلسه</option>
-                                <option value={5}>اولین خرید</option>
-                            </select>
-                        </div>
-                    </div>
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
@@ -299,6 +254,7 @@ function EditDiscount({ token, courses, discount }) {
                                             day: Number(moment().format("DD")),
                                         }}
                                         inputPlaceholder="انتخاب کنید"
+                                        calendarPopperPosition="bottom"
                                     />
                                 </div>
                             </div>
@@ -332,9 +288,32 @@ function EditDiscount({ token, courses, discount }) {
                                             day: Number(moment().format("DD")),
                                         }}
                                         inputPlaceholder="انتخاب کنید"
+                                        calendarPopperPosition="bottom"
                                     />
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="type" className="form__label">
+                            تایپ :
+                        </label>
+                        <div className="form-control">
+                            <select
+                                name="type"
+                                id="type"
+                                className="form__input input-select"
+                                onChange={handleOnChange}
+                                value={formData.type}
+                            >
+                                <option value={0}>همه</option>
+                                <option value={1}>جلسه آزمایشی</option>
+                                <option value={2}>کلاس خصوصی</option>
+                                <option value={3}>۵ جلسه</option>
+                                <option value={4}>۱۰ جلسه</option>
+                                <option value={5}>۱۶ جلسه</option>
+                                <option value={6}>اولین خرید</option>
+                            </select>
                         </div>
                     </div>
                     <div className={`row`}>

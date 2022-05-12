@@ -5,6 +5,7 @@ import { BASE_URL } from "../../../../../constants";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import styles from "./Profile.module.css";
+import Modal from "../../../../Modal/Modal";
 
 function Profiles(props) {
     const {
@@ -16,6 +17,11 @@ function Profiles(props) {
     const [pagData, setPagData] = useState(restData);
     const [filters, setFilters] = useState(fetchedData);
     const [loading, setLoading] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState({
+        email: "",
+        gender: 0,
+    });
     const router = useRouter();
 
     const readStudents = async (page = 1) => {
@@ -79,6 +85,50 @@ function Profiles(props) {
                     color: "primary",
                 }}
             >
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={styles["modal__title"]}>
+                            جزئیات زبان آموز
+                        </h3>
+                        <div className={styles["modal__wrapper"]}>
+                            <span>
+                                <b>جنسیت</b> :{" "}
+                                {selectedStudent?.gender === 1 ? "مرد" : "زن"}
+                            </span>
+                            <span>
+                                <b>ایمیل</b> :{" "}
+                                {selectedStudent?.email ? (
+                                    <span style={{ fontSize: 15 }}>
+                                        {selectedStudent?.email}
+                                    </span>
+                                ) : (
+                                    "-"
+                                )}
+                            </span>
+                            <span>
+                                <b>کشور</b> :{" "}
+                                {selectedStudent?.country_name || "-"}
+                            </span>
+                            <span>
+                                <b>نحوه عضویت</b> :
+                                {selectedStudent?.register_with ? (
+                                    <span style={{ fontSize: 15 }}>
+                                        {selectedStudent?.register_with}
+                                    </span>
+                                ) : (
+                                    "-"
+                                )}
+                            </span>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -100,11 +150,11 @@ function Profiles(props) {
                                             type="text"
                                             name="input"
                                             id="input"
-                                            className="form__input"
+                                            className="form__input form__input--ltr"
                                             onChange={handleOnChange}
                                             value={filters?.input}
-                                            autoComplete="off"
                                             spellCheck={false}
+                                            placeholder="جستجو بر اساس نام، شماره موبایل و ایمیل"
                                         />
                                     </div>
                                 </div>
@@ -132,12 +182,7 @@ function Profiles(props) {
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">نام</th>
-                                <th className="table__head-item">جنسیت</th>
                                 <th className="table__head-item">موبایل</th>
-                                <th className="table__head-item">ایمیل</th>
-                                <th className="table__head-item">کشور</th>
-                                <th className="table__head-item">نحوه عضویت</th>
-                                <th className="table__head-item">اعتبار</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -150,23 +195,8 @@ function Profiles(props) {
                                     <td className="table__body-item">
                                         {student?.name_family}
                                     </td>
-                                    <td className="table__body-item">
-                                        {student?.gender === 1 ? "مرد" : "زن"}
-                                    </td>
-                                    <td className="table__body-item">
+                                    <td className="table__body-item table__body-item--ltr">
                                         {student?.mobile}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {student?.email || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {student?.country_name || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {student?.register_with}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {student?.credit || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <Link
@@ -177,20 +207,44 @@ function Profiles(props) {
                                             </a>
                                         </Link>
                                         <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedStudent(student);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
+                                        <button
                                             className={`action-btn warning`}
-                                            onClick={() => alert(":)")}
+                                            onClick={() =>
+                                                alert("Coming soooon:)")
+                                            }
                                         >
                                             لاگ پیگیری
                                         </button>
                                     </td>
                                 </tr>
                             ))}
+
+                            {students.length === 0 && (
+                                <tr className="table__body-row">
+                                    <td
+                                        className="table__body-item"
+                                        colSpan={3}
+                                    >
+                                        زبان آموزی پیدا نشد !
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
-            </Box>
 
-            {students && <Pagination read={readStudents} pagData={pagData} />}
+                {students.length !== 0 && (
+                    <Pagination read={readStudents} pagData={pagData} />
+                )}
+            </Box>
         </div>
     );
 }

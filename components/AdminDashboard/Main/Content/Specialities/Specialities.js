@@ -3,17 +3,34 @@ import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import Pagination from "../Pagination/Pagination";
+import styles from "./Specialities.module.css";
+import { useRouter } from "next/router";
 
-function Specialities({ specialitys, token }) {
-    const [specialities, setSpecialities] = useState(specialitys);
+function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
+    const [specialities, setSpecialities] = useState(data);
+    const [pagData, setPagData] = useState(restData);
+    const [filters, setFilters] = useState({
+        persian_name: "",
+        english_name: "",
+    });
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
         type: "",
     });
-    const [loadings, setLoadings] = useState(
-        Array(specialitys?.length).fill(false)
-    );
+    const [loading, setLoading] = useState(false);
+    const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const router = useRouter();
+
+    const handleOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
 
     const deleteSpecialty = async (spec_id, i) => {
         let temp = [...loadings];
@@ -44,17 +61,42 @@ function Specialities({ specialitys, token }) {
         }
     };
 
-    const readSpecialtys = async () => {
+    const readSpecialtys = async (page = 1) => {
+        // Constructing search parameters
+        let searchQuery = "";
+        Object.keys(filters).forEach((key) => {
+            if (Number(filters[key]) !== 0) {
+                searchQuery += `${key}=${filters[key]}&`;
+            }
+        });
+        searchQuery += `page=${page}`;
+
+        router.push({
+            pathname: `/content/specialty`,
+            query: { page },
+        });
+
         try {
-            const res = await fetch(`${BASE_URL}/admin/teaching/speciality`, {
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            const { data } = await res.json();
+            setLoading(true);
+            const res = await fetch(
+                `${BASE_URL}/admin/teaching/speciality?${searchQuery}`,
+                {
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            const {
+                data: { data, ...restData },
+            } = await res.json();
             setSpecialities(data);
+            setPagData(restData);
+            // Scroll to top
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            setLoading(false);
         } catch (error) {
             console.log("Error reading specialtys", error);
         }
@@ -74,6 +116,75 @@ function Specialities({ specialitys, token }) {
                     color: "primary",
                 }}
             >
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]}>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="persian_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام فارسی :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="persian_name"
+                                            id="persian_name"
+                                            className="form__input"
+                                            onChange={handleOnChange}
+                                            value={filters?.persian_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="english_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام انگلیسی :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="english_name"
+                                            id="english_name"
+                                            className="form__input form__input--ltr"
+                                            onChange={handleOnChange}
+                                            value={filters?.english_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readSpecialtys()}
+                            >
+                                {loading ? "در حال انجام ..." : "اعمال فیلتر"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -102,7 +213,7 @@ function Specialities({ specialitys, token }) {
                                             href={`/content/specialty/${spec?.id}/edit`}
                                         >
                                             <a className="table__body-link">
-                                                {spec?.language_name}
+                                                {spec?.language?.persian_name}
                                             </a>
                                         </Link>
                                     </td>
@@ -144,8 +255,20 @@ function Specialities({ specialitys, token }) {
                                 </tr>
                             ))}
                         </tbody>
+
+                        {specialities?.length === 0 && (
+                            <tr className="table__body-row">
+                                <td className="table__body-item" colSpan={5}>
+                                    تخصصی پیدا نشد !
+                                </td>
+                            </tr>
+                        )}
                     </table>
                 </div>
+
+                {specialities.length !== 0 && (
+                    <Pagination read={readSpecialtys} pagData={pagData} />
+                )}
             </Box>
 
             {/* Alert */}

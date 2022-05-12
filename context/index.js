@@ -103,7 +103,7 @@ const AppProvider = ({ children }) => {
         const hoursArr = hourString
             .substring(1, hourString.length - 1)
             .split(",");
-        return hoursArr.map((hour) => times[Number(hour)]);
+        return hoursArr.map((hour) => times[Number(hour) - 1]);
     };
 
     return (

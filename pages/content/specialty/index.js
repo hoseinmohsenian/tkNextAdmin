@@ -6,15 +6,9 @@ import { BASE_URL } from "../../../constants";
 function SpecialitiesPage({ token, specialitys }) {
     return (
         <>
-            <Header
-                title="تخصص ها | تیکا"
-                description="آموزش زبان انگلیسی با متد تیکا٬ تیکا بهترین نرم افزار آموزش زبان برای استفاده سنین و  کلیه سطوح ، یادگیری تعاملی زبان و دریافت مدرک معتبر بهمراه محتوای بروز"
-                keywords="تیکا, اپلیکیشن زبان انگلیسی, اپلیکیشن آموزش زبان, آموزش رایگان زبان انگلیسی, مکالمه روان انگلیسی, تقویت مکالمه زبان انگلیسی, یادگیری لغات انگلیسی"
-                og_description="آموزش زبان انگلیسی با متد تیکا٬ بهترین نرم افزار آموزش زبان برای استفاده سنین و  کلیه سطوح ، یادگیری تعاملی زبان و دریافت مدرک معتبر بهمراه محتوای بروز"
-                og_title="آموزش زبان انگلیسی | تیکا | tikkaa"
-            ></Header>
+            <Header title="تخصص ها | تیکا"></Header>
             <AdminDashboard>
-                <Specialities specialitys={specialitys} token={token} />
+                <Specialities fetchedSpecialitys={specialitys} token={token} />
             </AdminDashboard>
         </>
     );

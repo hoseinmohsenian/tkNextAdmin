@@ -22,7 +22,6 @@ function AddNewClass({
 }) {
     const [formData, setFormData] = useState({});
     const [teachers, setTeachers] = useState([]);
-    let data = day;
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [students, setStudents] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState({
@@ -38,7 +37,11 @@ function AddNewClass({
     });
     moment.locale("fa", { useGregorianParser: true });
     const [calendarlInd, setCalendarlInd] = useState(0);
-    const m = moment();
+    const [timeList, setTimeList] = useState([]);
+    const [ReservedtimeList, setReservedTimeList] = useState([]);
+    moment.locale("fa");
+    let Dispatch = useDispatch();
+    const m = moment().add(1, "day");
     const months = m._locale._jMonths;
     const weekdays = [
         "شنبه",
@@ -49,6 +52,41 @@ function AddNewClass({
         "پنج‌شنبه",
         "جمعه",
     ];
+
+    useEffect(() => {
+        console.log("teacherTime");
+        console.log(teacherTime);
+
+        if (teacherTime) {
+            let teacherTimeList = Object.values(teacherTime);
+            console.log(teacherTimeList);
+            let ListItem = teacherTimeList.map((item, index) =>
+                item.free.map(
+                    (hour, i) => (index + 1).toString() + hour.toString()
+                )
+            );
+            let ListItemFlat = ListItem.reduce(
+                (acc, val) => acc.concat(val),
+                []
+            );
+
+            let ListItemReserve = teacherTimeList.map((item, index) =>
+                item.reserve.map(
+                    (hour, i) => (index + 1).toString() + hour.toString()
+                )
+            );
+            let ListItemFlatReserve = ListItemReserve.reduce(
+                (acc, val) => acc.concat(val),
+                []
+            );
+
+            setTimeList(ListItemFlat);
+            setReservedTimeList(ListItemFlatReserve);
+            Dispatch(teacherFreeTime(ListItemFlat));
+            Dispatch(teacherReserved(ListItemFlatReserve));
+        }
+    }, [teacherTime]);
+
     const calendarData = {
         startDay: m.add(calendarlInd * 7 + 1, "days").format("DD"),
         startMonth: months[m.month()],
@@ -56,25 +94,12 @@ function AddNewClass({
         endMonth: months[m.month()],
     };
 
-    function checkIndexSelectedHour(isItemSelected, startHour, startMin) {
-        for (let i = 0; i < isItemSelected.hours.length; i++) {
-            if (
-                isItemSelected.hours[i]["start"] === startHour &&
-                isItemSelected.hours[i]["min"] === startMin
-            ) {
-                console.log("this is index " + i);
-
-                return i;
-            }
-        }
-        return -1;
-    }
-
     const nextWeekBtn = () => {
         if (calendarlInd !== 4 - 1) {
             setCalendarlInd(calendarlInd + 1);
         }
     };
+
     const prevWeekBtn = () => {
         if (calendarlInd !== 0) {
             setCalendarlInd(calendarlInd - 1);
@@ -386,15 +411,16 @@ function AddNewClass({
                             تقویم مدرس:
                         </label>
 
-                        <div className={styles.caresoul}>
+                        <div
+                            className={styles.caresoul}
+                            style={{ marginTop: "16px" }}
+                        >
                             {/* Caresoul Navigation  */}
-                            {/*<div className={styles.caresoul__navigation}>*/}
-                            <div className={styles["caresoul__navigation-btn"]}>
+                            <div className={styles.caresoul__navigation}>
                                 <button
                                     className={`${styles["caresoul__navigation-btn"]} ${styles["caresoul__navigation-btn--prev"]}`}
                                     onClick={prevWeekBtn}
                                     disabled={calendarlInd === 0}
-                                    type="button"
                                 >
                                     <span
                                         style={{
@@ -405,13 +431,11 @@ function AddNewClass({
                                         <AiOutlineRight /> هفته قبل{" "}
                                     </span>
                                 </button>
+
                                 <button
                                     className={`${styles["caresoul__navigation-btn"]} ${styles["caresoul__navigation-btn--next"]}`}
                                     onClick={nextWeekBtn}
-                                    disabled={
-                                        calendarlInd === 4 - 1 ? true : false
-                                    }
-                                    type="button"
+                                    disabled={calendarlInd === 3}
                                 >
                                     <span
                                         style={{
@@ -424,209 +448,193 @@ function AddNewClass({
                                 </button>
                             </div>
                             {/* Caresoul Navigation  */}
-                            {Object.values(teacherFreeTime).length > 0 && (
-                                <div className={styles.carousel__wrapper}>
-                                    {[...Array(4)].map((_, index) => {
-                                        let position =
-                                            styles["carousel__item--next"];
 
-                                        if (calendarlInd === index) {
-                                            position =
-                                                styles[
-                                                    "carousel__item--active"
-                                                ];
-                                        }
+                            <div className={styles.carousel__wrapper}>
+                                {[...Array(4)].map((_, index) => {
+                                    let position =
+                                        styles["carousel__item--next"];
 
-                                        if (
-                                            calendarlInd === index - 1 ||
-                                            (index === 0 && calendarlInd === 3)
-                                        ) {
-                                            position =
-                                                styles["carousel__item--last"];
-                                        }
+                                    if (calendarlInd === index) {
+                                        position =
+                                            styles["carousel__item--active"];
+                                    }
 
-                                        m.subtract(7, "days");
+                                    if (
+                                        calendarlInd === index - 1 ||
+                                        (index === 0 && calendarlInd === 3)
+                                    ) {
+                                        position =
+                                            styles["carousel__item--last"];
+                                    }
 
-                                        return (
+                                    m.subtract(7, "days");
+
+                                    return (
+                                        <div
+                                            className={`${styles.carousel__item} ${position}`}
+                                            key={index}
+                                        >
                                             <div
-                                                className={`${styles.carousel__item} ${position} animate__animated `}
-                                                key={index}
+                                                className={
+                                                    styles[
+                                                        "carousel__item-title"
+                                                    ]
+                                                }
                                             >
-                                                <div
+                                                <span>
+                                                    {calendarData.startDay}{" "}
+                                                    {calendarData.startMonth}
+                                                </span>{" "}
+                                                تا{" "}
+                                                <span>
+                                                    {calendarData.endDay}{" "}
+                                                    {calendarData.endMonth}
+                                                </span>
+                                            </div>
+
+                                            <div
+                                                className={
+                                                    styles[
+                                                        "carousel__item-body"
+                                                    ]
+                                                }
+                                            >
+                                                <button
                                                     className={
                                                         styles[
-                                                            "carousel__item-title"
+                                                            "caresoul__item-week"
                                                         ]
                                                     }
-                                                >
-                                                    <span>
-                                                        {calendarData.startDay}{" "}
-                                                        {
-                                                            calendarData.startMonth
-                                                        }
-                                                    </span>{" "}
-                                                    تا{" "}
-                                                    <span>
-                                                        {calendarData.endDay}{" "}
-                                                        {calendarData.endMonth}
-                                                    </span>
-                                                </div>
-
-                                                <div
-                                                    className={
-                                                        styles[
-                                                            "carousel__item-body"
-                                                        ]
+                                                    onClick={() =>
+                                                        setShowStepper(true)
                                                     }
                                                 >
-                                                    <button
-                                                        className={
-                                                            styles[
-                                                                "caresoul__item-week"
-                                                            ]
-                                                        }
-                                                        //  onClick={() => setShowStepper(true)}
-                                                    >
-                                                        {[...Array(7)].map(
-                                                            (_, ind) => {
-                                                                m.set(
-                                                                    "hour",
-                                                                    0
-                                                                );
-                                                                m.set(
-                                                                    "minute",
-                                                                    0
-                                                                );
+                                                    {[...Array(7)].map(
+                                                        (_, ind) => {
+                                                            m.set("hour", 0);
+                                                            m.set("minute", 0);
 
-                                                                return (
+                                                            return (
+                                                                <div
+                                                                    className={
+                                                                        styles[
+                                                                            "caresoul__item-weekday"
+                                                                        ]
+                                                                    }
+                                                                    key={ind}
+                                                                >
                                                                     <div
                                                                         className={
                                                                             styles[
-                                                                                "caresoul__item-weekday"
+                                                                                "caresoul__item-weekday-date"
                                                                             ]
                                                                         }
-                                                                        key={
-                                                                            ind
+                                                                    >
+                                                                        <span>
+                                                                            {
+                                                                                weekdays[
+                                                                                    m
+                                                                                        .add(
+                                                                                            0,
+                                                                                            "days"
+                                                                                        )
+                                                                                        .weekday()
+                                                                                ]
+                                                                            }
+                                                                        </span>
+                                                                        <span>
+                                                                            {m.format(
+                                                                                "DD"
+                                                                            )}
+                                                                        </span>
+                                                                    </div>
+                                                                    <ul
+                                                                        className={
+                                                                            styles[
+                                                                                "caresoul__item-hours"
+                                                                            ]
                                                                         }
                                                                     >
-                                                                        <div
-                                                                            className={
-                                                                                styles[
-                                                                                    "caresoul__item-weekday-date"
-                                                                                ]
-                                                                            }
-                                                                        >
-                                                                            {/* <span>
-                                                                {
-                                                                    weekdays[
-                                                                        m
-                                                                            .add(
-                                                                                1,
-                                                                                "days"
-                                                                            )
-                                                                            .weekday()
-                                                                    ]
-                                                                }
-                                                            </span>
-                                                            <span>
-                                                                {m.format("DD")}
-                                                            </span> */}
+                                                                        {[
+                                                                            ...Array(
+                                                                                48
+                                                                            ).fill(),
+                                                                        ].map(
+                                                                            (
+                                                                                _,
+                                                                                i
+                                                                            ) => (
+                                                                                <li
+                                                                                    // className={
+                                                                                    //   timeList.includes(
+                                                                                    //     (7 * index + ind + 1).toString() +
+                                                                                    //       i.toString()
+                                                                                    //   )
+                                                                                    //     ? "d-block"
+                                                                                    //     : "d-none"
+                                                                                    // }
 
-                                                                            <span>
-                                                                                {
-                                                                                    weekdays[
-                                                                                        m
-                                                                                            .add(
-                                                                                                0,
-                                                                                                "days"
-                                                                                            )
-                                                                                            .weekday()
-                                                                                    ]
-                                                                                }
-                                                                            </span>
-                                                                            <span>
-                                                                                {m.format(
-                                                                                    "DD"
-                                                                                )}
-                                                                            </span>
-                                                                        </div>
-                                                                        <ul
-                                                                            className={
-                                                                                styles[
-                                                                                    "caresoul__item-hours"
-                                                                                ]
-                                                                            }
-                                                                        >
-                                                                            {[
-                                                                                ...Array(
-                                                                                    48
-                                                                                ),
-                                                                            ].map(
-                                                                                (
-                                                                                    _,
-                                                                                    i
-                                                                                ) => (
-                                                                                    <li
+                                                                                    className={
+                                                                                        timeList.includes(
+                                                                                            (
+                                                                                                ind +
+                                                                                                1
+                                                                                            ).toString() +
+                                                                                                i.toString()
+                                                                                        )
+                                                                                            ? "d-block"
+                                                                                            : ReservedtimeList.includes(
+                                                                                                  (
+                                                                                                      ind +
+                                                                                                      1
+                                                                                                  ).toString() +
+                                                                                                      i.toString()
+                                                                                              )
+                                                                                            ? "bg-red"
+                                                                                            : "d-none"
+                                                                                    }
+                                                                                    //   // id={(ind + 1).toString() + i.toString()}
+                                                                                    //   id={ (7 * index + ind + 1).toString() +
+                                                                                    //     i.toString()
+                                                                                    // }
+                                                                                    key={
+                                                                                        i
+                                                                                    }
+                                                                                >
+                                                                                    <span>
+                                                                                        {m.format(
+                                                                                            "HH"
+                                                                                        )}
+
+                                                                                        :
+                                                                                        {m.format(
+                                                                                            "mm"
+                                                                                        )}
+                                                                                    </span>
+                                                                                    <div
                                                                                         className={
-                                                                                            teacherFreeTime.includes(
-                                                                                                (
-                                                                                                    ind +
-                                                                                                    1
-                                                                                                ).toString() +
-                                                                                                    i.toString()
-                                                                                            )
-                                                                                                ? "d-block"
-                                                                                                : "d-none"
-                                                                                        }
-                                                                                        key={
-                                                                                            i
-                                                                                        }
-                                                                                        onClick={(
-                                                                                            e
-                                                                                        ) =>
-                                                                                            selectedHoursHandler(
-                                                                                                e,
-                                                                                                weekdays[
-                                                                                                    m
-                                                                                                        .subtract(
-                                                                                                            7 -
-                                                                                                                ind,
-                                                                                                            "days"
-                                                                                                        )
-                                                                                                        .set(
-                                                                                                            "hour",
-                                                                                                            0
-                                                                                                        )
-                                                                                                        .set(
-                                                                                                            "minute",
-                                                                                                            0
-                                                                                                        )
-                                                                                                        .add(
-                                                                                                            30 *
-                                                                                                                i,
-                                                                                                            "minute"
-                                                                                                        )
-                                                                                                        .weekday()
-                                                                                                ],
-                                                                                                m.format(
-                                                                                                    "DD"
-                                                                                                ),
-                                                                                                months[
-                                                                                                    m.month()
-                                                                                                ],
-                                                                                                m.year(),
-                                                                                                m.format(
-                                                                                                    "HH"
-                                                                                                ),
-                                                                                                m.format(
-                                                                                                    "mm"
-                                                                                                ),
-                                                                                                m.format(
-                                                                                                    " YYYY/M/D"
-                                                                                                )
-                                                                                            )
+                                                                                            styles[
+                                                                                                "caresoul__item-hours-hover"
+                                                                                            ]
                                                                                         }
                                                                                     >
+                                                                                        <span>
+                                                                                            {
+                                                                                                weekdays[
+                                                                                                    m.weekday()
+                                                                                                ]
+                                                                                            }
+                                                                                            &nbsp;
+                                                                                            {m.format(
+                                                                                                "DD"
+                                                                                            )}
+                                                                                            &nbsp;
+                                                                                            {
+                                                                                                months[
+                                                                                                    m.month()
+                                                                                                ]
+                                                                                            }
+                                                                                        </span>
                                                                                         <span>
                                                                                             {m.format(
                                                                                                 "HH"
@@ -636,73 +644,38 @@ function AddNewClass({
                                                                                             {m.format(
                                                                                                 "mm"
                                                                                             )}
-                                                                                        </span>
-                                                                                        <div
-                                                                                            className={
-                                                                                                styles[
-                                                                                                    "caresoul__item-hours-hover"
-                                                                                                ]
-                                                                                            }
-                                                                                        >
-                                                                                            <span>
-                                                                                                {
-                                                                                                    weekdays[
-                                                                                                        m.weekday()
-                                                                                                    ]
-                                                                                                }
-                                                                                                &nbsp;
-                                                                                                {m.format(
-                                                                                                    "DD"
-                                                                                                )}
-                                                                                                &nbsp;
-                                                                                                {
-                                                                                                    months[
-                                                                                                        m.month()
-                                                                                                    ]
-                                                                                                }
-                                                                                            </span>
-                                                                                            <span>
-                                                                                                {m.format(
-                                                                                                    "HH"
-                                                                                                )}
+                                                                                            &nbsp;
+                                                                                            تا
+                                                                                            &nbsp;
+                                                                                            {m.format(
+                                                                                                "HH"
+                                                                                            )}
 
-                                                                                                :
-                                                                                                {m.format(
+                                                                                            :
+                                                                                            {m
+                                                                                                .add(
+                                                                                                    30,
+                                                                                                    "minutes"
+                                                                                                )
+                                                                                                .format(
                                                                                                     "mm"
                                                                                                 )}
-                                                                                                &nbsp;
-                                                                                                تا
-                                                                                                &nbsp;
-                                                                                                {m.format(
-                                                                                                    "HH"
-                                                                                                )}
-
-                                                                                                :
-                                                                                                {m
-                                                                                                    .add(
-                                                                                                        30,
-                                                                                                        "minutes"
-                                                                                                    )
-                                                                                                    .format(
-                                                                                                        "mm"
-                                                                                                    )}
-                                                                                            </span>
-                                                                                        </div>
-                                                                                    </li>
-                                                                                )
-                                                                            )}
-                                                                        </ul>
-                                                                    </div>
-                                                                );
-                                                            }
-                                                        )}
-                                                    </button>
-                                                </div>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </li>
+                                                                            )
+                                                                        )}
+                                                                    </ul>
+                                                                </div>
+                                                            );
+                                                        }
+                                                    )}
+                                                </button>
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
 

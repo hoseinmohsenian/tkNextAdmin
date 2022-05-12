@@ -203,7 +203,6 @@ second, second and am/pm */
     font-weight: 600;
     font-size: 1rem;
     width: 100%;
-    background-color: #007bff;
 }
 .btn:disabled {
     opacity: 0.5;

@@ -8,9 +8,9 @@ import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import moment from "jalali-moment";
 import { useGlobalContext } from "../../../../../../context";
 
-function TodayMonitoring({ token }) {
-    const [monitoringList, setMonitoringList] = useState([]);
-    const [selectedDate, setSelectedDate] = useState();
+function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
+    const [monitoringList, setMonitoringList] = useState(monitorings);
+    const [selectedDate, setSelectedDate] = useState(shamsi_date_obj);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -190,10 +190,10 @@ function TodayMonitoring({ token }) {
                                         {item?.platform_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_id}
+                                        {item?.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.course_id || "-"}
+                                        {item?.course_name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.price
@@ -229,12 +229,12 @@ function TodayMonitoring({ token }) {
                                         &nbsp;تا &nbsp;
                                         {`${
                                             getTime(item.time)[
-                                                getTime(item.time).length - 1
-                                            ].startHour
+                                                getTime(item.time)?.length - 1
+                                            ]?.startHour
                                         }:${
                                             getTime(item.time)[
-                                                getTime(item.time).length - 1
-                                            ].startMinute
+                                                getTime(item.time)?.length - 1
+                                            ]?.startMinute
                                         }`}
                                     </td>
                                     <td className="table__body-item">
