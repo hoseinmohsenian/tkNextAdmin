@@ -181,6 +181,11 @@ select.shortwidth {
 .block-xs {
     display: block !important;
 }
+
+.d-none {
+    display: none !important;
+}
+
 @media (min-width: 576px) {
     .hidden-sm {
         display: none !important;

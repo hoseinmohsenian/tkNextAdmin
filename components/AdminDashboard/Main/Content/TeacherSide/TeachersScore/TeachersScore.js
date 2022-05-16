@@ -16,7 +16,6 @@ function TeachersScore(props) {
     moment.locale("fa", { useGregorianParser: true });
 
     const readTeachers = async (page = 1) => {
-        setLoading(true);
         let searchParams = {};
 
         if (page !== 1) {
@@ -32,13 +31,16 @@ function TeachersScore(props) {
         });
 
         try {
-            const res = await fetch(`${BASE_URL}/admin/teacher/point`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
+            const res = await fetch(
+                `${BASE_URL}/admin/teacher/point?page=${page}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
             const {
                 data: { data, ...restData },
             } = await res.json();
@@ -47,7 +49,6 @@ function TeachersScore(props) {
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
-            setLoading(false);
         } catch (error) {
             console.log("Error reading teachers", error);
         }
@@ -73,7 +74,12 @@ function TeachersScore(props) {
                                 <th className="table__head-item">
                                     تاثیر در حسابداری
                                 </th>
-                                <th className="table__head-item">توضیحات</th>
+                                <th
+                                    className="table__head-item"
+                                    style={{ width: 300 }}
+                                >
+                                    توضیحات
+                                </th>
                                 <th className="table__head-item">ثبت کننده</th>
                                 <th className="table__head-item">
                                     تاریخ ایجاد
@@ -90,7 +96,7 @@ function TeachersScore(props) {
                                         {teacher?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {teacher?.mobile}
+                                        {teacher?.teacher_mobile}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {`${
@@ -104,7 +110,16 @@ function TeachersScore(props) {
                                             ? "بله"
                                             : "خیر"}
                                     </td>
-                                    <td className="table__body-item">
+                                    <td
+                                        className="table__body-item"
+                                        style={{
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                            overflow: "hidden",
+                                            width: 300,
+                                            display: "inline-block",
+                                        }}
+                                    >
                                         {teacher?.desc}
                                     </td>
                                     <td className="table__body-item">

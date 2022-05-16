@@ -68,7 +68,6 @@ function StudentPlacements({ token }) {
             const res = await fetch(
                 `${BASE_URL}/admin/student/placement?user_id=${selectedStudent.id}`,
                 {
-                    method: "POST",
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-type": "application/json",

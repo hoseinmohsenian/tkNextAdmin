@@ -4,19 +4,19 @@ import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
+import FetchSearchSelect from "../../../Elements/FetchSearchSelect/FetchSearchSelect";
 import SearchSelect from "../../../../../../SearchSelect/SearchSelect";
-import { FaSearch } from "react-icons/fa";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
 
 function CreateScore({ token }) {
     const [formData, setFormData] = useState({
-        teacher_name: "",
         desc: "",
         desc: false,
         point_type: "1",
-        number: "",
+        notify_teacher: false,
+        number: 1,
         teacher_side_desc: "",
         accounting_effect: false,
     });
@@ -48,16 +48,17 @@ function CreateScore({ token }) {
                     "accounting_effect",
                     Number(formData.accounting_effect)
                 );
+                if (formData.teacher_side_desc) {
+                    fd.append("teacher_side_desc", formData.teacher_side_desc);
+                }
             }
             if (formData.desc) {
                 fd.append("desc", formData.desc);
             }
-            if (formData.teacher_side_desc) {
-                fd.append("teacher_side_desc", formData.teacher_side_desc);
-            }
             if (selectedStudent.id) {
                 fd.append("user_id", Number(selectedStudent.id));
             }
+            fd.append("notify_teacher", Number(formData.notify_teacher));
 
             await addScore(fd);
         } else {
@@ -106,11 +107,11 @@ function CreateScore({ token }) {
         }
     };
 
-    const searchTeachers = async () => {
+    const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${formData.teacher_name}`,
+                `${BASE_URL}/admin/teacher/name/search?name=${teacher_name}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -121,8 +122,8 @@ function CreateScore({ token }) {
             if (res.ok) {
                 const { data } = await res.json();
                 setTeachers(data);
-                showAlert(true, "success", "اکنون استاد را انتخاب کنید");
             } else {
+                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
@@ -151,7 +152,6 @@ function CreateScore({ token }) {
             if (res.ok) {
                 const { data } = await res.json();
                 setStudents(data);
-                showAlert(true, "success", "اکنون زبان آموز را انتخاب کنید");
             } else {
                 showAlert(
                     true,
@@ -186,33 +186,6 @@ function CreateScore({ token }) {
 
             <Box title="ایجاد امتیاز برای استاد">
                 <div className="form">
-                    <div className="input-wrapper">
-                        <label htmlFor="teacher_name" className="form__label">
-                            نام استاد :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                name="teacher_name"
-                                id="teacher_name"
-                                className="form__input"
-                                onChange={handleOnChange}
-                                spellCheck={false}
-                                required
-                                disabled={Boolean(formData?.id)}
-                            />
-                            <button
-                                type="button"
-                                onClick={searchTeachers}
-                                disabled={!Boolean(formData.teacher_name)}
-                                className={styles["search-btn"]}
-                                title="جستجو استاد"
-                            >
-                                <FaSearch />
-                            </button>
-                        </div>
-                    </div>
-
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
@@ -226,9 +199,10 @@ function CreateScore({ token }) {
                                 <div
                                     className={`form-control form-control-searchselect`}
                                 >
-                                    <SearchSelect
+                                    <FetchSearchSelect
                                         list={teachers}
-                                        defaultText="انتخاب کنید"
+                                        setList={setTeachers}
+                                        placeholder="جستجو کنید"
                                         selected={selectedTeacher}
                                         displayKey="family"
                                         displayPattern={[
@@ -239,13 +213,18 @@ function CreateScore({ token }) {
                                             { member: true, key: "mobile" },
                                         ]}
                                         setSelected={setSelectedTeacher}
-                                        noResText="یافت نشد"
+                                        noResText="استادی پیدا نشد"
                                         listSchema={teacherSchema}
                                         stylesProps={{
                                             width: "100%",
                                         }}
                                         background="#fafafa"
                                         fontSize={16}
+                                        onSearch={(value) =>
+                                            searchTeachers(value)
+                                        }
+                                        id="id"
+                                        openBottom={true}
                                     />
                                 </div>
                             </div>
@@ -265,7 +244,13 @@ function CreateScore({ token }) {
                                         list={students}
                                         defaultText="انتخاب کنید"
                                         selected={selectedStudent}
-                                        displayKey="title"
+                                        displayKey="name_family"
+                                        displayPattern={[
+                                            {
+                                                member: true,
+                                                key: "name_family",
+                                            },
+                                        ]}
                                         setSelected={setSelectedStudent}
                                         noResText="یافت نشد"
                                         listSchema={studentSchema}
@@ -273,42 +258,50 @@ function CreateScore({ token }) {
                                             width: "100%",
                                         }}
                                         background="#fafafa"
+                                        openBottom={true}
+                                        id="id"
+                                        fontSize={16}
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className={`row`}>
-                        <div className={`col-sm-6 ${styles["col"]}`}>
-                            <div className="input-wrapper">
-                                <label htmlFor="desc" className="form__label">
-                                    توضیحات :
-                                </label>
-                                <textarea
-                                    type="text"
-                                    name="desc"
-                                    id="desc"
-                                    className="form__textarea"
-                                    onChange={handleOnChange}
-                                    spellCheck={false}
-                                />
-                            </div>
-                        </div>
-                        <div className={`col-sm-6 ${styles["col"]}`}>
-                            <div className="input-wrapper">
+                    <div className="input-wrapper">
+                        <label htmlFor="desc" className="form__label">
+                            توضیحات :
+                        </label>
+                        <textarea
+                            type="text"
+                            name="desc"
+                            id="desc"
+                            className="form__textarea"
+                            onChange={handleOnChange}
+                            spellCheck={false}
+                        />
+                    </div>
+                    <div className="input-wrapper">
+                        <label
+                            htmlFor="notify_teacher"
+                            className={`form__label`}
+                        >
+                            اعلان برای استاد :
+                        </label>
+                        <div className="form-control form-control-radio">
+                            <div className="input-radio-wrapper">
                                 <label
-                                    htmlFor="teacher_side_desc"
-                                    className="form__label"
+                                    htmlFor="notify_teacher"
+                                    className="radio-title"
                                 >
-                                    توضیحات سمت استاد :
+                                    ارسال شود
                                 </label>
-                                <textarea
-                                    type="text"
-                                    name="teacher_side_desc"
-                                    id="teacher_side_desc"
-                                    className="form__textarea"
+                                <input
+                                    type="checkbox"
+                                    name="notify_teacher"
                                     onChange={handleOnChange}
-                                    spellCheck={false}
+                                    checked={
+                                        Number(formData.notify_teacher) === 1
+                                    }
+                                    id="notify_teacher"
                                 />
                             </div>
                         </div>
@@ -377,20 +370,42 @@ function CreateScore({ token }) {
                                     <span className="form__star">*</span>
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="number"
+                                    <select
                                         name="number"
                                         id="number"
-                                        className="form__input form__input--ltr"
+                                        className="form__input input-select"
                                         onChange={handleOnChange}
+                                        value={formData.number}
                                         required
-                                        max={5}
-                                        maxLength={1}
-                                    />
+                                    >
+                                        <option value={1}>1</option>
+                                        <option value={2}>2</option>
+                                        <option value={3}>3</option>
+                                        <option value={4}>4</option>
+                                        <option value={5}>5</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {Number(formData.point_type) === 0 && (
+                        <div className="input-wrapper">
+                            <label
+                                htmlFor="teacher_side_desc"
+                                className="form__label"
+                            >
+                                توضیحات سمت استاد :
+                            </label>
+                            <textarea
+                                type="text"
+                                name="teacher_side_desc"
+                                id="teacher_side_desc"
+                                className="form__textarea"
+                                onChange={handleOnChange}
+                                spellCheck={false}
+                            />
+                        </div>
+                    )}
                     {Number(formData.point_type) === 0 && (
                         <div className="input-wrapper">
                             <label
