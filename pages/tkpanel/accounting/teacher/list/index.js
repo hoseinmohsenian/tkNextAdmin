@@ -1,24 +1,20 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import TodayClass from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/TodayClass/TodayClass";
+import TeacherIncome from "../../../../../components/AdminDashboard/Main/Content/Accounting/TeacherIncome/TeacherIncome";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function TodayClassPage({ classes, token, meta }) {
+function TeacherIncomeDetailsPage({ token, chartData }) {
     return (
         <div>
-            <Header title="کلاس های امروز | تیکا"></Header>
+            <Header title="جزئیات درآمد اساتید | تیکا"></Header>
             <AdminDashboard>
-                <TodayClass
-                    fetchedClasses={classes}
-                    token={token}
-                    fetchedMeta={meta}
-                />
+                <TeacherIncome token={token} chartData={chartData} />
             </AdminDashboard>
         </div>
     );
 }
 
-export default TodayClassPage;
+export default TeacherIncomeDetailsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -33,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/classroom/today`, {
+        fetch(`${BASE_URL}/admin/accounting/teacher/income`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -45,10 +41,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: {
-            classes: dataArr[0].data,
-            meta: dataArr[0].meta,
-            token,
-        },
+        props: { chartData: dataArr[0].data, token },
     };
 }

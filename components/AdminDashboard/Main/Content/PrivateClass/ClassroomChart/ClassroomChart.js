@@ -94,7 +94,6 @@ function ClassroomChart({ token }) {
                 } = await res.json();
                 setChartData(data);
                 setInfo({ admin, student, all, admin_separation, admin_list });
-                console.log("data", data);
             } else {
                 const { error } = await res.json();
                 showAlert(

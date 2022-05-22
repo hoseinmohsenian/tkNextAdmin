@@ -73,26 +73,21 @@ function RequestDetails(props) {
                                     شماره استاد
                                 </th>
                                 <th className="table__head-item">
-                                    اعتبار زبان آموز
+                                    قابل پرداخت
                                 </th>
+                                <th className="table__head-item">تخفیف</th>
+                                <th className="table__head-item">مدت زمان</th>
+                                <th className="table__head-item">استپ</th>
                                 <th className="table__head-item">
                                     وضعیت درخواست
                                 </th>
-                                <th className="table__head-item">وضعیت کلاس</th>
-                                <th className="table__head-item">
-                                    وضعیت پرداخت
-                                </th>
-                                <th className="table__head-item">قیمت</th>
-                                <th className="table__head-item">زمان کلاس</th>
-                                <th className="table__head-item">تاریخ کلاس</th>
-                                <th className="table__head-item">جلسه</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((item, i) => (
+                            {classes?.map((item) => (
                                 <tr className="table__body-row" key={item?.id}>
                                     <td className="table__body-item">
-                                        {item?.user_name}
+                                        {item?.user_name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.user_mobile}
@@ -104,34 +99,31 @@ function RequestDetails(props) {
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.user_wallet}
+                                        {item?.payable
+                                            ? `${Intl.NumberFormat().format(
+                                                  item?.payable
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.status === 1 ? "one" : "zero"}
+                                        {item?.payable
+                                            ? `${Intl.NumberFormat().format(
+                                                  item?.discount
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.held === 1
-                                            ? "برگزار شده"
-                                            : "کنسل"}
+                                        {item.time
+                                            ? `${item?.time} دقیقه`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.pay === 1
-                                            ? "پرداخت شده"
-                                            : "پرداخت نشده"}
+                                        {item?.step || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item.price}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.time}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {moment(item?.date).format(
-                                            "YYYY/MM/DD"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.sessions}
+                                        {item?.status === 1
+                                            ? "فعال"
+                                            : "غیرفعال"}
                                     </td>
                                 </tr>
                             ))}

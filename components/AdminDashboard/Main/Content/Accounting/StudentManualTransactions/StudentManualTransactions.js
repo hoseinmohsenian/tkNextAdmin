@@ -4,6 +4,7 @@ import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import { BASE_URL } from "../../../../../../constants";
+import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 
 function StudentManualTransactions(props) {
     const {
@@ -32,7 +33,7 @@ function StudentManualTransactions(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/student/manual/transactions`,
+                `${BASE_URL}/admin/accounting/student/manual/transactions?page=${page}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -57,6 +58,20 @@ function StudentManualTransactions(props) {
     return (
         <div>
             <Box title="لیست افزایش اعتبار دستی">
+                {transactions.length !== 0 && (
+                    <ExportCSV
+                        data={transactions.map((transaction) => {
+                            return {
+                                user_name: transaction.user_name,
+                                mobile: transaction.mobile,
+                                amount: transaction.amount,
+                            };
+                        })}
+                        fileName={"Tikkaa__accountingCredite"}
+                        fileExtension="xlsx"
+                    />
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">

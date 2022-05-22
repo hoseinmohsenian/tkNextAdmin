@@ -32,7 +32,7 @@ function StudentTransactionDetails(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/student/transactions`,
+                `${BASE_URL}/admin/accounting/student/transactions?page=${page}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

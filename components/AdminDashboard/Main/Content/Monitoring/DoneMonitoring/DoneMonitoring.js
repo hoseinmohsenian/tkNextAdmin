@@ -13,7 +13,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
     const [selectedDate, setSelectedDate] = useState(shamsi_date_obj);
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
-    const { getTime } = useGlobalContext();
+    const { formatTime } = useGlobalContext();
 
     const readMonitoring = async () => {
         // Constructing search parameters
@@ -175,19 +175,9 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                             : "نیست"}
                                     </td>
                                     <td className="table__body-item">
-                                        {`${getTime(item.time)[0].startHour}:${
-                                            getTime(item.time)[0].startMinute
-                                        }`}
-                                        &nbsp;تا &nbsp;
-                                        {`${
-                                            getTime(item.time)[
-                                                getTime(item.time).length - 1
-                                            ].startHour
-                                        }:${
-                                            getTime(item.time)[
-                                                getTime(item.time).length - 1
-                                            ].startMinute
-                                        }`}
+                                        {item.time
+                                            ? formatTime(item.time)
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {moment(item?.date).format(

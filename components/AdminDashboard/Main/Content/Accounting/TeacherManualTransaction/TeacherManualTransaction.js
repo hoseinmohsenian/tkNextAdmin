@@ -5,17 +5,16 @@ import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 
-const studentSchema = { id: "", name_family: "", mobile: "" };
+const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
-function StudentManualTransaction({ token }) {
+function TeacherManualTransaction({ token }) {
     const [formData, setFormData] = useState({
         desc: "",
         status: 0,
         amount: "",
-        image: null,
     });
-    const [students, setStudents] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState(studentSchema);
+    const [students, setTeachers] = useState([]);
+    const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -27,14 +26,11 @@ function StudentManualTransaction({ token }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.amount && formData.desc && selectedStudent.id) {
+        if (formData.amount && formData.desc && selectedTeacher.id) {
             const fd = new FormData();
             fd.append("amount", formData.amount);
             fd.append("desc", formData.desc);
             fd.append("status", Number(formData.status));
-            if (formData.image) {
-                fd.append("image", formData.image);
-            }
             await addTransaction(fd);
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
@@ -47,11 +43,6 @@ function StudentManualTransaction({ token }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSelectFile = (e) => {
-        let file = e.target.files[0];
-        setFormData({ ...formData, image: file });
-    };
-
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
@@ -60,7 +51,7 @@ function StudentManualTransaction({ token }) {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/student/manual/transaction/${selectedStudent.id}`,
+                `${BASE_URL}/admin/accounting/teacher/manual/transaction/${selectedTeacher.id}`,
                 {
                     method: "POST",
                     body: fd,
@@ -72,7 +63,7 @@ function StudentManualTransaction({ token }) {
             );
             if (res.ok) {
                 showAlert(true, "success", "اعتبار باموفقیت ثبت شد");
-                router.push("/tkpanel/logUser/profile/accountingCredite");
+                router.push("/tkpanel/teacher/credits");
             } else {
                 const errData = await res.json();
                 showAlert(
@@ -88,11 +79,11 @@ function StudentManualTransaction({ token }) {
         }
     };
 
-    const searchStudents = async (input) => {
+    const searchTeachers = async (input) => {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${input}`,
+                `${BASE_URL}/admin/teacher/search?name=${input}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -104,7 +95,7 @@ function StudentManualTransaction({ token }) {
                 const {
                     data: { data },
                 } = await res.json();
-                setStudents(data);
+                setTeachers(data);
             } else {
                 showAlert(
                     true,
@@ -115,7 +106,7 @@ function StudentManualTransaction({ token }) {
             }
             setLoading(false);
         } catch (error) {
-            console.log("Error searching students", error);
+            console.log("Error searching teachers", error);
         }
     };
 
@@ -128,35 +119,37 @@ function StudentManualTransaction({ token }) {
                 envoker={handleSubmit}
             />
 
-            <Box title="افزایش اعتبار زبان آموز">
+            <Box title="تغییر اعتبار استاد">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">
                         <label htmlFor="student" className="form__label">
-                            زبان آموز :<span className="form__star">*</span>
+                            استاد :<span className="form__star">*</span>
                         </label>
                         <div
                             className={`form-control form-control-searchselect`}
                         >
                             <FetchSearchSelect
                                 list={students}
-                                setList={setStudents}
+                                setList={setTeachers}
                                 placeholder="جستجو کنید"
-                                selected={selectedStudent}
+                                selected={selectedTeacher}
                                 displayKey="family"
                                 displayPattern={[
-                                    { member: true, key: "name_family" },
+                                    { member: true, key: "name" },
+                                    { member: false, key: " " },
+                                    { member: true, key: "family" },
                                     { member: false, key: " - " },
                                     { member: true, key: "mobile" },
                                 ]}
-                                setSelected={setSelectedStudent}
-                                noResText="زبان آموزی پیدا نشد"
-                                listSchema={studentSchema}
+                                setSelected={setSelectedTeacher}
+                                noResText="استادی پیدا نشد"
+                                listSchema={teacherSchema}
                                 stylesProps={{
                                     width: "100%",
                                 }}
                                 background="#fafafa"
                                 fontSize={16}
-                                onSearch={(value) => searchStudents(value)}
+                                onSearch={(value) => searchTeachers(value)}
                             />
                         </div>
                     </div>
@@ -230,19 +223,6 @@ function StudentManualTransaction({ token }) {
                             required
                         />
                     </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="image" className="form__label">
-                            عکس :
-                        </label>
-                        <div className="upload-btn" onChange={handleSelectFile}>
-                            <span>آپلود تصویر</span>
-                            <input
-                                type="file"
-                                className="upload-input"
-                                accept="image/png, image/jpg, image/jpeg"
-                            ></input>
-                        </div>
-                    </div>
 
                     <button
                         type="submit"
@@ -257,4 +237,4 @@ function StudentManualTransaction({ token }) {
     );
 }
 
-export default StudentManualTransaction;
+export default TeacherManualTransaction;

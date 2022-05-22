@@ -6,6 +6,7 @@ import Pagination from "../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
 import {useRouter} from "next/router"
+import {useGlobalContext} from "../../../../../context"
 
 function ChangePrice(props) {
     const {
@@ -28,6 +29,7 @@ function ChangePrice(props) {
     const [loading, setLoading] = useState(false);
     const router = useRouter()
     moment.locale("fa", { useGregorianParser: true });
+    const { formatTime } = useGlobalContext()
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -283,16 +285,16 @@ function ChangePrice(props) {
                                         {price?.user_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {price?.user_mobile}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {price?.teacher_mobile}
+                                        {price?.user_mobile || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {price?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {price?.user_wallet}
+                                        {price?.teacher_mobile || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {`${Intl.NumberFormat().format(price?.user_wallet)} تومان`}
                                     </td>
                                     <td className="table__body-item">
                                         {price?.status === 1 ? "برگزار نشده" : "برگزار شده"}
@@ -314,7 +316,7 @@ function ChangePrice(props) {
                                                 onBlur={(e) =>
                                                     changePriceHandler(
                                                         e,
-                                                        price?.id,
+                                                        price.id,
                                                         i
                                                     )
                                                 }
@@ -323,12 +325,14 @@ function ChangePrice(props) {
                                         </div>
                                     </td>
                                     <td className="table__body-item">
-                                        {price?.time}
+                                        {price.time ? 
+                                            formatTime(price.time)                                
+                                        : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
-                                        {moment(price?.date).format(
+                                        {price.date ? moment(price.date).format(
                                             "YYYY/MM/DD"
-                                        )}
+                                        ) : "-"}
                                     </td>
                                 </tr>
                             ))}

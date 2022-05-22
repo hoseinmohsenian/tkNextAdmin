@@ -5,13 +5,16 @@ import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
+import { useGlobalContext } from "../../../../../../context";
 
 function TodayClass(props) {
     const {
         fetchedClasses: { data, ...restData },
         token,
+        fetchedMeta,
     } = props;
     const [classes, setClasses] = useState(data);
+    const [meta, setMeta] = useState(fetchedMeta);
     const [filters, setFilters] = useState({
         user_name: "",
         teacher_name: "",
@@ -25,6 +28,7 @@ function TodayClass(props) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
+    const { formatTime } = useGlobalContext();
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -75,9 +79,11 @@ function TodayClass(props) {
             );
             const {
                 data: { data, ...restData },
+                meta,
             } = await res.json();
             setClasses(data);
             setPagData(restData);
+            setMeta(meta);
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -311,10 +317,10 @@ function TodayClass(props) {
                                         </div>
                                         <div className="input-radio-wrapper">
                                             <label
-                                                htmlFor="none"
+                                                htmlFor="both"
                                                 className="radio-title"
                                             >
-                                                هیچ کدام
+                                                هردو
                                             </label>
                                             <input
                                                 type="radio"
@@ -324,7 +330,7 @@ function TodayClass(props) {
                                                 checked={
                                                     Number(filters.status) === 0
                                                 }
-                                                id="none"
+                                                id="both"
                                             />
                                         </div>
                                     </div>
@@ -344,6 +350,61 @@ function TodayClass(props) {
                         </div>
                     </form>
                 </div>
+
+                {classes.length !== 0 && (
+                    <div className="row">
+                        <div className={`col-sm-6 col-lg-3 ${styles.card}`}>
+                            <div className={styles.card__box}>
+                                <span className={styles.card__title}>
+                                    تعداد کلاس های امروز
+                                </span>
+                                <span className={styles.card__number}>
+                                    {meta.all_class}
+                                </span>
+                            </div>
+                        </div>
+                        <div className={`col-sm-6 col-lg-2 ${styles.card}`}>
+                            <div className={styles.card__box}>
+                                <span className={styles.card__title}>
+                                    جلسه اولی
+                                </span>
+                                <span className={styles.card__number}>
+                                    {meta.first_class}
+                                </span>
+                            </div>
+                        </div>
+                        <div className={`col-sm-6 col-lg-2 ${styles.card}`}>
+                            <div className={styles.card__box}>
+                                <span className={styles.card__title}>
+                                    برگزار شده
+                                </span>
+                                <span className={styles.card__number}>
+                                    {meta.held_class}
+                                </span>
+                            </div>
+                        </div>
+                        <div className={`col-sm-6 col-lg-2 ${styles.card}`}>
+                            <div className={styles.card__box}>
+                                <span className={styles.card__title}>
+                                    کنسل شده
+                                </span>
+                                <span className={styles.card__number}>
+                                    {meta.cancel_class}
+                                </span>
+                            </div>
+                        </div>
+                        <div className={`col-sm-6 col-lg-3 ${styles.card}`}>
+                            <div className={styles.card__box}>
+                                <span className={styles.card__title}>
+                                    پرداخت نشده
+                                </span>
+                                <span className={styles.card__number}>
+                                    {meta.not_payed_class}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <div className="table__wrapper">
                     <table className="table">
@@ -385,7 +446,11 @@ function TodayClass(props) {
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.user_wallet}
+                                        {item?.user_wallet
+                                            ? `${Intl.NumberFormat().format(
+                                                  item?.user_wallet
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.language_id}
@@ -397,9 +462,10 @@ function TodayClass(props) {
                                         {item?.platform_id}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.status === 1
+                                        {/* {item?.status === 1
                                             ? "فعال"
-                                            : "غیرفعال"}
+                                            : "غیرفعال"} */}
+                                        {item?.status}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.first_class === 1
@@ -412,10 +478,16 @@ function TodayClass(props) {
                                             : "پرداخت نشده"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item.price || "-"}
+                                        {item?.price
+                                            ? `${Intl.NumberFormat().format(
+                                                  item?.price
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.time}
+                                        {item.time && item.time !== "[]"
+                                            ? formatTime(item.time)
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment(item?.date).format(

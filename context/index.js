@@ -106,6 +106,16 @@ const AppProvider = ({ children }) => {
         return hoursArr.map((hour) => times[Number(hour) - 1]);
     };
 
+    const formatTime = (hourString) => {
+        return `${getTime(hourString)[0].startHour}:${
+            getTime(hourString)[0].startMinute
+        }
+            تا 
+        ${getTime(hourString)[getTime(hourString).length - 1].startHour}:${
+            getTime(hourString)[getTime(hourString).length - 1].startMinute
+        }`;
+    };
+
     return (
         <AppContext.Provider
             value={{
@@ -120,6 +130,7 @@ const AppProvider = ({ children }) => {
                 useWindowSize,
                 getTime,
                 times,
+                formatTime,
             }}
         >
             {children}
