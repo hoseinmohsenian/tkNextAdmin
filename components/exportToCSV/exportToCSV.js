@@ -4,7 +4,7 @@ import * as XLSX from "xlsx";
 import { BsDownload } from "react-icons/bs";
 import styles from "./exportToCSV.module.css";
 
-export const ExportCSV = ({ data, fileName, fileExtension }) => {
+export const ExportCSV = ({ data, fileName, fileExtension, onClick }) => {
     const fileType =
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
 
@@ -21,12 +21,19 @@ export const ExportCSV = ({ data, fileName, fileExtension }) => {
         FileSaver.saveAs(blobData, fileName + "." + fileExtension);
     };
 
+    const onClickHandler = () => {
+        exportToCSV(data, fileName);
+        if (onClick) {
+            onClick();
+        }
+    };
+
     return (
         <div className={styles["dl-btn-wrapper"]}>
             <button
                 type="button"
                 className={`btn success ${styles["dl-btn"]}`}
-                onClick={() => exportToCSV(data, fileName)}
+                onClick={onClickHandler}
             >
                 دانلود اکسل &nbsp;
                 <BsDownload />

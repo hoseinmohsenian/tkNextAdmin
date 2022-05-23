@@ -70,14 +70,14 @@ function TikkaaIncome({ token }) {
             let from = "",
                 to = "";
             if (startDate?.year) {
-                from = convertDate(startDate);
+                from = `from=${convertDate(startDate)}&`;
             }
             if (endDate?.year) {
-                to = convertDate(endDate);
+                to = `to=${convertDate(endDate)}`;
             }
 
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/tikkaa/income?from=${from}&to=${to}`,
+                `${BASE_URL}/admin/accounting/tikkaa/income?${from}${to}`,
                 {
                     headers: {
                         "Content-type": "application/json",

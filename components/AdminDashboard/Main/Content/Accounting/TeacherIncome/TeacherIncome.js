@@ -70,13 +70,13 @@ function TeacherIncome({ token }) {
             let from = "",
                 to = "";
             if (startDate?.year) {
-                from = convertDate(startDate);
+                from = `start=${convertDate(startDate)}&`;
             }
             if (endDate?.year) {
-                to = convertDate(endDate);
+                to = `end=${convertDate(endDate)}`;
             }
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/teacher/income?from=${from}&to=${to}`,
+                `${BASE_URL}/admin/accounting/teacher/income?${from}${to}`,
                 {
                     headers: {
                         "Content-type": "application/json",

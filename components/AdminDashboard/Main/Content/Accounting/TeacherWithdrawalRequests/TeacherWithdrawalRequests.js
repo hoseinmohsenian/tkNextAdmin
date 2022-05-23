@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
 import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 import Alert from "../../../../../Alert/Alert";
+import { BsCheckLg } from "react-icons/bs";
 
 function TeacherWithdrawalRequests(props) {
     const {
@@ -164,6 +165,14 @@ function TeacherWithdrawalRequests(props) {
         setRequests(() => updated);
     };
 
+    const handleAcceptWithdrawal = () => {
+        requests.map(async (request, i) => {
+            if (request.selected) {
+                await acceptWithdrawal(request.id, i);
+            }
+        });
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -187,6 +196,7 @@ function TeacherWithdrawalRequests(props) {
                             })}
                         fileName={"Tikkaa__TeacherCheckoutTaxDocument"}
                         fileExtension="xlsx"
+                        onClick={handleAcceptWithdrawal}
                     />
                 )}
 
@@ -210,32 +220,30 @@ function TeacherWithdrawalRequests(props) {
                                     key={request.id}
                                 >
                                     <td className="table__body-item">
-                                        <div className="form-control form-control-radio">
-                                            <div className="input-radio-wrapper">
-                                                <input
-                                                    type="checkbox"
-                                                    id={request.id}
-                                                    name="selected"
-                                                    value="age0"
-                                                    onChange={(e) =>
-                                                        handleOnChange(
-                                                            e.target.checked,
-                                                            i
-                                                        )
-                                                    }
-                                                    checked={
-                                                        requests[i].selected ||
-                                                        false
-                                                    }
-                                                />
-                                                &nbsp;
-                                                <label
-                                                    htmlFor={request.id}
-                                                    className="radio-title"
-                                                >
-                                                    {request.teacher_name}
-                                                </label>
-                                            </div>
+                                        <div className="input-radio-wrapper">
+                                            <input
+                                                type="checkbox"
+                                                id={request.id}
+                                                name="selected"
+                                                value="age0"
+                                                onChange={(e) =>
+                                                    handleOnChange(
+                                                        e.target.checked,
+                                                        i
+                                                    )
+                                                }
+                                                checked={
+                                                    requests[i].selected ||
+                                                    false
+                                                }
+                                            />
+                                            &nbsp;
+                                            <label
+                                                htmlFor={request.id}
+                                                className="radio-title"
+                                            >
+                                                {request.teacher_name}
+                                            </label>
                                         </div>
                                     </td>
                                     <td className="table__body-item">
@@ -257,16 +265,21 @@ function TeacherWithdrawalRequests(props) {
                                         {request.account?.bank_name}
                                     </td>
                                     <td className="table__body-item">
-                                        <button
-                                            type="button"
-                                            className={`action-btn primary`}
-                                            onClick={() =>
-                                                acceptWithdrawal(request.id, i)
-                                            }
-                                            disabled={loadings[i]}
-                                        >
-                                            انجام شده
-                                        </button>
+                                        {!request.pay_time && (
+                                            <button
+                                                type="button"
+                                                className={`action-btn primary`}
+                                                onClick={() =>
+                                                    acceptWithdrawal(
+                                                        request.id,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
+                                            >
+                                                انجام شده
+                                            </button>
+                                        )}
                                         {request.account?.admin_verified ===
                                             0 && (
                                             <button
@@ -290,6 +303,26 @@ function TeacherWithdrawalRequests(props) {
                                                 تایید شماره شبا
                                             </button>
                                         )}
+                                        {request.account?.admin_verified !==
+                                            0 &&
+                                            request.pay_time && (
+                                                <span
+                                                    style={{
+                                                        width: 30,
+                                                        height: 30,
+                                                        borderRadius: "50%",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent:
+                                                            "center",
+                                                        background: "#28a745",
+                                                        color: "white",
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
+                                                    <BsCheckLg />
+                                                </span>
+                                            )}
                                     </td>
                                 </tr>
                             ))}
