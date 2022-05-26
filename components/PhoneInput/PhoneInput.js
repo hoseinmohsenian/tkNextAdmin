@@ -19,6 +19,7 @@ function PhoneInput({
     openBottom = true,
     mobile,
     mobileOnChange,
+    showSelectedPrecode = true,
 }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -111,6 +112,13 @@ function PhoneInput({
                     <span className={styles["phone-input__icon"]}>
                         <IoIosArrowDown />
                     </span>
+                    {showSelectedPrecode && (
+                        <span className={styles["phone-input__precode"]}>
+                            {selectedCountry.code
+                                ? `+${selectedCountry.code}`
+                                : "-"}
+                        </span>
+                    )}
                     <img
                         src={
                             "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Iran.svg/255px-Flag_of_Iran.svg.png"

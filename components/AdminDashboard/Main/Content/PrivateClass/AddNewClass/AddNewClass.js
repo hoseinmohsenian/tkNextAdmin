@@ -4,13 +4,12 @@ import { BASE_URL } from "../../../../../../constants";
 import moment from "jalali-moment";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
-import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import { useRouter } from "next/router";
 import Caresoul from "../../../../../Carousel/Carousel";
 
 const teacherSchema = { id: "", name: "", family: "" };
-const studentSchema = { id: "", name: "", family: "" };
+const studentSchema = { id: "", name_family: "", mobile: "" };
 
 function AddNewClass({ token, languages, platforms, courses }) {
     const [formData, setFormData] = useState({
@@ -139,11 +138,11 @@ function AddNewClass({ token, languages, platforms, courses }) {
         }
     };
 
-    const readStudents = async () => {
+    const searchStudents = async (input) => {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/teacher/student/${selectedTeacher.id}`,
+                `${BASE_URL}/admin/student/search?input=${input}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -152,9 +151,10 @@ function AddNewClass({ token, languages, platforms, courses }) {
                 }
             );
             if (res.ok) {
-                const { data } = await res.json();
+                const {
+                    data: { data },
+                } = await res.json();
                 setStudents(data);
-                showAlert(true, "success", "اکنون زبان آموز را انتخاب کنید");
             } else {
                 showAlert(
                     true,
@@ -237,13 +237,10 @@ function AddNewClass({ token, languages, platforms, courses }) {
 
     useEffect(() => {
         if (selectedTeacher.id) {
-            readStudents();
             readTeacherFreeTime();
         } else {
-            setStudents([]);
             setTeacherFreeTime({});
         }
-        setSelectedStudent(studentSchema);
         setSelectedHours([]);
     }, [selectedTeacher]);
 
@@ -298,21 +295,26 @@ function AddNewClass({ token, languages, platforms, courses }) {
                         <div
                             className={`form-control form-control-searchselect`}
                         >
-                            <SearchSelect
+                            <FetchSearchSelect
                                 list={students}
-                                defaultText="انتخاب کنید"
+                                setList={setStudents}
+                                placeholder="جستجو کنید"
                                 selected={selectedStudent}
                                 displayKey="name_family"
                                 displayPattern={[
                                     { member: true, key: "name_family" },
+                                    { member: false, key: " - " },
+                                    { member: true, key: "mobile" },
                                 ]}
                                 setSelected={setSelectedStudent}
-                                noResText="یافت نشد"
-                                listSchema={{ id: "", name_family: "" }}
+                                noResText="زبان آموزی پیدا نشد"
+                                listSchema={studentSchema}
                                 stylesProps={{
                                     width: "100%",
                                 }}
                                 background="#fafafa"
+                                fontSize={16}
+                                onSearch={(value) => searchStudents(value)}
                                 id="id"
                             />
                         </div>

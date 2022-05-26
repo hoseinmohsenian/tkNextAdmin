@@ -5,6 +5,7 @@ import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
+import { useGlobalContext } from "../../../../../../context/index";
 
 function RequestDetailsList(props) {
     const {
@@ -22,6 +23,7 @@ function RequestDetailsList(props) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
+    const { formatTime } = useGlobalContext();
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -54,6 +56,7 @@ function RequestDetailsList(props) {
         });
 
         try {
+            setLoading(true);
             const res = await fetch(
                 `${BASE_URL}/admin/classroom?${searchQuery}`,
                 {
@@ -72,6 +75,7 @@ function RequestDetailsList(props) {
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
+            setLoading(false);
         } catch (error) {
             console.log("Error reading classes", error);
         }
@@ -205,16 +209,10 @@ function RequestDetailsList(props) {
                                 <th className="table__head-item">
                                     اعتبار زبان آموز
                                 </th>
-                                <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">پلتفرم</th>
                                 <th className="table__head-item">کورس</th>
-                                <th className="table__head-item">
-                                    وضعیت درخواست
-                                </th>
                                 <th className="table__head-item">
                                     وضعیت پرداخت
                                 </th>
-                                <th className="table__head-item">جلسه اول</th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">ساعت</th>
                                 <th className="table__head-item">ساعت کلاس</th>
@@ -228,7 +226,7 @@ function RequestDetailsList(props) {
                                         {item?.user_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.user_mobile}
+                                        {item?.user_mobile || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.teacher_name}
@@ -239,28 +237,12 @@ function RequestDetailsList(props) {
                                         )} تومان`}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.platform_name}
-                                    </td>
-                                    <td className="table__body-item">
                                         {item?.course_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.status === 1
-                                            ? "فعال"
-                                            : "غیرفعال"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.pay === 1
                                             ? "پرداخت شده"
                                             : "پرداخت نشده"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.first_class === 1
-                                            ? "است"
-                                            : "نیست"}
                                     </td>
                                     <td className="table__body-item">
                                         {item.price
@@ -270,10 +252,14 @@ function RequestDetailsList(props) {
                                             : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.time}
+                                        {item.time
+                                            ? formatTime(item.time)
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.class_time || "-"}
+                                        {item?.class_time
+                                            ? `${item?.class_time} دقیقه`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment(item?.date).format(

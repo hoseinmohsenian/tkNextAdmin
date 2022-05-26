@@ -18,6 +18,9 @@ export default NotPaidClassesPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const { page } = context?.query;
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    let searchParams = "";
 
     if (!token) {
         return {
@@ -28,8 +31,14 @@ export async function getServerSideProps(context) {
         };
     }
 
+    if (isKeyValid(page)) {
+        if (Number(page) > 0) {
+            searchParams += `page=${page}`;
+        }
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/classroom/not-payed`, {
+        fetch(`${BASE_URL}/admin/classroom/not-payed?${searchParams}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

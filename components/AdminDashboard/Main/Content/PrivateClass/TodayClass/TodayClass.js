@@ -429,6 +429,7 @@ function TodayClass(props) {
                                     وضعیت پرداخت
                                 </th>
                                 <th className="table__head-item">قیمت</th>
+                                <th className="table__head-item">مدت کلاس</th>
                                 <th className="table__head-item">زمان کلاس</th>
                                 <th className="table__head-item">تاریخ کلاس</th>
                             </tr>
@@ -483,6 +484,9 @@ function TodayClass(props) {
                                                   item?.price
                                               )} تومان`
                                             : "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item.time ? `${item.time} دقیقه` : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item.time && item.time !== "[]"

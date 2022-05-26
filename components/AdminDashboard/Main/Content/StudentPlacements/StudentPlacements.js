@@ -3,16 +3,17 @@ import Box from "../Elements/Box/Box";
 import { BASE_URL } from "../../../../../constants";
 import FetchSearchSelect from "../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./StudentPlacements.module.css";
-import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
 
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
-function StudentPlacements({ token }) {
+function StudentPlacements({ token, levels }) {
     const [placements, setPlacements] = useState([]);
     const [students, setStudents] = useState([]);
+    const [formData, setFormData] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState(studentSchema);
     const [loading, setLoading] = useState(false);
+    const [loadings, setLoadings] = useState([]);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -78,6 +79,8 @@ function StudentPlacements({ token }) {
             if (res.ok) {
                 const { data } = await res.json();
                 setPlacements(data);
+                setFormData(data);
+                setLoadings(Array(data?.length).fill(false));
             } else {
                 const errData = await res.json();
                 showAlert(
@@ -90,6 +93,54 @@ function StudentPlacements({ token }) {
             setLoading(false);
         } catch (error) {
             console.log("Error reading placements", error);
+        }
+    };
+
+    const handleOnChange = (e, rowInd, name) => {
+        let updated = [...formData];
+        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
+        setFormData(() => updated);
+    };
+
+    const loadingsHandler = (i, state) => {
+        let temp = [...loadings];
+        temp[i] = state;
+        setLoadings(() => temp);
+    };
+
+    const editPlacement = async (body, id, i) => {
+        loadingsHandler(i, true);
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/student/placement/${id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ ...body }),
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                showAlert(true, "success", "تعیین سطح ویرایش شد");
+            } else {
+                showAlert(true, "warning", "مشکلی پیش آمده");
+            }
+            loadingsHandler(i, false);
+        } catch (error) {
+            console.log("Error editing placement", error);
+        }
+    };
+
+    const editHandler = async (e, placement_id, prop, i) => {
+        if (e.target.value !== placements[i]?.desc) {
+            const value = e.target.value;
+            await editPlacement({ [prop]:value }, placement_id, i);
+            let temp = [...placements];
+            temp[i]?.[prop] = value;
+            setPlacements(() => temp);
         }
     };
 
@@ -166,20 +217,15 @@ function StudentPlacements({ token }) {
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">سطح</th>
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">سطح تدریس</th>
                                 <th className="table__head-item">توضیحات</th>
-                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {placements?.map((user) => (
+                            {placements?.map((user, i) => (
                                 <tr className="table__body-row" key={user?.id}>
-                                    <td className="table__body-item">
-                                        {user.level_name || "-"}
-                                    </td>
                                     <td className="table__body-item">
                                         {user.teacher_name || "-"}
                                     </td>
@@ -187,19 +233,62 @@ function StudentPlacements({ token }) {
                                         {user.language.persian_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {user.level_name || "-"}
+                                        <div className="form-control" style={{margin:0}}>
+                                            <select
+                                                name="teaching_level_id"
+                                                className="form__input input-select"
+                                                onChange={(e) =>
+                                                    {
+                                                        handleOnChange(e, i, "teaching_level_id")
+                                                        editHandler(
+                                                            e,
+                                                            user?.id,
+                                                            "teaching_level_id",
+                                                            i
+                                                        )
+                                                    }
+                                                }
+                                                value={formData[i]?.teaching_level_id}
+                                                disabled={loadings[i]}
+                                            >
+                                                {levels.map((level) => (
+                                                    <option key={level.id} value={level.id}>
+                                                        {level?.persian_name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                     </td>
                                     <td className="table__body-item">
-                                        {user.desc || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <Link
-                                            href={`/tkpanel/profileDetermineLevel/${user?.id}/edit`}
+                                        <div
+                                            className="form-control"
+                                            style={{
+                                                width: "130px",
+                                                margin: 0,
+                                            }}
                                         >
-                                            <a className={`action-btn warning`}>
-                                                ویرایش
-                                            </a>
-                                        </Link>
+                                            <input
+                                                type="text"
+                                                name="desc"
+                                                id="desc"
+                                                className="form__input"
+                                                onChange={(e) =>
+                                                    handleOnChange(e, i, "desc")
+                                                }
+                                                value={formData[i]?.desc || ""}
+                                                onBlur={(e) =>
+                                                    editHandler(
+                                                        e,
+                                                        user?.id,
+                                                        "desc"
+                                                        ,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
+                                                spellCheck={false}
+                                            />
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -208,7 +297,7 @@ function StudentPlacements({ token }) {
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
-                                        colSpan={6}
+                                        colSpan={5}
                                     >
                                         تعیین سطحی پیدا نشد
                                     </td>

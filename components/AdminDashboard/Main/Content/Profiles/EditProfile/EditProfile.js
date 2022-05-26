@@ -34,7 +34,7 @@ function EditProfile({ token, student, countries }) {
     const [selectedProvince, setSelectedProvince] = useState(provinceSchema);
     const [selectedCity, setSelectedCity] = useState(citySchema);
     const [selectedPreCode, setSelectedPreCode] = useState({
-        id: 89,
+        id: 88,
         name_fa: "ایران",
         name_en: "Iran",
         code: "98",

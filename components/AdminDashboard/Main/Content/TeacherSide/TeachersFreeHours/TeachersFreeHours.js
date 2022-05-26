@@ -434,7 +434,7 @@ function TeachersFreeHours({ token, languages }) {
                                     </td>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`/teachers/${teacher?.slug}`}
+                                            href={`https://barmansms.ir/teachers/${teacher?.id}`}
                                         >
                                             <a className={`action-btn primary`}>
                                                 پروفایل استاد‌

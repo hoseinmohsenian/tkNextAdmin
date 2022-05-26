@@ -356,7 +356,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                 <th className="table__head-item">موبایل</th>
                                 <th className="table__head-item">ایمیل</th>
                                 <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
                                 <th className="table__head-item">استپ</th>
                                 <th className="table__head-item">کمیسیون</th>
@@ -394,11 +393,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                         {teacher?.language_name?.length === 0 && (
                                             <span>-</span>
                                         )}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {teacher?.status === 1
-                                            ? "فعال"
-                                            : "غیر فعال"}
                                     </td>
                                     <td className="table__body-item">
                                         <div className="form-control" style={{width:"130px",margin:0}}>

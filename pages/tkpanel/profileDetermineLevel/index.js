@@ -1,13 +1,14 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import StudentPlacements from "../../../components/AdminDashboard/Main/Content/StudentPlacements/StudentPlacements";
 import Header from "../../../components/Head/Head";
+import { BASE_URL } from "../../../constants/index";
 
-function PlacementsPage({ token }) {
+function PlacementsPage({ token, levels }) {
     return (
         <div>
             <Header title="تعیین سطح زبان آموزان | تیکا"></Header>
             <AdminDashboard>
-                <StudentPlacements token={token} />
+                <StudentPlacements token={token} levels={levels} />
             </AdminDashboard>
         </div>
     );
@@ -27,7 +28,21 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const responses = await Promise.all([
+        fetch(`${BASE_URL}/data/level`, {
+            headers: {
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
+    ]);
+
+    const dataArr = await Promise.all(responses.map((res) => res.json()));
+
     return {
-        props: { token },
+        props: {
+            levels: dataArr[0].data,
+            token,
+        },
     };
 }

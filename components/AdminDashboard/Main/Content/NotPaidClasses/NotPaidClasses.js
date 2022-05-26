@@ -1,11 +1,11 @@
 import { useState } from "react";
-import Link from "next/link";
 import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
+import { useGlobalContext } from "../../../../../context/index";
 
 function NotPaidClasses(props) {
     const {
@@ -13,6 +13,7 @@ function NotPaidClasses(props) {
         token,
     } = props;
     const [classes, setClasses] = useState(data);
+    const [formData, setFormData] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
@@ -22,6 +23,7 @@ function NotPaidClasses(props) {
         type: "",
     });
     moment.locale("fa", { useGregorianParser: true });
+    const { formatTime } = useGlobalContext();
 
     const readClasses = async (page = 1) => {
         let searchParams = {};
@@ -39,13 +41,16 @@ function NotPaidClasses(props) {
         });
 
         try {
-            const res = await fetch(`${BASE_URL}/admin/classroom/not-payed`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
+            const res = await fetch(
+                `${BASE_URL}/admin/classroom/not-payed?page=${page}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
             const {
                 data: { data, ...restData },
             } = await res.json();
@@ -63,15 +68,39 @@ function NotPaidClasses(props) {
         setAlertData({ show, type, message });
     };
 
-    const changeStatus = async (class_id, status, i) => {
-        loadingHandler(i, true);
+    const loadingHandler = (ind, value) => {
+        let temp = [...loadings];
+        temp[ind] = value;
+        setLoadings(() => temp);
+    };
 
+    const handleOnChange = (e, rowInd, name) => {
+        let updated = [...formData];
+        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
+        setFormData(() => updated);
+    };
+
+    const changePriceHandler = async (e, class_id, i) => {
+        if (
+            Number(e.target.value) !== classes[i]?.price &&
+            e.target.value
+        ) {
+            await changePrice(e, class_id, i);
+            let temp = [...classes];
+            temp[i]?.price = Number(e.target.value);
+            setClasses(() => temp);
+        }
+    };
+
+    const changePrice = async (e, class_id, i) => {
         try {
+            loadingHandler(i, true);
+
             const res = await fetch(
-                `${BASE_URL}/admin/semi-private/${class_id}`,
+                `${BASE_URL}/admin/classroom/change-price/${class_id}`,
                 {
                     method: "POST",
-                    body: JSON.stringify({ status: status === 0 ? 1 : 0 }),
+                    body: JSON.stringify({ price: e.target.value }),
                     headers: {
                         "Content-type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -80,24 +109,14 @@ function NotPaidClasses(props) {
                 }
             );
             if (res.ok) {
-                let message = `این کلاس ${
-                    status === 0 ? "فعال" : "غیرفعال"
-                } شد`;
-                showAlert(true, status === 0 ? "success" : "warning", message);
-                let updated = [...classes];
-                updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
-                setClasses(() => updated);
+                let message = `قیمت به ${e.target.value} تومان تغییر کرد`;
+                showAlert(true, "success", message);
             }
+
             loadingHandler(i, false);
         } catch (error) {
-            console.log("Error changing status", error);
+            console.log("Error changing price", error);
         }
-    };
-
-    const loadingHandler = (ind, value) => {
-        let temp = [...loadings];
-        temp[ind] = value;
-        setLoadings(() => temp);
     };
 
     return (
@@ -106,7 +125,7 @@ function NotPaidClasses(props) {
             <Alert
                 {...alertData}
                 removeAlert={showAlert}
-                envoker={changeStatus}
+                envoker={changePriceHandler}
             />
 
             <Box title="لیست کلاس های پرداخت نشده">
@@ -122,83 +141,87 @@ function NotPaidClasses(props) {
                                     اعتبار زبان آموز
                                 </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">وضعیت کلاس</th>
+                                <th className="table__head-item">
+                                    وضعیت استاد
+                                </th>
                                 <th className="table__head-item">
                                     وضعیت پرداخت
                                 </th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">تاریخ کلاس</th>
                                 <th className="table__head-item">زمان کلاس</th>
-                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((cls, i) => (
-                                <tr className="table__body-row" key={cls.id}>
+                            {classes?.map((item, i) => (
+                                <tr className="table__body-row" key={item.id}>
                                     <td className="table__body-item">
-                                        {cls.user_name}
+                                        {item.user_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.mobile}
+                                        {item.user_mobile}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.credit}
+                                        {typeof item.user_wallet === "number"
+                                            ? `${Intl.NumberFormat().format(
+                                                  item.user_wallet
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.teacher_name}
+                                        {item.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.status === 1 ? "ac sts" : "ds sts"}
+                                        {item?.status === 1
+                                                ? "غیرفعال"
+                                                : "فعال"}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.payment === 1
-                                            ? "پایان یافته"
-                                            : "درحال برگزاری"}
+                                        {item.pay === 1
+                                            ? "پرداخت شده"
+                                            : "پرداخت نشده"}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.price}
+                                    <div className="form-control" style={{width:"100px",margin:0}}>
+                                            <input
+                                                type="number"
+                                                name="price"
+                                                id="price"
+                                                className="form__input form__input--ltr"
+                                                onChange={(e) =>
+                                                    handleOnChange(
+                                                        e,
+                                                        i,
+                                                        "price"
+                                                    )
+                                                }
+                                                value={formData[i]?.price || ""}
+                                                onBlur={(e) =>
+                                                    changePriceHandler(
+                                                        e,
+                                                        item?.id,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
+                                                autoComplete="off"
+                                                spellCheck={false}
+                                            />
+                                            تومان
+                                        </div>
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
                                             .from(
-                                                cls.date,
+                                                item.date,
                                                 "en",
-                                                "YYYY/MM/DD hh:mm:ss"
+                                                "YYYY/MM/DD"
                                             )
                                             .locale("fa")
-                                            .format("YYYY/MM/DD hh:mm:ss")}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {cls.time}
+                                            .format("YYYY/MM/DD")}
                                     </td>
                                     <td className="table__body-item">
-                                        <Link
-                                            href={`/tkpanel/semi-private-admin/${cls?.id}/edit`}
-                                        >
-                                            <a className={`action-btn primary`}>
-                                                ویرایش&nbsp;
-                                            </a>
-                                        </Link>
-                                        <button
-                                            type="button"
-                                            className={`action-btn ${
-                                                cls?.status === 1
-                                                    ? "danger"
-                                                    : "success"
-                                            }`}
-                                            onClick={() =>
-                                                changeStatus(
-                                                    cls?.id,
-                                                    cls?.status,
-                                                    i
-                                                )
-                                            }
-                                            disabled={loadings[i]}
-                                        >
-                                            {cls?.status === 1
-                                                ? "غیرفعال"
-                                                : "فعال"}
-                                        </button>
+                                        {item.time ? formatTime(item.time) : "-"}
                                     </td>
                                 </tr>
                             ))}
