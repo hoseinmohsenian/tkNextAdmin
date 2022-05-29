@@ -11,19 +11,21 @@ import Caresoul from "../../../../../Carousel/Carousel";
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name_family: "", mobile: "" };
 
-function AddNewClass({ token, languages, platforms, courses }) {
+function AddNewClass({ token, platforms, courses }) {
     const [formData, setFormData] = useState({
         language_id: 1,
         course_id: 1,
         platform_id: 1,
         time: 30,
         data: {},
+        price: 0,
     });
     const [teachers, setTeachers] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [students, setStudents] = useState([]);
     const [selectedHours, setSelectedHours] = useState([]);
     const [teacherFreeTime, setTeacherFreeTime] = useState({});
+    const [languages, setLanguages] = useState([]);
     const [selectedStudent, setSelectedStudent] = useState({
         id: "",
         name_family: "",
@@ -62,6 +64,9 @@ function AddNewClass({ token, languages, platforms, courses }) {
                 time: Number(formData.time),
                 platform_id: Number(formData.platform_id),
             };
+            if (Number(formData.price)) {
+                body = { ...body, price: Number(formData.price) };
+            }
 
             let modifyhour = selectedHours.map((item) => ({
                 date: moment(
@@ -235,13 +240,46 @@ function AddNewClass({ token, languages, platforms, courses }) {
         }
     };
 
+    const readTeacherLanguages = async () => {
+        setLoading(true);
+
+        try {
+            const res = await fetch(
+                `${BASE_URL}/data/teacher/language?teacher_id=${selectedTeacher.id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                const { data } = await res.json();
+                setLanguages(data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+            setLoading(false);
+        } catch (error) {
+            console.log("Error reading teacher languages", error);
+        }
+    };
+
     useEffect(() => {
         if (selectedTeacher.id) {
             readTeacherFreeTime();
+            readTeacherLanguages();
         } else {
             setTeacherFreeTime({});
+            setLanguages([]);
         }
         setSelectedHours([]);
+        setFormData({ ...formData, language_id: 0 });
     }, [selectedTeacher]);
 
     return (
@@ -333,6 +371,7 @@ function AddNewClass({ token, languages, platforms, courses }) {
                                 value={formData.language_id}
                                 required
                             >
+                                <option value={0}>انتخاب کنید</option>
                                 {languages?.map((lan) => (
                                     <option key={lan?.id} value={lan?.id}>
                                         {lan?.persian_name}
@@ -407,6 +446,22 @@ function AddNewClass({ token, languages, platforms, courses }) {
                                 <option value={90}>90 دقیقه</option>
                                 <option value={120}>120 دقیقه</option>
                             </select>
+                        </div>
+                    </div>
+
+                    <div className="input-wrapper">
+                        <label htmlFor="price" className="form__label">
+                            قیمت :
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="number"
+                                name="price"
+                                id="price"
+                                className="form__input form__input--ltr"
+                                onChange={handleOnChange}
+                                value={formData.price}
+                            />
                         </div>
                     </div>
 

@@ -98,14 +98,14 @@ function ChangePrice(props) {
         }
     };
 
-    const changePrice = async (e, price_id, i) => {
+    const changePrice = async (value, price_id, i) => {
         try {
 
             const res = await fetch(
                 `${BASE_URL}/admin/classroom/change-price/${price_id}`,
                 {
                     method: "POST",
-                    body: JSON.stringify({ price: e.target.value }),
+                    body: JSON.stringify({ price: Number(value) }),
                     headers: {
                         "Content-type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -114,24 +114,31 @@ function ChangePrice(props) {
                 }
             );
             if (res.ok) {
-                let message = `قیمت به ${e.target.value} تومان تغییر کرد`;
+                let message = `قیمت به ${Intl.NumberFormat().format(Number(value))} تومان تغییر کرد`;
                 showAlert(true, "success", message);
+            }
+            else{
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message
+                );
             }
         } catch (error) {
             console.log("Error changing price", error);
         }
     };
 
-    const changePriceHandler = async (e, price_id, i) => {
-        if (
-            Number(e.target.value) !== prices[i]?.price &&
-            e.target.value
-        ) {
-            await changePrice(e, price_id, i);
+    const changePriceHandler = async (value, price_id, i) => {
+        if (Number(value) !== prices[i]?.price && value) {
+            await changePrice(value, price_id, i);
             let temp = [...prices];
-            temp[i]?.price = Number(e.target.value);
+            temp[i]?.price = value;
             setPrices(() => temp);
+            console.log(value);
         }
+        console.log("here");
     };
 
     return (
@@ -302,20 +309,25 @@ function ChangePrice(props) {
                                     <td className="table__body-item">
                                         <div className="form-control" style={{width:"60px",margin:0}}>
                                             <input
-                                                type="number"
+                                                type="text"
                                                 name="price"
                                                 id="price"
-                                                className="form__input"
+                                                className="form__input form__input--ltr"
                                                 onChange={(e) =>
                                                     priceOnChange(
                                                         e,
                                                         i,
                                                     )
                                                 }
-                                                value={prices[i]?.price || ""}
+                                                value={
+                                                    typeof prices[i]?.price === "number" ?
+                                                    Intl.NumberFormat().format(prices[i]?.price) : 
+                                                    Intl.NumberFormat().format(prices[i]?.price.replace(/,/g, "")) 
+                                                        || ""
+                                                }
                                                 onBlur={(e) =>
                                                     changePriceHandler(
-                                                        e,
+                                                        e.target.value.replace(/,/g, ""),
                                                         price.id,
                                                         i
                                                     )

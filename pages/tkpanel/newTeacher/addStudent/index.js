@@ -3,14 +3,13 @@ import AddNewClass from "../../../../components/AdminDashboard/Main/Content/Priv
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
 
-function MultiSessionPage({ token, languages, platforms, courses }) {
+function MultiSessionPage({ token, platforms, courses }) {
     return (
         <div>
             <Header title="ایجاد کلاس جدید | تیکا"></Header>
             <AdminDashboard>
                 <AddNewClass
                     token={token}
-                    languages={languages}
                     platforms={platforms}
                     courses={courses}
                 />
@@ -34,12 +33,6 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/data/language`, {
-            headers: {
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }),
         fetch(`${BASE_URL}/admin/platform`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -60,9 +53,8 @@ export async function getServerSideProps(context) {
     return {
         props: {
             token,
-            languages: dataArr[0].data,
-            platforms: dataArr[1].data,
-            courses: dataArr[2].data,
+            platforms: dataArr[0].data,
+            courses: dataArr[1].data,
         },
     };
 }

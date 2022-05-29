@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Alert from "../../../../Alert/Alert";
+import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../constants";
-import Box from "../Elements/Box/Box";
+import { BASE_URL } from "../../../../../../constants";
+import Box from "../../Elements/Box/Box";
 
 function EditCourse({ token, course }) {
     const [formData, setFormData] = useState(course);
@@ -31,7 +31,10 @@ function EditCourse({ token, course }) {
                 fd.append("type", formData.type);
             }
             if (Number(formData.number) !== course?.number) {
-                fd.append("number", formData.number);
+                fd.append("number", Number(formData.number));
+            }
+            if (Number(formData.discount) !== course?.discount) {
+                fd.append("discount", Number(formData.discount));
             }
             if (Number(formData.status) !== course?.status) {
                 fd.append("status", formData.status);
@@ -101,9 +104,7 @@ function EditCourse({ token, course }) {
                                 className="form__input"
                                 onChange={handleOnChange}
                                 value={formData?.name}
-                                autoComplete="off"
                                 spellCheck={false}
-                                required
                             />
                         </div>
                     </div>
@@ -116,12 +117,26 @@ function EditCourse({ token, course }) {
                                 type="number"
                                 name="number"
                                 id="number"
-                                className="form__input"
+                                className="form__input form__input--ltr"
                                 onChange={handleOnChange}
-                                value={formData?.number}
-                                autoComplete="off"
+                                value={formData?.number || ""}
                                 spellCheck={false}
-                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="discount" className="form__label">
+                            تخفیف :
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="number"
+                                name="discount"
+                                id="discount"
+                                className="form__input form__input--ltr"
+                                onChange={handleOnChange}
+                                value={formData?.discount || ""}
+                                spellCheck={false}
                             />
                         </div>
                     </div>

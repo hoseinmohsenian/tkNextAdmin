@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Alert from "../../../../Alert/Alert";
+import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../constants";
-import Box from "../Elements/Box/Box";
+import { BASE_URL } from "../../../../../../constants";
+import Box from "../../Elements/Box/Box";
 
 function CreateCourse({ token }) {
     const [formData, setFormData] = useState({

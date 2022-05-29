@@ -454,19 +454,21 @@ function TodayClass(props) {
                                             : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_id}
+                                        {item?.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.course_id}
+                                        {item?.course_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.platform_id}
+                                        {item?.platform_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {/* {item?.status === 1
-                                            ? "فعال"
-                                            : "غیرفعال"} */}
-                                        {item?.status}
+                                        {item?.status === 0 &&
+                                            "تعیین وضعیت نشده"}
+                                        {item?.status === 1 && "برگزار شده"}
+                                        {item?.status === 2 && "کنسل شده"}
+                                        {item?.status === 3 && "لغو بازگشت پول"}
+                                        {item?.status === 4 && "غیبت"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.first_class === 1
@@ -486,7 +488,9 @@ function TodayClass(props) {
                                             : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item.time ? `${item.time} دقیقه` : "-"}
+                                        {item.class_time
+                                            ? `${item.class_time} دقیقه`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item.time && item.time !== "[]"

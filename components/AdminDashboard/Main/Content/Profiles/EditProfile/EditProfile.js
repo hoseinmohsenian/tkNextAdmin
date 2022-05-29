@@ -84,6 +84,16 @@ function EditProfile({ token, student, countries }) {
             ) {
                 fd.append("second_mobile_country", `+${selectedPreCode2.code}`);
             }
+            if (
+                Number(formData.second_mobile_type) !== 0 &&
+                Number(formData.second_mobile_type) !==
+                    student.second_mobile_type
+            ) {
+                fd.append(
+                    "second_mobile_type",
+                    Number(formData.second_mobile_type)
+                );
+            }
             if (formData.email && formData.email !== student.email) {
                 fd.append("email", formData.email);
             }

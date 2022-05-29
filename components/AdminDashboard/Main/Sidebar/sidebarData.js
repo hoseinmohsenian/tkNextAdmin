@@ -1,45 +1,53 @@
-import { FaUserGraduate } from "react-icons/fa";
-import { FaUserPlus } from "react-icons/fa";
+import {
+    FaUserGraduate,
+    FaUserPlus,
+    FaUserSecret,
+    FaChalkboardTeacher,
+    FaUserMinus,
+    FaSearch,
+    FaPlusCircle,
+    FaMoneyBill,
+    FaChartArea,
+    FaCommentDots,
+    FaListUl,
+    FaListAlt,
+    FaRegMoneyBillAlt,
+    FaLevelUpAlt,
+    FaQuestionCircle,
+} from "react-icons/fa";
 import { IoIosListBox } from "react-icons/io";
-import { FaUserSecret } from "react-icons/fa";
-import { FaChalkboardTeacher } from "react-icons/fa";
-import { FaUserMinus } from "react-icons/fa";
-import { FaSearch } from "react-icons/fa";
-import { MdSchool } from "react-icons/md";
-import { FaPlusCircle } from "react-icons/fa";
+import {
+    MdSchool,
+    MdOutlineMonitor,
+    MdAccountBalance,
+    MdOutlineManageAccounts,
+    MdPayment,
+    MdPriceChange,
+    MdOutlineContentPaste,
+    MdDescription,
+    MdFolderSpecial,
+    MdGolfCourse,
+    MdCategory,
+} from "react-icons/md";
 import { GrStatusWarningSmall } from "react-icons/gr";
-import { FaMoneyBill } from "react-icons/fa";
-import { IoToday } from "react-icons/io5";
-import { FaChartArea } from "react-icons/fa";
-import { AiTwotoneUnlock } from "react-icons/ai";
-import { MdOutlineMonitor } from "react-icons/md";
-import { IoCheckmarkDoneSharp } from "react-icons/io5";
-import { BiSupport } from "react-icons/bi";
-import { AiFillInteraction } from "react-icons/ai";
-import { BiGitPullRequest } from "react-icons/bi";
-import { FaCommentDots } from "react-icons/fa";
-import { FaListUl } from "react-icons/fa";
-import { MdAccountBalance } from "react-icons/md";
-import { MdPayment } from "react-icons/md";
-import { FaListAlt } from "react-icons/fa";
+import {
+    IoToday,
+    IoCheckmarkDoneSharp,
+    IoPulseOutline,
+    IoLanguage,
+} from "react-icons/io5";
+import {
+    AiTwotoneUnlock,
+    AiFillInteraction,
+    AiOutlinePercentage,
+} from "react-icons/ai";
+import { BiSupport, BiGitPullRequest, BiTable } from "react-icons/bi";
 import { BsArrowRepeat } from "react-icons/bs";
-import { MdPriceChange } from "react-icons/md";
-import { FaRegMoneyBillAlt } from "react-icons/fa";
-import { MdOutlineContentPaste } from "react-icons/md";
-import { IoPulseOutline } from "react-icons/io5";
-import { IoLanguage } from "react-icons/io5";
-import { MdDescription } from "react-icons/md";
-import { MdFolderSpecial } from "react-icons/md";
-import { GiSkills } from "react-icons/gi";
-import { FaLevelUpAlt } from "react-icons/fa";
-import { MdGolfCourse } from "react-icons/md";
-import { RiTestTubeFill } from "react-icons/ri";
-import { GiDirectionSign } from "react-icons/gi";
-import { FaQuestionCircle } from "react-icons/fa";
-import { MdCategory } from "react-icons/md";
-import { RiArticleFill } from "react-icons/ri";
+import { GiSkills, GiDirectionSign, GiLogicGateAnd } from "react-icons/gi";
+import { RiArticleFill, RiAdminLine } from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
-import { FiPercent } from "react-icons/fi";
+import { FiPercent, FiUserX } from "react-icons/fi";
+import { GoReport } from "react-icons/go";
 
 export default [
     {
@@ -501,6 +509,43 @@ export default [
                 title: "پین کردن استاد",
                 path: "/tkpanel/pinTeacher",
                 icon: <BsPinAngleFill />,
+            },
+        ],
+    },
+    {
+        title: "مدیریت سایت",
+        icon: <MdOutlineManageAccounts />,
+        path: "#",
+        subNav: [
+            {
+                title: "لیست کوپن های تخفیف",
+                path: "/tkpanel/copens",
+                icon: <AiOutlinePercentage />,
+            },
+            {
+                title: "گزارش گیری استاد",
+                path: "/tkpanel/report/teachers",
+                icon: <GoReport />,
+            },
+            {
+                title: "لیست جدول در کوئری",
+                path: "/tkpanel/database/query/building",
+                icon: <BiTable />,
+            },
+            {
+                title: "لاگ سیستم",
+                path: "/tkpanel/logReport/show",
+                icon: <GiLogicGateAnd />,
+            },
+            {
+                title: "لیست ادمین ها",
+                path: "/tkpanel/users",
+                icon: <RiAdminLine />,
+            },
+            {
+                title: "لیست سیاه کاربران",
+                path: "/tkpanel/blackLists",
+                icon: <FiUserX />,
             },
         ],
     },

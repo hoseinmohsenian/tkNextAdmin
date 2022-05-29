@@ -153,16 +153,10 @@ function GroupClass(props) {
                                 <th className="table__head-item">عنوان</th>
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان‌</th>
-                                <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">نمایش</th>
                                 <th className="table__head-item">کمیسیون</th>
                                 <th className="table__head-item">مدت کلاس</th>
-                                <th className="table__head-item">ظرفیت کلاس</th>
-                                <th className="table__head-item">شماره کلاس</th>
+                                <th className="table__head-item">ظرفیت</th>
                                 <th className="table__head-item">تاریخ شروع</th>
-                                <th className="table__head-item">
-                                    تاریخ ایجاد
-                                </th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -178,12 +172,6 @@ function GroupClass(props) {
                                     <td className="table__body-item">
                                         {cls.language_name}
                                     </td>
-                                    <td className="table__body-item">
-                                        {cls.status === 1 ? "فعال" : "غیرفعال"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {cls.show === 1 ? "نمایش" : "عدم نمایش"}
-                                    </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {cls.commission}%
                                     </td>
@@ -191,10 +179,7 @@ function GroupClass(props) {
                                         {cls.session_time} دقیقه
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.class_capacity}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {cls.class_number}
+                                        {cls.class_capacity} نفر
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {cls.start_date
@@ -209,16 +194,6 @@ function GroupClass(props) {
                                                   .locale("fa")
                                                   .format("YYYY/MM/DD")
                                             : "-"}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {moment
-                                            .from(
-                                                cls.created_at,
-                                                "en",
-                                                "YYYY/MM/DD hh:mm:ss"
-                                            )
-                                            .locale("fa")
-                                            .format("YYYY/MM/DD hh:mm:ss")}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

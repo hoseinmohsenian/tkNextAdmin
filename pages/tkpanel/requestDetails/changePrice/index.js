@@ -28,22 +28,21 @@ export async function getServerSideProps(context) {
         };
     }
 
-    // const responses = await Promise.all([
-    //     fetch(`${BASE_URL}/admin/classroom/change-price`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`,
-    //             "Content-type": "application/json",
-    //             "Access-Control-Allow-Origin": "*",
-    //         },
-    //     }),
-    // ]);
+    const responses = await Promise.all([
+        fetch(`${BASE_URL}/admin/classroom/change-price`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
+    ]);
 
-    // const dataArr = await Promise.all(responses.map((res) => res.json()));
+    const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
         props: {
-            // pirces: dataArr[0].data,
-            pirces: { data: [], current_page: 1, first_page_url: "" },
+            pirces: dataArr[0].data,
             token,
         },
     };

@@ -105,13 +105,6 @@ function Courses({ fetchedCourses, token }) {
                                     </td>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`/content/course/${crs?.id}`}
-                                        >
-                                            <a className={`action-btn primary`}>
-                                                افزودن&nbsp;
-                                            </a>
-                                        </Link>
-                                        <Link
                                             href={`/content/course/${crs?.id}/edit`}
                                         >
                                             <a className={`action-btn warning`}>

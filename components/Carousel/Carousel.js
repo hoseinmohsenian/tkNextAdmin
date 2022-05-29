@@ -137,8 +137,6 @@ function Caresoul(props) {
                     setCheckTrial(true);
                 } else {
                     let siblingsCount = Number(duration) / 0.5;
-                    // let siblingsCount = (Number(duration) / 60)*2;
-                    let validate = true;
 
                     while (siblingsCount--) {
                         if (siblingsCount === 3) {
@@ -180,9 +178,6 @@ function Caresoul(props) {
                                 styles["caresoul__item-hour--active"]
                             );
                         }
-                        // let sibling = e.currentTarget?.nextSibling;
-                        // console.log(e.currentTarget?.nextSibling.nextSibling)
-                        // sibling.classList.add(styles["caresoul__item-hour--active"]);
                     }
                 }
             }
