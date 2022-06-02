@@ -1,14 +1,13 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateSemiPrivate from "../../../../components/AdminDashboard/Main/Content/SemiPrivate/Create/Create";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 
-function GroupClassPage({ languages, token }) {
+function GroupClassPage({ token }) {
     return (
         <>
             <Header title="کلاس نیمه خصوصی جدید |‌ تیکا"></Header>
             <AdminDashboard>
-                <CreateSemiPrivate languages={languages} token={token} />
+                <CreateSemiPrivate token={token} />
             </AdminDashboard>
         </>
     );
@@ -28,20 +27,8 @@ export async function getServerSideProps(context) {
         };
     }
 
-    const responses = await Promise.all([
-        fetch(`${BASE_URL}/data/language`, {
-            headers: {
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }),
-    ]);
-
-    const dataArr = await Promise.all(responses.map((res) => res.json()));
-
     return {
         props: {
-            languages: dataArr[0].data,
             token,
         },
     };

@@ -3,16 +3,12 @@ import CreateGroupClass from "../../../../components/AdminDashboard/Main/Content
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
 
-function CreateGroupClassPage({ token, languages, levels }) {
+function CreateGroupClassPage({ token, levels }) {
     return (
         <>
             <Header title="ایجاد کلاس گروهی | تیکا"></Header>
             <AdminDashboard>
-                <CreateGroupClass
-                    token={token}
-                    languages={languages}
-                    levels={levels}
-                />
+                <CreateGroupClass token={token} levels={levels} />
             </AdminDashboard>
         </>
     );
@@ -33,12 +29,6 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/data/language`, {
-            headers: {
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }),
         fetch(`${BASE_URL}/data/level`, {
             headers: {
                 "Content-type": "application/json",
@@ -50,6 +40,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { token, languages: dataArr[0].data, levels: dataArr[1].data },
+        props: { token, levels: dataArr[0].data },
     };
 }

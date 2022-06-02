@@ -184,13 +184,21 @@ function CreatePlatform({ token }) {
                         <label htmlFor="image" className="form__label">
                             عکس :
                         </label>
-                        <div className="upload-btn" onChange={handleSelectFile}>
-                            <span>آپلود تصویر</span>
-                            <input
-                                type="file"
-                                className="upload-input"
-                                accept="image/png, image/jpg, image/jpeg"
-                            ></input>
+                        <div className="upload-box">
+                            <div
+                                className="upload-btn"
+                                onChange={(e) => handleSelectFile(e, "image")}
+                            >
+                                <span>آپلود تصویر</span>
+                                <input
+                                    type="file"
+                                    className="upload-input"
+                                    accept="image/png, image/jpg, image/jpeg"
+                                ></input>
+                            </div>
+                            <span className="upload-file-name">
+                                {formData?.image?.name}
+                            </span>
                         </div>
                     </div>
 

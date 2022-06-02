@@ -18,7 +18,6 @@ const teacherSchema = { id: "", name: "", family: "" };
 function CreateClass(props) {
     const {
         token,
-        languages,
         levels,
         currentStep,
         setCurrentStep,
@@ -36,6 +35,7 @@ function CreateClass(props) {
     const [teachers, setTeachers] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [loading, setLoading] = useState(false);
+    const [languages, setLanguages] = useState([]);
     const [addedData, setAddedData] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
@@ -144,7 +144,10 @@ function CreateClass(props) {
                     Number(formData.session_time) &&
                     Number(formData.session_time) !== addedData.session_time
                 ) {
-                    fd.append("session_time", Number(formData.session_time));
+                    fd.append(
+                        "session_time",
+                        Number(formData.session_time) * 30
+                    );
                 }
                 if (selectedDate?.year) {
                     let date = moment
@@ -203,7 +206,10 @@ function CreateClass(props) {
                     fd.append("commission", Number(formData.commission));
                 }
                 if (Number(formData.session_time)) {
-                    fd.append("session_time", Number(formData.session_time));
+                    fd.append(
+                        "session_time",
+                        Number(formData.session_time) * 30
+                    );
                 }
                 if (selectedDate?.year) {
                     let date = moment
@@ -229,6 +235,36 @@ function CreateClass(props) {
             }
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
+        }
+    };
+
+    const readTeacherLanguages = async () => {
+        setLoading(true);
+
+        try {
+            const res = await fetch(
+                `${BASE_URL}/data/teacher/language?teacher_id=${selectedTeacher.id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                const { data } = await res.json();
+                setLanguages(data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+            setLoading(false);
+        } catch (error) {
+            console.log("Error reading teacher languages", error);
         }
     };
 
@@ -483,6 +519,15 @@ function CreateClass(props) {
         }
     }, [currentStep]);
 
+    useEffect(() => {
+        if (selectedTeacher.id) {
+            readTeacherLanguages();
+        } else {
+            setLanguages([]);
+        }
+        setFormData({ ...formData, language_id: 0 });
+    }, [selectedTeacher]);
+
     return (
         <form onSubmit={handleSubmit}>
             {/* Alert */}
@@ -494,28 +539,6 @@ function CreateClass(props) {
 
             <Box title="ایجاد کلاس گروهی">
                 <div className="form">
-                    <div className="input-wrapper">
-                        <label htmlFor="language_id" className="form__label">
-                            زبان :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control">
-                            <select
-                                name="language_id"
-                                id="language_id"
-                                className="form__input input-select"
-                                onChange={handleOnChange}
-                                value={formData.language_id}
-                                required
-                            >
-                                {languages?.map((lan) => (
-                                    <option key={lan?.id} value={lan?.id}>
-                                        {lan?.persian_name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
                     <div className="input-wrapper">
                         <label htmlFor="teacher_name" className="form__label">
                             استاد :<span className="form__star">*</span>
@@ -546,6 +569,29 @@ function CreateClass(props) {
                                 fontSize={16}
                                 onSearch={(value) => searchTeachers(value)}
                             />
+                        </div>
+                    </div>
+
+                    <div className="input-wrapper">
+                        <label htmlFor="language_id" className="form__label">
+                            زبان :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
+                            <select
+                                name="language_id"
+                                id="language_id"
+                                className="form__input input-select"
+                                onChange={handleOnChange}
+                                value={formData.language_id}
+                                required
+                            >
+                                <option value={0}>انتخاب کنید</option>
+                                {languages?.map((lan) => (
+                                    <option key={lan?.id} value={lan?.id}>
+                                        {lan?.persian_name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
 
@@ -706,19 +752,26 @@ function CreateClass(props) {
                                     htmlFor="class_number"
                                     className="form__label"
                                 >
-                                    شماره کلاس :
+                                    تعداد جلسات :
                                     <span className="form__star">*</span>
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="number"
+                                    <select
                                         name="class_number"
                                         id="class_number"
-                                        className="form__input form__input--ltr"
+                                        className="form__input input-select"
                                         onChange={handleOnChange}
                                         value={formData.class_number}
                                         required
-                                    />
+                                    >
+                                        {Array(20)
+                                            .fill(0)
+                                            ?.map((_, i) => (
+                                                <option key={i} value={i + 1}>
+                                                    {i + 1}
+                                                </option>
+                                            ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -753,15 +806,22 @@ function CreateClass(props) {
                                     کمیسیون :
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="number"
+                                    <select
                                         name="commission"
                                         id="commission"
-                                        className="form__input form__input--ltr"
+                                        className="form__input input-select"
                                         onChange={handleOnChange}
                                         value={formData.commission}
-                                        placeholder="درصد"
-                                    />
+                                    >
+                                        <option value={0}>انتخاب کنید</option>
+                                        {Array(13)
+                                            .fill(0)
+                                            ?.map((_, i) => (
+                                                <option key={i} value={i * 5}>
+                                                    {i * 5} درصد
+                                                </option>
+                                            ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -804,15 +864,19 @@ function CreateClass(props) {
                                     مدت زمان جلسه :
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="number"
+                                    <select
                                         name="session_time"
                                         id="session_time"
-                                        className="form__input form__input--ltr"
+                                        className="form__input input-select"
                                         onChange={handleOnChange}
                                         value={formData.session_time}
-                                        placeholder="دقیقه"
-                                    />
+                                    >
+                                        <option value={0}>انتخاب کنید</option>
+                                        <option value={1}>30 دقیقه</option>
+                                        <option value={2}>60 دقیقه</option>
+                                        <option value={3}>90 دقیقه</option>
+                                        <option value={4}>120 دقیقه</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -823,18 +887,23 @@ function CreateClass(props) {
                                 <label htmlFor="image" className="form__label">
                                     تصویر :
                                 </label>
-                                <div
-                                    className="upload-btn"
-                                    onChange={(e) =>
-                                        handleSelectFile(e, "image")
-                                    }
-                                >
-                                    <span>آپلود تصویر</span>
-                                    <input
-                                        type="file"
-                                        className="upload-input"
-                                        accept="image/png, image/jpg, image/jpeg"
-                                    ></input>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(e, "image")
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.image?.name}
+                                    </span>
                                 </div>
                             </div>
                         </div>

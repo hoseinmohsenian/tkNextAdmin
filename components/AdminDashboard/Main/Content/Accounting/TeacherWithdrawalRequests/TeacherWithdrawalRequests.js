@@ -197,6 +197,8 @@ function TeacherWithdrawalRequests(props) {
                         fileName={"Tikkaa__TeacherCheckoutTaxDocument"}
                         fileExtension="xlsx"
                         onClick={handleAcceptWithdrawal}
+                        downloadOnEmpty={false}
+                        errorOnEmpry="حداقل یک مورد انتخاب کنید"
                     />
                 )}
 

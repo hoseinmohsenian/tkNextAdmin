@@ -1,6 +1,9 @@
 .row {
     margin: 0.4rem 0 0.8rem;
 }
+.form__input--disabled:hover {
+    cursor: not-allowed;
+}
 
 @media all and (min-width: 576px) {
     .col {

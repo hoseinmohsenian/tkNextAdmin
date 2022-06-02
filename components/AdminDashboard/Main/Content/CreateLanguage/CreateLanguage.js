@@ -149,13 +149,21 @@ function CreateLanguage({ token }) {
                         <label htmlFor="flag_image" className="form__label">
                             پرچم :
                         </label>
-                        <div className="upload-btn" onChange={handleSelectFile}>
-                            <span>آپلود تصویر</span>
-                            <input
-                                type="file"
-                                className="upload-input"
-                                accept="image/png, image/jpg, image/jpeg"
-                            ></input>
+                        <div className="upload-box">
+                            <div
+                                className="upload-btn"
+                                onChange={(e) => handleSelectFile(e, "image")}
+                            >
+                                <span>آپلود تصویر</span>
+                                <input
+                                    type="file"
+                                    className="upload-input"
+                                    accept="image/png, image/jpg, image/jpeg"
+                                ></input>
+                            </div>
+                            <span className="upload-file-name">
+                                {formData?.flag_image?.name}
+                            </span>
                         </div>
                     </div>
 

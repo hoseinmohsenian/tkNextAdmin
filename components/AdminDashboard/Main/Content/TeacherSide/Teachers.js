@@ -354,7 +354,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                 <th className="table__head-item">نام</th>
                                 <th className="table__head-item">نام خانوادگی</th>
                                 <th className="table__head-item">موبایل</th>
-                                <th className="table__head-item">ایمیل</th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
                                 <th className="table__head-item">استپ</th>
@@ -374,9 +373,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                     </td>
                                     <td className="table__body-item">
                                         {teacher?.mobile || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {teacher?.email || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {teacher?.language_name?.map((lan, ind) => (

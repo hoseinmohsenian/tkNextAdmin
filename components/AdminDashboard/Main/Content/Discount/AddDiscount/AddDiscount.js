@@ -387,7 +387,13 @@ function AddDiscount({ token }) {
                                         type="number"
                                         name="value"
                                         id="value"
-                                        className="form__input form__input--ltr"
+                                        className={`form__input form__input--ltr ${
+                                            Number(formData.discount_type) === 0
+                                                ? styles[
+                                                      "form__input--disabled"
+                                                  ]
+                                                : undefined
+                                        }`}
                                         onChange={handleOnChange}
                                         spellCheck={false}
                                         autoComplete="off"
@@ -411,7 +417,13 @@ function AddDiscount({ token }) {
                                         type="number"
                                         name="percent"
                                         id="percent"
-                                        className="form__input form__input--ltr"
+                                        className={`form__input form__input--ltr ${
+                                            Number(formData.discount_type) === 1
+                                                ? styles[
+                                                      "form__input--disabled"
+                                                  ]
+                                                : undefined
+                                        }`}
                                         onChange={handleOnChange}
                                         spellCheck={false}
                                         autoComplete="off"
@@ -434,7 +446,13 @@ function AddDiscount({ token }) {
                                         type="number"
                                         name="min"
                                         id="min"
-                                        className="form__input form__input--ltr"
+                                        className={`form__input form__input--ltr ${
+                                            Number(formData.discount_type) === 0
+                                                ? styles[
+                                                      "form__input--disabled"
+                                                  ]
+                                                : undefined
+                                        }`}
                                         onChange={handleOnChange}
                                         spellCheck={false}
                                         autoComplete="off"
@@ -455,7 +473,13 @@ function AddDiscount({ token }) {
                                         type="number"
                                         name="max"
                                         id="max"
-                                        className="form__input form__input--ltr"
+                                        className={`form__input form__input--ltr ${
+                                            Number(formData.discount_type) === 1
+                                                ? styles[
+                                                      "form__input--disabled"
+                                                  ]
+                                                : undefined
+                                        }`}
                                         onChange={handleOnChange}
                                         spellCheck={false}
                                         autoComplete="off"

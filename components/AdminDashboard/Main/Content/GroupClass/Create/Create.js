@@ -4,7 +4,7 @@ import Stepper from "../../Elements/Stepper/Stepper";
 import AddSessions from "./StepperScreens/AddSessions/AddSessions";
 import CreateClass from "./StepperScreens/CreateClass/CreateClass";
 
-function CreateGroupClass({ token, languages, levels }) {
+function CreateGroupClass({ token, levels }) {
     const [formData, setFormData] = useState({
         title: "",
         language_id: 1,
@@ -53,7 +53,6 @@ function CreateGroupClass({ token, languages, levels }) {
                             Component: CreateClass,
                             props: {
                                 token,
-                                languages,
                                 levels,
                                 currentStep,
                                 setCurrentStep,

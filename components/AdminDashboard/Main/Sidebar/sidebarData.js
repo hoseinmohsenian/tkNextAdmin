@@ -43,7 +43,12 @@ import {
 } from "react-icons/ai";
 import { BiSupport, BiGitPullRequest, BiTable } from "react-icons/bi";
 import { BsArrowRepeat } from "react-icons/bs";
-import { GiSkills, GiDirectionSign, GiLogicGateAnd } from "react-icons/gi";
+import {
+    GiSkills,
+    GiDirectionSign,
+    GiLogicGateAnd,
+    GiPlatform,
+} from "react-icons/gi";
 import { RiArticleFill, RiAdminLine } from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
 import { FiPercent, FiUserX } from "react-icons/fi";
@@ -523,6 +528,11 @@ export default [
                 icon: <AiOutlinePercentage />,
             },
             {
+                title: "کدهای تخفیف استفاده شده",
+                path: "/tkpanel/useCopen",
+                icon: <AiOutlinePercentage />,
+            },
+            {
                 title: "گزارش گیری استاد",
                 path: "/tkpanel/report/teachers",
                 icon: <GoReport />,
@@ -546,6 +556,11 @@ export default [
                 title: "لیست سیاه کاربران",
                 path: "/tkpanel/blackLists",
                 icon: <FiUserX />,
+            },
+            {
+                title: "پلتفرم ها",
+                path: "/tkpanel/multiplatform",
+                icon: <GiPlatform />,
             },
         ],
     },

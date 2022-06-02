@@ -10,7 +10,7 @@ import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelec
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
 
-function CreateSemiPrivate({ token, languages }) {
+function CreateSemiPrivate({ token }) {
     const [formData, setFormData] = useState({
         title: "",
         price: 0,
@@ -21,6 +21,7 @@ function CreateSemiPrivate({ token, languages }) {
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [students, setStudents] = useState([]);
     const [selectedStudents, setSelectedStudents] = useState([]);
+    const [languages, setLanguages] = useState([]);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -198,15 +199,47 @@ function CreateSemiPrivate({ token, languages }) {
         }
     };
 
+    const readTeacherLanguages = async () => {
+        setLoading(true);
+
+        try {
+            const res = await fetch(
+                `${BASE_URL}/data/teacher/language?teacher_id=${selectedTeacher.id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                const { data } = await res.json();
+                setLanguages(data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+            setLoading(false);
+        } catch (error) {
+            console.log("Error reading teacher languages", error);
+        }
+    };
+
     useEffect(() => {
         // Reading students based on teacher_id
         if (selectedTeacher.id) {
             readStudents();
+            readTeacherLanguages();
         } else {
             setStudents([]);
+            setLanguages([]);
         }
         setSelectedStudents([]);
-        setFormData({ ...formData, price: 0 });
+        setFormData({ ...formData, price: 0, language_id: 0 });
     }, [selectedTeacher]);
 
     // Reading price based on teacher_id and language_id
@@ -234,38 +267,6 @@ function CreateSemiPrivate({ token, languages }) {
                     <div className={styles["inputs-container"]}>
                         <div className={styles["row-wrapper"]}>
                             <div className={styles["number"]}>1</div>
-                            <div
-                                className={`input-wrapper ${styles["input-wrapper"]}`}
-                            >
-                                <label
-                                    htmlFor="persian_name"
-                                    className="form__label"
-                                >
-                                    زبان :<span className="form__star">*</span>
-                                </label>
-                                <div className="form-control">
-                                    <select
-                                        name="language_id"
-                                        id="language_id"
-                                        className="form__input input-select"
-                                        onChange={handleOnChange}
-                                        value={formData.language_id}
-                                        required
-                                    >
-                                        {languages?.map((lan) => (
-                                            <option
-                                                key={lan?.id}
-                                                value={lan?.id}
-                                            >
-                                                {lan?.persian_name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles["row-wrapper"]}>
-                            <div className={styles["number"]}>2</div>
                             <div
                                 className={`input-wrapper ${styles["input-wrapper"]}`}
                             >
@@ -303,6 +304,39 @@ function CreateSemiPrivate({ token, languages }) {
                                             searchTeachers(value)
                                         }
                                     />
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles["row-wrapper"]}>
+                            <div className={styles["number"]}>2</div>
+                            <div
+                                className={`input-wrapper ${styles["input-wrapper"]}`}
+                            >
+                                <label
+                                    htmlFor="persian_name"
+                                    className="form__label"
+                                >
+                                    زبان :<span className="form__star">*</span>
+                                </label>
+                                <div className="form-control">
+                                    <select
+                                        name="language_id"
+                                        id="language_id"
+                                        className="form__input input-select"
+                                        onChange={handleOnChange}
+                                        value={formData.language_id}
+                                        required
+                                    >
+                                        <option value={0}>انتخاب کنید</option>
+                                        {languages?.map((lan) => (
+                                            <option
+                                                key={lan?.id}
+                                                value={lan?.id}
+                                            >
+                                                {lan?.persian_name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
