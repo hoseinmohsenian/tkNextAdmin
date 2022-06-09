@@ -5,7 +5,8 @@ import { useGlobalContext } from "../../../../../context";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
-import styles from "./Teachers.module.css"
+import styles from "./Teachers.module.css";
+import Link from "next/link";
 
 function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fetchedData }) {
     const [teachers, setTeachers] = useState(data);
@@ -475,6 +476,20 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                 ? "فعال"
                                                 : "غیر فعال"}
                                         </button>
+                                        <Link
+                                            href={`/dashboard/teacher/${teacher.id}`}
+                                        >
+                                            <a className={`action-btn primary`}>
+                                                ورودی به پنل
+                                            </a>
+                                        </Link>
+                                        <Link
+                                            href={`/tkpanel/multiSessionsList/logs/${teacher.id}?type=teacher`}
+                                        >
+                                            <a className={`action-btn warning`}>
+                                                لاگ پیگیری
+                                            </a>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}

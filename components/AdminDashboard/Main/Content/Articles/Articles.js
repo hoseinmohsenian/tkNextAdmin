@@ -471,7 +471,7 @@ function Articles(props) {
                                         {article?.url}
                                     </td>
                                     <td className="table__body-item">
-                                        {article?.language_id}
+                                        {article?.language_name}
                                     </td>
                                     <td className="table__body-item">
                                         {article?.draft === 1
@@ -489,7 +489,7 @@ function Articles(props) {
                                             : "پین نشده"}
                                     </td>
                                     <td className="table__body-item">
-                                        {article?.admin_id}
+                                        {article?.admin_name || "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment(article?.created_at).format(
@@ -515,7 +515,7 @@ function Articles(props) {
                                             </a>
                                         </Link>
                                         <Link
-                                            href={`/blog${article?.url}`}
+                                            href={`https://barmansms.ir/blog/${article?.url}`}
                                             disabled={loadings[i]}
                                         >
                                             <a className={`action-btn primary`}>

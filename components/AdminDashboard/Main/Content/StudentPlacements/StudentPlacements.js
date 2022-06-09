@@ -4,6 +4,7 @@ import { BASE_URL } from "../../../../../constants";
 import FetchSearchSelect from "../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./StudentPlacements.module.css";
 import Alert from "../../../../Alert/Alert";
+import Link from "next/link";
 
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
@@ -14,6 +15,7 @@ function StudentPlacements({ token, levels }) {
     const [selectedStudent, setSelectedStudent] = useState(studentSchema);
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState([]);
+    const [isPlaced,setIsPlaced] =useState(true)
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -78,6 +80,7 @@ function StudentPlacements({ token, levels }) {
             );
             if (res.ok) {
                 const { data } = await res.json();
+                setIsPlaced(data.length !== 0);
                 setPlacements(data);
                 setFormData(data);
                 setLoadings(Array(data?.length).fill(false));
@@ -295,12 +298,27 @@ function StudentPlacements({ token, levels }) {
 
                             {placements.length === 0 && (
                                 <tr className="table__body-row">
-                                    <td
-                                        className="table__body-item"
-                                        colSpan={5}
-                                    >
-                                        تعیین سطحی پیدا نشد
-                                    </td>
+                                    {selectedStudent.id && !isPlaced ? 
+                                        <td
+                                            className="table__body-item"
+                                            colSpan={5}
+                                        >
+                                            زبان آموز {selectedStudent.name_family} تعیین سطح نشده است!
+                                            <Link
+                                            href={`/tkpanel/profileDetermineLevel/${selectedStudent.id}/addPlacement`}
+                                        >
+                                            <a className="action-btn primary">
+                                                تعیین سطح
+                                            </a>
+                                        </Link>
+                                        </td> :
+                                        <td
+                                            className="table__body-item"
+                                            colSpan={5}
+                                        >
+                                            تعیین سطحی پیدا نشد
+                                        </td>
+                                    }
                                 </tr>
                             )}
                         </tbody>

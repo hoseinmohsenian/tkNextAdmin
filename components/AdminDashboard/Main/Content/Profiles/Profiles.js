@@ -206,6 +206,13 @@ function Profiles(props) {
                                                 ویرایش
                                             </a>
                                         </Link>
+                                        <Link
+                                            href={`/dashboard/student/${student.id}`}
+                                        >
+                                            <a className={`action-btn primary`}>
+                                                ورودی به پنل
+                                            </a>
+                                        </Link>
                                         <button
                                             className={`action-btn success`}
                                             onClick={() => {
@@ -215,14 +222,13 @@ function Profiles(props) {
                                         >
                                             جزئیات
                                         </button>
-                                        <button
-                                            className={`action-btn warning`}
-                                            onClick={() =>
-                                                alert("Coming soooon:)")
-                                            }
+                                        <Link
+                                            href={`/tkpanel/multiSessionsList/logs/${student.id}?type=student`}
                                         >
-                                            لاگ پیگیری
-                                        </button>
+                                            <a className={`action-btn warning`}>
+                                                لاگ پیگیری
+                                            </a>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))}

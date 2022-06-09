@@ -278,6 +278,17 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
         setSelectedCatg3([]);
     };
 
+    const goToToday = () => {
+        const currDate = {
+            year: Number(moment().format("YYYY")),
+            month: Number(moment().format("MM")),
+            day: Number(moment().format("DD")),
+        };
+        const currTime = moment().format("hh:mm:ss");
+        setSelectedDate(currDate);
+        setFormData({ ...formData, time: currTime });
+    };
+
     useEffect(() => {
         setCategories2([]);
     }, [selectedCatg1]);
@@ -409,6 +420,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                         name="time"
                                         id="time"
                                         className={`form__input form__input-time`}
+                                        value={formData.time}
                                         style={{
                                             width: 150,
                                         }}
@@ -420,6 +432,16 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div style={{ marginTop: -10 }}>
+                        <button
+                            className="action-btn primary-outline"
+                            type="button"
+                            onClick={goToToday}
+                            disabled={Boolean(formData?.id)}
+                        >
+                            اکنون منتشر شود
+                        </button>
                     </div>
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
@@ -585,20 +607,24 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                 <label htmlFor="image" className="form__label">
                                     تصویر :<span className="form__star">*</span>
                                 </label>
-                                <div
-                                    className="upload-btn"
-                                    onChange={(e) =>
-                                        handleSelectFile(e, "image")
-                                    }
-                                >
-                                    <span>آپلود تصویر</span>
-                                    <input
-                                        type="file"
-                                        className="upload-input"
-                                        accept="image/png, image/jpg, image/jpeg"
-                                        disabled={Boolean(formData?.id)}
-                                        required
-                                    ></input>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(e, "image")
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                            disabled={Boolean(formData?.id)}
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.image?.name}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -610,19 +636,24 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                 >
                                     تصویر شاخص :
                                 </label>
-                                <div
-                                    className="upload-btn"
-                                    onChange={(e) =>
-                                        handleSelectFile(e, "index_image")
-                                    }
-                                >
-                                    <span>آپلود تصویر</span>
-                                    <input
-                                        type="file"
-                                        className="upload-input"
-                                        accept="image/png, image/jpg, image/jpeg"
-                                        disabled={Boolean(formData?.id)}
-                                    ></input>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(e, "index_image")
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                            disabled={Boolean(formData?.id)}
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.index_image?.name}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -781,6 +812,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                     onAdd={addCatg1Handler}
                                     id="id"
                                     disabled={selectedCatg2.length !== 0}
+                                    openBottom={false}
                                 />
                             </div>
                         </div>
@@ -807,6 +839,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                     onAdd={addCatg2Handler}
                                     showAlert={showAlert}
                                     disabled={selectedCatg3.length !== 0}
+                                    openBottom={false}
                                 />
                             </div>
                         </div>
@@ -831,6 +864,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                     showAlert={showAlert}
                                     onRemove={deleteArticleCategory}
                                     onAdd={addCatg3Handler}
+                                    openBottom={false}
                                 />
                             </div>
                         </div>

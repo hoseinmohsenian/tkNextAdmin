@@ -18,6 +18,7 @@ function CategoryMultiSelect(props) {
         max,
         showAlert,
         disabled = false,
+        openBottom = true,
     } = props;
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -28,8 +29,10 @@ function CategoryMultiSelect(props) {
     const [pins, setPins] = useState(Array(list?.length).fill(0));
 
     useEffect(() => {
-        let pos = selectRef.current?.getBoundingClientRect();
-        setOpenTop(document.body.scrollHeight - pos?.bottom > 250);
+        if (!openBottom) {
+            let pos = selectRef.current?.getBoundingClientRect();
+            setOpenTop(document.body.scrollHeight - pos?.bottom > 250);
+        }
     }, []);
 
     useOutsideAlerter(selectRef, () => setOpen(false));

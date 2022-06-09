@@ -75,7 +75,7 @@ function TeachersScore(props) {
                                     تاثیر در حسابداری
                                 </th>
                                 <th
-                                    className="table__head-item"
+                                    className="table__head-item table__head-item-ellipsis"
                                     style={{ width: 300 }}
                                 >
                                     توضیحات
@@ -111,13 +111,9 @@ function TeachersScore(props) {
                                             : "خیر"}
                                     </td>
                                     <td
-                                        className="table__body-item"
+                                        className="table__body-item table__body-item--ellipsis"
                                         style={{
-                                            textOverflow: "ellipsis",
-                                            whiteSpace: "nowrap",
-                                            overflow: "hidden",
                                             width: 300,
-                                            display: "inline-block",
                                         }}
                                     >
                                         {teacher?.desc}

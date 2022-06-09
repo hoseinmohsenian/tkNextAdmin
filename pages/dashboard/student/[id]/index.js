@@ -1,23 +1,23 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
-import SystemLogs from "../../../../components/AdminDashboard/Main/Content/SystemLogs/SystemLogs";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
 
-function SystemLogPage({ logs, token }) {
+function StudentDashboardPage() {
     return (
         <div>
-            <Header title="لاگ پیگیری | تیکا"></Header>
+            <Header title="هدایت به پنل زبان آموز | تیکا"></Header>
             <AdminDashboard>
-                <SystemLogs fetchedLogs={logs} token={token} />
+                <h1>در حال انتقال به پنل زبان آموز</h1>
             </AdminDashboard>
         </div>
     );
 }
 
-export default SystemLogPage;
+export default StudentDashboardPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const id = context.params.id;
 
     if (!token) {
         return {
@@ -29,7 +29,8 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/tracking-log`, {
+        fetch(`${BASE_URL}/admin/student/create-token/${id}`, {
+            method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -41,6 +42,9 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { logs: dataArr[0].data, token },
+        redirect: {
+            destination: `https://barmansms.ir/login-with-admin?token=${dataArr[0].data}&type=user`,
+            permanent: false,
+        },
     };
 }

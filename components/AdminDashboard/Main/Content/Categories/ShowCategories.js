@@ -24,8 +24,10 @@ function ShowCategories({ fetchedCategories, title, createPage, addressPage }) {
                             <tr>
                                 <th className="table__head-item">عنوان</th>
                                 <th className="table__head-item">تصویر</th>
-                                <th className="table__head-item">header</th>
-                                <th className="table__head-item">
+                                <th className="table__head-item table__head-item--ellipsis">
+                                    header
+                                </th>
+                                <th className="table__head-item table__head-item--ellipsis">
                                     توضیحات کوتاه
                                 </th>
                                 <th className="table__head-item">اقدامات</th>
@@ -50,14 +52,20 @@ function ShowCategories({ fetchedCategories, title, createPage, addressPage }) {
                                         &nbsp; &nbsp;
                                     </td>
                                     <td
-                                        className={`table__body-item ${cstyles["table-item"]}`}
+                                        className={`table__body-item table__body-item--ellipsis ${cstyles["table-item"]}`}
+                                        style={{
+                                            width: 300,
+                                        }}
                                     >
                                         {ctg?.header}
                                     </td>
                                     <td
-                                        className={`table__body-item ${cstyles["table-item"]}`}
+                                        className={`table__body-item table__body-item--ellipsis ${cstyles["table-item"]}`}
+                                        style={{
+                                            width: 300,
+                                        }}
                                     >
-                                        {ctg?.summary_desc}
+                                        {ctg?.summary_desc || "-"}
                                     </td>
                                     <td
                                         className={`table__body-item ${cstyles["table-item"]}`}

@@ -67,8 +67,8 @@
 }
 .form__textarea {
     resize: vertical;
-    min-height: 50px;
-    max-height: 110px;
+    min-height: 100px;
+    max-height: 150px;
     border: 1px solid #dbdbdb;
     border-radius: 3px;
     background-color: #fafafa;
@@ -222,7 +222,7 @@ second, second and am/pm */
 }
 .btn:disabled {
     opacity: 0.5;
-    cursor: default;
+    cursor: not-allowed;
 }
 .action-btn {
     color: white;
@@ -235,7 +235,7 @@ second, second and am/pm */
 }
 .action-btn:disabled {
     opacity: 0.5;
-    cursor: default;
+    cursor: not-allowed;
 }
 
 @media all and (min-width: 768px) {

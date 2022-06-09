@@ -18,6 +18,10 @@
     font-size: 1.1rem;
     padding: 0.4rem 1.2rem;
 }
+.table__head-item--ellipsis {
+    width: 300px;
+    display: inline-block;
+}
 .table__body-row {
     transition: var(--transition);
     background-color: rgba(0, 0, 0, 0.03);
@@ -36,6 +40,13 @@
 .table__body-item--ltr {
     direction: ltr;
     text-align: right;
+}
+.table__body-item--ellipsis {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 300px;
+    display: inline-block;
 }
 .table__body-link {
     color: #545cd8;

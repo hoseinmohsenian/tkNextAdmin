@@ -21,7 +21,7 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
     const [desc, setDesc] = useState(article.desc);
     const [selectedDate, setSelectedDate] = useState();
     const [selectedCatg1, setSelectedCatg1] = useState(
-        article?.category?.find((item) => item.type === 1)
+        article?.category?.find((item) => item.type === 1) || categorySchema
     );
     const [selectedCatg2, setSelectedCatg2] = useState(
         article?.category?.filter((item) => item.type === 2)
@@ -628,18 +628,24 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                                 <label htmlFor="image" className="form__label">
                                     تصویر :<span className="form__star">*</span>
                                 </label>
-                                <div
-                                    className="upload-btn"
-                                    onChange={(e) =>
-                                        handleSelectFile(e, "image")
-                                    }
-                                >
-                                    <span>آپلود تصویر</span>
-                                    <input
-                                        type="file"
-                                        className="upload-input"
-                                        accept="image/png, image/jpg, image/jpeg"
-                                    ></input>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(e, "image")
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                            disabled={Boolean(formData?.id)}
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.image?.name}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -651,18 +657,24 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                                 >
                                     تصویر شاخص :
                                 </label>
-                                <div
-                                    className="upload-btn"
-                                    onChange={(e) =>
-                                        handleSelectFile(e, "index_image")
-                                    }
-                                >
-                                    <span>آپلود تصویر</span>
-                                    <input
-                                        type="file"
-                                        className="upload-input"
-                                        accept="image/png, image/jpg, image/jpeg"
-                                    ></input>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(e, "index_image")
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                            disabled={Boolean(formData?.id)}
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.index_image?.name}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -777,7 +789,7 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                             type="button"
                             onClick={deleteAllCategories}
                             disabled={
-                                !selectedCatg1.id &&
+                                !selectedCatg1?.id &&
                                 selectedCatg2.length === 0 &&
                                 selectedCatg3.length === 0
                             }
@@ -808,6 +820,7 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                                 onAdd={addCatg1Handler}
                                 id="id"
                                 disabled={selectedCatg2.length !== 0}
+                                openBottom={false}
                             />
                         </div>
                     </div>
@@ -833,6 +846,7 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                                 onAdd={addCatg2Handler}
                                 showAlert={showAlert}
                                 disabled={selectedCatg3.length !== 0}
+                                openBottom={false}
                             />
                         </div>
                     </div>
@@ -857,6 +871,7 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                                 showAlert={showAlert}
                                 onRemove={deleteArticleCategory}
                                 onAdd={addCatg3Handler}
+                                openBottom={false}
                             />
                         </div>
                     </div>
