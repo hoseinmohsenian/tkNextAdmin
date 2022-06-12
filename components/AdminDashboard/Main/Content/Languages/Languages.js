@@ -28,7 +28,6 @@ function Languages({ languages }) {
                                 >
                                     url
                                 </th>
-                                <th className="table__head-item">تصویر پرچم</th>
                                 <th className="table__head-item">توضیحات</th>
                             </tr>
                         </thead>
@@ -39,7 +38,25 @@ function Languages({ languages }) {
                                         <Link
                                             href={`/content/language/${lan?.id}/edit`}
                                         >
-                                            <a className="table__body-link">
+                                            <a
+                                                className="table__body-link"
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <img
+                                                    src={lan?.flag_image}
+                                                    alt={lan?.persian_name}
+                                                    height={30}
+                                                    width={30}
+                                                    style={{
+                                                        width: 30,
+                                                        height: 30,
+                                                        borderRadius: "50%",
+                                                        marginLeft: 10,
+                                                    }}
+                                                />
                                                 {lan?.persian_name}
                                             </a>
                                         </Link>
@@ -49,9 +66,6 @@ function Languages({ languages }) {
                                     </td>
                                     <td className="table__body-item">
                                         {lan?.url}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {lan?.flag_image}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

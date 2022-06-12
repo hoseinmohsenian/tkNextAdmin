@@ -13,6 +13,7 @@ function NewsSubcategoriesPage({ categories }) {
                     title="لیست دسته بندی اول مقالات"
                     createPage="/tkpanel/newsSubCategories/create"
                     addressPage="/blog/c"
+                    type={1}
                 />
             </AdminDashboard>
         </div>

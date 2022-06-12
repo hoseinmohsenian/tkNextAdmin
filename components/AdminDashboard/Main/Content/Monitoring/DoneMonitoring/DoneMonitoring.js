@@ -7,6 +7,7 @@ import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import moment from "jalali-moment";
 import Link from "next/link";
 import { useGlobalContext } from "../../../../../../context";
+import Modal from "../../../../../Modal/Modal";
 
 function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -14,6 +15,8 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
 
     const readMonitoring = async () => {
         // Constructing search parameters
@@ -53,6 +56,100 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
     return (
         <div>
             <Box title="مانیتورینگ انجام شده">
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ادمین
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.monitoring_follower_name ||
+                                        "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    کورس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.course_name}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    پلتفرم
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.platform_name}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.status === 0 &&
+                                        "تعیین وضعیت نشده"}
+                                    {selectedClass?.status === 1 &&
+                                        "برگزار شده"}
+                                    {selectedClass?.status === 2 && "کنسل شده"}
+                                    {selectedClass?.status === 3 &&
+                                        "لغو بازگشت پول"}
+                                    {selectedClass?.status === 4 && "غیبت"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    جلسه اول
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.first_class === 1
+                                        ? "است"
+                                        : "نیست"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت پرداخت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.pay === 1
+                                        ? "پرداخت شده"
+                                        : "پرداخت نشده"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    مدت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.class_time
+                                        ? `${selectedClass?.class_time} دقیقه`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ساعت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass.time
+                                        ? formatTime(selectedClass.time)
+                                        : "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -136,16 +233,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                         {item?.teacher_mobile || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.monitoring_follower_name || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.platform_name || "-"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {item?.language_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.course_name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.price
@@ -155,36 +243,20 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                             : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.class_time
-                                            ? `${item?.class_time} دقیقه`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.status === 1
-                                            ? "فعال"
-                                            : "غیرفعال"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.pay === 1
-                                            ? "پرداخت شده"
-                                            : "پرداخت نشده"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.first_class === 1
-                                            ? "است"
-                                            : "نیست"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item.time
-                                            ? formatTime(item.time)
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {moment(item?.date).format(
                                             "YYYY/MM/DD"
                                         )}
                                     </td>
                                     <td className="table__body-item">
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedClass(item);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                         <Link
                                             href={`/tkpanel/multiSessionsList/logs/${item.id}`}
                                         >

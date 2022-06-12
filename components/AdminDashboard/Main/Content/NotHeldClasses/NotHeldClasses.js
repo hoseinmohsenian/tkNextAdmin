@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import { BASE_URL } from "../../../../../constants";
 import { useGlobalContext } from "../../../../../context";
+import Modal from "../../../../Modal/Modal";
 
 function NotHeldClasses(props) {
     const {
@@ -14,6 +15,8 @@ function NotHeldClasses(props) {
     const [classes, setClasses] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
 
@@ -59,6 +62,93 @@ function NotHeldClasses(props) {
     return (
         <div>
             <Box title="لیست کلاس های برگزار نشده">
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    اعتبار زبان آموز
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.user_wallet
+                                        ? `${Intl.NumberFormat().format(
+                                              selectedClass?.user_wallet
+                                          )} تومان`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    کورس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.course_name}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    پلتفرم
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.platform_name}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.status === 0 &&
+                                        "تعیین وضعیت نشده"}
+                                    {selectedClass?.status === 1 &&
+                                        "برگزار شده"}
+                                    {selectedClass?.status === 2 && "کنسل شده"}
+                                    {selectedClass?.status === 3 &&
+                                        "لغو بازگشت پول"}
+                                    {selectedClass?.status === 4 && "غیبت"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    جلسه اول
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.first_class === 1
+                                        ? "است"
+                                        : "نیست"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت پرداخت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.pay === 1
+                                        ? "پرداخت شده"
+                                        : "پرداخت نشده"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    مدت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.class_time
+                                        ? `${selectedClass?.class_time} دقیقه`
+                                        : "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -67,21 +157,15 @@ function NotHeldClasses(props) {
                                     نام زبان آموز
                                 </th>
                                 <th className="table__head-item">موبایل</th>
-                                <th className="table__head-item">
-                                    اعتبار زبان آموز
-                                </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">وضعیت کلاس</th>
-                                <th className="table__head-item">
-                                    وضعیت پرداخت
-                                </th>
                                 <th className="table__head-item">قیمت</th>
-                                <th className="table__head-item">تاریخ کلاس</th>
                                 <th className="table__head-item">زمان کلاس</th>
+                                <th className="table__head-item">تاریخ کلاس</th>
+                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((cls, i) => (
+                            {classes?.map((cls) => (
                                 <tr className="table__body-row" key={cls.id}>
                                     <td className="table__body-item">
                                         {cls.user_name}
@@ -90,29 +174,17 @@ function NotHeldClasses(props) {
                                         {cls.user_mobile}
                                     </td>
                                     <td className="table__body-item">
-                                        {typeof cls.user_wallet === "number"
-                                            ? `${Intl.NumberFormat().format(
-                                                  cls.user_wallet
-                                              )} تومان`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {cls.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls?.status === 1 ? "غیرفعال" : "فعال"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {cls.pay === 1
-                                            ? "پرداخت شده"
-                                            : "پرداخت نشده"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {typeof cls.user_wallet === "number"
                                             ? `${Intl.NumberFormat().format(
                                                   cls.user_wallet
                                               )} تومان`
                                             : "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {cls.time ? formatTime(cls.time) : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
@@ -121,7 +193,15 @@ function NotHeldClasses(props) {
                                             .format("YYYY/MM/DD")}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.time ? formatTime(cls.time) : "-"}
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedClass(cls);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

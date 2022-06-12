@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
+import Modal from "../../../../Modal/Modal";
 
 function Articles(props) {
     const {
@@ -26,6 +27,8 @@ function Articles(props) {
     });
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedArticle, setSelectedArticle] = useState({});
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
@@ -213,6 +216,45 @@ function Articles(props) {
                     color: "primary",
                 }}
             >
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات مقاله</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>URL</span>
+                                &nbsp;:&nbsp;
+                                <span className={"modal__item-body"}>
+                                    {selectedArticle?.url}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>نوع</span>
+                                &nbsp;:&nbsp;
+                                <span className={"modal__item-body"}>
+                                    {selectedArticle?.type === 1
+                                        ? "ویدئو"
+                                        : "استاندارد"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>پین</span>
+                                &nbsp;:&nbsp;
+                                <span className={"modal__item-body"}>
+                                    {selectedArticle?.pin === 1
+                                        ? "پین شده"
+                                        : "پین نشده"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -434,20 +476,18 @@ function Articles(props) {
                 />
 
                 <div className="table__wrapper">
-                    <table className="table">
+                    <table className="table" cellSpacing={0} cellPadding={0}>
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">عنوان</th>
-                                <th className="table__head-item">url</th>
+                                <th className="table__head-item table__head-item--ellipsis">
+                                    عنوان
+                                </th>
                                 <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">نوع</th>
-                                <th className="table__head-item">پین</th>
                                 <th className="table__head-item">
                                     نام نویسنده
                                 </th>
                                 <th className="table__head-item">
-                                    تاریخ ایجاد
+                                    تاریخ انتشار
                                 </th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -458,41 +498,22 @@ function Articles(props) {
                                     className="table__body-row"
                                     key={article?.id}
                                 >
-                                    <td className="table__body-item">
-                                        {article?.title}
-                                    </td>
                                     <td
-                                        className="table__body-item"
+                                        className="table__body-item table__body-item--ellipsis"
                                         style={{
-                                            direction: "ltr",
-                                            textAlign: "right",
+                                            width: 300,
                                         }}
                                     >
-                                        {article?.url}
+                                        {article?.title}
                                     </td>
                                     <td className="table__body-item">
                                         {article?.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {article?.draft === 1
-                                            ? "پیش نویس"
-                                            : "منتشر شده"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {article?.type === 1
-                                            ? "ویدئو"
-                                            : "استاندارد"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {article?.pin === 1
-                                            ? "پین شده"
-                                            : "پین نشده"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {article?.admin_name || "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
-                                        {moment(article?.created_at).format(
+                                        {moment(article?.publish_time).format(
                                             "YYYY/MM/DD hh:mm:ss"
                                         )}
                                     </td>
@@ -541,6 +562,15 @@ function Articles(props) {
                                             {article?.draft === 0
                                                 ? "پیش نویس"
                                                 : "منتشر"}
+                                        </button>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedArticle(article);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
                                         </button>
                                     </td>
                                 </tr>

@@ -6,6 +6,7 @@ import Pagination from "../../Pagination/Pagination";
 import Link from "next/link";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
+import Modal from "../../../../../Modal/Modal";
 
 function Landing(props) {
     const {
@@ -27,6 +28,8 @@ function Landing(props) {
     });
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
     const filtersOnChange = (e) => {
@@ -164,6 +167,44 @@ function Landing(props) {
     return (
         <div>
             <Box title="لندینگ تعاملی">
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات لندینگ</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.status === 1 ? "فعال" : 'غیرفعال'}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    روز
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.day || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    URL
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.landing_url || "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -262,14 +303,13 @@ function Landing(props) {
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">نام لندینگ</th>
+                                <th className="table__head-item">نام</th>
                                 <th className="table__head-item">
                                     شماره موبایل
                                 </th>
-                                <th className="table__head-item">نام</th>
-                                <th className="table__head-item">تحصیلات</th>
-                                <th className="table__head-item">توضیحات</th>
-                                <th className="table__head-item">تاریخ ثبت</th>
+                                <th className="table__head-item">هدف</th>
+                                <th className="table__head-item">زبان‌</th>
+                                <th className="table__head-item">توضیحات ادمین</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -280,24 +320,18 @@ function Landing(props) {
                                     key={landing?.id}
                                 >
                                     <td className="table__body-item">
-                                        {landing?.title}
+                                        {landing?.name}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {landing?.mobile}
                                     </td>
                                     <td
                                         className="table__body-item"
-                                        style={{
-                                            direction: "ltr",
-                                            textAlign: "right",
-                                        }}
                                     >
-                                        {landing?.url}
+                                        {landing?.purpose}
                                     </td>
                                     <td className="table__body-item">
-                                        {landing?.language_id}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {landing?.draft === 1
-                                            ? "پیش نویس"
-                                            : "منتشر شده"}
+                                        {landing?.language_name}
                                     </td>
                                     <td className="table__body-item">
                                         <div
@@ -338,19 +372,6 @@ function Landing(props) {
                                         </div>
                                     </td>
                                     <td className="table__body-item">
-                                        {landing?.pin === 1
-                                            ? "پین شده"
-                                            : "پین نشده"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {landing?.admin_id}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {moment(landing?.created_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item">
                                         <button
                                             type="button"
                                             className={`action-btn danger`}
@@ -368,8 +389,17 @@ function Landing(props) {
                                                 ویرایش &nbsp;
                                             </a>
                                         </Link>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedClass(landing);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                         <Link
-                                            href={`/blog${landing?.url}`}
+                                            href={`https://barmansms.ir/blog${landing?.url}`}
                                             disabled={loadings[i]}
                                         >
                                             <a className={`action-btn primary`}>

@@ -4,6 +4,7 @@ import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
+import Modal from "../../../../../Modal/Modal";
 
 function TeachersComments(props) {
     const {
@@ -19,6 +20,8 @@ function TeachersComments(props) {
         type: "",
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedComment, setSelectedComment] = useState({});
 
     const handleOnChange = (e, rowInd, name) => {
         let updated = [...formData];
@@ -142,6 +145,48 @@ function TeachersComments(props) {
                     envoker={changeStatus}
                 />
 
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کامنت</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedComment?.status === 1
+                                        ? "انجام شده"
+                                        : "انجام نشده"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تاریخ ثبت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {moment(selectedComment?.created_at).format(
+                                            "YYYY/MM/DD hh:mm:ss"
+                                        )}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ریپلای استاد
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedComment?.teacher_reply || "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -149,10 +194,8 @@ function TeachersComments(props) {
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان آموز</th>
                                 <th className="table__head-item">شماره زبان آموز</th>
-                                <th className="table__head-item">نظر</th>
-                                <th className="table__head-item">وضعیت</th>
+                                <th className="table__head-item table__head-item--ellipsis">نظر</th>
                                 <th className="table__head-item">ریپلای ادمین</th>
-                                <th className="table__head-item">تاریخ ثبت</th>
                                 <th className="table__head-item">امتیاز کلی</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -167,18 +210,18 @@ function TeachersComments(props) {
                                         {comment?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {comment?.student_name}
+                                        {comment?.user_name}
                                     </td>
                                     <td className="table__body-item">
                                         {comment?.mobile}
                                     </td>
-                                    <td className="table__body-item">
+                                    <td 
+                                        className="table__body-item table__body-item--ellipsis"
+                                        style={{
+                                            width: 300,
+                                        }}
+                                    >
                                         {comment?.comment}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {comment?.status === 1
-                                            ? "انجام شده"
-                                            : "انجام نشده"}
                                     </td>
                                     <td className="table__body-item">
                                         <div
@@ -218,11 +261,6 @@ function TeachersComments(props) {
                                         </div>
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
-                                        {moment(comment?.created_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
                                         {comment?.score}
                                     </td>
                                     <td className="table__body-item">
@@ -245,6 +283,15 @@ function TeachersComments(props) {
                                             {comment?.status === 0
                                                 ? "فعال"
                                                 : "غیرفعال"}
+                                        </button>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedComment(comment);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
                                         </button>
                                     </td>
                                 </tr>

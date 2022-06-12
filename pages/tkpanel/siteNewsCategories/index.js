@@ -13,6 +13,7 @@ function SiteNewsCategoriesPage({ categories }) {
                     title="لیست دسته بندی دوم مقالات"
                     createPage="/tkpanel/siteNewsCategories/create"
                     addressPage="/blog/c"
+                    type={2}
                 />
             </AdminDashboard>
         </div>

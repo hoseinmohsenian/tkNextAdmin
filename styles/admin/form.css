@@ -160,7 +160,6 @@ second, second and am/pm */
     z-index: 10 !important;
 }
 .upload-box {
-    display: flex;
     align-items: center;
 }
 .upload-btn {
@@ -252,5 +251,8 @@ second, second and am/pm */
     }
     .btn {
         font-size: 1.05rem;
+    }
+    .upload-box {
+        display: flex;
     }
 }

@@ -2,9 +2,9 @@ import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
-import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
+import Modal from "../../../../../Modal/Modal";
 
 function Requests(props) {
     const {
@@ -19,6 +19,8 @@ function Requests(props) {
         type: "",
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState({});
     const router = useRouter();
 
     const showAlert = (show, type, message) => {
@@ -104,6 +106,66 @@ function Requests(props) {
                     envoker={changeStatus}
                 />
 
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات درخواست</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.status === 1
+                                        ? "فعال"
+                                        : "غیرفعال"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    زبان
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.language_name || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    استپ
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.step || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    کلاس اول
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.first_class === 1
+                                        ? "است"
+                                        : "نیست"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    نمایش ادمین
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.show_admin === 1
+                                        ? "نمایان"
+                                        : "غیرنمایان"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -113,21 +175,13 @@ function Requests(props) {
                                     نام زبان آموز
                                 </th>
                                 <th className="table__head-item">
-                                    شماره موبایل زبان آموز
+                                    موبایل زبان آموز
                                 </th>
-                                <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">زمان</th>
                                 <th className="table__head-item">
                                     قابل پرداخت
                                 </th>
                                 <th className="table__head-item">تخفیف</th>
-                                <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">استپ</th>
-                                <th className="table__head-item">کلاس اول</th>
-                                <th className="table__head-item">
-                                    نمایش ادمین
-                                </th>
-                                <th className="table__head-item">تاریخ ثبت</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -138,13 +192,10 @@ function Requests(props) {
                                         {req?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {req?.user_name}
+                                        {req?.user_name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {req?.user_mobile}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {req?.language_id}
                                     </td>
                                     <td className="table__body-item">
                                         {req?.time} دقیقه
@@ -162,23 +213,6 @@ function Requests(props) {
                                         تومان
                                     </td>
                                     <td className="table__body-item">
-                                        {req?.status === 1 ? "فعال" : "غیرفعال"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {req?.step}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {req?.first_class === 1 ? "1" : "0"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {req?.show_admin === 1 ? "1" : "0"}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {moment(req?.created_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item">
                                         <button
                                             type="button"
                                             className={`action-btn warning`}
@@ -188,6 +222,15 @@ function Requests(props) {
                                             disabled={loadings[i]}
                                         >
                                             تغییر وضعیت
+                                        </button>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedRequest(req);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
                                         </button>
                                     </td>
                                 </tr>

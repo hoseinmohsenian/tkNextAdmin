@@ -4,6 +4,7 @@ import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import { BASE_URL } from "../../../../../../constants";
+import Modal from "../../../../../Modal/Modal";
 
 function StudentTransactionDetails(props) {
     const {
@@ -13,6 +14,8 @@ function StudentTransactionDetails(props) {
     const [transactions, setTransactions] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedTransaction, setSelectedTransaction] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
     const readTransactions = async (page = 1) => {
@@ -57,6 +60,51 @@ function StudentTransactionDetails(props) {
     return (
         <div>
             <Box title="جزئیات پرداخت زبان آموز">
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ادمین
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTransaction.admin_name || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    توضیحات
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTransaction?.desc}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تاریخ پرداخت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {moment
+                                        .from(
+                                            selectedTransaction.pay_time,
+                                            "en",
+                                            "YYYY/MM/DD hh:mm:ss"
+                                        )
+                                        .locale("fa")
+                                        .format("YYYY/MM/DD hh:mm:ss")}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -71,16 +119,12 @@ function StudentTransactionDetails(props) {
                                 <th className="table__head-item">
                                     اعتبار زبان آموز
                                 </th>
-                                <th className="table__head-item">توضیحات</th>
-                                <th className="table__head-item">ادمین</th>
                                 <th className="table__head-item">نوع تراکنش</th>
-                                <th className="table__head-item">
-                                    تاریخ پرداخت
-                                </th>
+                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {transactions?.map((cls, i) => (
+                            {transactions?.map((cls) => (
                                 <tr className="table__body-row" key={cls.id}>
                                     <td className="table__body-item">
                                         {cls.user_name}
@@ -99,25 +143,20 @@ function StudentTransactionDetails(props) {
                                         تومان
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.desc}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {cls.admin_name || "-"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {cls.status === 1
                                             ? "کاهش اعتبار"
                                             : "افزایش اعتبار"}
                                     </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {moment
-                                            .from(
-                                                cls.pay_time,
-                                                "en",
-                                                "YYYY/MM/DD hh:mm:ss"
-                                            )
-                                            .locale("fa")
-                                            .format("YYYY/MM/DD hh:mm:ss")}
+                                    <td className="table__body-item">
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedTransaction(cls);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

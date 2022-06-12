@@ -7,6 +7,8 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import moment from "jalali-moment";
 import Link from "next/link";
+import Modal from "../../../../../Modal/Modal";
+import { useGlobalContext } from "../../../../../../context";
 
 function MultiSession({ token }) {
     const [classes, setClasses] = useState([]);
@@ -18,14 +20,15 @@ function MultiSession({ token }) {
     });
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
+    const { formatTime } = useGlobalContext();
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
 
     const readClasses = async () => {
-        let searchParams = {};
-
         // Constructing search parameters
         let searchQuery = "";
         let date = moment
@@ -63,6 +66,14 @@ function MultiSession({ token }) {
         }
     };
 
+    const readClassesHandler = async () => {
+        if (selectedDate?.year) {
+            await readClasses();
+        } else {
+            showAlert(true, "danger", "لطفا تاریخ را انتخاب کنید");
+        }
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -72,6 +83,92 @@ function MultiSession({ token }) {
                 envoker={readClasses}
             />
             <Box title="۵ جلسه ۱۰ جلسه">
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    کورس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.course_name || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    پلتفرم
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.platform_name || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.status === 0 &&
+                                        "تعیین وضعیت نشده"}
+                                    {selectedClass?.status === 1 &&
+                                        "برگزار شده"}
+                                    {selectedClass?.status === 2 && "کنسل شده"}
+                                    {selectedClass?.status === 3 &&
+                                        "لغو بازگشت پول"}
+                                    {selectedClass?.status === 4 && "غیبت"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    جلسه اول
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.first_class === 1
+                                        ? "است"
+                                        : "نیست"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت پرداخت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.pay === 1
+                                        ? "پرداخت شده"
+                                        : "پرداخت نشده"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    مدت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass.class_time
+                                        ? `${selectedClass.class_time} دقیقه`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ساعت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass.time &&
+                                    selectedClass.time !== "[]"
+                                        ? formatTime(selectedClass.time)
+                                        : "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -102,7 +199,7 @@ function MultiSession({ token }) {
                                     type="button"
                                     className={`btn primary ${styles["btn"]}`}
                                     disabled={loading}
-                                    onClick={() => readClasses()}
+                                    onClick={readClassesHandler}
                                 >
                                     {loading
                                         ? "در حال جستجو ..."
@@ -124,14 +221,6 @@ function MultiSession({ token }) {
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">قیمت</th>
-                                <th className="table__head-item">پلتفرم</th>
-                                <th className="table__head-item">کورس</th>
-                                <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">
-                                    وضعیت پرداخت
-                                </th>
-                                <th className="table__head-item">کلاس اول</th>
-                                <th className="table__head-item">ساعت ها</th>
                                 <th className="table__head-item">تاریخ</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -143,13 +232,13 @@ function MultiSession({ token }) {
                                         {item?.user_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.mobile || "-"}
+                                        {item?.user_mobile || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_id}
+                                        {item?.language_name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.price
@@ -157,30 +246,6 @@ function MultiSession({ token }) {
                                                   item?.price
                                               )} تومان`
                                             : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.platform_id || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.course_id || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.status === 1
-                                            ? "فعال"
-                                            : "غیرفعال"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.pay === 1
-                                            ? "پرداخت شده"
-                                            : "پرداخت نشده"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.first_class === 1
-                                            ? "است"
-                                            : "نیست"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.time}
                                     </td>
                                     <td className="table__body-item">
                                         {moment(item?.date).format(
@@ -202,6 +267,15 @@ function MultiSession({ token }) {
                                                 ورود به پنل
                                             </a>
                                         </Link>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedClass(item);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

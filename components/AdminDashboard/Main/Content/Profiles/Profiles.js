@@ -93,38 +93,48 @@ function Profiles(props) {
                         setter={setOpenModal}
                         padding={true}
                     >
-                        <h3 className={styles["modal__title"]}>
-                            جزئیات زبان آموز
-                        </h3>
-                        <div className={styles["modal__wrapper"]}>
-                            <span>
-                                <b>جنسیت</b> :{" "}
-                                {selectedStudent?.gender === 1 ? "مرد" : "زن"}
-                            </span>
-                            <span>
-                                <b>ایمیل</b> :{" "}
-                                {selectedStudent?.email ? (
-                                    <span style={{ fontSize: 15 }}>
-                                        {selectedStudent?.email}
-                                    </span>
-                                ) : (
-                                    "-"
-                                )}
-                            </span>
-                            <span>
-                                <b>کشور</b> :{" "}
-                                {selectedStudent?.country_name || "-"}
-                            </span>
-                            <span>
-                                <b>نحوه عضویت</b> :
-                                {selectedStudent?.register_with ? (
-                                    <span style={{ fontSize: 15 }}>
-                                        {selectedStudent?.register_with}
-                                    </span>
-                                ) : (
-                                    "-"
-                                )}
-                            </span>
+                        <h3 className={"modal__title"}>جزئیات زبان آموز</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    جنسیت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedStudent?.gender === 1
+                                        ? "مرد"
+                                        : "زن"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ایمیل
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedStudent?.email ? (
+                                        <span style={{ fontSize: 15 }}>
+                                            {selectedStudent?.email}
+                                        </span>
+                                    ) : (
+                                        "-"
+                                    )}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    کشور
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedStudent?.country_name || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    نحوه عضویت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedStudent?.register_with || "-"}
+                                </span>
+                            </div>
                         </div>
                     </Modal>
                 )}

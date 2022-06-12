@@ -6,6 +6,7 @@ import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "../../../../../../context/index";
+import Modal from "../../../../../Modal/Modal";
 
 function RequestDetailsList(props) {
     const {
@@ -21,6 +22,8 @@ function RequestDetailsList(props) {
     const [classes, setClasses] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [loading, setLoading] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
@@ -84,6 +87,93 @@ function RequestDetailsList(props) {
     return (
         <div>
             <Box title="وضعیت کلی کلاس ها">
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    اعتبار زبان آموز
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.user_wallet
+                                        ? `${Intl.NumberFormat().format(
+                                              selectedClass?.user_wallet
+                                          )} تومان`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    کورس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.course_name}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    پلتفرم
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.platform_name}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.status === 0 &&
+                                        "تعیین وضعیت نشده"}
+                                    {selectedClass?.status === 1 &&
+                                        "برگزار شده"}
+                                    {selectedClass?.status === 2 && "کنسل شده"}
+                                    {selectedClass?.status === 3 &&
+                                        "لغو بازگشت پول"}
+                                    {selectedClass?.status === 4 && "غیبت"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    جلسه اول
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.first_class === 1
+                                        ? "است"
+                                        : "نیست"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت پرداخت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.pay === 1
+                                        ? "پرداخت شده"
+                                        : "پرداخت نشده"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    مدت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.class_time
+                                        ? `${selectedClass?.class_time} دقیقه`
+                                        : "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -206,17 +296,10 @@ function RequestDetailsList(props) {
                                     شماره زبان آموز
                                 </th>
                                 <th className="table__head-item">نام استاد</th>
-                                <th className="table__head-item">
-                                    اعتبار زبان آموز
-                                </th>
-                                <th className="table__head-item">کورس</th>
-                                <th className="table__head-item">
-                                    وضعیت پرداخت
-                                </th>
                                 <th className="table__head-item">قیمت</th>
-                                <th className="table__head-item">ساعت</th>
                                 <th className="table__head-item">ساعت کلاس</th>
                                 <th className="table__head-item">تاریخ کلاس</th>
+                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
@@ -232,19 +315,6 @@ function RequestDetailsList(props) {
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {`${Intl.NumberFormat().format(
-                                            item.user_wallet
-                                        )} تومان`}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.course_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.pay === 1
-                                            ? "پرداخت شده"
-                                            : "پرداخت نشده"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {item.price
                                             ? `${Intl.NumberFormat().format(
                                                   item.price
@@ -252,19 +322,25 @@ function RequestDetailsList(props) {
                                             : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item.time
+                                        {item.time && item.time !== "[]"
                                             ? formatTime(item.time)
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.class_time
-                                            ? `${item?.class_time} دقیقه`
                                             : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment(item?.date).format(
                                             "YYYY/MM/DD"
                                         )}
+                                    </td>
+                                    <td className="table__body-item">
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedClass(item);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

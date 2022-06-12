@@ -111,8 +111,8 @@ const AppProvider = ({ children }) => {
             getTime(hourString)[0].startMinute
         }
             تا 
-        ${getTime(hourString)[getTime(hourString).length - 1].startHour}:${
-            getTime(hourString)[getTime(hourString).length - 1].startMinute
+        ${getTime(hourString)[getTime(hourString).length - 1].endHour}:${
+            getTime(hourString)[getTime(hourString).length - 1].endMinute
         }`;
     };
 

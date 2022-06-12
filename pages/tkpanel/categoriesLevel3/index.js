@@ -13,6 +13,7 @@ function CategoriesLevel3Page({ categories }) {
                     title="لیست دسته بندی سوم مقالات"
                     createPage="/tkpanel/categoriesLevel3/create"
                     addressPage="/blog/c"
+                    type={3}
                 />
             </AdminDashboard>
         </div>

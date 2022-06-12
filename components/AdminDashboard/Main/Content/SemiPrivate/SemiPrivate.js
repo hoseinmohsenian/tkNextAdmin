@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
+import Modal from "../../../../Modal/Modal";
 
 function SemiPrivate(props) {
     const {
@@ -21,6 +22,8 @@ function SemiPrivate(props) {
         message: "",
         type: "",
     });
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
     const readClasses = async (page = 1) => {
@@ -117,6 +120,71 @@ function SemiPrivate(props) {
                     color: "primary",
                 }}
             >
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت برگزاری
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass.finished === 1
+                                        ? "پایان یافته"
+                                        : "درحال برگزاری"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.status === 0 &&
+                                        "تعیین وضعیت نشده"}
+                                    {selectedClass?.status === 1 &&
+                                        "برگزار شده"}
+                                    {selectedClass?.status === 2 && "کنسل شده"}
+                                    {selectedClass?.status === 3 &&
+                                        "لغو بازگشت پول"}
+                                    {selectedClass?.status === 4 && "غیبت"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تعداد جلسات
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {`${selectedClass.session_number} جلسه`}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    جلسات برگزار شده
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {`${selectedClass.held_session} جلسه`}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تعداد زبان آموزان
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.student_number
+                                        ? `${selectedClass.student_number} نفر`
+                                        : "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -124,7 +192,6 @@ function SemiPrivate(props) {
                                 <th className="table__head-item">عنوان</th>
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان‌</th>
-                                <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">
                                     تاریخ ایجاد
@@ -145,12 +212,11 @@ function SemiPrivate(props) {
                                         {cls.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.finished === 1
-                                            ? "پایان یافته"
-                                            : "درحال برگزاری"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {cls.price}
+                                        {cls.price
+                                            ? `${Intl.NumberFormat().format(
+                                                  cls.price
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
@@ -177,6 +243,15 @@ function SemiPrivate(props) {
                                                 جلسات
                                             </a>
                                         </Link>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedClass(cls);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                         <button
                                             type="button"
                                             className={`action-btn ${

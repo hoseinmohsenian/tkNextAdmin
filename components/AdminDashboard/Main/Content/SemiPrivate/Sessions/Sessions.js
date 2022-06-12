@@ -515,7 +515,9 @@ function SemiPrivateSessions({ token }) {
                                             : "غایب"}
                                     </td>
                                     <td className="table__body-item">
-                                        {session.time}
+                                        {session.time
+                                            ? `${session.time} دقیقه`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
