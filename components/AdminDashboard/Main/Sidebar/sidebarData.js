@@ -53,6 +53,7 @@ import { RiArticleFill, RiAdminLine } from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
 import { FiPercent, FiUserX } from "react-icons/fi";
 import { GoReport } from "react-icons/go";
+import { SiStatuspage } from "react-icons/si";
 
 export default [
     {
@@ -546,6 +547,11 @@ export default [
                 title: "لاگ سیستم",
                 path: "/tkpanel/logReport/show",
                 icon: <GiLogicGateAnd />,
+            },
+            {
+                title: "وضعیت لاگ های سیستم",
+                path: "/tkpanel/logReport/status",
+                icon: <SiStatuspage />,
             },
             {
                 title: "لیست ادمین ها",

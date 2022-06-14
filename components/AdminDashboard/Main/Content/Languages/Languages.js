@@ -28,7 +28,7 @@ function Languages({ languages }) {
                                 >
                                     url
                                 </th>
-                                <th className="table__head-item">توضیحات</th>
+                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">

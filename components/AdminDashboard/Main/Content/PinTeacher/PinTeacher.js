@@ -174,6 +174,7 @@ function PinTeacher({ token, languages }) {
                                 displayKey="teacher_name"
                                 noResText="یافت نشد"
                                 width="100%"
+                                stylesProps={{ width: "100%" }}
                                 background="#fafafa"
                                 max={Infinity}
                                 onRemove={deleteTeacherHandler}

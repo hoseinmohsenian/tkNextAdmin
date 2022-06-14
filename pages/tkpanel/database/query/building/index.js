@@ -3,7 +3,7 @@ import Reporting from "../../../../../components/AdminDashboard/Main/Content/Rep
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function ArticlesPage({ token, languages }) {
+function ReportingPage({ token, languages }) {
     return (
         <div>
             <Header title="گزارش گیری | تیکا"></Header>
@@ -14,7 +14,7 @@ function ArticlesPage({ token, languages }) {
     );
 }
 
-export default ArticlesPage;
+export default ReportingPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];

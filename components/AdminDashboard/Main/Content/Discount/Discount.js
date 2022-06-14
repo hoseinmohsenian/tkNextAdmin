@@ -1,8 +1,13 @@
+import { useState } from "react";
 import Link from "next/link";
 import Box from "../Elements/Box/Box";
 import moment from "jalali-moment";
+import Modal from "../../../../Modal/Modal";
 
 function Discount({ discounts }) {
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedDiscount, setSelectedDiscount] = useState({});
+
     return (
         <div>
             <Box
@@ -13,6 +18,56 @@ function Discount({ discounts }) {
                     color: "primary",
                 }}
             >
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کوپن تخفیف</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedDiscount?.active_status
+                                        ? "فعال"
+                                        : "غیرفعال"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>نوع</span>
+                                <span className={"modal__item-body"}>
+                                    {selectedDiscount.type || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تاریخ شروع
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {moment(selectedDiscount.start_at).format(
+                                        "YYYY/MM/DD hh:mm:ss"
+                                    )}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تاریخ انقضا
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {moment(selectedDiscount.expired_at).format(
+                                        "YYYY/MM/DD hh:mm:ss"
+                                    )}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -25,12 +80,6 @@ function Discount({ discounts }) {
                                     حداکثر قیمت
                                 </th>
                                 <th className="table__head-item">تعداد</th>
-                                <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">نوع</th>
-                                <th className="table__head-item">تاریخ شروع</th>
-                                <th className="table__head-item">
-                                    تاریخ انقضا
-                                </th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -73,24 +122,6 @@ function Discount({ discounts }) {
                                         {discount?.number}
                                     </td>
                                     <td className="table__body-item">
-                                        {discount?.active_status
-                                            ? "فعال"
-                                            : "غیرفعال"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {discount?.type}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {moment(discount.start_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {moment(discount.expired_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item">
                                         <Link
                                             href={`/tkpanel/copens/${discount.id}/edit`}
                                         >
@@ -98,6 +129,15 @@ function Discount({ discounts }) {
                                                 ویرایش
                                             </a>
                                         </Link>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedDiscount(discount);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

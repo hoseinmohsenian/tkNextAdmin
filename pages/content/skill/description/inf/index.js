@@ -8,7 +8,7 @@ function SkillsDescPage({ skills }) {
         <>
             <Header title="توضیحات مهارت ها | تیکا"></Header>
             <AdminDashboard>
-                <SkillsDesc skills={skills} />
+                <SkillsDesc fetchedSkills={skills} />
             </AdminDashboard>
         </>
     );

@@ -3,12 +3,12 @@ import SpecialitiesDesc from "../../../../../components/AdminDashboard/Main/Cont
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function SpecialitiesDescPage({ specialitys }) {
+function SpecialitiesDescPage({ specialitys,token }) {
     return (
         <>
             <Header title="توضیحات تخصص ها | تیکا"></Header>
             <AdminDashboard>
-                <SpecialitiesDesc specialitys={specialitys} />
+                <SpecialitiesDesc fetchedSpecialitys={specialitys} token={token} />
             </AdminDashboard>
         </>
     );
@@ -41,6 +41,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { specialitys: dataArr[0].data },
+        props: { specialitys: dataArr[0].data, token },
     };
 }

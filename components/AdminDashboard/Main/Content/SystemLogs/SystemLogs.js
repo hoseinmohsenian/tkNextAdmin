@@ -4,10 +4,13 @@ import Pagination from "../Pagination/Pagination";
 import { BASE_URL } from "../../../../../constants";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Modal from "../../../../Modal/Modal";
 
 function SystemLogs({ fetchedLogs: { data, ...restData }, token }) {
     const [logs, setLogs] = useState(data);
     const [pagData, setPagData] = useState(restData);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedLog, setSelectedLog] = useState({});
     const router = useRouter();
 
     const readSystemLogs = async (page = 1) => {
@@ -59,23 +62,56 @@ function SystemLogs({ fetchedLogs: { data, ...restData }, token }) {
                     color: "primary",
                 }}
             >
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات لاگ سیستم</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    توضیحات
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedLog.desc || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    آیدی استاد
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedLog.teacher_id || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    آیدی زبان آموز
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedLog.user_id || "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">
-                                    نام ایجاد کننده
+                                    ایجاد کننده
                                 </th>
-                                <th className="table__head-item">نام کاربر</th>
+                                <th className="table__head-item">زبان آموز</th>
                                 <th className="table__head-item">
-                                    admin_assign_name
+                                    admin_assign
                                 </th>
                                 <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">توضیحات</th>
-                                <th className="table__head-item">آیدی استاد</th>
-                                <th className="table__head-item">
-                                    آیدی زبان آموز
-                                </th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -95,15 +131,6 @@ function SystemLogs({ fetchedLogs: { data, ...restData }, token }) {
                                         {lg.status_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {lg.desc || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {lg.teacher_id || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {lg.user_id || "-"}
-                                    </td>
-                                    <td className="table__body-item">
                                         <Link
                                             href={`/tkpanel/logReport/show/${lg?.id}/edit`}
                                         >
@@ -118,6 +145,15 @@ function SystemLogs({ fetchedLogs: { data, ...restData }, token }) {
                                                 لاگ فرزند
                                             </a>
                                         </Link>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedLog(lg);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
