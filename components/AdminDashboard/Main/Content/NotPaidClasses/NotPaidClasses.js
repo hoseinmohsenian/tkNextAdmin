@@ -7,6 +7,8 @@ import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import { useGlobalContext } from "../../../../../context/index";
 import Modal from "../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
  
 function NotPaidClasses(props) {
     const {
@@ -242,6 +244,17 @@ function NotPaidClasses(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {item.user_mobile}
+                                        {item?.user_mobile && (
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=${item.user_mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         {item.teacher_name}

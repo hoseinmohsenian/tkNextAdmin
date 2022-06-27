@@ -6,7 +6,7 @@ import Pagination from "../../Pagination/Pagination";
 import Link from "next/link";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
-import Modal from "../../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai"
 
 function Landing(props) {
     const {
@@ -28,8 +28,6 @@ function Landing(props) {
     });
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
-    const [openModal, setOpenModal] = useState(false);
-    const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
     const filtersOnChange = (e) => {
@@ -113,10 +111,8 @@ function Landing(props) {
                 }
             );
             if (res.ok) {
-                let message = `این لندینگ ${
-                    status === 1 ? "فعال" : "غیرفعال"
-                } شد`;
-                showAlert(true, status === 1 ? "success" : "warning", message);
+                let message = "این لندینگ انجام شد";
+                showAlert(true, "success", message);
                 let updated = [...landings];
                 updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
                 setLandings(() => updated);
@@ -167,43 +163,7 @@ function Landing(props) {
     return (
         <div>
             <Box title="لندینگ تعاملی">
-                {openModal && (
-                    <Modal
-                        backgroundColor="white"
-                        showHeader={true}
-                        show={openModal}
-                        setter={setOpenModal}
-                        padding={true}
-                    >
-                        <h3 className={"modal__title"}>جزئیات لندینگ</h3>
-                        <div className={"modal__wrapper"}>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    وضعیت کلاس
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.status === 1 ? "فعال" : 'غیرفعال'}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    روز
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.day || "-"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    URL
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.landing_url || "-"}
-                                </span>
-                            </div>
-                        </div>
-                    </Modal>
-                )}
+              
 
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
@@ -310,6 +270,8 @@ function Landing(props) {
                                 <th className="table__head-item">هدف</th>
                                 <th className="table__head-item">زبان‌</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
+                                <th className="table__head-item">روز</th>
+                                <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -323,7 +285,16 @@ function Landing(props) {
                                         {landing?.name}
                                     </td>
                                     <td className="table__body-item">
-                                        {landing?.mobile}
+                                        {landing.mobile}
+                                        <Link
+                                            href={`https://api.whatsapp.com/send?phone=${landing.mobile}&text=%D8%B3%D9%84%D8%A7%D9%85%20%20%D8%B9%D8%B2%DB%8C%D8%B2%0A%D8%A7%D9%81%D8%B4%D8%A7%D8%B1%DB%8C%20%D9%87%D8%B3%D8%AA%D9%85%20%D8%A7%D8%B2%20%D8%B3%D8%A7%D9%85%D8%A7%D9%86%D9%87%20%D8%A2%D9%85%D9%88%D8%B2%D8%B4%20%D8%B2%D8%A8%D8%A7%D9%86%20%D8%AA%DB%8C%DA%A9%D8%A7%0A%D9%84%D8%B7%D9%81%D8%A7%D9%8B%20%D8%A8%D8%B1%D8%A7%DB%8C%20%D8%A7%D8%B3%D8%AA%D9%81%D8%A7%D8%AF%D9%87%20%D8%A7%D8%B2%20%DA%A9%D9%84%D8%A7%D8%B3%D8%8C%20%D8%B2%D9%85%D8%A7%D9%86%20%D8%A2%D8%B2%D8%A7%D8%AF%20%D8%AE%D9%88%D8%AF%D8%AA%D9%88%D9%86%20%D8%B1%D9%88%20%D8%A8%D8%B1%D8%A7%DB%8C%20%D9%85%D8%A7%20%D8%A7%D8%B1%D8%B3%D8%A7%D9%84%20%DA%A9%D9%86%DB%8C%D8%AF%F0%9F%99%8F%0A%0Ahttps://tikkaa.ir%0A%0A%D8%A7%D8%B1%D8%AA%D8%A8%D8%A7%D8%B7%20%D8%A8%D8%A7%20%D9%BE%D8%B4%D8%AA%DB%8C%D8%A8%D8%A7%D9%86%DB%8C%F0%9F%8C%B8%0A%D9%88%D8%A7%D8%AA%D8%B3%20%D8%A7%D9%BE:%20%0A0922-323-1936%0A%DB%8C%D8%A7%0A%D8%AA%D9%85%D8%A7%D8%B3%20:%0A021-91016620`}
+                                        >
+                                            <a className="whatsapp-icon">
+                                                <span>
+                                                    <AiOutlineWhatsApp />
+                                                </span>                                                
+                                            </a>
+                                        </Link>
                                     </td>
                                     <td
                                         className="table__body-item"
@@ -360,7 +331,7 @@ function Landing(props) {
                                                 onBlur={(e) =>
                                                     addDescHandler(
                                                         e,
-                                                        teacher?.id,
+                                                        landing?.id,
                                                         i
                                                     )
                                                 }
@@ -372,6 +343,27 @@ function Landing(props) {
                                         </div>
                                     </td>
                                     <td className="table__body-item">
+                                        {landing?.day === null && "-"}
+                                        {landing?.day === 0 && "هرروز هفته"}
+                                        {landing?.day === 1 && "شنبه"}
+                                        {landing?.day === 2 && "۱ شنبه"}
+                                        {landing?.day === 3 && "۲ شنبه"}
+                                        {landing?.day === 4 && "۳ شنبه"}
+                                        {landing?.day === 5 && "۴ شنبه"}
+                                        {landing?.day === 6 && "۵ شنبه"}
+                                        {landing?.day === 7 && "جمعه"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {landing?.status === 1 ? "انجام شده" : 'انجام نشده'}  
+                                    </td>
+                                    <td className="table__body-item">
+                                        <Link
+                                            href={`/tkpanel/siteNews/${landing?.id}/edit`}
+                                        >
+                                            <a className={`action-btn primary`}>
+                                                ویرایش &nbsp;
+                                            </a>
+                                        </Link>
                                         <button
                                             type="button"
                                             className={`action-btn danger`}
@@ -383,22 +375,6 @@ function Landing(props) {
                                             حذف
                                         </button>
                                         <Link
-                                            href={`/tkpanel/siteNews/${landing?.id}/edit`}
-                                        >
-                                            <a className={`action-btn primary`}>
-                                                ویرایش &nbsp;
-                                            </a>
-                                        </Link>
-                                        <button
-                                            className={`action-btn success`}
-                                            onClick={() => {
-                                                setSelectedClass(landing);
-                                                setOpenModal(true);
-                                            }}
-                                        >
-                                            جزئیات
-                                        </button>
-                                        <Link
                                             href={`https://barmansms.ir/blog${landing?.url}`}
                                             disabled={loadings[i]}
                                         >
@@ -406,26 +382,21 @@ function Landing(props) {
                                                 نمایش
                                             </a>
                                         </Link>
-                                        <button
-                                            type="button"
-                                            className={`action-btn ${
-                                                landing?.draft === 1
-                                                    ? "success"
-                                                    : "warning"
-                                            }`}
-                                            onClick={() =>
-                                                changeStatus(
-                                                    landing?.id,
-                                                    landing?.draft,
-                                                    i
-                                                )
-                                            }
-                                            disabled={loadings[i]}
-                                        >
-                                            {landing?.draft === 0
-                                                ? "پیش نویس"
-                                                : "منتشر"}
-                                        </button>
+                                        {landing.status === 0 &&
+                                            <button
+                                                type="button"
+                                                className={`action-btn success`}
+                                                onClick={() =>
+                                                    changeStatus(
+                                                        landing?.id,
+                                                        landing?.status,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
+                                            >
+                                                انجام شد
+                                            </button>}
                                     </td>
                                 </tr>
                             ))}

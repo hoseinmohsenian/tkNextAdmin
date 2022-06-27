@@ -12,6 +12,7 @@ const Editor = dynamic(() => import("../../../../Editor/Editor"), {
     ssr: false,
 });
 import FetchSearchSelect from "../../../../Elements/FetchSearchSelect/FetchSearchSelect";
+import Error from "../../../../../../../Error/Error";
 
 const teacherSchema = { id: "", name: "", family: "" };
 
@@ -37,6 +38,7 @@ function CreateClass(props) {
     const [loading, setLoading] = useState(false);
     const [languages, setLanguages] = useState([]);
     const [addedData, setAddedData] = useState({});
+    const [errors, setErrors] = useState([]);
     moment.locale("fa", { useGregorianParser: true });
 
     const handleSubmit = async (e) => {
@@ -234,7 +236,88 @@ function CreateClass(props) {
                 await createClass(fd);
             }
         } else {
-            showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
+            showAlert(true, "danger", "لطفا فیلدهای ضروری را تکمیل کنید");
+
+            // Error Handling
+            let temp = errors;
+            let teacherMessage = "لطفا استاد را انتخاب کنید.";
+            let langMessage = "لطفا زبان را انتخاب کنید.";
+            let titleMessage = "لطفا عنوان را وارد کنید.";
+            let descMessage = "لطفا توضیحات را وارد کنید.";
+            let specMessage = "لطفا حداقل ۲ تخصص انتخاب کنید.";
+            let skillMessage = "لطفا حداقل ۳ مهارت انتخاب کنید.";
+            let capacityMessage = "لطفا ظرفیت را وارد کنید.";
+            let countMessage = "لطفا تعداد را وارد کنید.";
+            let priceMessage = "لطفا قیمت را وارد کنید.";
+
+            const findError = (items, target) => {
+                return items?.find((item) => item === target);
+            };
+
+            if (!selectedTeacher.name) {
+                if (findError(errors, teacherMessage) === undefined) {
+                    temp = [teacherMessage, ...temp];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== teacherMessage);
+            }
+            if (Number(formData.language_id) === 0) {
+                if (findError(errors, langMessage) === undefined) {
+                    temp = [langMessage, ...temp];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== langMessage);
+            }
+            if (formData.title.trim() === "") {
+                if (findError(errors, titleMessage) === undefined) {
+                    temp = [...temp, titleMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== titleMessage);
+            }
+            if (desc.trim() === "") {
+                if (findError(errors, descMessage) === undefined) {
+                    temp = [...temp, descMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== descMessage);
+            }
+            if (selectedSpecialitys.length < 2) {
+                if (findError(errors, specMessage) === undefined) {
+                    temp = [...temp, specMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== specMessage);
+            }
+            if (selectedSkills.length < 3) {
+                if (findError(errors, skillMessage) === undefined) {
+                    temp = [...temp, skillMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== skillMessage);
+            }
+            if (!Number(formData.class_capacity)) {
+                if (findError(errors, capacityMessage) === undefined) {
+                    temp = [...temp, capacityMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== capacityMessage);
+            }
+            if (!Number(formData.class_number)) {
+                if (findError(errors, countMessage) === undefined) {
+                    temp = [...temp, countMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== countMessage);
+            }
+            if (!Number(formData.price)) {
+                if (findError(errors, priceMessage) === undefined) {
+                    temp = [...temp, priceMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== priceMessage);
+            }
+            setErrors(() => temp);
         }
     };
 
@@ -529,7 +612,7 @@ function CreateClass(props) {
     }, [selectedTeacher]);
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form>
             {/* Alert */}
             <Alert
                 {...alertData}
@@ -956,10 +1039,15 @@ function CreateClass(props) {
                         />
                     </div>
 
+                    <div className={styles["step__row"]}>
+                        {errors?.length !== 0 && <Error errorList={errors} />}
+                    </div>
+
                     <button
                         type="submit"
                         className="btn primary"
                         disabled={loading}
+                        onClick={handleSubmit}
                     >
                         {loading
                             ? "در حال انجام ..."

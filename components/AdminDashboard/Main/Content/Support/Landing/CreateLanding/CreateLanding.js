@@ -106,7 +106,7 @@ function CreateLanding({ token }) {
                         <label htmlFor="url" className="form__label">
                             url :<span className="form__star">*</span>
                         </label>
-                        <div className="form-control">
+                        <div className="form-control form-control-url">
                             <input
                                 type="text"
                                 name="url"
@@ -115,6 +115,9 @@ function CreateLanding({ token }) {
                                 onChange={handleOnChange}
                                 required
                             />
+                            <div className="form-control-label">
+                                https://tikkaa.ir/landing/c/
+                            </div>
                         </div>
                     </div>
                     <div className="input-wrapper">
@@ -157,18 +160,26 @@ function CreateLanding({ token }) {
                                 >
                                     بنر دستکاپ :
                                 </label>
-                                <div
-                                    className="upload-btn"
-                                    onChange={(e) =>
-                                        handleSelectFile(e, "banner_desktop")
-                                    }
-                                >
-                                    <span>آپلود تصویر</span>
-                                    <input
-                                        type="file"
-                                        className="upload-input"
-                                        accept="image/png, image/jpg, image/jpeg"
-                                    ></input>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_desktop"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_desktop?.name}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -180,18 +191,23 @@ function CreateLanding({ token }) {
                                 >
                                     بنر موبایل :
                                 </label>
-                                <div
-                                    className="upload-btn"
-                                    onChange={(e) =>
-                                        handleSelectFile(e, "banner_mobile")
-                                    }
-                                >
-                                    <span>آپلود تصویر</span>
-                                    <input
-                                        type="file"
-                                        className="upload-input"
-                                        accept="image/png, image/jpg, image/jpeg"
-                                    ></input>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(e, "banner_mobile")
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_mobile?.name}
+                                    </span>
                                 </div>
                             </div>
                         </div>

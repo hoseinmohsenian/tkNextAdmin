@@ -35,7 +35,7 @@
 }
 .table__body-item {
     padding: 0.3rem 0.5rem;
-    vertical-align: top;
+    vertical-align: center;
 }
 .table__body-item--ltr {
     direction: ltr;

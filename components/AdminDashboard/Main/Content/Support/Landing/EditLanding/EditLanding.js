@@ -114,7 +114,7 @@ function EditLanding({ token, landing }) {
                         <label htmlFor="url" className="form__label">
                             url :<span className="form__star">*</span>
                         </label>
-                        <div className="form-control">
+                        <div className="form-control form-control-url">
                             <input
                                 type="text"
                                 name="url"
@@ -124,6 +124,9 @@ function EditLanding({ token, landing }) {
                                 value={formData.url}
                                 required
                             />
+                            <div className="form-control-label">
+                                https://tikkaa.ir/landing/c/
+                            </div>
                         </div>
                     </div>
                     <div className="input-wrapper">

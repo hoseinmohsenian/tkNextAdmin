@@ -21,6 +21,23 @@
     position: relative;
     width: 100%;
 }
+.form-control-url {
+    padding-left: 0;
+}
+.form-control-url input {
+    text-align: left;
+    padding-left: 0.4rem;
+}
+.form-control-label {
+    background-color: #e0f3ff;
+    direction: ltr;
+    padding: 0 0.5rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
 .form__label {
     pointer-events: none;
     color: #4d4d4d;
@@ -54,6 +71,9 @@
 .form__input::placeholder,
 .form__textarea::placeholder {
     color: #bdbdbd;
+}
+.form__textarea--ltr {
+    direction: ltr;
 }
 .form__input--ltr {
     direction: ltr;

@@ -7,6 +7,8 @@ import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "../../../../../../context";
 import Modal from "../../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
 
 function TodayClass(props) {
     const {
@@ -139,17 +141,10 @@ function TodayClass(props) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    وضعیت کلاس
+                                    زبان
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.status === 0 &&
-                                        "تعیین وضعیت نشده"}
-                                    {selectedClass?.status === 1 &&
-                                        "برگزار شده"}
-                                    {selectedClass?.status === 2 && "کنسل شده"}
-                                    {selectedClass?.status === 3 &&
-                                        "لغو بازگشت پول"}
-                                    {selectedClass?.status === 4 && "غیبت"}
+                                    {selectedClass?.language_name}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -507,7 +502,7 @@ function TodayClass(props) {
                                     شماره زبان آموز
                                 </th>
                                 <th className="table__head-item">نام استاد</th>
-                                <th className="table__head-item">زبان</th>
+                                <th className="table__head-item">وضعیت کلاس</th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">ساعت کلاس</th>
                                 <th className="table__head-item">تاریخ کلاس</th>
@@ -522,12 +517,28 @@ function TodayClass(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {item?.user_mobile}
+                                        {item?.user_mobile && (
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=${item.user_mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_name}
+                                        {item?.status === 0 &&
+                                            "تعیین وضعیت نشده"}
+                                        {item?.status === 1 && "برگزار شده"}
+                                        {item?.status === 2 && "کنسل شده"}
+                                        {item?.status === 3 && "لغو بازگشت پول"}
+                                        {item?.status === 4 && "غیبت"}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.price

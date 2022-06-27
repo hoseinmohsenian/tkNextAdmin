@@ -6,7 +6,7 @@ import styles from "./AddCommission.module.css";
 import FetchSearchSelect from "../../../Elements/FetchSearchSelect/FetchSearchSelect";
 
 const teacherSchema = { id: "", name: "", family: "" };
-const studentSchema = { id: "", name: "", family: "" };
+const studentSchema = { id: "", name_family: "" };
 
 function AddCommission({ showAlert, setIsModalOpen, token }) {
     const [formData, setFormData] = useState({
@@ -123,6 +123,7 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
             );
             if (res.ok) {
                 const { data } = await res.json();
+                console.log(data);
                 setStudents(data);
                 showAlert(true, "success", "اکنون زبان آموز را انتخاب کنید");
             } else {
@@ -190,6 +191,7 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                             background="#fafafa"
                             fontSize={16}
                             onSearch={(value) => searchTeachers(value)}
+                            openBottom={true}
                         />
                     </div>
                 </div>
@@ -205,14 +207,16 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                             list={students}
                             defaultText="انتخاب کنید"
                             selected={selectedStudent}
-                            displayKey="title"
+                            displayKey="name_family"
                             setSelected={setSelectedStudent}
                             noResText="یافت نشد"
                             listSchema={studentSchema}
+                            id="id"
                             stylesProps={{
                                 width: "100%",
                             }}
                             background="#fafafa"
+                            fontSize={16}
                         />
                     </div>
                 </div>

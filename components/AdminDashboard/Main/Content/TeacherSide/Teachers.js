@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
 import styles from "./Teachers.module.css";
 import Link from "next/link";
+import Modal from "../../../../Modal/Modal";
 
 function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fetchedData }) {
     const [teachers, setTeachers] = useState(data);
@@ -22,6 +23,8 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
     const [loading, setLoading] = useState(false)
     const { generateKey } = useGlobalContext();
     const router = useRouter();
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedTeacher, setSelectedTeacher] = useState({});
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -243,6 +246,44 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
             <Box
                 title="لیست اساتید"
             >
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات استاد</h3>
+                        <div className={"modal__wrapper"}>                            
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت نمایش
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTeacher?.show ? "نمایان" : "پنهان‌"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    استپ
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTeacher?.step}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ویدئو
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTeacher?.video ? "دارد" : "ندارد"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -357,9 +398,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                 <th className="table__head-item">موبایل</th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
-                                <th className="table__head-item">استپ</th>
                                 <th className="table__head-item">کمیسیون</th>
-                                <th className="table__head-item">ویدئو</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -421,9 +460,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                         </div>
                                     </td>
                                     <td className="table__body-item">
-                                        {teacher?.step}
-                                    </td>
-                                    <td className="table__body-item">
                                         <div className="form-control" style={{width:"60px",margin:0}}>
                                             <input
                                                 type="number"
@@ -451,9 +487,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                 required
                                             />
                                         </div>
-                                    </td>
-                                    <td className="table__body-item">
-                                        {teacher?.video ? "دارد" : "ندارد"}
                                     </td>
                                     <td className="table__body-item">
                                         <button
@@ -490,6 +523,29 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                 لاگ پیگیری
                                             </a>
                                         </Link>
+                                        <Link
+                                            href={`/tkpanel/newTeacher/languagesPrice/${teacher.id}`}
+                                        >
+                                            <a className={`action-btn success`}>
+                                                تغییر قیمت
+                                            </a>
+                                        </Link>
+                                        <Link
+                                            href={`/tkpanel/newTeacher/details/${teacher.id}`}
+                                        >
+                                            <a className={`action-btn primary`}>
+                                                مشخصات
+                                            </a>
+                                        </Link>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedTeacher(teacher);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

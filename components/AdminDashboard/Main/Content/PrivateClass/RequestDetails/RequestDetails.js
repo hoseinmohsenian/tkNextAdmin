@@ -4,6 +4,9 @@ import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
+import { useGlobalContext } from "../../../../../../context";
 
 function RequestDetails(props) {
     const {
@@ -14,6 +17,7 @@ function RequestDetails(props) {
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
+    const { formatTime } = useGlobalContext();
 
     const readClasses = async (page = 1) => {
         let searchQuery = "";
@@ -78,55 +82,92 @@ function RequestDetails(props) {
                                 <th className="table__head-item">تخفیف</th>
                                 <th className="table__head-item">مدت زمان</th>
                                 <th className="table__head-item">استپ</th>
+                                <th className="table__head-item">تاریخ کلاس</th>
                                 <th className="table__head-item">
                                     وضعیت درخواست
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((item) => (
-                                <tr className="table__body-row" key={item?.id}>
-                                    <td className="table__body-item">
-                                        {item?.user_name || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.user_mobile}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.teacher_mobile}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.teacher_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.payable
-                                            ? `${Intl.NumberFormat().format(
-                                                  item?.payable
-                                              )} تومان`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.payable
-                                            ? `${Intl.NumberFormat().format(
-                                                  item?.discount
-                                              )} تومان`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item.time
-                                            ? `${item?.time} دقیقه`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.step || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.status === 1
-                                            ? "فعال"
-                                            : "غیرفعال"}
-                                    </td>
-                                </tr>
-                            ))}
+                            {classes?.map((item) => {
+                                let date = item.classroom?.date
+                                    ? `${moment
+                                          .from(
+                                              item.classroom?.date
+                                                  .replace("-", "/")
+                                                  .replace("-", "/"),
+                                              "en",
+                                              "YYYY/MM/DD"
+                                          )
+                                          .locale("fa")
+                                          .format("DD MMMM YYYY")} , ${
+                                          item.classroom?.time &&
+                                          item.classroom?.time !== "[]"
+                                              ? formatTime(item.classroom?.time)
+                                              : "-"
+                                      }`
+                                    : "-";
+                                return (
+                                    <tr
+                                        className="table__body-row"
+                                        key={item?.id}
+                                    >
+                                        <td className="table__body-item">
+                                            {item?.user_name || "-"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.user_mobile}
+                                            {item?.user_mobile && (
+                                                <Link
+                                                    href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=${item.user_name} عزيز كلاس شما ${date} با استاد ${item?.teacher_name} تاييد شد`}
+                                                >
+                                                    <a className="whatsapp-icon">
+                                                        <span>
+                                                            <AiOutlineWhatsApp />
+                                                        </span>
+                                                    </a>
+                                                </Link>
+                                            )}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.teacher_mobile}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.teacher_name}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.payable
+                                                ? `${Intl.NumberFormat().format(
+                                                      item?.payable
+                                                  )} تومان`
+                                                : "-"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.payable
+                                                ? `${Intl.NumberFormat().format(
+                                                      item?.discount
+                                                  )} تومان`
+                                                : "-"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item.time
+                                                ? `${item?.time} دقیقه`
+                                                : "-"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.step || "-"}
+                                        </td>
+                                        <td className="table__body-item table__body-item--rtl">
+                                            {date}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.status === 1
+                                                ? "فعال"
+                                                : "غیرفعال"}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
 
                             {classes?.length === 0 && (
                                 <tr className="table__body-row">

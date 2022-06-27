@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
+import Modal from "../../../../Modal/Modal";
 
 function GroupClass(props) {
     const {
@@ -21,6 +22,8 @@ function GroupClass(props) {
         message: "",
         type: "",
     });
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
     const readClasses = async (page = 1) => {
@@ -39,13 +42,16 @@ function GroupClass(props) {
         });
 
         try {
-            const res = await fetch(`${BASE_URL}/admin/group-class/`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
+            const res = await fetch(
+                `${BASE_URL}/admin/group-class?page=${page}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
             const {
                 data: { data, ...restData },
             } = await res.json();
@@ -146,6 +152,38 @@ function GroupClass(props) {
                     color: "primary",
                 }}
             >
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    ظرفیت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.class_capacity} نفر
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    مدت کلاس
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass.session_time
+                                        ? `${selectedClass.session_time} دقیقه`
+                                        : "-"}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -154,8 +192,7 @@ function GroupClass(props) {
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان‌</th>
                                 <th className="table__head-item">کمیسیون</th>
-                                <th className="table__head-item">مدت کلاس</th>
-                                <th className="table__head-item">ظرفیت</th>
+                                <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">تاریخ شروع</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -176,10 +213,9 @@ function GroupClass(props) {
                                         {cls.commission}%
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.session_time} دقیقه
-                                    </td>
-                                    <td className="table__body-item">
-                                        {cls.class_capacity} نفر
+                                        {cls.status === 0 && "در انتظار تایید"}
+                                        {cls.status === 1 && "تایید شده"}
+                                        {cls.status === 2 && "تایید نشده"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {cls.start_date
@@ -242,6 +278,15 @@ function GroupClass(props) {
                                             {cls?.show === 1
                                                 ? "پنهان"
                                                 : "نمایش"}
+                                        </button>
+                                        <button
+                                            className={`action-btn success`}
+                                            onClick={() => {
+                                                setSelectedClass(cls);
+                                                setOpenModal(true);
+                                            }}
+                                        >
+                                            جزئیات
                                         </button>
                                     </td>
                                 </tr>

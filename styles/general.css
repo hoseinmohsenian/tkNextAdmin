@@ -217,6 +217,17 @@ select.shortwidth {
     margin-right: 0.5rem;
 }
 
+.whatsapp-icon {
+    color: #28a745;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+.whatsapp-icon span {
+    margin-right: 5px;
+    display: flex;
+}
+
 @media (min-width: 576px) {
     .hidden-sm {
         display: none !important;

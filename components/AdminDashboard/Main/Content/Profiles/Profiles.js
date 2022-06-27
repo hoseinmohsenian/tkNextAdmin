@@ -6,6 +6,7 @@ import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import styles from "./Profile.module.css";
 import Modal from "../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
 
 function Profiles(props) {
     const {
@@ -205,8 +206,19 @@ function Profiles(props) {
                                     <td className="table__body-item">
                                         {student?.name_family}
                                     </td>
-                                    <td className="table__body-item table__body-item--ltr">
-                                        {student?.mobile}
+                                    <td className="table__body-item">
+                                        {student.mobile || "-"}
+                                        {student?.mobile && (
+                                            <Link
+                                                href={`https://wa.me/${student.mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

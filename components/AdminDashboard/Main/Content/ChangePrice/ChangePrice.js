@@ -5,8 +5,10 @@ import { BASE_URL } from "../../../../../constants";
 import Pagination from "../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
-import {useRouter} from "next/router"
-import {useGlobalContext} from "../../../../../context"
+import { useRouter } from "next/router";
+import { useGlobalContext } from "../../../../../context";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
 
 function ChangePrice(props) {
     const {
@@ -293,6 +295,17 @@ function ChangePrice(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {price?.user_mobile || "-"}
+                                        {price?.user_mobile && (
+                                                <Link
+                                                    href={`https://api.whatsapp.com/send?phone=${price.user_mobile}`}
+                                                >
+                                                    <a className="whatsapp-icon">
+                                                        <span>
+                                                            <AiOutlineWhatsApp />
+                                                        </span>
+                                                    </a>
+                                                </Link>
+                                            )}
                                     </td>
                                     <td className="table__body-item">
                                         {price?.teacher_name}

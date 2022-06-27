@@ -5,6 +5,8 @@ import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
 
 function TeachersComments(props) {
     const {
@@ -214,6 +216,17 @@ function TeachersComments(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {comment?.mobile}
+                                        {comment?.mobile && (
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=${comment.mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td 
                                         className="table__body-item table__body-item--ellipsis"

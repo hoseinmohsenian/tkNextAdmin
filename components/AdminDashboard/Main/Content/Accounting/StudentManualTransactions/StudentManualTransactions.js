@@ -6,6 +6,8 @@ import moment from "jalali-moment";
 import { BASE_URL } from "../../../../../../constants";
 import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 import Modal from "../../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
 
 function StudentManualTransactions(props) {
     const {
@@ -143,6 +145,17 @@ function StudentManualTransactions(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {cls.mobile}
+                                        {cls?.mobile && (
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=${cls.mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         {Intl.NumberFormat().format(cls.amount)}{" "}

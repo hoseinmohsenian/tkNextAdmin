@@ -201,17 +201,15 @@ function EditSpecialitiesDesc({ token, specialty }) {
                         <label htmlFor="seo_schema" className="form__label">
                             اسکیما سئو :
                         </label>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                name="seo_schema"
-                                id="seo_schema"
-                                className="form__input"
-                                onChange={handleOnChange}
-                                value={formData?.seo_schema || ""}
-                                spellCheck={false}
-                            />
-                        </div>
+                        <textarea
+                            type="text"
+                            name="seo_schema"
+                            id="seo_schema"
+                            className="form__textarea form__textarea--ltr"
+                            onChange={handleOnChange}
+                            value={formData?.seo_schema || ""}
+                            style={{ minHeight: 140, maxHeight: 200 }}
+                        />
                     </div>
 
                     <button

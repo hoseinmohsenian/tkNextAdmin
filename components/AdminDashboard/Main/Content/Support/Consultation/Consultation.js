@@ -4,6 +4,8 @@ import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
 
 function Consultation(props) {
     const {
@@ -163,6 +165,17 @@ function Consultation(props) {
                                 >
                                     <td className="table__body-item">
                                         {clt?.mobile}
+                                        {clt?.mobile && (
+                                                <Link
+                                                    href={`https://api.whatsapp.com/send?phone=${clt.mobile}&text=سلام وقتتون بخیر از پشتیبانی «آموزش زبان تیکا» پیام میدم خدمتتون. شما شمارتون و جهت مشاوره زبان برای ما در سایت https://tikkaa.ir قرار دادید. برای ادامه گفتگو از طریق لینک زیر اقدام کنید yun.ir/tkChat لطفاً نام و زبان مد نظر خود را برای ما ارسال کنید تا در خدمتتون باشیم.`}
+                                                >
+                                                    <a className="whatsapp-icon">
+                                                        <span>
+                                                            <AiOutlineWhatsApp />
+                                                        </span>
+                                                    </a>
+                                                </Link>
+                                            )}
                                     </td>
                                     <td className="table__body-item">
                                         {clt?.status === 1

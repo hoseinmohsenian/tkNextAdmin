@@ -9,6 +9,7 @@ import moment from "jalali-moment";
 import Link from "next/link";
 import Modal from "../../../../../Modal/Modal";
 import { useGlobalContext } from "../../../../../../context";
+import { AiOutlineWhatsApp } from "react-icons/ai";
 
 function MultiSession({ token }) {
     const [classes, setClasses] = useState([]);
@@ -233,6 +234,17 @@ function MultiSession({ token }) {
                                     </td>
                                     <td className="table__body-item">
                                         {item?.user_mobile || "-"}
+                                        {item?.user_mobile && (
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=${item.user_mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         {item?.teacher_name}

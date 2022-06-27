@@ -8,6 +8,7 @@ import moment from "jalali-moment";
 import Link from "next/link";
 import { useGlobalContext } from "../../../../../../context";
 import Modal from "../../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
 
 function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -218,55 +219,88 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {monitoringList?.map((item) => (
-                                <tr className="table__body-row" key={item?.id}>
-                                    <td className="table__body-item">
-                                        {item?.user_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.user_mobile || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.teacher_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.teacher_mobile || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.language_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {item?.price
-                                            ? `${Intl.NumberFormat().format(
-                                                  item?.price
-                                              )} تومان`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {moment(item?.date).format(
-                                            "YYYY/MM/DD"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <button
-                                            className={`action-btn success`}
-                                            onClick={() => {
-                                                setSelectedClass(item);
-                                                setOpenModal(true);
-                                            }}
-                                        >
-                                            جزئیات
-                                        </button>
-                                        <Link
-                                            href={`/tkpanel/multiSessionsList/logs/${item.id}`}
-                                        >
-                                            <a className={`action-btn warning`}>
-                                                لاگ پیگیری
-                                            </a>
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))}
+                            {monitoringList?.map((item) => {
+                                let date = item?.date
+                                    ? `${moment
+                                          .from(
+                                              item?.date
+                                                  .replace("-", "/")
+                                                  .replace("-", "/"),
+                                              "en",
+                                              "YYYY/MM/DD"
+                                          )
+                                          .locale("fa")
+                                          .format("DD MMMM YYYY")} , ${
+                                          item?.timmmme && item?.time !== "[]"
+                                              ? formatTime(item?.time)
+                                              : "-"
+                                      }`
+                                    : "-";
+
+                                return (
+                                    <tr
+                                        className="table__body-row"
+                                        key={item?.id}
+                                    >
+                                        <td className="table__body-item">
+                                            {item?.user_name}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.user_mobile || "-"}
+                                            {item?.user_mobile && (
+                                                <Link
+                                                    href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=سلام ${item.user_name} عزیز وقت بخیر افشاری، پشتیبان سامانه آموزش زبان تیکا هستم. کلاس شما، ${date} با استاد ${item?.teacher_name} تشکیل می شود. لینک ورود به کلاس، نیم ساعت قبل از شروع، پیامک(sms) می شود. موفق باشید.`}
+                                                >
+                                                    <a className="whatsapp-icon">
+                                                        <span>
+                                                            <AiOutlineWhatsApp />
+                                                        </span>
+                                                    </a>
+                                                </Link>
+                                            )}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.teacher_name}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.teacher_mobile || "-"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.language_name}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.price
+                                                ? `${Intl.NumberFormat().format(
+                                                      item?.price
+                                                  )} تومان`
+                                                : "-"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {date}
+                                        </td>
+                                        <td className="table__body-item">
+                                            <button
+                                                className={`action-btn success`}
+                                                onClick={() => {
+                                                    setSelectedClass(item);
+                                                    setOpenModal(true);
+                                                }}
+                                            >
+                                                جزئیات
+                                            </button>
+                                            <Link
+                                                href={`/tkpanel/multiSessionsList/logs/${item.id}`}
+                                            >
+                                                <a
+                                                    className={`action-btn warning`}
+                                                >
+                                                    لاگ پیگیری
+                                                </a>
+                                            </Link>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
 
                             {monitoringList.length === 0 && (
                                 <tr className="table__body-row">

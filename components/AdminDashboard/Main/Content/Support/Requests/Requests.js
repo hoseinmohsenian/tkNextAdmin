@@ -5,6 +5,8 @@ import Pagination from "../../Pagination/Pagination";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
 import Modal from "../../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
 
 function Requests(props) {
     const {
@@ -196,6 +198,17 @@ function Requests(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {req?.user_mobile}
+                                        {req?.user_mobile && (
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=${req.user_mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         {req?.time} دقیقه

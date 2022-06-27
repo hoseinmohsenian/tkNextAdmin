@@ -26,11 +26,11 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
     };
 
     const removeCommissionFromList = (commission_id) => {
-        setCommissions(() =>
-            commissions.filter((cms) => cms.id !== commission_id)
-        );
+        let filteredItems = commissions.filter((cms) => cms.id !== commission_id)
+        setCommissions(() => filteredItems);
+        setFormData(() => filteredItems);
     };
-
+    console.log(commissions);
     const deleteCommission = async (commission_id, i) => {
         let temp = [...loadings];
         temp[i] = true;

@@ -343,6 +343,28 @@ function AddSessions({ token, id, theClass }) {
                                                     مدت :
                                                 </label>
                                                 <div className="form-control">
+                                                    <select
+                                                        name="time"
+                                                        id="time"
+                                                        className="form__input input-select"
+                                                        onChange={(e) =>
+                                                            handleOnChange(e, i)
+                                                        }
+                                                        value={item?.time}
+                                                        required
+                                                    >
+                                                        <option value={60}>
+                                                            60
+                                                        </option>
+                                                        <option value={90}>
+                                                            90
+                                                        </option>
+                                                        <option value={120}>
+                                                            120
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                {/* <div className="form-control">
                                                     <input
                                                         type="number"
                                                         name="time"
@@ -356,7 +378,7 @@ function AddSessions({ token, id, theClass }) {
                                                         placeholder="دقیقه"
                                                         spellCheck={false}
                                                     />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </div>
                                     </div>

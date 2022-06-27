@@ -18,6 +18,8 @@ export default GroupClassPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    const { page } = context?.query;
 
     if (!token) {
         return {
@@ -28,8 +30,15 @@ export async function getServerSideProps(context) {
         };
     }
 
+    let searchParams = "";
+    if (isKeyValid(page)) {
+        if (Number(page) > 0) {
+            searchParams += `page=${page}`;
+        }
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/group-class`, {
+        fetch(`${BASE_URL}/admin/group-class?${searchParams}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

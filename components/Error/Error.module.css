@@ -1,0 +1,11 @@
+.error__box {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 0.75rem 2rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+.error__box ul {
+    list-style-type: disc;
+}

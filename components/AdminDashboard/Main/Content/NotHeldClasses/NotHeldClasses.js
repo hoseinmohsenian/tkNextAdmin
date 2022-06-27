@@ -6,6 +6,8 @@ import moment from "jalali-moment";
 import { BASE_URL } from "../../../../../constants";
 import { useGlobalContext } from "../../../../../context";
 import Modal from "../../../../Modal/Modal";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import Link from "next/link";
 
 function NotHeldClasses(props) {
     const {
@@ -172,6 +174,17 @@ function NotHeldClasses(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {cls.user_mobile}
+                                        {cls?.user_mobile && (
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=${cls.user_mobile}`}
+                                            >
+                                                <a className="whatsapp-icon">
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         {cls.teacher_name}

@@ -3,6 +3,8 @@ import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
 import Modal from "../../../../../Modal/Modal";
+import styles from "../Specialities.module.css";
+import { useRouter } from "next/router";
 
 function SpecialitiesDesc({
     fetchedSpecialitys: { data, ...restData },
@@ -12,6 +14,12 @@ function SpecialitiesDesc({
     const [pagData, setPagData] = useState(restData);
     const [openModal, setOpenModal] = useState(false);
     const [selectedSpec, setSelectedSpec] = useState({});
+    const [filters, setFilters] = useState({
+        persian_name: "",
+        english_name: "",
+    });
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     const readSpecialtys = async (page = 1) => {
         // Constructing search parameters
@@ -52,6 +60,15 @@ function SpecialitiesDesc({
         } catch (error) {
             console.log("Error reading specialtys", error);
         }
+    };
+
+    const handleOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
     };
 
     return (
@@ -101,6 +118,75 @@ function SpecialitiesDesc({
                         </div>
                     </Modal>
                 )}
+
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]}>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="persian_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام فارسی :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="persian_name"
+                                            id="persian_name"
+                                            className="form__input"
+                                            onChange={handleOnChange}
+                                            value={filters?.persian_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="english_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام انگلیسی :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="english_name"
+                                            id="english_name"
+                                            className="form__input form__input--ltr"
+                                            onChange={handleOnChange}
+                                            value={filters?.english_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readSpecialtys()}
+                            >
+                                {loading ? "در حال انجام ..." : "اعمال فیلتر"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
                 <div className="table__wrapper">
                     <table className="table">
