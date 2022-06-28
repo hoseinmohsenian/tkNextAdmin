@@ -222,10 +222,22 @@ select.shortwidth {
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    margin-right: 5px;
 }
 .whatsapp-icon span {
-    margin-right: 5px;
     display: flex;
+}
+
+.info-icon {
+    color: #007bff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.tooltip {
+    font-size: 0.9rem !important;
 }
 
 @media (min-width: 576px) {

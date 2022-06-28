@@ -4,6 +4,8 @@ import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
+import ReactTooltip from "react-tooltip";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 function TeachersScore(props) {
     const {
@@ -64,12 +66,13 @@ function TeachersScore(props) {
                     color: "primary",
                 }}
             >
+                <ReactTooltip className="tooltip" />
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">موبایل</th>
                                 <th className="table__head-item">امتیاز</th>
                                 <th className="table__head-item">
                                     تاثیر در حسابداری
@@ -92,11 +95,16 @@ function TeachersScore(props) {
                                     className="table__body-row"
                                     key={teacher?.id}
                                 >
-                                    <td className="table__body-item">
+                                    <td
+                                        className="table__body-item"
+                                        data-tip={
+                                            teacher?.teacher_mobile || "-"
+                                        }
+                                    >
                                         {teacher?.teacher_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {teacher?.teacher_mobile}
+                                        <span className="info-icon">
+                                            <AiOutlineInfoCircle />
+                                        </span>
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {`${

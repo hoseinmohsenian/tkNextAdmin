@@ -8,6 +8,8 @@ import Box from "../Elements/Box/Box";
 import styles from "./Teachers.module.css";
 import Link from "next/link";
 import Modal from "../../../../Modal/Modal";
+import ReactTooltip from 'react-tooltip';
+import {AiOutlineInfoCircle} from "react-icons/ai"
 
 function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fetchedData }) {
     const [teachers, setTeachers] = useState(data);
@@ -388,6 +390,8 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                         </div>
                     </form>
                 </div>
+                
+                <ReactTooltip className="tooltip" />
 
                 <div className="table__wrapper">
                     <table className="table">
@@ -395,7 +399,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                             <tr>
                                 <th className="table__head-item">نام</th>
                                 <th className="table__head-item">نام خانوادگی</th>
-                                <th className="table__head-item">موبایل</th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
                                 <th className="table__head-item">کمیسیون</th>
@@ -408,11 +411,11 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                     <td className="table__body-item">
                                         {teacher?.name}
                                     </td>
-                                    <td className="table__body-item">
+                                    <td className="table__body-item" data-tip={teacher?.mobile || "-"}>
                                         {teacher?.family}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {teacher?.mobile || "-"}
+                                        <span className="info-icon">
+                                            <AiOutlineInfoCircle />
+                                        </span>
                                     </td>
                                     <td className="table__body-item">
                                         {teacher?.language_name?.map((lan, ind) => (

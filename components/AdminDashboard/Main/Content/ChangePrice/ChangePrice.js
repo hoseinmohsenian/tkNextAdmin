@@ -7,8 +7,9 @@ import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
 import { useRouter } from "next/router";
 import { useGlobalContext } from "../../../../../context";
-import { AiOutlineWhatsApp } from "react-icons/ai";
+import { AiOutlineWhatsApp,AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
+import ReactTooltip from "react-tooltip";
 
 function ChangePrice(props) {
     const {
@@ -146,6 +147,8 @@ function ChangePrice(props) {
     return (
         <div>
             <Box title="لیست تغییر قیمت کلاس">
+                <ReactTooltip className="tooltip" />
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -276,9 +279,6 @@ function ChangePrice(props) {
                                 </th>
                                 <th className="table__head-item">نام استاد</th>
                                 <th className="table__head-item">
-                                    شماره استاد
-                                </th>
-                                <th className="table__head-item">
                                     اعتبار زبان آموز
                                 </th>
                                 <th className="table__head-item">وضعیت</th>
@@ -307,11 +307,11 @@ function ChangePrice(props) {
                                                 </Link>
                                             )}
                                     </td>
-                                    <td className="table__body-item">
+                                    <td className="table__body-item" data-tip={price?.teacher_mobile || "-"}>
                                         {price?.teacher_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {price?.teacher_mobile || "-"}
+                                        <span className="info-icon">
+                                            <AiOutlineInfoCircle />
+                                        </span>
                                     </td>
                                     <td className="table__body-item">
                                         {`${Intl.NumberFormat().format(price?.user_wallet)} تومان`}

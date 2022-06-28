@@ -4,9 +4,10 @@ import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
-import { AiOutlineWhatsApp } from "react-icons/ai";
+import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import { useGlobalContext } from "../../../../../../context";
+import ReactTooltip from "react-tooltip";
 
 function RequestDetails(props) {
     const {
@@ -62,6 +63,8 @@ function RequestDetails(props) {
     return (
         <div>
             <Box title="وضعیت درخواست کلاس">
+                <ReactTooltip className="tooltip" />
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -73,9 +76,6 @@ function RequestDetails(props) {
                                     شماره زبان آموز
                                 </th>
                                 <th className="table__head-item">نام استاد</th>
-                                <th className="table__head-item">
-                                    شماره استاد
-                                </th>
                                 <th className="table__head-item">
                                     قابل پرداخت
                                 </th>
@@ -129,11 +129,16 @@ function RequestDetails(props) {
                                                 </Link>
                                             )}
                                         </td>
-                                        <td className="table__body-item">
-                                            {item?.teacher_mobile}
-                                        </td>
-                                        <td className="table__body-item">
+                                        <td
+                                            className="table__body-item"
+                                            data-tip={
+                                                item?.teacher_mobile || "-"
+                                            }
+                                        >
                                             {item?.teacher_name}
+                                            <span className="info-icon">
+                                                <AiOutlineInfoCircle />
+                                            </span>
                                         </td>
                                         <td className="table__body-item">
                                             {item?.payable

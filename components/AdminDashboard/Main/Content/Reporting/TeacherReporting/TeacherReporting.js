@@ -6,6 +6,8 @@ import Box from "../../Elements/Box/Box";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
+import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
+import ReactTooltip from "react-tooltip";
 
 function TeacherReporting({ token }) {
     const [reportings, setReportings] = useState([]);
@@ -314,6 +316,8 @@ function TeacherReporting({ token }) {
                     </form>
                 </div>
 
+                <ReactTooltip className="tooltip" />
+
                 {reportings.length !== 0 && (
                     <ExportCSV
                         data={reportings.map((report) => {
@@ -335,7 +339,6 @@ function TeacherReporting({ token }) {
                                 <th className="table__head-item">
                                     نام و نام خانوادگی
                                 </th>
-                                <th className="table__head-item">موبایل</th>
                                 <th className="table__head-item">استپ</th>
                                 <th className="table__head-item">وضعیت</th>
                             </tr>
@@ -343,13 +346,16 @@ function TeacherReporting({ token }) {
                         <tbody className="table__body">
                             {reportings?.map((report, i) => (
                                 <tr className="table__body-row" key={i}>
-                                    <td className="table__body-item">
+                                    <td
+                                        className="table__body-item"
+                                        data-tip={report?.mobile || "-"}
+                                    >
                                         {filters.student
                                             ? report.name_family
                                             : `${report.name} ${report.family}`}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {report?.mobile || "-"}
+                                        <span className="info-icon">
+                                            <AiOutlineInfoCircle />
+                                        </span>
                                     </td>
                                     <td className="table__body-item">
                                         {report?.step || "-"}

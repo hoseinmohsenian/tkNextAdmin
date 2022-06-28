@@ -8,7 +8,8 @@ import moment from "jalali-moment";
 import Link from "next/link";
 import { useGlobalContext } from "../../../../../../context";
 import Modal from "../../../../../Modal/Modal";
-import { AiOutlineWhatsApp } from "react-icons/ai";
+import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
+import ReactTooltip from "react-tooltip";
 
 function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -151,6 +152,8 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                     </Modal>
                 )}
 
+                <ReactTooltip className="tooltip" />
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -199,9 +202,6 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                     موبایل زبان آموز
                                 </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">
-                                    موبایل استاد
-                                </th>
                                 <th className="table__head-item">ادمین</th>
                                 <th className="table__head-item">پلتفرم</th>
                                 <th className="table__head-item">زبان</th>
@@ -262,8 +262,17 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                         <td className="table__body-item">
                                             {item?.teacher_name}
                                         </td>
-                                        <td className="table__body-item">
+                                        <td
+                                            className="table__body-item"
+                                            data-tip={
+                                                item?.teacher_mobile || "-"
+                                            }
+                                        >
                                             {item?.teacher_mobile || "-"}
+                                            {item?.teacher_name}
+                                            <span className="info-icon">
+                                                <AiOutlineInfoCircle />
+                                            </span>
                                         </td>
                                         <td className="table__body-item">
                                             {item?.language_name}

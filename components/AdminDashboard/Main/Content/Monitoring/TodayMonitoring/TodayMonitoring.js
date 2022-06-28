@@ -8,8 +8,9 @@ import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import moment from "jalali-moment";
 import { useGlobalContext } from "../../../../../../context";
 import Modal from "../../../../../Modal/Modal";
-import { AiOutlineWhatsApp } from "react-icons/ai";
+import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
+import ReactTooltip from "react-tooltip";
 
 function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -104,7 +105,6 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                 removeAlert={showAlert}
                 envoker={readMonitoring}
             />
-
             <Box title="مانیتورینگ امروز">
                 {openModal && (
                     <Modal
@@ -200,6 +200,8 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                     </Modal>
                 )}
 
+                <ReactTooltip className="tooltip" />
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -248,9 +250,6 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                                     موبایل زبان آموز
                                 </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">
-                                    موبایل استاد
-                                </th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">تاریخ</th>
@@ -297,11 +296,16 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                                                 </Link>
                                             )}
                                         </td>
-                                        <td className="table__body-item">
+                                        <td
+                                            className="table__body-item"
+                                            data-tip={
+                                                item?.teacher_mobile || "-"
+                                            }
+                                        >
                                             {item?.teacher_name}
-                                        </td>
-                                        <td className="table__body-item">
-                                            {item?.teacher_mobile || "-"}
+                                            <span className="info-icon">
+                                                <AiOutlineInfoCircle />
+                                            </span>
                                         </td>
                                         <td className="table__body-item">
                                             {item?.language_name}
