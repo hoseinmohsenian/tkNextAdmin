@@ -1,75 +1,51 @@
 import { useState } from "react";
-import Box from "../Elements/Box/Box";
-import Pagination from "../Pagination/Pagination";
-import { BASE_URL } from "../../../../../constants";
-import Alert from "../../../../Alert/Alert";
-import { useRouter } from "next/router";
-import FetchSearchSelect from "../Elements/FetchSearchSelect/FetchSearchSelect";
-import styles from "./BlackList.module.css";
-import { AiOutlineWhatsApp } from "react-icons/ai";
-import Link from "next/link";
+import Box from "../../Elements/Box/Box";
+import { BASE_URL } from "../../../../../../constants";
+import Alert from "../../../../../Alert/Alert";
+import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
+import styles from "./TeachersCredit.module.css";
 
-const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
+const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
-function BlackList({ fetchedList: { data, ...restData }, token }) {
-    const [users, setUsers] = useState(data);
-    const [pagData, setPagData] = useState(restData);
-    const [students, setStudents] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState(studentSchema);
+function TeachersCredit({ fetchedTeachers, token }) {
+    const [list, setList] = useState(fetchedTeachers);
+    const [teachers, setTeachers] = useState([]);
+    const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
         type: "",
     });
-    const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [loadings, setLoadings] = useState(
+        Array(fetchedTeachers?.length).fill(false)
+    );
 
-    const readBlackList = async (page = 1) => {
-        let searchParams = {};
-
-        if (page !== 1) {
-            searchParams = {
-                ...searchParams,
-                page,
-            };
-        }
-
-        router.push({
-            pathname: `/tkpanel/blackLists`,
-            query: searchParams,
-        });
-
+    const readTeachersCredit = async () => {
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/management/block-user?page=${page}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            const {
-                data: { data, ...restData },
-            } = await res.json();
-            setUsers(data);
-            setPagData(restData);
+            const res = await fetch(`${BASE_URL}/admin/credit/teacher`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+            const { data } = await res.json();
+            setList(data);
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
         } catch (error) {
-            console.log("Error reading black list", error);
+            console.log("Error reading teachers credit", error);
         }
     };
 
-    const blockUserHandler = async () => {
-        if (selectedStudent.id) {
-            await blockUser();
-            await readBlackList();
+    const addTeacherHandler = async () => {
+        if (selectedTeacher.id) {
+            await addTeacher();
+            await readTeachersCredit();
         } else {
-            showAlert(true, "danger", "لطفا زبان آموز را انتخاب نمایید");
+            showAlert(true, "danger", "لطفا استاد را انتخاب نمایید");
         }
     };
 
@@ -79,13 +55,13 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
         setLoadings(() => temp);
     };
 
-    const unblockUser = async (user_id, i) => {
+    const removeTeacher = async (teacher_id, i) => {
         handleLoadings(true, i);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/management/unblock-user/${user_id}`,
+                `${BASE_URL}/admin/credit/teacher/${teacher_id}`,
                 {
-                    method: "POST",
+                    method: "DELETE",
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-type": "application/json",
@@ -94,23 +70,23 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                 }
             );
             if (res.ok) {
-                const filteredUsers = users.filter(
-                    (user) => user.id !== user_id
+                const filteredTeachers = list.filter(
+                    (teacher) => teacher.id !== teacher_id
                 );
-                setUsers(filteredUsers);
-                showAlert(true, "success", "زبان آموز آنبلاک شد");
+                setList(filteredTeachers);
+                showAlert(true, "danger", "این استاد حذف شد");
             }
             handleLoadings(false, i);
         } catch (error) {
-            console.log("Error unblocking user", error);
+            console.log("Error removing teacher", error);
         }
     };
 
-    const searchStudents = async (student_name) => {
+    const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${student_name}`,
+                `${BASE_URL}/admin/teacher/search?name=${teacher_name}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -122,7 +98,7 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                 const {
                     data: { data },
                 } = await res.json();
-                setStudents(data);
+                setTeachers(data);
             } else {
                 showAlert(
                     true,
@@ -137,11 +113,11 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
         }
     };
 
-    const blockUser = async () => {
+    const addTeacher = async () => {
         setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/management/block-user/${selectedStudent.id}`,
+                `${BASE_URL}/admin/credit/teacher/${selectedTeacher.id}`,
                 {
                     method: "POST",
                     headers: {
@@ -155,7 +131,7 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                 showAlert(
                     true,
                     "success",
-                    `${selectedStudent.name_family} بلاک شد`
+                    `استاد ${selectedTeacher.family} اضافه شد`
                 );
             } else {
                 const errData = await res.json();
@@ -168,7 +144,7 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
             }
             setLoading(false);
         } catch (error) {
-            console.log("Error blocking user", error);
+            console.log("Error adding teacher", error);
         }
     };
 
@@ -178,7 +154,7 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
 
     return (
         <div>
-            <Box title="لیست سیاه">
+            <Box title="لیست اساتید اعتباری">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -189,37 +165,41 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                                     htmlFor="teacher_name"
                                     className={`form__label ${styles.form__label}`}
                                 >
-                                    زبان آموز :
-                                    <span className="form__star">*</span>
+                                    استاد :<span className="form__star">*</span>
                                 </label>
                                 <div
                                     className={`form-control form-control-searchselect`}
                                 >
                                     <FetchSearchSelect
-                                        list={students}
-                                        setList={setStudents}
+                                        list={teachers}
+                                        setList={setTeachers}
                                         placeholder="جستجو کنید"
-                                        selected={selectedStudent}
+                                        selected={selectedTeacher}
                                         id="id"
-                                        displayKey="name_family"
+                                        displayKey="family"
                                         displayPattern={[
                                             {
                                                 member: true,
-                                                key: "name_family",
+                                                key: "name",
+                                            },
+                                            { member: false, key: " " },
+                                            {
+                                                member: true,
+                                                key: "family",
                                             },
                                             { member: false, key: " - " },
                                             { member: true, key: "mobile" },
                                         ]}
-                                        setSelected={setSelectedStudent}
-                                        noResText="زبان آموزی پیدا نشد"
-                                        listSchema={studentSchema}
+                                        setSelected={setSelectedTeacher}
+                                        noResText="استادی پیدا نشد"
+                                        listSchema={teacherSchema}
                                         stylesProps={{
                                             width: "100%",
                                         }}
                                         background="#fafafa"
                                         fontSize={16}
                                         onSearch={(value) =>
-                                            searchStudents(value)
+                                            searchTeachers(value)
                                         }
                                         openBottom={true}
                                     />
@@ -230,9 +210,9 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                                     type="button"
                                     className={`btn primary ${styles["btn"]}`}
                                     disabled={loading}
-                                    onClick={() => blockUserHandler()}
+                                    onClick={() => addTeacherHandler()}
                                 >
-                                    {loading ? "در حال جستجو ..." : "بلاک"}
+                                    {loading ? "در حال جستجو ..." : "افزودن"}
                                 </button>
                             </div>
                         </div>
@@ -242,7 +222,7 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                 <Alert
                     {...alertData}
                     removeAlert={showAlert}
-                    envoker={unblockUser}
+                    envoker={removeTeacher}
                 />
 
                 <div className="table__wrapper">
@@ -250,66 +230,54 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">
-                                    نام زبان آموز
+                                    نام و نام خانوادگی
                                 </th>
                                 <th className="table__head-item">شماره تماس</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {users?.map((user, i) => (
-                                <tr className="table__body-row" key={user?.id}>
+                            {list?.map((teacher, i) => (
+                                <tr
+                                    className="table__body-row"
+                                    key={teacher?.id}
+                                >
                                     <td className="table__body-item">
-                                        {user.name_family || "-"}
+                                        {`${teacher.name} ${teacher.family}`}
                                     </td>
                                     <td className="table__body-item">
-                                        {user.mobile || "-"}
-                                        {user.mobile && (
-                                            <Link
-                                                href={`https://wa.me/${user.mobile}`}
-                                            >
-                                                <a className="whatsapp-icon">
-                                                    <span>
-                                                        <AiOutlineWhatsApp />
-                                                    </span>
-                                                </a>
-                                            </Link>
-                                        )}
+                                        {teacher.mobile || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <button
                                             className={`action-btn warning`}
                                             onClick={() =>
-                                                unblockUser(user.id, i)
+                                                removeTeacher(teacher.id, i)
                                             }
                                             disabled={loadings[i]}
                                         >
-                                            آنبلاک
+                                            غیرفعال کردن
                                         </button>
                                     </td>
                                 </tr>
                             ))}
 
-                            {users.length === 0 && (
+                            {list.length === 0 && (
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
                                         colSpan={4}
                                     >
-                                        زبان آموزی پیدا نشد
+                                        استادی پیدا نشد
                                     </td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
-
-                {users.length !== 0 && (
-                    <Pagination read={readBlackList} pagData={pagData} />
-                )}
             </Box>
         </div>
     );
 }
 
-export default BlackList;
+export default TeachersCredit;

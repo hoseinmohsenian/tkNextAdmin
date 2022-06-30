@@ -40,8 +40,14 @@ import {
     AiTwotoneUnlock,
     AiFillInteraction,
     AiOutlinePercentage,
+    AiFillInfoCircle,
 } from "react-icons/ai";
-import { BiSupport, BiGitPullRequest, BiTable } from "react-icons/bi";
+import {
+    BiSupport,
+    BiGitPullRequest,
+    BiTable,
+    BiSitemap,
+} from "react-icons/bi";
 import { BsArrowRepeat } from "react-icons/bs";
 import {
     GiSkills,
@@ -224,6 +230,11 @@ export default [
                     {
                         title: "لیست اساتید اعتباری",
                         path: "/tkpanel/installment/teachers",
+                        icon: <FaChalkboardTeacher />,
+                    },
+                    {
+                        title: "لیست زبان آموزان اعتباری",
+                        path: "/tkpanel/installment/students",
                         icon: <FaChalkboardTeacher />,
                     },
                 ],
@@ -515,6 +526,88 @@ export default [
                 title: "پین کردن استاد",
                 path: "/tkpanel/pinTeacher",
                 icon: <BsPinAngleFill />,
+            },
+        ],
+    },
+    {
+        title: "صفحات سایت",
+        icon: <BiSitemap />,
+        path: "#",
+        subNav: [
+            {
+                title: "لیست صفحات سایت",
+                path: "/tkpanel/pages",
+                icon: <IoIosListBox />,
+            },
+            {
+                title: "ایجاد صفحه",
+                path: "/tkpanel/pages/create",
+                icon: <FaPlusCircle />,
+            },
+            {
+                title: "تیم ما",
+                path: "/tkpanel/ourTeams",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "درباره ما",
+                path: "/tkpanel/siteAbouts",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "دوره ها",
+                path: "/tkpanel/page/doreh",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "تماس ما",
+                path: "/tkpanel/siteContacts",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "همکاری با ما",
+                path: "/tkpanel/cooperations",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "قوانین و مقررات",
+                path: "/tkpanel/policies",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "درخواست مدرک",
+                path: "/tkpanel/degrees",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "نحوه تدریس",
+                path: "/tkpanel/methods",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "حامیان ما",
+                path: "/tkpanel/supporters",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "مصاحبه با اساتید",
+                path: "/tkpanel/teacherInterviewsCategories",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "دعوت از دوستان فوتر",
+                path: "/tkpanel/referralFooter",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "داستان تیکا",
+                path: "/tkpanel/tikkaaStory",
+                icon: <AiFillInfoCircle />,
+            },
+            {
+                title: "راهنما",
+                path: "/tkpanel/help/admin",
+                icon: <AiFillInfoCircle />,
             },
         ],
     },

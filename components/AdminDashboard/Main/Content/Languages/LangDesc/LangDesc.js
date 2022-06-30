@@ -52,6 +52,7 @@ function LangDesc({ languages }) {
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">نام زبان</th>
+                                <th className="table__head-item">url</th>
                                 <th className="table__head-item">h1</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -61,6 +62,9 @@ function LangDesc({ languages }) {
                                 <tr className="table__body-row" key={lan?.id}>
                                     <td className="table__body-item">
                                         {lan?.persian_name}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {lan?.url || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {lan?.h1 || "-"}

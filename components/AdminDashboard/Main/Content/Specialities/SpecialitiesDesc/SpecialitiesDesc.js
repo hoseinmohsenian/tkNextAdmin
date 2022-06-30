@@ -5,6 +5,7 @@ import Pagination from "../../Pagination/Pagination";
 import Modal from "../../../../../Modal/Modal";
 import styles from "../Specialities.module.css";
 import { useRouter } from "next/router";
+import { BASE_URL } from "../../../../../../constants";
 
 function SpecialitiesDesc({
     fetchedSpecialitys: { data, ...restData },
@@ -91,6 +92,12 @@ function SpecialitiesDesc({
                     >
                         <h3 className={"modal__title"}>جزئیات تخصص</h3>
                         <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>url</span>
+                                <span className={"modal__item-body"}>
+                                    {selectedSpec.url || "-"}
+                                </span>
+                            </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
                                     کلید سئو
@@ -192,7 +199,12 @@ function SpecialitiesDesc({
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">تخصص</th>
+                                <th className="table__head-item">
+                                    عنوان فارسی
+                                </th>
+                                <th className="table__head-item">
+                                    عنوان انگلیسی
+                                </th>
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">h1</th>
                                 <th className="table__head-item">اقدامات</th>
@@ -203,6 +215,9 @@ function SpecialitiesDesc({
                                 <tr className="table__body-row" key={spec?.id}>
                                     <td className="table__body-item">
                                         {spec?.persian_name}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {spec?.english_name}
                                     </td>
                                     <td className="table__body-item">
                                         {spec?.language?.persian_name}

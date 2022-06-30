@@ -3,12 +3,15 @@ import SpecialitiesDesc from "../../../../../components/AdminDashboard/Main/Cont
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function SpecialitiesDescPage({ specialitys,token }) {
+function SpecialitiesDescPage({ specialitys, token }) {
     return (
         <>
             <Header title="توضیحات تخصص ها | تیکا"></Header>
             <AdminDashboard>
-                <SpecialitiesDesc fetchedSpecialitys={specialitys} token={token} />
+                <SpecialitiesDesc
+                    fetchedSpecialitys={specialitys}
+                    token={token}
+                />
             </AdminDashboard>
         </>
     );
@@ -28,8 +31,17 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    const { page } = context?.query;
+    let params = "";
+    if (isKeyValid(page)) {
+        if (Number(page) > 0) {
+            params += `page=${page}`;
+        }
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/teaching/speciality`, {
+        fetch(`${BASE_URL}/admin/teaching/speciality?${params}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

@@ -1,23 +1,24 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import SkillsDesc from "../../../../../components/AdminDashboard/Main/Content/Skills/SkillsDesc/SkillsDesc";
+import EditSitePage from "../../../../../components/AdminDashboard/Main/Content/SitePages/Edit/EditSitePage";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function SkillsDescPage({ skills, token }) {
+function EditSitePagePage({ page, token }) {
     return (
         <>
-            <Header title="توضیحات مهارت ها | تیکا"></Header>
+            <Header title="ویرایش صفحه سایت | تیکا"></Header>
             <AdminDashboard>
-                <SkillsDesc fetchedSkills={skills} token={token} />
+                <EditSitePage page={page} token={token} />
             </AdminDashboard>
         </>
     );
 }
 
-export default SkillsDescPage;
+export default EditSitePagePage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const id = context.params.page_id;
 
     if (!token) {
         return {
@@ -28,17 +29,8 @@ export async function getServerSideProps(context) {
         };
     }
 
-    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
-    const { page } = context?.query;
-    let params = "";
-    if (isKeyValid(page)) {
-        if (Number(page) > 0) {
-            params += `page=${page}`;
-        }
-    }
-
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/teaching/skill?${params}`, {
+        fetch(`${BASE_URL}/admin/site-page/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -50,6 +42,9 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { skills: dataArr[0].data, token },
+        props: {
+            page: dataArr[0].data,
+            token,
+        },
     };
 }

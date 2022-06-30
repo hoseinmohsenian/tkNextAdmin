@@ -3,12 +3,21 @@ import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
 import Modal from "../../../../../Modal/Modal";
+import { BASE_URL } from "../../../../../../constants";
+import { useRouter } from "next/router";
+import styles from "../Skills.module.css";
 
 function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
     const [skills, setSkills] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [openModal, setOpenModal] = useState(false);
     const [selectedSkill, setSelectedSkill] = useState({});
+    const [filters, setFilters] = useState({
+        persian_name: "",
+        english_name: "",
+    });
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const readSkills = async (page = 1) => {
         // Constructing search parameters
@@ -51,6 +60,15 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
         }
     };
 
+    const handleOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
     return (
         <div>
             <Box
@@ -71,6 +89,12 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
                     >
                         <h3 className={"modal__title"}>جزئیات تخصص</h3>
                         <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>h1</span>
+                                <span className={"modal__item-body"}>
+                                    {selectedSkill.h1 || "-"}
+                                </span>
+                            </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
                                     کلید سئو
@@ -99,13 +123,87 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
                     </Modal>
                 )}
 
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]}>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="persian_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام فارسی :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="persian_name"
+                                            id="persian_name"
+                                            className="form__input"
+                                            onChange={handleOnChange}
+                                            value={filters?.persian_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="english_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام انگلیسی :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="english_name"
+                                            id="english_name"
+                                            className="form__input form__input--ltr"
+                                            onChange={handleOnChange}
+                                            value={filters?.english_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readSkills()}
+                            >
+                                {loading ? "در حال انجام ..." : "اعمال فیلتر"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">مهارت</th>
+                                <th className="table__head-item">
+                                    عنوان فارسی
+                                </th>
+                                <th className="table__head-item">
+                                    عنوان انگلیسی
+                                </th>
                                 <th className="table__head-item">تخصص</th>
-                                <th className="table__head-item">h1</th>
+                                <th className="table__head-item">url</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -116,10 +214,13 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
                                         {sk?.persian_name}
                                     </td>
                                     <td className="table__body-item">
+                                        {sk?.english_name}
+                                    </td>
+                                    <td className="table__body-item">
                                         {sk?.speciality?.persian_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {sk?.h1 || "-"}
+                                        {sk?.url || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

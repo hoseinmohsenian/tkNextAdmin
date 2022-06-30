@@ -39,6 +39,7 @@ function AddSessions({ token, id, theClass }) {
             (acc, curr) => ((acc[curr] = ""), acc),
             {}
         );
+        newRow["time"] = 60;
         setFormData([...formData, newRow]);
     };
 
@@ -152,7 +153,10 @@ function AddSessions({ token, id, theClass }) {
                     .format("YYYY/MM/DD")
                     .replace("/", "-")
                     .replace("/", "-");
-                if (formData[rowInd].title !== theClass.session[rowInd].title) {
+                if (
+                    formData[rowInd].title &&
+                    formData[rowInd].title !== theClass.session[rowInd].title
+                ) {
                     body = { ...body, title: formData[rowInd].title };
                 }
                 if (
