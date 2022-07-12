@@ -1,7 +1,7 @@
 import { AppProvider } from "../context/index";
-import "../styles/globals.css";
 import "../styles/grid.css";
 import "../styles/general.css";
+import "../styles/globals.css";
 import "../styles/table.css";
 import "../styles/colors.css";
 import "../styles/admin/form.css";

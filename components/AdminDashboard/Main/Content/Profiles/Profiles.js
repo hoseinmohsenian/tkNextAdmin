@@ -7,6 +7,10 @@ import { useRouter } from "next/router";
 import styles from "./Profile.module.css";
 import Modal from "../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+
+const filtersSchema = { input: "" };
+const appliedFiltersSchema = { input: false };
 
 function Profiles(props) {
     const {
@@ -17,6 +21,7 @@ function Profiles(props) {
     const [students, setStudents] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [filters, setFilters] = useState(fetchedData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState({
@@ -25,17 +30,25 @@ function Profiles(props) {
     });
     const router = useRouter();
 
-    const readStudents = async (page = 1) => {
+    const readStudents = async (page = 1, avoidFilters = false) => {
         setLoading(true);
+
+        let tempFilters = { ...appliedFilters };
 
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+        if (!avoidFilters) {
+            Object.keys(filters).forEach((key) => {
+                if (Number(filters[key]) !== 0) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+        }
         searchQuery += `page=${page}`;
+        setAppliedFilters(tempFilters);
 
         router.push({
             pathname: `/tkpanel/profiles`,
@@ -76,8 +89,27 @@ function Profiles(props) {
         });
     };
 
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readStudents(1, true);
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div>
+            <BreadCrumbs substituteObj={{ profiles: "زبان آموز" }} />
+
             <Box
                 title="لیست  زبان آموزان"
                 buttonInfo={{
@@ -182,6 +214,18 @@ function Profiles(props) {
                                             ? "در حال انجام ..."
                                             : "اعمال فیلتر"}
                                     </button>
+                                    {!showFilters() && (
+                                        <button
+                                            type="button"
+                                            className={`btn danger-outline ${styles["btn"]}`}
+                                            disabled={loading}
+                                            onClick={() => removeFilters()}
+                                        >
+                                            {loading
+                                                ? "در حال انجام ..."
+                                                : "حذف فیلتر"}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -212,7 +256,10 @@ function Profiles(props) {
                                             <Link
                                                 href={`https://wa.me/${student.mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
+                                                >
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>
@@ -231,7 +278,10 @@ function Profiles(props) {
                                         <Link
                                             href={`/dashboard/student/${student.id}`}
                                         >
-                                            <a className={`action-btn primary`}>
+                                            <a
+                                                className={`action-btn primary`}
+                                                target="_blank"
+                                            >
                                                 ورودی به پنل
                                             </a>
                                         </Link>
@@ -247,7 +297,10 @@ function Profiles(props) {
                                         <Link
                                             href={`/tkpanel/multiSessionsList/logs/${student.id}?type=student`}
                                         >
-                                            <a className={`action-btn warning`}>
+                                            <a
+                                                className={`action-btn warning`}
+                                                target="_blank"
+                                            >
                                                 لاگ پیگیری
                                             </a>
                                         </Link>

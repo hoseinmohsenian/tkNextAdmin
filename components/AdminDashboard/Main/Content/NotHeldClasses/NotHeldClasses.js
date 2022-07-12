@@ -8,6 +8,7 @@ import { useGlobalContext } from "../../../../../context";
 import Modal from "../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function NotHeldClasses(props) {
     const {
@@ -63,6 +64,13 @@ function NotHeldClasses(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    class: "کلاس",
+                    paymentForClassNotStatus: "کلاس برگزار نشده",
+                }}
+            />
+
             <Box title="لیست کلاس های برگزار نشده">
                 {openModal && (
                     <Modal
@@ -178,7 +186,10 @@ function NotHeldClasses(props) {
                                             <Link
                                                 href={`https://api.whatsapp.com/send?phone=${cls.user_mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
+                                                >
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>

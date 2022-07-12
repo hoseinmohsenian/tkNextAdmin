@@ -189,7 +189,6 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                                 width: "100%",
                             }}
                             background="#fafafa"
-                            fontSize={16}
                             onSearch={(value) => searchTeachers(value)}
                             openBottom={true}
                         />
@@ -216,7 +215,6 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                                 width: "100%",
                             }}
                             background="#fafafa"
-                            fontSize={16}
                         />
                     </div>
                 </div>

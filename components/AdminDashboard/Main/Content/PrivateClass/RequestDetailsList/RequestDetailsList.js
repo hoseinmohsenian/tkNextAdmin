@@ -9,18 +9,28 @@ import { useGlobalContext } from "../../../../../../context/index";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+
+const filtersSchema = {
+    user_name: "",
+    teacher_name: "",
+    teacher_mobile: "",
+    user_mobile: "",
+};
+const appliedFiltersSchema = {
+    user_name: false,
+    teacher_name: false,
+    teacher_mobile: false,
+    user_mobile: false,
+};
 
 function RequestDetailsList(props) {
     const {
         fetchedClasses: { data, ...restData },
         token,
     } = props;
-    const [filters, setFilters] = useState({
-        user_name: "",
-        teacher_name: "",
-        teacher_mobile: "",
-        user_mobile: "",
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [classes, setClasses] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [loading, setLoading] = useState(false);
@@ -39,13 +49,22 @@ function RequestDetailsList(props) {
         });
     };
 
-    const readClasses = async (page = 1) => {
+    const readClasses = async (page = 1, avoidFilters = false) => {
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (filters[key]) {
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
         let searchParams = {};
@@ -86,8 +105,33 @@ function RequestDetailsList(props) {
         }
     };
 
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readClasses(1, true);
+        router.push({
+            pathname: `/tkpanel/class/requestDetails/list`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{ class: "کلاس", list: "وضعیت کلی کلاس ها" }}
+            />
+
             <Box title="وضعیت کلی کلاس ها">
                 {openModal && (
                     <Modal
@@ -283,6 +327,16 @@ function RequestDetailsList(props) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -316,7 +370,10 @@ function RequestDetailsList(props) {
                                             <Link
                                                 href={`https://api.whatsapp.com/send?phone=${item.user_mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
+                                                >
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>

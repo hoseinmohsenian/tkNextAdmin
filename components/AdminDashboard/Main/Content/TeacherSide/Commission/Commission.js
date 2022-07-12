@@ -7,6 +7,7 @@ import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
 import AddCommission from "./AddCommission/AddCommission";
 import moment from "jalali-moment";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function Commission({ fetchedCommissions: { data, ...restData }, token }) {
     const [commissions, setCommissions] = useState(data);
@@ -162,6 +163,8 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
 
     return (
         <div>
+            <BreadCrumbs substituteObj={{ teacher:"استاد", commission:"کمیسیون متغیر استاد" }} />
+
             {/* Alert */}
             <Alert
                 {...alertData}

@@ -7,6 +7,7 @@ import Box from "../../Elements/Box/Box";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import { useRouter } from "next/router";
 import Caresoul from "../../../../../Carousel/Carousel";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name_family: "", mobile: "" };
@@ -284,6 +285,13 @@ function AddNewClass({ token, platforms, courses }) {
 
     return (
         <form onSubmit={handleSubmit}>
+            <BreadCrumbs
+                substituteObj={{
+                    newTeacher: "کلاس",
+                    addStudent: "ست کردن کلاس جدید",
+                }}
+            />
+
             {/* Alert */}
             <Alert
                 {...alertData}
@@ -320,7 +328,7 @@ function AddNewClass({ token, platforms, courses }) {
                                     width: "100%",
                                 }}
                                 background="#fafafa"
-                                fontSize={16}
+                                fontSize={14.4}
                                 onSearch={(value) => searchTeachers(value)}
                                 id="id"
                             />
@@ -351,7 +359,7 @@ function AddNewClass({ token, platforms, courses }) {
                                     width: "100%",
                                 }}
                                 background="#fafafa"
-                                fontSize={16}
+                                fontSize={14.4}
                                 onSearch={(value) => searchStudents(value)}
                                 id="id"
                             />

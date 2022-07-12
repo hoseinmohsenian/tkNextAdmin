@@ -137,7 +137,10 @@ function StudentTransactionDetails(props) {
                                             <Link
                                                 href={`https://api.whatsapp.com/send?phone=${cls.user_mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
+                                                >
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>

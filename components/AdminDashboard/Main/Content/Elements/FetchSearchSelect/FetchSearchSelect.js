@@ -17,7 +17,7 @@ function FetchSearchSelect({
     background,
     disabled = false,
     displayPattern,
-    fontSize = 19.2,
+    fontSize = 14.4,
     onSearch,
     openBottom = false,
 }) {
@@ -53,12 +53,19 @@ function FetchSearchSelect({
     };
 
     useEffect(() => {
+        let ignore = false;
         if (search) {
-            onSearch(search);
+            if (!ignore) {
+                onSearch(search);
+            }
         } else {
             setSelected(listSchema);
             setList([]);
         }
+
+        return () => {
+            ignore = true;
+        };
     }, [search]);
 
     return (
@@ -128,6 +135,7 @@ function FetchSearchSelect({
                     {list?.length === 0 && (
                         <div
                             className={`${styles["search-select__content-item"]} ${styles["search-select__content-item--disabled"]}`}
+                            style={{ fontSize: `${fontSize}px` }}
                         >
                             {noResText}
                         </div>

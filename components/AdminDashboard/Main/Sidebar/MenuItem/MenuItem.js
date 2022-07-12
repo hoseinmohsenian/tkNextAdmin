@@ -1,12 +1,9 @@
 import styles from "./MenuItem.module.css";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useGlobalContext } from "../../../../../context";
 import { IoIosArrowDown } from "react-icons/io";
 
-function MenuItem({ data, openItem, setOpenItem, ind, showSidebar }) {
-    const router = useRouter();
-    const { asPath } = router;
+function MenuItem({ data, openItem, setOpenItem, ind, showSidebar, asPath }) {
     const { title, icon, subNav } = data;
     const { generateKey } = useGlobalContext();
 
@@ -33,17 +30,21 @@ function MenuItem({ data, openItem, setOpenItem, ind, showSidebar }) {
                 </span>
             </div>
             <ul className={styles["sublist"]}>
-                {subNav.map((navItem, ind) => {
+                {subNav.map((navItem, i) => {
                     const { title, path, icon, subNav } = navItem;
+
+                    // if (path === asPath) {
+                    //     setOpenItem(ind);
+                    // }
 
                     if (subNav) {
                         return (
-                            <ul className={styles["subnav"]} key={ind}>
+                            <ul className={styles["subnav"]} key={i}>
                                 <div className={styles.subnav__title}>
                                     <span>{icon}</span>
                                     <span>{title}</span>
                                 </div>
-                                {subNav.map((item, i) =>
+                                {subNav.map((item) =>
                                     item.subNav ? (
                                         <li key={generateKey(item.title)}>
                                             <ul className={styles["subnav"]}>
@@ -130,7 +131,7 @@ function MenuItem({ data, openItem, setOpenItem, ind, showSidebar }) {
                     }
 
                     return (
-                        <li className={styles["subitem"]} key={ind}>
+                        <li className={styles["subitem"]} key={i}>
                             <Link href={path}>
                                 <a
                                     className={`${styles["subitem-link"]} ${

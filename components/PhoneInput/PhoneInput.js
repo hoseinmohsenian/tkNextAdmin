@@ -15,7 +15,7 @@ function PhoneInput({
     background,
     disabled = false,
     displayPattern,
-    fontSize = 17,
+    fontSize = 14.4,
     openBottom = true,
     mobile,
     mobileOnChange,
@@ -102,6 +102,12 @@ function PhoneInput({
                         className={`form__input ${styles["phone-input__input"]}`}
                         onChange={(e) => mobileOnChange(e.target.value)}
                         value={mobile || ""}
+                        pattern={`${
+                            selectedCountry.code === "98"
+                                ? "09[0-3][0-9]-?[0-9]{3}-?[0-9]{4}"
+                                : ".*"
+                        }`}
+                        maxLength={11}
                     />
                 </div>
                 {/* flag */}

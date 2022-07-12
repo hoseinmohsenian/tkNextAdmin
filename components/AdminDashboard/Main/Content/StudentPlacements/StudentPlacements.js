@@ -5,6 +5,7 @@ import FetchSearchSelect from "../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./StudentPlacements.module.css";
 import Alert from "../../../../Alert/Alert";
 import Link from "next/link";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
@@ -149,6 +150,8 @@ function StudentPlacements({ token, levels }) {
 
     return (
         <div>
+            <BreadCrumbs substituteObj={{ profileDetermineLevel:"تعیین سطح زبان آموزان" }} />
+
             <Box title="تعیین سطح زبان آموزان">
                 <Alert
                     {...alertData}

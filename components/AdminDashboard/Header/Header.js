@@ -80,7 +80,7 @@ function Header({ showSidebar, setShowSidebar }) {
                                 <a className={styles["dropdown__link"]}>
                                     <span>پیام ها</span>
                                     <span className={styles["dropdown__count"]}>
-                                        12
+                                        ۱۲
                                     </span>
                                 </a>
                             </Link>

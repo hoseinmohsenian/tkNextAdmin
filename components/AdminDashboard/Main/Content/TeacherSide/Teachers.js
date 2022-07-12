@@ -9,13 +9,19 @@ import styles from "./Teachers.module.css";
 import Link from "next/link";
 import Modal from "../../../../Modal/Modal";
 import ReactTooltip from 'react-tooltip';
-import {AiOutlineInfoCircle} from "react-icons/ai"
+import { AiOutlineInfoCircle, AiFillEye } from "react-icons/ai";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+
+const filtersSchema = { name: "", mobile: "", email: "" };
+const appliedFiltersSchema = { name: false, mobile: false, email: false };
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
 function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fetchedData }) {
     const [teachers, setTeachers] = useState(data);
     const [formData, setFormData] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [filters, setFilters] = useState(fetchedData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -51,7 +57,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                 }
             );
             if (res.ok) {
-                let message = `این کاربر ${
+                let message = `استاد ${teachers[i].name} ${teachers[i].family} ${
                     status === 0 ? "فعال" : "غیرفعال"
                 } شد`;
                 showAlert(true, status === 0 ? "success" : "danger", message);
@@ -65,7 +71,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
         }
     };
 
-    const readTeachers = async (page = 1) => {
+    const readTeachers = async (page = 1, avoidFilters = false) => {
         let searchParams = {};
 
         const isFilterEnabled = (key) =>
@@ -75,34 +81,42 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
             
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                if (key === "draft" && filters["draft"]) {
-                    searchQuery += `draft=1&`;
-                } else {
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if ((filters[key])) {
                     searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
                 }
-            }
-        });
+                else{
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
-        if (isFilterEnabled("name")) {
-            searchParams = {
-                ...searchParams,
-                name: filters?.name,
-            };
-        }
-        if (isFilterEnabled("email")) {
-            searchParams = {
-                ...searchParams,
-                email: filters?.email,
-            };
-        }
-        if (isFilterEnabled("mobile")) {
-            searchParams = {
-                ...searchParams,
-                mobile: filters?.mobile,
-            };
+        if(!avoidFilters){
+            if (isFilterEnabled("name")) {
+                searchParams = {
+                    ...searchParams,
+                    name: filters?.name,
+                };
+            }
+            if (isFilterEnabled("email")) {
+                searchParams = {
+                    ...searchParams,
+                    email: filters?.email,
+                };
+            }
+            if (isFilterEnabled("mobile")) {
+                searchParams = {
+                    ...searchParams,
+                    mobile: filters?.mobile,
+                };
+            }
         }
         if (page !== 1) {
             searchParams = {
@@ -237,8 +251,31 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
         });
     };
 
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);        
+        readTeachers(1, true);
+        router.push({
+            pathname: `/tkpanel/teachers`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div>
+            <BreadCrumbs substituteObj={{ teachers: "استاد" }} />
+
             {/* Alert */}
             <Alert
                 {...alertData}
@@ -260,10 +297,18 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                         <div className={"modal__wrapper"}>                            
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    وضعیت نمایش
+                                    ایمیل
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedTeacher?.show ? "نمایان" : "پنهان‌"}
+                                    {selectedTeacher?.email || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    جنسیت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTeacher?.gender === 1 ? "مرد" : "زن"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -310,7 +355,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             className="form__input"
                                             onChange={filtersOnChangeHandler}
                                             value={filters?.name}
-                                            autoComplete="off"
                                             spellCheck={false}
                                         />
                                     </div>
@@ -337,7 +381,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             className="form__input"
                                             onChange={filtersOnChangeHandler}
                                             value={filters?.mobile}
-                                            autoComplete="off"
                                             spellCheck={false}
                                         />
                                     </div>
@@ -367,7 +410,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             className="form__input"
                                             onChange={filtersOnChangeHandler}
                                             value={filters?.email}
-                                            autoComplete="off"
                                             spellCheck={false}
                                         />
                                     </div>
@@ -385,13 +427,25 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             ? "در حال جستجو ..."
                                             : "اعمال فیلتر"}
                                     </button>
+                                    {!showFilters() && (
+                                        <button
+                                            type="button"
+                                            className={`btn danger-outline ${styles["btn"]}`}
+                                            disabled={loading}
+                                            onClick={() => removeFilters()}
+                                        >
+                                            {loading
+                                                ? "در حال انجام ..."
+                                                : "حذف فیلتر"}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 
-                <ReactTooltip className="tooltip" />
+                <ReactTooltip className="tooltip" type="dark" />
 
                 <div className="table__wrapper">
                     <table className="table">
@@ -402,6 +456,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                 <th className="table__head-item">زبان</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
                                 <th className="table__head-item">کمیسیون</th>
+                                <th className="table__head-item">پروفایل</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -456,7 +511,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                     )
                                                 }
                                                 disabled={loadings[i]}
-                                                autoComplete="off"
+
                                                 spellCheck={false}
                                                 required
                                             />
@@ -485,12 +540,33 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                     )
                                                 }
                                                 disabled={loadings[i]}
-                                                autoComplete="off"
                                                 spellCheck={false}
                                                 required
                                             />
                                         </div>
                                     </td>
+
+                                    <td className="table__body-item" >
+                                        <div style={{display:"flex"}}>
+                                            <Link
+                                                href={`${SITE_URL}/teachers/${teacher.id}`}
+                                            >
+                                                <a 
+                                                    className={styles["profile-link"]} 
+                                                    target="_blank"
+                                                    title="پروفایل استاد"
+                                                >
+                                                    <AiFillEye/>
+                                                </a>
+                                            </Link>
+
+                                            <div 
+                                                className={`${styles["status-circle"]} ${teacher.show === 1 ? "success" : "danger"}`} 
+                                                data-tip={`وضعیت نمایش در لیست اساتید:‌ ${teacher.show === 1 ? "فعال" : "غیرفعال"}`}
+                                            ></div>
+                                        </div>
+                                    </td>
+
                                     <td className="table__body-item">
                                         <button
                                             type="button"
@@ -515,28 +591,28 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                         <Link
                                             href={`/dashboard/teacher/${teacher.id}`}
                                         >
-                                            <a className={`action-btn primary`}>
+                                            <a className={`action-btn primary`} target="_blank">
                                                 ورودی به پنل
                                             </a>
                                         </Link>
                                         <Link
                                             href={`/tkpanel/multiSessionsList/logs/${teacher.id}?type=teacher`}
                                         >
-                                            <a className={`action-btn warning`}>
+                                            <a className={`action-btn warning`} target="_blank">
                                                 لاگ پیگیری
                                             </a>
                                         </Link>
                                         <Link
                                             href={`/tkpanel/newTeacher/languagesPrice/${teacher.id}`}
                                         >
-                                            <a className={`action-btn success`}>
+                                            <a className={`action-btn success`} target="_blank">
                                                 تغییر قیمت
                                             </a>
                                         </Link>
                                         <Link
                                             href={`/tkpanel/newTeacher/details/${teacher.id}`}
                                         >
-                                            <a className={`action-btn primary`}>
+                                            <a className={`action-btn primary`} target="_blank">
                                                 مشخصات
                                             </a>
                                         </Link>

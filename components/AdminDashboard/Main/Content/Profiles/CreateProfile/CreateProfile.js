@@ -6,6 +6,7 @@ import Box from "../../Elements/Box/Box";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import styles from "./CreateProfile.module.css";
 import PhoneInput from "../../../../../PhoneInput/PhoneInput";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const countrySchema = {
     id: "",
@@ -221,6 +222,13 @@ function CreateProfile({ token, countries }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    profiles: "زبان آموز",
+                    create: "ایجاد زبان آموز",
+                }}
+            />
+
             {/* Alert */}
             <Alert
                 {...alertData}

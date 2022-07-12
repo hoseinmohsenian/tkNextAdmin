@@ -6,6 +6,7 @@ import Box from "../../Elements/Box/Box";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import styles from "../CreateProfile/CreateProfile.module.css";
 import PhoneInput from "../../../../../PhoneInput/PhoneInput";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const countrySchema = {
     id: "",
@@ -293,6 +294,13 @@ function EditProfile({ token, student, countries }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    profiles: "زبان آموز",
+                    edit: "ویرایش زبان آموز",
+                }}
+            />
+
             {/* Alert */}
             <Alert
                 {...alertData}

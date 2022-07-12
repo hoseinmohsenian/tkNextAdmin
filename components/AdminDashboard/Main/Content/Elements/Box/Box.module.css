@@ -15,8 +15,8 @@
 }
 .title {
     color: #495057;
-    font-size: 1.6rem;
-    font-weight: normal;
+    font-size: 1.5rem;
+    font-weight: 500;
     margin-right: 0.5rem;
     padding: 0.7rem 0;
 }
@@ -28,7 +28,7 @@
     color: white;
     padding: 0.1rem 0.55rem;
     margin: 0 0.3rem;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
     border-radius: 0.3rem;
     transition: var(--transition);
     cursor: pointer;

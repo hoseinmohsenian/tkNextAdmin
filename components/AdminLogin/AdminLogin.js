@@ -4,6 +4,7 @@ import styles from "./AdminLogin.module.css";
 import Alert from "../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../constants";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function AdminLogin() {
     const [formData, setFormData] = useState({ email: "", password: "" });
@@ -16,6 +17,7 @@ function AdminLogin() {
     const [loading, setLoading] = useState(false);
     const { setCookie } = useGlobalContext();
     const router = useRouter();
+    const [captchaValue, setCaptchaValue] = useState(null);
 
     const handleOnChange = (e) => {
         const name = e.target.name;
@@ -27,7 +29,11 @@ function AdminLogin() {
         e.preventDefault();
 
         if (formData.email.trim() && formData.password.trim()) {
-            await login();
+            if (captchaValue) {
+                await login();
+            } else {
+                showAlert(true, "danger", "لطفا کپچا را تکمیل کنید");
+            }
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
         }
@@ -132,6 +138,15 @@ function AdminLogin() {
                                     />
                                 </div>
                             </div>
+                            <div className={styles["input-wrapper"]}>
+                                <ReCAPTCHA
+                                    sitekey={
+                                        process.env.NEXT_PUBLIC_CAPTCHA_SITEKEY
+                                    }
+                                    onChange={(value) => setCaptchaValue(value)}
+                                />
+                            </div>
+
                             <button
                                 type="submit"
                                 className={`gradient--purple ${styles.btn}`}

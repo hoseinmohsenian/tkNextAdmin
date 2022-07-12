@@ -63,6 +63,7 @@
 .form__textarea {
     font: unset;
     width: 100%;
+    font-size: 0.9rem;
     border: none;
     outline: none;
     background-color: transparent;
@@ -229,14 +230,14 @@ second, second and am/pm */
 }
 .btn {
     color: white;
-    padding: 0.2rem 0;
+    padding: 0.3rem 0;
     border-radius: 0.25rem;
     transition: var(--transition);
     cursor: pointer;
     text-align: center;
     white-space: nowrap;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
     width: 100%;
 }
 .btn:disabled {
@@ -245,9 +246,9 @@ second, second and am/pm */
 }
 .action-btn {
     color: white;
-    padding: 0.05rem 0.55rem;
+    padding: 0.15rem 0.4rem;
     margin: 0 0.3rem;
-    font-size: 1rem;
+    font-size: 0.8rem;
     border-radius: 0.3rem;
     transition: var(--transition);
     cursor: pointer;
@@ -267,10 +268,7 @@ second, second and am/pm */
         max-width: 100px;
         pointer-events: none;
         color: #4d4d4d;
-        font-size: 0.95rem;
-    }
-    .btn {
-        font-size: 1.05rem;
+        font-size: 0.9rem;
     }
     .upload-box {
         display: flex;

@@ -6,20 +6,33 @@ import Box from "../../Elements/Box/Box";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
-import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
+import { useRouter } from "next/router";
+
+const filtersSchema = {
+    from: null,
+    to: null,
+    status: 0,
+    step: 0,
+    video: 0,
+    gender: 0,
+};
+const appliedFiltersSchema = {
+    from: false,
+    to: false,
+    status: false,
+    step: false,
+    video: false,
+    gender: false,
+};
 
 function TeacherReporting({ token }) {
     const [reportings, setReportings] = useState([]);
-    const [filters, setFilters] = useState({
-        from: null,
-        to: null,
-        status: 0,
-        step: 0,
-        video: 0,
-        gender: 0,
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
     const handleOnChange = (e) => {
@@ -44,27 +57,51 @@ function TeacherReporting({ token }) {
             .replace("/", "-");
     };
 
-    const readReports = async () => {
+    const readReports = async (avoidFilters = false) => {
         setLoading(true);
 
         const searchQuery = "";
-        if (filters.from) {
-            searchQuery += `from=${convertDate(filters.from)}&`;
-        }
-        if (filters.to) {
-            searchQuery += `to=${convertDate(filters.to)}&`;
-        }
-        if (Number(filters.status) === 1) {
-            searchQuery += `status=1&`;
-        }
-        if (Number(filters.gender) !== 0) {
-            searchQuery += `gender=${filters.gender}&`;
-        }
-        if (Number(filters.step) !== 0) {
-            searchQuery += `step=${filters.step}&`;
-        }
-        if (Number(filters.video) === 1) {
-            searchQuery += `video=1&`;
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            if (filters.from) {
+                searchQuery += `from=${convertDate(filters.from)}&`;
+                tempFilters["from"] = true;
+            } else {
+                tempFilters["from"] = false;
+            }
+            if (filters.to) {
+                searchQuery += `to=${convertDate(filters.to)}&`;
+                tempFilters["to"] = true;
+            } else {
+                tempFilters["to"] = false;
+            }
+            if (Number(filters.status) === 1) {
+                searchQuery += `status=1&`;
+                tempFilters["status"] = true;
+            } else {
+                tempFilters["status"] = false;
+            }
+            if (Number(filters.gender) !== 0) {
+                searchQuery += `gender=${filters.gender}&`;
+                tempFilters["gender"] = true;
+            } else {
+                tempFilters["gender"] = false;
+            }
+            if (Number(filters.step) !== 0) {
+                searchQuery += `step=${filters.step}&`;
+                tempFilters["step"] = true;
+            } else {
+                tempFilters["step"] = false;
+            }
+            if (Number(filters.video) === 1) {
+                searchQuery += `video=1&`;
+                tempFilters["video"] = true;
+            } else {
+                tempFilters["video"] = false;
+            }
+
+            setAppliedFilters(tempFilters);
         }
 
         try {
@@ -84,6 +121,27 @@ function TeacherReporting({ token }) {
         } catch (error) {
             console.log("Error reading reportings", error);
         }
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readReports(true);
+        router.push({
+            pathname: `/tkpanel/report/teachers`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
     };
 
     return (
@@ -312,6 +370,16 @@ function TeacherReporting({ token }) {
                             >
                                 {loading ? "در حال انجام ..." : "جستجو"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>

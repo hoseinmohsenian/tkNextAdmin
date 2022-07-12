@@ -220,7 +220,7 @@ function TeachersComments(props) {
                                             <Link
                                                 href={`https://api.whatsapp.com/send?phone=${comment.mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a className="whatsapp-icon" target="_blank">
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>

@@ -2,7 +2,6 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import StudentManualTransactions from "../../../../../components/AdminDashboard/Main/Content/Accounting/StudentManualTransactions/StudentManualTransactions";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
-import { useGlobalContext } from "../../../../../context";
 
 function StudentManualTransactionsPage({ transactions, token }) {
     return (

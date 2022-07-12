@@ -7,6 +7,18 @@ import Link from "next/link";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { AiOutlineWhatsApp } from "react-icons/ai"
+import { useRouter } from "next/router";
+
+const filtersSchema = {
+    mobile: "",
+    name: "",
+    landing_name: "",
+};
+const appliedFiltersSchema ={
+    mobile: false,
+    name: false,
+    landing_name: false,
+};
 
 function Landing(props) {
     const {
@@ -14,11 +26,8 @@ function Landing(props) {
         token,
     } = props;
     const [formData, setFormData] = useState(data);
-    const [filters, setFilters] = useState({
-        mobile: "",
-        name: "",
-        landing_name: "",
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [landings, setLandings] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
@@ -28,6 +37,7 @@ function Landing(props) {
     });
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const router= useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
     const filtersOnChange = (e) => {
@@ -123,16 +133,26 @@ function Landing(props) {
         }
     };
 
-    const readLandings = async (page = 1) => {
+    const readLandings = async (page = 1, avoidFilters = false) => {
         setLoading(true);
 
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (Number(filters[key]) !== 0) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    }
+                    else{
+                        tempFilters[key] = false;
+                    }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
         try {
@@ -158,6 +178,27 @@ function Landing(props) {
         } catch (error) {
             console.log("Error reading landings", error);
         }
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);        
+        readLandings(1, true);
+        router.push({
+            pathname: `/tkpanel/landing/interactive/list`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
     };
 
     return (
@@ -246,6 +287,18 @@ function Landing(props) {
                                     >
                                         {loading ? "در حال انجام ..." : "جستجو"}
                                     </button>
+                                    {!showFilters() && (
+                                        <button
+                                            type="button"
+                                            className={`btn danger-outline ${styles["btn"]}`}
+                                            disabled={loading}
+                                            onClick={() => removeFilters()}
+                                        >
+                                            {loading
+                                                ? "در حال انجام ..."
+                                                : "حذف فیلتر"}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -289,7 +342,7 @@ function Landing(props) {
                                         <Link
                                             href={`https://api.whatsapp.com/send?phone=${landing.mobile}&text=%D8%B3%D9%84%D8%A7%D9%85%20%20%D8%B9%D8%B2%DB%8C%D8%B2%0A%D8%A7%D9%81%D8%B4%D8%A7%D8%B1%DB%8C%20%D9%87%D8%B3%D8%AA%D9%85%20%D8%A7%D8%B2%20%D8%B3%D8%A7%D9%85%D8%A7%D9%86%D9%87%20%D8%A2%D9%85%D9%88%D8%B2%D8%B4%20%D8%B2%D8%A8%D8%A7%D9%86%20%D8%AA%DB%8C%DA%A9%D8%A7%0A%D9%84%D8%B7%D9%81%D8%A7%D9%8B%20%D8%A8%D8%B1%D8%A7%DB%8C%20%D8%A7%D8%B3%D8%AA%D9%81%D8%A7%D8%AF%D9%87%20%D8%A7%D8%B2%20%DA%A9%D9%84%D8%A7%D8%B3%D8%8C%20%D8%B2%D9%85%D8%A7%D9%86%20%D8%A2%D8%B2%D8%A7%D8%AF%20%D8%AE%D9%88%D8%AF%D8%AA%D9%88%D9%86%20%D8%B1%D9%88%20%D8%A8%D8%B1%D8%A7%DB%8C%20%D9%85%D8%A7%20%D8%A7%D8%B1%D8%B3%D8%A7%D9%84%20%DA%A9%D9%86%DB%8C%D8%AF%F0%9F%99%8F%0A%0Ahttps://tikkaa.ir%0A%0A%D8%A7%D8%B1%D8%AA%D8%A8%D8%A7%D8%B7%20%D8%A8%D8%A7%20%D9%BE%D8%B4%D8%AA%DB%8C%D8%A8%D8%A7%D9%86%DB%8C%F0%9F%8C%B8%0A%D9%88%D8%A7%D8%AA%D8%B3%20%D8%A7%D9%BE:%20%0A0922-323-1936%0A%DB%8C%D8%A7%0A%D8%AA%D9%85%D8%A7%D8%B3%20:%0A021-91016620`}
                                         >
-                                            <a className="whatsapp-icon">
+                                            <a className="whatsapp-icon" target="_blank">
                                                 <span>
                                                     <AiOutlineWhatsApp />
                                                 </span>                                                

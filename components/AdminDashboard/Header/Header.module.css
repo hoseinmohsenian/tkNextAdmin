@@ -27,7 +27,7 @@
     border-radius: 0.3rem;
     color: #7f8388;
     margin-left: 0.5rem;
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     position: relative;
 }
 .list-btn:hover {
@@ -60,7 +60,7 @@
 .user-name {
     margin-right: 0.5rem;
     color: #495057;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 700;
 }
 .dropdown {
@@ -105,17 +105,22 @@
 .dropdown__group {
     display: flex;
     flex-direction: column;
-    font-size: 1.05rem;
+}
+.dropdown__group:not(:last-child) {
+    margin-bottom: 0.5rem;
 }
 .dropdown__title {
     color: #545cd8;
     font-weight: 700;
+    font-size: 1rem;
     padding: 0rem 1rem;
+    margin-bottom: 0.2rem;
 }
 .dropdown__link {
     color: #212529;
     transition: var(--transition);
-    padding: 0.25rem 1.5rem;
+    padding: 0.4rem 1.5rem;
+    font-size: 0.8rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -138,9 +143,9 @@
 
 @media all and (min-width: 576px) {
     .list-btn {
-        padding: 0.1rem 0.5rem;
+        padding: 0.2rem 0.5rem;
         margin-left: 1.6rem;
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
     .list-btn::before {
         content: "";
@@ -151,8 +156,5 @@
         width: 1px;
         height: 2rem;
         transform: translateY(-50%);
-    }
-    .user-name {
-        font-size: 1.1rem;
     }
 }

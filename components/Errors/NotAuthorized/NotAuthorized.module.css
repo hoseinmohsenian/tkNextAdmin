@@ -1,0 +1,41 @@
+.main {
+    margin: 1.5rem 0;
+}
+.code_box {
+    text-align: center;
+    font-size: 3rem;
+}
+.code_box h1 {
+    color: #212529;
+}
+.icon {
+    color: #dc3545;
+    font-size: 6rem;
+    display: flex;
+    justify-content: center;
+}
+.title {
+    color: #2b2e31;
+    text-align: center;
+    margin: 1.25rem 0;
+    font-weight: 400;
+    font-size: 1.7rem;
+}
+.link-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.link-wrapper a {
+    padding: 0.3rem 1rem;
+    font-size: 1.2rem;
+}
+
+@media all and (min-width: 586px) {
+    .link-wrapper {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+}

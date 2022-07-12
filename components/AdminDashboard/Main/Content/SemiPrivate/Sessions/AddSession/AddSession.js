@@ -368,21 +368,6 @@ function AddSessions({ token, id, theClass }) {
                                                         </option>
                                                     </select>
                                                 </div>
-                                                {/* <div className="form-control">
-                                                    <input
-                                                        type="number"
-                                                        name="time"
-                                                        id="time"
-                                                        className="form__input"
-                                                        onChange={(e) =>
-                                                            handleOnChange(e, i)
-                                                        }
-                                                        value={item?.time}
-                                                        required
-                                                        placeholder="دقیقه"
-                                                        spellCheck={false}
-                                                    />
-                                                </div> */}
                                             </div>
                                         </div>
                                     </div>

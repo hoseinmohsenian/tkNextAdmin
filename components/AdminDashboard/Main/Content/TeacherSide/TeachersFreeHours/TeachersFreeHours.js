@@ -7,24 +7,39 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Alert from "../../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../../constants";
+import { useRouter } from "next/router";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+
+const filtersSchema = {
+    gender: 0,
+    from: 1,
+    to: 1,
+    price_from: "",
+    price_to: "",
+    language_id: 0,
+};
+const appliedFiltersSchema = {
+    gender: false,
+    from: false,
+    to: false,
+    price_from: false,
+    price_to: false,
+    language_id: false,
+    date: false,
+};
 
 function TeachersFreeHours({ token, languages }) {
     const [teachers, setTeachers] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [filters, setFilters] = useState({
-        gender: 0,
-        from: 1,
-        to: 1,
-        price_from: "",
-        price_to: "",
-        language_id: 1,
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [selectedDate, setSelectedDate] = useState();
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
         type: "",
     });
+    const router = useRouter();
     let times = [];
     moment.locale("fa", { useGregorianParser: true });
 
@@ -55,7 +70,7 @@ function TeachersFreeHours({ token, languages }) {
         setAlertData({ show, type, message });
     };
 
-    const searchTeachers = async (page = 1) => {
+    const searchTeachers = async (page = 1, avoidFilters = false) => {
         const isFilterEnabled = (key) =>
             Number(filters[key]) !== 0 &&
             filters[key] !== undefined &&
@@ -63,23 +78,36 @@ function TeachersFreeHours({ token, languages }) {
 
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (isFilterEnabled(key)) {
-                searchQuery += `${key}=${filters[key]}&`;
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (isFilterEnabled(key)) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            if (selectedDate?.year) {
+                let date = moment
+                    .from(
+                        `${selectedDate?.year}/${selectedDate?.month}/${selectedDate?.day}`,
+                        "fa",
+                        "YYYY/MM/DD"
+                    )
+                    .locale("en")
+                    .format("YYYY/MM/DD")
+                    .replace("/", "-")
+                    .replace("/", "-");
+                searchQuery += `day=${date}&`;
+                tempFilters["date"] = true;
+            } else {
+                tempFilters["date"] = false;
             }
-        });
-        if (selectedDate?.year) {
-            let date = moment
-                .from(
-                    `${selectedDate?.year}/${selectedDate?.month}/${selectedDate?.day}`,
-                    "fa",
-                    "YYYY/MM/DD"
-                )
-                .locale("en")
-                .format("YYYY/MM/DD")
-                .replace("/", "-")
-                .replace("/", "-");
-            searchQuery += `day=${date}&`;
+
+            setAppliedFilters(tempFilters);
         }
         searchQuery += `page=${page}`;
 
@@ -119,8 +147,38 @@ function TeachersFreeHours({ token, languages }) {
         }
     };
 
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters({ ...appliedFiltersSchema, date: false });
+        setSelectedDate();
+        setTeachers([]);
+        router.push({
+            pathname: `/tkpanel/search/calender/view`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    search: "استاد",
+                    calender: "تقویم",
+                    view: "لیست ساعت خالی استاد",
+                }}
+            />
+
             {/* Alert */}
             <Alert
                 {...alertData}
@@ -289,7 +347,6 @@ function TeachersFreeHours({ token, languages }) {
                                             className="form__input"
                                             onChange={handleOnChange}
                                             value={filters?.price_from}
-                                            autoComplete="off"
                                             spellCheck={false}
                                         />
                                     </div>
@@ -313,7 +370,6 @@ function TeachersFreeHours({ token, languages }) {
                                             className="form__input"
                                             onChange={handleOnChange}
                                             value={filters?.price_to}
-                                            autoComplete="off"
                                             spellCheck={false}
                                         />
                                     </div>
@@ -401,6 +457,16 @@ function TeachersFreeHours({ token, languages }) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -436,7 +502,10 @@ function TeachersFreeHours({ token, languages }) {
                                         <Link
                                             href={`https://barmansms.ir/teachers/${teacher?.id}`}
                                         >
-                                            <a className={`action-btn primary`}>
+                                            <a
+                                                className={`action-btn primary`}
+                                                target="_blank"
+                                            >
                                                 پروفایل استاد‌
                                             </a>
                                         </Link>

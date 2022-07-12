@@ -5,6 +5,7 @@ const AppContext = React.createContext("");
 
 const AppProvider = ({ children }) => {
     const [footerHeight, setFooterHeight] = useState(0); // Footers Height
+    const [isAllowed, setIsAllowed] = useState(true);
 
     const randomNum = () => {
         return Math.random() * 100000;
@@ -131,6 +132,8 @@ const AppProvider = ({ children }) => {
                 getTime,
                 times,
                 formatTime,
+                isAllowed,
+                setIsAllowed,
             }}
         >
             {children}

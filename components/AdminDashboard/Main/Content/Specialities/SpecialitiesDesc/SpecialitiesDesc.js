@@ -7,6 +7,15 @@ import styles from "../Specialities.module.css";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
 
+const filtersSchema = {
+    persian_name: "",
+    english_name: "",
+};
+const appliedFiltersSchema = {
+    persian_name: false,
+    english_name: false,
+};
+
 function SpecialitiesDesc({
     fetchedSpecialitys: { data, ...restData },
     token,
@@ -15,21 +24,28 @@ function SpecialitiesDesc({
     const [pagData, setPagData] = useState(restData);
     const [openModal, setOpenModal] = useState(false);
     const [selectedSpec, setSelectedSpec] = useState({});
-    const [filters, setFilters] = useState({
-        persian_name: "",
-        english_name: "",
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    const readSpecialtys = async (page = 1) => {
+    const readSpecialtys = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
         router.push({
@@ -72,6 +88,27 @@ function SpecialitiesDesc({
         });
     };
 
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readSpecialtys(1, true);
+        router.push({
+            pathname: `/content/specialty/information/desc`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div>
             <Box
@@ -96,6 +133,12 @@ function SpecialitiesDesc({
                                 <span className={"modal__item-title"}>url</span>
                                 <span className={"modal__item-body"}>
                                     {selectedSpec.url || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>h1</span>
+                                <span className={"modal__item-body"}>
+                                    {selectedSpec.h1 || "-"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -191,6 +234,16 @@ function SpecialitiesDesc({
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -206,7 +259,6 @@ function SpecialitiesDesc({
                                     عنوان انگلیسی
                                 </th>
                                 <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">h1</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -221,9 +273,6 @@ function SpecialitiesDesc({
                                     </td>
                                     <td className="table__body-item">
                                         {spec?.language?.persian_name}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {spec?.h1 || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

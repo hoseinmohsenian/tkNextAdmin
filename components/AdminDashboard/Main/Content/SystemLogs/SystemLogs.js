@@ -141,7 +141,10 @@ function SystemLogs({ fetchedLogs: { data, ...restData }, token }) {
                                         <Link
                                             href={`/tkpanel/logReport/show/${lg?.id}/children`}
                                         >
-                                            <a className={`action-btn primary`}>
+                                            <a
+                                                className={`action-btn primary`}
+                                                target="_blank"
+                                            >
                                                 لاگ فرزند
                                             </a>
                                         </Link>

@@ -239,7 +239,10 @@ function SemiPrivate(props) {
                                         <Link
                                             href={`/tkpanel/semi-private-admin/${cls?.id}/sessions`}
                                         >
-                                            <a className={`action-btn warning`}>
+                                            <a
+                                                className={`action-btn warning`}
+                                                target="_blank"
+                                            >
                                                 جلسات
                                             </a>
                                         </Link>

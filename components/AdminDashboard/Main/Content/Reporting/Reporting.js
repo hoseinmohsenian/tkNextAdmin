@@ -5,17 +5,28 @@ import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
+import { useRouter } from "next/router";
+
+const filtersSchema = {
+    from: null,
+    to: null,
+    experimental: 0,
+    language_id: 0,
+    student: 0,
+};
+const appliedFiltersSchema = {
+    from: false,
+    to: false,
+    experimental: false,
+    language_id: false,
+};
 
 function Reporting({ token, languages }) {
     const [reportings, setReportings] = useState([]);
-    const [filters, setFilters] = useState({
-        from: null,
-        to: null,
-        experimental: 0,
-        language_id: 0,
-        student: 0,
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
+    const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
     const handleOnChange = (e) => {
@@ -40,25 +51,41 @@ function Reporting({ token, languages }) {
             .replace("/", "-");
     };
 
-    const readReports = async () => {
+    const readReports = async (avoidFilters = false) => {
         setLoading(true);
 
         const searchQuery = "";
-        if (Number(filters.language_id) !== 0) {
-            searchQuery += `language_id=${filters.language_id}&`;
-        }
-        if (filters.student === 1) {
-            if (Number(filters.experimental) !== 0) {
-                searchQuery += `experimental=1&`;
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+            if (Number(filters.language_id) !== 0) {
+                searchQuery += `language_id=${filters.language_id}&`;
+                tempFilters["language_id"] = true;
             } else {
-                searchQuery += `unexperimental=1&`;
+                tempFilters["language_id"] = false;
             }
-        }
-        if (filters.from) {
-            searchQuery += `from=${convertDate(filters.from)}&`;
-        }
-        if (filters.to) {
-            searchQuery += `to=${convertDate(filters.to)}&`;
+            if (filters.student === 1) {
+                if (Number(filters.experimental) !== 0) {
+                    searchQuery += `experimental=1&`;
+                    tempFilters["experimental"] = true;
+                } else {
+                    searchQuery += `unexperimental=1&`;
+                    tempFilters["experimental"] = false;
+                }
+            }
+            if (filters.from) {
+                searchQuery += `from=${convertDate(filters.from)}&`;
+                tempFilters["from"] = true;
+            } else {
+                tempFilters["from"] = false;
+            }
+            if (filters.to) {
+                searchQuery += `to=${convertDate(filters.to)}&`;
+                tempFilters["to"] = true;
+            } else {
+                tempFilters["to"] = false;
+            }
+
+            setAppliedFilters(tempFilters);
         }
 
         const apiString = filters.student
@@ -88,8 +115,30 @@ function Reporting({ token, languages }) {
             experimental: 0,
             language_id: 0,
         });
+        setAppliedFilters(appliedFiltersSchema);
         setReportings([]);
     }, [filters.student]);
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readReports(true);
+        router.push({
+            pathname: `/tkpanel/database/query/building`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
 
     return (
         <div>
@@ -260,6 +309,16 @@ function Reporting({ token, languages }) {
                             >
                                 {loading ? "در حال انجام ..." : "جستجو"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>

@@ -41,7 +41,7 @@ export async function getServerSideProps(context) {
     }
 
     // Redirect if there's no "type" query or it's neither "student" nor "teacher"
-    if (!isKeyValid(type) || ["student", "teacher"].indexOf(type) === -1) {
+    if (!isKeyValid(type) || (type !== "student" && type !== "teacher")) {
         return {
             redirect: {
                 destination: "/tkpanel",
@@ -50,16 +50,9 @@ export async function getServerSideProps(context) {
         };
     }
 
-    let query = type === "student" ? `user_id` : "teahcer_id";
+    let query = type === "student" ? `user_id` : "teacher_id";
     const responses = await Promise.all([
         fetch(`${BASE_URL}/admin/tracking-log?${query}=${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }),
-        fetch(`${BASE_URL}/admin/student/return/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

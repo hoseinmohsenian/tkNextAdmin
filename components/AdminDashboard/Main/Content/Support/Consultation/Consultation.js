@@ -169,7 +169,7 @@ function Consultation(props) {
                                                 <Link
                                                     href={`https://api.whatsapp.com/send?phone=${clt.mobile}&text=سلام وقتتون بخیر از پشتیبانی «آموزش زبان تیکا» پیام میدم خدمتتون. شما شمارتون و جهت مشاوره زبان برای ما در سایت https://tikkaa.ir قرار دادید. برای ادامه گفتگو از طریق لینک زیر اقدام کنید yun.ir/tkChat لطفاً نام و زبان مد نظر خود را برای ما ارسال کنید تا در خدمتتون باشیم.`}
                                                 >
-                                                    <a className="whatsapp-icon">
+                                                    <a className="whatsapp-icon" target="_blank">
                                                         <span>
                                                             <AiOutlineWhatsApp />
                                                         </span>

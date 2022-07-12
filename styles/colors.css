@@ -19,6 +19,10 @@
     background-color: white;
     color: #007bff !important;
 }
+.primary-color {
+    color: #007bff;
+}
+
 .warning {
     background-color: #ffc107;
 }
@@ -40,6 +44,10 @@
     background-color: white;
     color: #ffc107 !important;
 }
+.warning-color {
+    color: #ffc107;
+}
+
 .danger {
     background-color: #dc3545;
 }
@@ -61,6 +69,10 @@
     background-color: white;
     color: #dc3545 !important;
 }
+.danger-color {
+    color: #dc3545;
+}
+
 .success {
     background-color: #28a745;
 }
@@ -81,4 +93,7 @@
 .success-outline:disabled:hover {
     background-color: white;
     color: #28a745 !important;
+}
+.success-color {
+    color: #28a745;
 }

@@ -75,7 +75,7 @@
 .carousel__item-title {
     text-align: center;
     color: #151812;
-    font-size: 1rem;
+    font-size: 0.9rem;
     min-height: 2.8rem;
 }
 .carousel__item-body {
@@ -187,7 +187,7 @@
         padding: 0 0.4rem;
     }
     .caresoul__item-weekday-date {
-        font-size: 1rem;
+        font-size: 0.85rem;
     }
     .caresoul__item-hours li {
         font-size: 0.85rem;

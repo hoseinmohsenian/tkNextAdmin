@@ -202,7 +202,10 @@ function Requests(props) {
                                             <Link
                                                 href={`https://api.whatsapp.com/send?phone=${req.user_mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
+                                                >
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>

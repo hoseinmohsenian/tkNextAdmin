@@ -7,13 +7,20 @@ import Pagination from "../Pagination/Pagination";
 import styles from "./Specialities.module.css";
 import { useRouter } from "next/router";
 
+const filtersSchema = {
+    persian_name: "",
+    english_name: "",
+};
+const appliedFiltersSchema = {
+    persian_name: false,
+    english_name: false,
+};
+
 function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
     const [specialities, setSpecialities] = useState(data);
     const [pagData, setPagData] = useState(restData);
-    const [filters, setFilters] = useState({
-        persian_name: "",
-        english_name: "",
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -61,14 +68,23 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
         }
     };
 
-    const readSpecialtys = async (page = 1) => {
+    const readSpecialtys = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
         router.push({
@@ -104,6 +120,27 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readSpecialtys(1, true);
+        router.push({
+            pathname: `/content/specialty`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
     };
 
     return (
@@ -181,6 +218,16 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>

@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
 
     return {
         redirect: {
-            destination: `https://barmansms.ir/login-with-admin?token=${dataArr[0].data}&type=teacher`,
+            destination: `${process.env.NEXT_PUBLIC_SITE_URL}/login-with-admin?token=${dataArr[0].data}&type=teacher`,
             permanent: false,
         },
     };

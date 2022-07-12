@@ -1,53 +1,13 @@
 /* General Styles for Breadcrumbs */
-.breadcrumbs {
-    direction: ltr;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
+.MuiBreadcrumbs-root,
+.MuiBreadcrumbs-ol,
+.MuiBreadcrumbs-li,
+.MuiBreadcrumbs-li p {
+    font: unset !important;
+    font-family: var(--ff-primary) !important;
 }
-.breadcrumbs-link {
-    background-color: #b2b2b2;
-    color: white;
-    position: relative;
-    height: 5rem;
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 0.3rem 0.9rem;
-    margin-right: 0.4rem;
-    white-space: nowrap;
-}
-.breadcrumbs-link:not(:first-child) {
-    padding-left: 1.7rem;
-}
-.breadcrumbs-link--active {
-    background-color: #712be5;
-}
-.breadcrumbs-link:not(:first-child)::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 0;
-    height: 0;
-    border-top: 12.5px solid transparent;
-    border-left: 20px solid var(--bg-color);
-    border-bottom: 12.5px solid transparent;
-    z-index: 2;
-}
-.breadcrumbs-link::after {
-    content: "";
-    position: absolute;
-    left: 100%;
-    top: 0;
-    width: 0;
-    height: 0;
-    border-top: 12.5px solid transparent;
-    border-left: 20px solid #b2b2b2;
-    border-bottom: 12.5px solid transparent;
-    z-index: 3;
-}
-.breadcrumbs-link--active::after {
-    border-left-color: #712be5;
+.MuiBreadcrumbs-separator {
+    color: #712be5;
 }
 
 /* General Styles for Switch */
@@ -192,8 +152,8 @@ select.shortwidth {
     font-size: 1.1rem;
 }
 .modal__title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
 }
 .modal__item {
     display: flex;
@@ -206,12 +166,13 @@ select.shortwidth {
 }
 .modal__item-title {
     font-weight: bold;
+    font-size: 0.95rem;
     min-width: 80px;
     display: block;
     text-align: right;
 }
 .modal__item-body {
-    font-size: 16px;
+    font-size: 0.9rem;
     color: #444;
     text-align: justify;
     margin-right: 0.5rem;
@@ -237,7 +198,12 @@ select.shortwidth {
 }
 
 .tooltip {
-    font-size: 0.9rem !important;
+    font-size: 0.8rem !important;
+}
+
+/* SunEditor Toolbar */
+.sun-editor .se-toolbar {
+    z-index: 1200000 !important;
 }
 
 @media (min-width: 576px) {

@@ -9,6 +9,7 @@ import Box from "../../Elements/Box/Box";
 import Chart from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { useGlobalContext } from "../../../../../../context/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function ClassroomChart({ token }) {
     const [info, setInfo] = useState({});
@@ -178,6 +179,10 @@ function ClassroomChart({ token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{ class: "کلاس", chart: "نمودار ثبت کلاس" }}
+            />
+
             {/* Alert */}
             <Alert
                 {...alertData}

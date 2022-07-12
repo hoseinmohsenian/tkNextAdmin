@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import styles from "./Alert.module.css";
 
-const Alert = ({ type, message, removeAlert, envoker, time = 3500, show }) => {
+const Alert = ({ type, message, removeAlert, envoker, time = 5000, show }) => {
     useEffect(() => {
         const timeout = setTimeout(() => {
             removeAlert();

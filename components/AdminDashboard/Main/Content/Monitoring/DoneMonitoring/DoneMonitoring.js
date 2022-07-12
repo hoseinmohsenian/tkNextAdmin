@@ -70,7 +70,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                         <div className={"modal__wrapper"}>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    ادمین
+                                    پیگیری کلاس
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedClass?.monitoring_follower_name ||
@@ -202,18 +202,8 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                     موبایل زبان آموز
                                 </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">ادمین</th>
-                                <th className="table__head-item">پلتفرم</th>
                                 <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">کورس</th>
                                 <th className="table__head-item">قیمت</th>
-                                <th className="table__head-item">مدت کلاس</th>
-                                <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">
-                                    وضعیت پرداخت
-                                </th>
-                                <th className="table__head-item">کلاس اول</th>
-                                <th className="table__head-item">ساعت ها</th>
                                 <th className="table__head-item">تاریخ</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -251,7 +241,10 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                                 <Link
                                                     href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=سلام ${item.user_name} عزیز وقت بخیر افشاری، پشتیبان سامانه آموزش زبان تیکا هستم. کلاس شما، ${date} با استاد ${item?.teacher_name} تشکیل می شود. لینک ورود به کلاس، نیم ساعت قبل از شروع، پیامک(sms) می شود. موفق باشید.`}
                                                 >
-                                                    <a className="whatsapp-icon">
+                                                    <a
+                                                        className="whatsapp-icon"
+                                                        target="_blank"
+                                                    >
                                                         <span>
                                                             <AiOutlineWhatsApp />
                                                         </span>
@@ -259,16 +252,12 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                                 </Link>
                                             )}
                                         </td>
-                                        <td className="table__body-item">
-                                            {item?.teacher_name}
-                                        </td>
                                         <td
                                             className="table__body-item"
                                             data-tip={
                                                 item?.teacher_mobile || "-"
                                             }
                                         >
-                                            {item?.teacher_mobile || "-"}
                                             {item?.teacher_name}
                                             <span className="info-icon">
                                                 <AiOutlineInfoCircle />
@@ -302,6 +291,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                             >
                                                 <a
                                                     className={`action-btn warning`}
+                                                    target="_blank"
                                                 >
                                                     لاگ پیگیری
                                                 </a>

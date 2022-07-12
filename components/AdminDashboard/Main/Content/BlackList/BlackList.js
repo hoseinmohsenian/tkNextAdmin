@@ -268,7 +268,10 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                                             <Link
                                                 href={`https://wa.me/${user.mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
+                                                >
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>

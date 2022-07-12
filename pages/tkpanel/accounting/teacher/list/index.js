@@ -1,9 +1,14 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import TeacherIncome from "../../../../../components/AdminDashboard/Main/Content/Accounting/TeacherIncome/TeacherIncome";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
+import { checkResponseArr } from "../../../../../utils/checkResponse";
 
-function TeacherIncomeDetailsPage({ token, chartData }) {
+function TeacherIncomeDetailsPage({ token, chartData, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="جزئیات درآمد اساتید | تیکا"></Header>
@@ -37,6 +42,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArr(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

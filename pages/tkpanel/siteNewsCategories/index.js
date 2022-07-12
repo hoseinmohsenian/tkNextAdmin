@@ -3,7 +3,7 @@ import ShowCategories from "../../../components/AdminDashboard/Main/Content/Cate
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
 
-function SiteNewsCategoriesPage({ categories }) {
+function SiteNewsCategoriesPage({ categories, token }) {
     return (
         <div>
             <Header title="دسته بندی دوم مقالات | تیکا"></Header>
@@ -14,6 +14,7 @@ function SiteNewsCategoriesPage({ categories }) {
                     createPage="/tkpanel/siteNewsCategories/create"
                     addressPage="/blog/c"
                     type={2}
+                    token={token}
                 />
             </AdminDashboard>
         </div>
@@ -47,6 +48,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { categories: dataArr[0]?.data },
+        props: { categories: dataArr[0]?.data, token },
     };
 }

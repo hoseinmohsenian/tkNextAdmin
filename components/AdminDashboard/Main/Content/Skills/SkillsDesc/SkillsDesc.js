@@ -7,26 +7,42 @@ import { BASE_URL } from "../../../../../../constants";
 import { useRouter } from "next/router";
 import styles from "../Skills.module.css";
 
+const filtersSchema = {
+    persian_name: "",
+    english_name: "",
+};
+const appliedFiltersSchema = {
+    persian_name: false,
+    english_name: false,
+};
+
 function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
     const [skills, setSkills] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [openModal, setOpenModal] = useState(false);
     const [selectedSkill, setSelectedSkill] = useState({});
-    const [filters, setFilters] = useState({
-        persian_name: "",
-        english_name: "",
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-    const readSkills = async (page = 1) => {
+    const readSkills = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
         router.push({
@@ -67,6 +83,27 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
         setFilters((oldFilters) => {
             return { ...oldFilters, [name]: value };
         });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readSkills(1, true);
+        router.push({
+            pathname: `/content/skill/description/inf`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
     };
 
     return (
@@ -188,6 +225,16 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>

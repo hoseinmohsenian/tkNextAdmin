@@ -1,17 +1,9 @@
 /* Font */
-@font-face {
-    font-family: "IranianSans";
-    src: url("../public/fonts/iransans.ttf");
-}
-@font-face {
-    font-family: "Lalezar";
-    src: url("../public/fonts/Lalezar-Regular.ttf");
-}
+@import url(fontiran.css);
 
 /* VARIABLES */
 :root {
-    --ff-primary: "IranianSans", tahoma;
-    --ff-secondary: "Lalezar", tahoma;
+    --ff-primary: "iranyekan", tahoma;
     --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     --heavy-shadow: 0 5px 20px rgba(0, 0, 0, 0.35);

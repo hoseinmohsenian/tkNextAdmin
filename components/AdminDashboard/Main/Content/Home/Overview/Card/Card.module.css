@@ -32,14 +32,13 @@
     border-color: var(--yellow);
 }
 .number {
-    font-size: 2rem;
-    /* font-weight: 700; */
+    font-size: 1.6rem;
+    font-weight: 500;
     color: #495057;
     display: block;
 }
 .title {
-    font-size: 1.1rem;
-    line-height: 0.7;
+    font-size: 1rem;
     color: #a4a8ab;
 }
 .chart {

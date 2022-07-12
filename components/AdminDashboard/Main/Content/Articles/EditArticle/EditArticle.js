@@ -317,7 +317,6 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
         }
         if (selectedCatg2.length !== 0) {
             for (const i in selectedCatg2) {
-                console.log(selectedCatg2[i].id);
                 readSubCategories(
                     selectedCatg2[i].id,
                     categories3,

@@ -3,28 +3,21 @@ import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
-import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import { useGlobalContext } from "../../../../../context/index";
 import Modal from "../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
- 
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+
 function NotPaidClasses(props) {
     const {
         fetchedClasses: { data, ...restData },
         token,
     } = props;
     const [classes, setClasses] = useState(data);
-    const [formData, setFormData] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
-    const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
-    const [alertData, setAlertData] = useState({
-        show: false,
-        message: "",
-        type: "",
-    });
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
@@ -69,68 +62,13 @@ function NotPaidClasses(props) {
         }
     };
 
-    const showAlert = (show, type, message) => {
-        setAlertData({ show, type, message });
-    };
-
-    const loadingHandler = (ind, value) => {
-        let temp = [...loadings];
-        temp[ind] = value;
-        setLoadings(() => temp);
-    };
-
-    const handleOnChange = (e, rowInd, name) => {
-        let updated = [...formData];
-        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
-        setFormData(() => updated);
-    };
-
-    const changePriceHandler = async (e, class_id, i) => {
-        if (
-            Number(e.target.value) !== classes[i]?.price &&
-            e.target.value
-        ) {
-            await changePrice(e, class_id, i);
-            let temp = [...classes];
-            temp[i]?.price = Number(e.target.value);
-            setClasses(() => temp);
-        }
-    };
-
-    const changePrice = async (e, class_id, i) => {
-        try {
-            loadingHandler(i, true);
-
-            const res = await fetch(
-                `${BASE_URL}/admin/classroom/change-price/${class_id}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({ price: e.target.value }),
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            if (res.ok) {
-                let message = `قیمت به ${e.target.value} تومان تغییر کرد`;
-                showAlert(true, "success", message);
-            }
-
-            loadingHandler(i, false);
-        } catch (error) {
-            console.log("Error changing price", error);
-        }
-    };
-
     return (
         <div>
-            {/* Alert */}
-            <Alert
-                {...alertData}
-                removeAlert={showAlert}
-                envoker={changePriceHandler}
+            <BreadCrumbs
+                substituteObj={{
+                    class: "کلاس",
+                    notPaymentForClass: "کلاس پرداخت نشده",
+                }}
             />
 
             <Box title="لیست کلاس های پرداخت نشده">
@@ -248,7 +186,10 @@ function NotPaidClasses(props) {
                                             <Link
                                                 href={`https://api.whatsapp.com/send?phone=${item.user_mobile}`}
                                             >
-                                                <a className="whatsapp-icon">
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
+                                                >
                                                     <span>
                                                         <AiOutlineWhatsApp />
                                                     </span>
@@ -260,44 +201,20 @@ function NotPaidClasses(props) {
                                         {item.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                    <div className="form-control" style={{width:"100px",margin:0}}>
-                                            <input
-                                                type="number"
-                                                name="price"
-                                                id="price"
-                                                className="form__input form__input--ltr"
-                                                onChange={(e) =>
-                                                    handleOnChange(
-                                                        e,
-                                                        i,
-                                                        "price"
-                                                    )
-                                                }
-                                                value={formData[i]?.price || ""}
-                                                onBlur={(e) =>
-                                                    changePriceHandler(
-                                                        e,
-                                                        item?.id,
-                                                        i
-                                                    )
-                                                }
-                                                disabled={loadings[i]}
-                                                autoComplete="off"
-                                                spellCheck={false}
-                                            />
-                                            تومان
-                                        </div>
+                                        {item.price
+                                            ? `${Intl.NumberFormat().format(
+                                                  item.price
+                                              )} تومان`
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item.time ? formatTime(item.time) : "-"}
+                                        {item.time
+                                            ? formatTime(item.time)
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {moment
-                                            .from(
-                                                item.date,
-                                                "en",
-                                                "YYYY/MM/DD"
-                                            )
+                                            .from(item.date, "en", "YYYY/MM/DD")
                                             .locale("fa")
                                             .format("YYYY/MM/DD")}
                                     </td>

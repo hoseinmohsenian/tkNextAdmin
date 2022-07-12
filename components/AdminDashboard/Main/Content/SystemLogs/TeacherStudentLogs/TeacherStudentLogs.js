@@ -68,16 +68,19 @@ function TeacherStudentLogs({
                                 <th className="table__head-item">
                                     نام ایجاد کننده
                                 </th>
-                                <th className="table__head-item">نام کاربر</th>
+                                <th className="table__head-item">
+                                    نام زبان آموز
+                                </th>
+                                {type === "teacher" && (
+                                    <th className="table__head-item">
+                                        نام استاد
+                                    </th>
+                                )}
                                 <th className="table__head-item">
                                     admin_assign_name
                                 </th>
                                 <th className="table__head-item">وضعیت</th>
                                 <th className="table__head-item">توضیحات</th>
-                                <th className="table__head-item">آیدی استاد</th>
-                                <th className="table__head-item">
-                                    آیدی زبان آموز
-                                </th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -90,6 +93,11 @@ function TeacherStudentLogs({
                                     <td className="table__body-item">
                                         {lg.user_name || "-"}
                                     </td>
+                                    {type === "teacher" && (
+                                        <td className="table__body-item">
+                                            {lg.teacher_name || "-"}
+                                        </td>
+                                    )}
                                     <td className="table__body-item">
                                         {lg.admin_assign_name || "-"}
                                     </td>
@@ -98,12 +106,6 @@ function TeacherStudentLogs({
                                     </td>
                                     <td className="table__body-item">
                                         {lg.desc || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {lg.teacher_id || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {lg.user_id || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

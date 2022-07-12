@@ -374,6 +374,8 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
                                     }}
                                     background="#fafafa"
                                     disabled={formData?.id ? true : false}
+                                    id="id"
+                                    fontSize={16}
                                 />
                             </div>
                         </div>
@@ -403,6 +405,8 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
                                     }}
                                     background="#fafafa"
                                     disabled={formData?.id ? true : false}
+                                    id="id"
+                                    fontSize={16}
                                 />
                             </div>
                         </div>

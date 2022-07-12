@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
@@ -8,6 +7,9 @@ import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import { useGlobalContext } from "../../../../../../context";
 import ReactTooltip from "react-tooltip";
+import Modal from "../../../../../Modal/Modal";
+import Alert from "../../../../../Alert/Alert";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function RequestDetails(props) {
     const {
@@ -15,10 +17,24 @@ function RequestDetails(props) {
         token,
     } = props;
     const [classes, setClasses] = useState(data);
+    const [formData, setFormData] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
-    moment.locale("fa", { useGregorianParser: true });
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedRequest, setSelectedRequest] = useState({});
+    const [loading, setLoading] = useState(false);
     const { formatTime } = useGlobalContext();
+    const [alertData, setAlertData] = useState({
+        show: false,
+        message: "",
+        type: "",
+    });
+    moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+    const showAlert = (show, type, message) => {
+        setAlertData({ show, type, message });
+    };
 
     const readClasses = async (page = 1) => {
         let searchQuery = "";
@@ -60,10 +76,172 @@ function RequestDetails(props) {
         }
     };
 
+    const handleOnChange = (e, rowInd) => {
+        let updatedList = [...formData];
+        let updatedItem = { ...updatedList[rowInd], ...selectedRequest, status: e.target.value };
+        updatedList[rowInd] = updatedItem;
+        setSelectedRequest(updatedItem);
+        setFormData(() => updatedList);
+    };
+
+    const changeStatusHandler = async (request_id, i) => {
+        if (
+            selectedRequest.status !== classes[i]?.status 
+        ) {
+            await changeStatus(selectedRequest.status, request_id, i);
+        }
+    };
+
+    const changeStatus = async (value, request_id, i) => {
+        try {
+            setLoading(true)
+
+            const res = await fetch(
+                `${BASE_URL}/admin/classroom/reserve-status/${request_id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ status: Number(value) }),
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                let message = `تغییر وضعیت کلاس ثبت شد`;
+                showAlert(true, "success", message);
+                updateListHandler(i);
+            }
+            else{
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
+            setLoading(false)
+        } catch (error) {
+            console.log("Error changing status", error);
+        }
+    };
+
+    const updateListHandler = (i)=>{
+        let temp = [...classes];
+            temp[i] = {...temp[i], ...selectedRequest};
+            temp[i]?.status = Number(selectedRequest.status);
+            setSelectedRequest(temp[i]);
+            setClasses(() => temp);
+            setFormData(() => temp);
+    }
+
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    teacher: "کلاس",
+                    request:"وضعیت درخواست کلاس"
+                    ,lists:"لیست"
+                }}
+            />
+
+            {/* Alert */}
+            <Alert
+                {...alertData}
+                removeAlert={showAlert}
+                envoker={changeStatus}
+            />
+
             <Box title="وضعیت درخواست کلاس">
                 <ReactTooltip className="tooltip" />
+
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات درخواست</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تخفیف
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.discount
+                                        ? `${Intl.NumberFormat().format(
+                                              selectedRequest?.discount
+                                          )} تومان`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    مدت زمان
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest.time
+                                        ? `${selectedRequest?.time} دقیقه`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    استپ
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.step}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    وضعیت
+                                </span>
+                                <span
+                                    className={"modal__item-body"}
+                                    style={{ display: "flex" }}
+                                >
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <select
+                                            name="language_id"
+                                            id="language_id"
+                                            className="form__input input-select"
+                                            onChange={(e) =>
+                                                handleOnChange(
+                                                    e,
+                                                    selectedRequest.index
+                                                )
+                                            }
+                                            value={selectedRequest.status}
+                                            required
+                                        >
+                                            <option value={0}>
+                                                در انتظار تایید
+                                            </option>
+                                            <option value={1}>تایید</option>
+                                            <option value={2}>کنسل</option>
+                                        </select>
+                                    </div>
+                                    <button
+                                        className={`action-btn primary`}
+                                        onClick={() => changeStatusHandler(selectedRequest.id, selectedRequest.index)}
+                                        disabled={loading}
+                                    >
+                                        ثبت
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
 
                 <div className="table__wrapper">
                     <table className="table">
@@ -79,17 +257,13 @@ function RequestDetails(props) {
                                 <th className="table__head-item">
                                     قابل پرداخت
                                 </th>
-                                <th className="table__head-item">تخفیف</th>
-                                <th className="table__head-item">مدت زمان</th>
-                                <th className="table__head-item">استپ</th>
+                                <th className="table__head-item">وضعیت کلاس</th>
                                 <th className="table__head-item">تاریخ کلاس</th>
-                                <th className="table__head-item">
-                                    وضعیت درخواست
-                                </th>
+                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((item) => {
+                            {classes?.map((item, i) => {
                                 let date = item.classroom?.date
                                     ? `${moment
                                           .from(
@@ -121,7 +295,10 @@ function RequestDetails(props) {
                                                 <Link
                                                     href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=${item.user_name} عزيز كلاس شما ${date} با استاد ${item?.teacher_name} تاييد شد`}
                                                 >
-                                                    <a className="whatsapp-icon">
+                                                    <a
+                                                        className="whatsapp-icon"
+                                                        target="_blank"
+                                                    >
                                                         <span>
                                                             <AiOutlineWhatsApp />
                                                         </span>
@@ -148,27 +325,39 @@ function RequestDetails(props) {
                                                 : "-"}
                                         </td>
                                         <td className="table__body-item">
-                                            {item?.payable
-                                                ? `${Intl.NumberFormat().format(
-                                                      item?.discount
-                                                  )} تومان`
-                                                : "-"}
-                                        </td>
-                                        <td className="table__body-item">
-                                            {item.time
-                                                ? `${item?.time} دقیقه`
-                                                : "-"}
-                                        </td>
-                                        <td className="table__body-item">
-                                            {item?.step || "-"}
+                                            {item?.status === 0 && (
+                                                <span className="warning-color">
+                                                    <b>در انتظار تایید</b>
+                                                </span>
+                                            )}
+                                            {item?.status === 1 && (
+                                                <span className="success-color">
+                                                    <b>تایید شده</b>
+                                                </span>
+                                            )}
+                                            {item?.status === 2 && (
+                                                <span className="danger-color">
+                                                    <b>کنسل</b>
+                                                </span>
+                                            )}
                                         </td>
                                         <td className="table__body-item table__body-item--rtl">
                                             {date}
                                         </td>
                                         <td className="table__body-item">
-                                            {item?.status === 1
-                                                ? "فعال"
-                                                : "غیرفعال"}
+                                            <button
+                                                className={`action-btn success`}
+                                                onClick={() => {
+                                                    setSelectedRequest(()=>{
+                                                        return {
+                                                        ...item,
+                                                        index: i,
+                                                    }});
+                                                    setOpenModal(true);
+                                                }}
+                                            >
+                                                جزئیات
+                                            </button>
                                         </td>
                                     </tr>
                                 );

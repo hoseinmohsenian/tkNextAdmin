@@ -12,8 +12,9 @@ import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
 
-function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
+function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
+    const [formData, setFormData] = useState(monitorings);
     const [selectedDate, setSelectedDate] = useState(shamsi_date_obj);
     const [alertData, setAlertData] = useState({
         show: false,
@@ -21,7 +22,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
         type: "",
     });
     const [loading, setLoading] = useState(false);
-    const [loadings, setLoadings] = useState([]);
+    const [followLoading, setFollowLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
     const [openModal, setOpenModal] = useState(false);
@@ -60,27 +61,21 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
             );
             const { data } = await res.json();
             setMonitoringList(data);
-            setLoadings(Array(data.length).fill(false));
+            setFormData(data);
             setLoading(false);
         } catch (error) {
             console.log("Error reading monitoring list", error);
         }
     };
 
-    const loadingHandler = (ind, value) => {
-        let temp = [...loadings];
-        temp[ind] = value;
-        setLoadings(() => temp);
-    };
-
-    const addFollower = async (monitoring_id, admin_id, i) => {
+    const addFollower = async (monitoring_id, monitoring_follower, i) => {
         try {
-            loadingHandler(i, true);
+            setFollowLoading(true);
             const res = await fetch(
                 `${BASE_URL}/admin/classroom/monitoring/${monitoring_id}`,
                 {
                     method: "POST",
-                    body: JSON.stringify({ admin_id }),
+                    body: JSON.stringify({ admin_id: monitoring_follower }),
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-type": "application/json",
@@ -90,13 +85,52 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
             );
             if (res.ok) {
                 showAlert(true, "success", "ادمین باموفقیت اضافه شد");
+                updateListHandler(i);
+            } else {
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            loadingHandler(i, false);
+            setFollowLoading(false);
         } catch (error) {
             console.log("Error adding monitoring follower", error);
         }
     };
-    console.log(monitoringList);
+
+    const addFollowerHandler = async (id, i) => {
+        if (
+            selectedClass.monitoring_follower !==
+            monitoringList[i]?.monitoring_follower
+        ) {
+            await addFollower(id, selectedClass.monitoring_follower, i);
+        }
+    };
+
+    const handleOnChange = (e, rowInd) => {
+        let updatedList = [...formData];
+        let updatedItem = {
+            ...updatedList[rowInd],
+            ...selectedClass,
+            monitoring_follower: Number(e.target.value),
+        };
+        updatedList[rowInd] = updatedItem;
+        setSelectedClass(updatedItem);
+        setFormData(() => updatedList);
+    };
+
+    const updateListHandler = (i) => {
+        let temp = [...monitoringList];
+        temp[i] = { ...temp[i], ...selectedClass };
+        temp[i].monitoring_follower = selectedClass.monitoring_follower;
+        setSelectedClass(temp[i]);
+        setMonitoringList(() => temp);
+        setFormData(() => temp);
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -116,15 +150,6 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                     >
                         <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
                         <div className={"modal__wrapper"}>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    ادمین
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.monitoring_follower_name ||
-                                        "-"}
-                                </span>
-                            </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
                                     کورس
@@ -194,6 +219,61 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                                     {selectedClass.time
                                         ? formatTime(selectedClass.time)
                                         : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    پیگیری کلاس
+                                </span>
+                                <span
+                                    className={"modal__item-body"}
+                                    style={{ display: "flex" }}
+                                >
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <select
+                                            name="language_id"
+                                            id="language_id"
+                                            className="form__input input-select"
+                                            onChange={(e) =>
+                                                handleOnChange(
+                                                    e,
+                                                    selectedClass.index
+                                                )
+                                            }
+                                            value={
+                                                selectedClass.monitoring_follower ||
+                                                0
+                                            }
+                                            required
+                                        >
+                                            <option value={0}>
+                                                انتخاب کنید
+                                            </option>
+                                            {admins.map((admin) => (
+                                                <option
+                                                    key={admin.id}
+                                                    value={admin.id}
+                                                >
+                                                    {admin.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <button
+                                        className={`action-btn primary`}
+                                        onClick={() =>
+                                            addFollowerHandler(
+                                                selectedClass.id,
+                                                selectedClass.index
+                                            )
+                                        }
+                                        disabled={followLoading}
+                                    >
+                                        ثبت
+                                    </button>
                                 </span>
                             </div>
                         </div>
@@ -288,7 +368,10 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                                                 <Link
                                                     href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=سلام ${item.user_name} عزیز وقت بخیر افشاری، پشتیبان سامانه آموزش زبان تیکا هستم. کلاس شما، ${date} با استاد ${item?.teacher_name} تشکیل می شود. لینک ورود به کلاس، نیم ساعت قبل از شروع، پیامک(sms) می شود. موفق باشید.`}
                                                 >
-                                                    <a className="whatsapp-icon">
+                                                    <a
+                                                        className="whatsapp-icon"
+                                                        target="_blank"
+                                                    >
                                                         <span>
                                                             <AiOutlineWhatsApp />
                                                         </span>
@@ -324,28 +407,17 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj }) {
                                             <button
                                                 className={`action-btn success`}
                                                 onClick={() => {
-                                                    setSelectedClass(item);
+                                                    setSelectedClass(() => {
+                                                        return {
+                                                            ...item,
+                                                            index: i,
+                                                        };
+                                                    });
                                                     setOpenModal(true);
                                                 }}
                                             >
                                                 جزئیات
                                             </button>
-                                            {item.admin_id && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        addFollower(
-                                                            item.id,
-                                                            item.admin_id,
-                                                            i
-                                                        )
-                                                    }
-                                                    className={`action-btn success`}
-                                                    disabled={loadings[i]}
-                                                >
-                                                    اضافه کردن
-                                                </button>
-                                            )}
                                         </td>
                                     </tr>
                                 );

@@ -6,6 +6,7 @@ import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineInfoCircle } from "react-icons/ai";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TeachersScore(props) {
     const {
@@ -58,6 +59,13 @@ function TeachersScore(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    score: "استاد",
+                    getAllScores: "امتیاز منفی اساتید",
+                }}
+            />
+
             <Box
                 title="امتیاز منفی اساتید"
                 buttonInfo={{

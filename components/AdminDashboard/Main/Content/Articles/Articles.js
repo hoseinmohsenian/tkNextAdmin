@@ -9,6 +9,21 @@ import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
 import Modal from "../../../../Modal/Modal";
 
+const filtersSchema = {
+    language_id: 0,
+    admin_id: 0,
+    order_by: 0,
+    draft: 0,
+    title: "",
+};
+const appliedFiltersSchema = {
+    language_id: false,
+    admin_id: false,
+    order_by: false,
+    draft: false,
+    title: false,
+};
+
 function Articles(props) {
     const {
         fetchedArticles: { data, ...restData },
@@ -19,6 +34,7 @@ function Articles(props) {
     } = props;
     const [articles, setArticles] = useState(data);
     const [filters, setFilters] = useState(fetchedData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
         show: false,
@@ -80,7 +96,7 @@ function Articles(props) {
         }
     };
 
-    const readArticles = async (page = 1) => {
+    const readArticles = async (page = 1, avoidFilters = false) => {
         setLoading(true);
         let searchParams = {};
 
@@ -93,53 +109,63 @@ function Articles(props) {
 
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (Number(filters[key]) !== 0) {
-                if (key === "draft" && filters["draft"]) {
-                    searchQuery += `draft=1&`;
-                } else {
-                    searchQuery += `${key}=${filters[key]}&`;
-                }
-            }
-        });
-        searchQuery += `page=${page}`;
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
 
-        if (isFilterEnabled("language_id")) {
-            searchParams = {
-                ...searchParams,
-                language: findItem(languages, filters?.language_id)
-                    ?.english_name,
-            };
-        }
-        if (isFilterEnabled("admin_id")) {
-            searchParams = {
-                ...searchParams,
-                admin: findItem(admins, filters?.admin_id)?.name,
-            };
-        }
-        if (isFilterEnabled("order_by")) {
-            if (
-                filters?.order_by.toLowerCase() === "desc" ||
-                filters?.order_by.toLowerCase() === "asc"
-            ) {
+            Object.keys(filters).forEach((key) => {
+                if (Number(filters[key]) !== 0) {
+                    if (key === "draft" && filters["draft"]) {
+                        searchQuery += `draft=1&`;
+                    } else {
+                        searchQuery += `${key}=${filters[key]}&`;
+                    }
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+
+            if (isFilterEnabled("language_id")) {
                 searchParams = {
                     ...searchParams,
-                    order_by: filters?.order_by,
+                    language: findItem(languages, filters?.language_id)
+                        ?.english_name,
+                };
+            }
+            if (isFilterEnabled("admin_id")) {
+                searchParams = {
+                    ...searchParams,
+                    admin: findItem(admins, filters?.admin_id)?.name,
+                };
+            }
+            if (isFilterEnabled("order_by")) {
+                if (
+                    filters?.order_by.toLowerCase() === "desc" ||
+                    filters?.order_by.toLowerCase() === "asc"
+                ) {
+                    searchParams = {
+                        ...searchParams,
+                        order_by: filters?.order_by,
+                    };
+                }
+            }
+            if (isFilterEnabled("draft")) {
+                searchParams = {
+                    ...searchParams,
+                    draft: filters?.draft ? 1 : 0,
+                };
+            }
+            if (isFilterEnabled("title")) {
+                searchParams = {
+                    ...searchParams,
+                    title: filters?.title,
                 };
             }
         }
-        if (isFilterEnabled("draft")) {
-            searchParams = {
-                ...searchParams,
-                draft: filters?.draft ? 1 : 0,
-            };
-        }
-        if (isFilterEnabled("title")) {
-            searchParams = {
-                ...searchParams,
-                title: filters?.title,
-            };
-        }
+        searchQuery += `page=${page}`;
+
         if (page !== 1) {
             searchParams = {
                 ...searchParams,
@@ -204,6 +230,27 @@ function Articles(props) {
         } catch (error) {
             console.log("Error deleting article", error);
         }
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readArticles(1, true);
+        router.push({
+            pathname: `/tkpanel/siteNews`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
     };
 
     return (
@@ -464,6 +511,16 @@ function Articles(props) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -539,7 +596,10 @@ function Articles(props) {
                                             href={`https://barmansms.ir/blog/${article?.url}`}
                                             disabled={loadings[i]}
                                         >
-                                            <a className={`action-btn primary`}>
+                                            <a
+                                                className={`action-btn primary`}
+                                                target="_blank"
+                                            >
                                                 نمایش
                                             </a>
                                         </Link>

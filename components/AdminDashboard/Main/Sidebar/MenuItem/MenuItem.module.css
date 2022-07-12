@@ -9,7 +9,7 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    padding: 0.2rem 0.5rem;
+    padding: 0.3rem 0.5rem;
     transition: var(--transition);
     border-radius: 0.3rem;
     color: #90969d;
@@ -22,8 +22,8 @@
     color: #343a40 !important;
 }
 .group-header {
-    font-weight: 700;
-    font-size: 1.1rem;
+    font-weight: bold;
+    font-size: 1rem;
     display: flex;
     align-items: center;
 }
@@ -105,11 +105,16 @@
     color: #90969d;
     transition: var(--transition);
     border-radius: 0.3rem;
-    padding: 0.1rem 0.3rem;
+    padding: 0.2rem 0.3rem;
+    font-size: 0.9rem;
 }
 .subitem-link:hover,
 .subitem-link--active {
     background-color: #e0f3ff;
+    color: #54595c;
+}
+.subitem-link--active {
+    font-weight: bold;
 }
 .subitem-link span:first-child {
     margin-left: 0.5rem;

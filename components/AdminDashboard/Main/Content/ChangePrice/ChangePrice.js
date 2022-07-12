@@ -10,6 +10,15 @@ import { useGlobalContext } from "../../../../../context";
 import { AiOutlineWhatsApp,AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+
+const filtersSchema = { user_name: "", teacher_name: "", teacher_mobile: "", user_mobile: "", };
+const appliedFiltersSchema = { 
+    user_name: false,
+    teacher_name: false,
+    teacher_mobile: false,
+    user_mobile: false
+};
 
 function ChangePrice(props) {
     const {
@@ -17,12 +26,8 @@ function ChangePrice(props) {
         token,
     } = props;
     const [prices, setPrices] = useState(data);
-    const [filters, setFilters] = useState({
-        user_name:"",   
-        teacher_name:"",
-        teacher_mobile:"",
-        user_mobile:"",
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
         show: false,
@@ -53,15 +58,25 @@ function ChangePrice(props) {
         setAlertData({ show, type, message });
     };
 
-    const readList = async (page = 1) => {
+    const readList = async (page = 1, avoidFilters = false) => {
         setLoading(true);
 
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if(Boolean(filters[key])){
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if(Boolean(filters[key])){
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                }
+                else{
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
         let searchParams = {};
@@ -141,11 +156,38 @@ function ChangePrice(props) {
             setPrices(() => temp);
             console.log(value);
         }
-        console.log("here");
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);        
+        readList(1, true);
+        router.push({
+            pathname: `/tkpanel/requestDetails/changePrice`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
     };
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    requestDetails: "کلاس",
+                    changePrice: "لیست تغییر قیمت کلاس"
+                }}
+            />
+
             <Box title="لیست تغییر قیمت کلاس">
                 <ReactTooltip className="tooltip" />
 
@@ -256,6 +298,18 @@ function ChangePrice(props) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading
+                                        ? "در حال انجام ..."
+                                        : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -299,7 +353,7 @@ function ChangePrice(props) {
                                                 <Link
                                                     href={`https://api.whatsapp.com/send?phone=${price.user_mobile}`}
                                                 >
-                                                    <a className="whatsapp-icon">
+                                                    <a className="whatsapp-icon" target="_blank">
                                                         <span>
                                                             <AiOutlineWhatsApp />
                                                         </span>

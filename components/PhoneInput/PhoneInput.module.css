@@ -26,10 +26,13 @@
     outline: none;
     height: 100%;
     width: 100%;
-    font-size: 1rem;
+    font-size: 0.9rem !important;
     direction: ltr;
     padding: 0.3rem 0.5rem;
     font: unset;
+}
+.phone-input__input:not(:valid) {
+    border: 2px solid #dd2235;
 }
 .phone-input__flag-wrapper {
     display: flex;
@@ -94,9 +97,14 @@
     padding: 0.4rem 0.5rem;
     outline: none;
     border-radius: 0.25rem;
+    font-family: var(--ff-primary);
+    font-size: 0.9rem;
 }
 .phone-input__content-search input:focus {
     border-color: #712be5;
+}
+.phone-input__content-search input::placeholder {
+    font-size: 0.8rem;
 }
 .phone-input__content-list {
     max-height: 200px;

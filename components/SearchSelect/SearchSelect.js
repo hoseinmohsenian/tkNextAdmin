@@ -16,7 +16,7 @@ function SearchSelect({
     background,
     disabled = false,
     displayPattern,
-    fontSize = 19.2,
+    fontSize = 14.4,
     openBottom = true,
 }) {
     const [open, setOpen] = useState(false);
@@ -168,6 +168,7 @@ function SearchSelect({
                     {filteredList?.length === 0 && (
                         <div
                             className={`${styles["search-select__content-item"]} ${styles["search-select__content-item--disabled"]}`}
+                            style={{ fontSize: `${fontSize}px` }}
                         >
                             {noResText}
                         </div>

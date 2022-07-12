@@ -2,8 +2,15 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import Profiles from "../../../components/AdminDashboard/Main/Content/Profiles/Profiles";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArr } from "../../../utils/checkResponse";
+import API from "../../../api";
+import { getCookie } from "cookies-next";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function ProfilesPage({ students, token, searchData }) {
+function ProfilesPage({ students, token, searchData, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="زبان آموزان | تیکا"></Header>
@@ -48,6 +55,7 @@ export async function getServerSideProps(context) {
         params += `input=${input}&`;
         searchData = { ...searchData, input };
     }
+
     const responses = await Promise.all([
         fetch(`${BASE_URL}/admin/student/search?${params}`, {
             headers: {
@@ -56,7 +64,18 @@ export async function getServerSideProps(context) {
                 "Access-Control-Allow-Origin": "*",
             },
         }),
+        // API.get(`/admin/student/search?${params}`, {
+        //     headers: {
+        //         Authorization: `Bearer ${token}`,
+        //     },
+        // }),
     ]);
+
+    if (!checkResponseArr(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
