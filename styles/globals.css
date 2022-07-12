@@ -1,5 +1,9 @@
 /* Font */
-@import url(fontiran.css);
+/* @import url(fontiran.css); */
+@font-face {
+    font-family: "iranyekan";
+    src: url("../public/fonts/ttf/IRANYekanWebRegular.ttf");
+}
 
 /* VARIABLES */
 :root {
