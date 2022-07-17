@@ -3,12 +3,12 @@ import UsersLanding from "../../../../../components/AdminDashboard/Main/Content/
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function UsersLandingsPage({ landings }) {
+function UsersLandingsPage({ landings, token }) {
     return (
         <div>
             <Header title="لندینگ تعاملی کاربران | تیکا"></Header>
             <AdminDashboard>
-                <UsersLanding landings={landings} />
+                <UsersLanding fetchedLandings={landings} token={token} />
             </AdminDashboard>
         </div>
     );
@@ -18,6 +18,8 @@ export default UsersLandingsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    const { page } = context?.query;
 
     if (!token) {
         return {
@@ -28,8 +30,16 @@ export async function getServerSideProps(context) {
         };
     }
 
+    let searchParams = "";
+
+    if (isKeyValid(page)) {
+        if (Number(page) > 0) {
+            searchParams += `page=${page}`;
+        }
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/support/landing`, {
+        fetch(`${BASE_URL}/admin/support/landing/all/user?${searchParams}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -42,6 +52,7 @@ export async function getServerSideProps(context) {
     return {
         props: {
             landings: dataArr[0].data,
+            token,
         },
     };
 }

@@ -163,7 +163,14 @@ function CreateLog({ token, statusList, admins, logs }) {
                 envoker={handleSubmit}
             />
 
-            <Box title="ایجاد لاگ">
+            <Box
+                title="ایجاد لاگ"
+                buttonInfo={{
+                    name: "ایجاد وضعیت",
+                    url: "/tkpanel/logReport/status/create",
+                    color: "primary",
+                }}
+            >
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">
                         <label htmlFor="status" className="form__label">

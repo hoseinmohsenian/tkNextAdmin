@@ -1,0 +1,133 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal__overlay {
+    z-index: -1;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.4);
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+.modal__wrapper {
+    background-color: hsl(217deg, 37%, 93%);
+    border-radius: 1.5rem;
+    width: 92%;
+    min-height: 77%;
+    max-height: 92%;
+    overflow-y: auto;
+    text-align: center;
+    position: relative;
+    box-shadow: 5px 5px 30px rgb(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.modal__header {
+    padding: 0.5rem 1rem;
+    display: block;
+}
+.modal__header h5 {
+    text-align: center;
+    color: #212529;
+    font-size: 1.5rem;
+}
+.modal__body {
+    width: 100%;
+    padding: 0.7rem 1.25rem;
+    border-radius: 0.3rem;
+    margin: 0.7rem 0;
+    max-height: 100%;
+    border: 1px solid #dee2e6;
+    border-right: 0;
+    border-left: 0;
+    flex: 1;
+}
+.modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.7rem 1rem;
+}
+.modal__fooer-btn {
+    color: white;
+    cursor: pointer;
+    padding: 0.2rem 0.8rem;
+    border-radius: 0.3rem;
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+}
+.modal__fooer-btn--purple {
+    background-color: #712be5;
+}
+.modal__fooer-btn--gray {
+    background-color: #989a9c;
+}
+
+.lan__row {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 1.2rem;
+}
+.lan__title {
+    color: #212529;
+    min-width: 9.37rem;
+    text-align: center;
+}
+.lan__sugg {
+    color: #c2c2c2;
+    font-size: 0.95rem;
+}
+.lan__lans-list {
+    width: 100%;
+}
+.lan__lan-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.lan__lan-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.lan__lan-item:hover,
+.lan__lan-item--selected {
+    transform: scale(1.05);
+}
+.lan__lan-item img {
+    width: 3rem;
+    height: 3rem;
+    max-width: 3rem;
+    max-height: 3rem;
+    border-radius: 50%;
+    box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #ffffff;
+}
+.lan__lan-item span {
+    color: #212529;
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+@media all and (min-width: 768px) {
+    .lan__row {
+        align-items: center;
+        flex-direction: row;
+    }
+    .lan__title {
+        min-width: 9.37rem;
+        text-align: right;
+    }
+}

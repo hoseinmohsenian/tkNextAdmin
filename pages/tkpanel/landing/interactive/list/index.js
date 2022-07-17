@@ -3,12 +3,12 @@ import Landing from "../../../../../components/AdminDashboard/Main/Content/Suppo
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
 
-function LandingsPage({ landings, token }) {
+function LandingsPage({ landings }) {
     return (
         <div>
             <Header title="لندینگ تعاملی | تیکا"></Header>
             <AdminDashboard>
-                <Landing fetchedLandings={landings} token={token} />
+                <Landing landings={landings} />
             </AdminDashboard>
         </div>
     );
@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/support/landing/all/user`, {
+        fetch(`${BASE_URL}/admin/support/landing`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -42,7 +42,6 @@ export async function getServerSideProps(context) {
     return {
         props: {
             landings: dataArr[0].data,
-            token,
         },
     };
 }

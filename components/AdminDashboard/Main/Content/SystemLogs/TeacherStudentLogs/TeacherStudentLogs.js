@@ -60,6 +60,11 @@ function TeacherStudentLogs({
                 title={`لاگ پیگیری ${
                     type === "student" ? "زبان آموز" : "استاد‌"
                 }`}
+                buttonInfo={{
+                    name: "ایجاد لاگ",
+                    url: "/tkpanel/logReport/show/create",
+                    color: "primary",
+                }}
             >
                 <div className="table__wrapper">
                     <table className="table">

@@ -1,0 +1,200 @@
+.box__title {
+    font-size: 1.1rem;
+    font-weight: normal;
+}
+.lan__pricing-tabs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+.lan__pricing-tab-item {
+    border-bottom: 2px solid transparent;
+    padding: 0.2rem 0.7rem;
+    transition: var(--transition);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+.lan__pricing-tab-item--active {
+    border-bottom-color: #01af8f;
+    color: #495057;
+}
+.lan__pricing-tab-item--active,
+.lan__pricing-tab-item:hover {
+    border-bottom-color: #01af8f;
+}
+.lan__tab-content-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+.lan__tab-content-row--price {
+    margin-bottom: 0.7rem;
+}
+.lan__tab-content-row-title {
+    width: 100%;
+    text-align: center;
+    color: #707070;
+    font-size: 1.1rem;
+}
+.lan__tab-content-row--price .lan__tab-content-row-title {
+    color: black;
+    font-size: 1.3rem;
+}
+.lan__tab-content-row-wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.lan__tab-content-row-input {
+    font: unset;
+    text-align: left;
+    direction: ltr;
+    border: 1px solid #cfcfcf;
+    outline: none;
+    background-color: white;
+    margin: 0 0.7rem;
+    padding: 0.2rem 0.9rem;
+    border-radius: 0.7rem;
+    font-size: 1.1rem;
+}
+.lan__tab-content-row-input:read-only {
+    background-color: #eee;
+}
+.lan__tab-content-row-input--rtl {
+    text-align: right;
+    direction: rtl;
+}
+.lan__tab-content-row-curr {
+    color: #707070;
+    font-size: 1.1rem;
+}
+.lan__tab-content-row-total {
+    color: #212529;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.box__color-red {
+    color: red;
+    margin: 1rem 0;
+}
+.box__free-price-wrapper {
+    display: flex;
+    align-items: center;
+}
+.box__free-price-wrapper span {
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+}
+.update__btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0 0.5rem;
+}
+.update__btn {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.update__btn img {
+    width: 1.56rem;
+    height: 1.56rem;
+}
+
+.ages__item {
+    display: flex;
+    align-items: center;
+    height: 2rem;
+    margin: 0.3rem 0;
+}
+.checkbox__wrapper {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.checkbox__input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.2rem;
+    width: 1.2rem;
+    border: 1px solid #01af8f;
+    border-radius: 3px;
+}
+.checkbox__input:checked ~ .checkmark::after {
+    border-color: #01af8f;
+}
+.checkmark::after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.checkbox__input:checked ~ .checkmark::after {
+    display: block;
+}
+.checkmark::after {
+    left: 5px;
+    top: 0px;
+    width: 7px;
+    height: 14px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.ages__item-text {
+    margin-right: 0.4rem;
+}
+
+@media all and (min-width: 576px) {
+    .box__title {
+        font-size: 1.3rem;
+    }
+}
+
+@media all and (min-width: 768px) {
+    .lan__row {
+        align-items: center;
+        flex-direction: row;
+    }
+    .lan__title {
+        min-width: 9.37rem;
+        text-align: right;
+    }
+
+    .lan__tab-content-row {
+        display: flex;
+        flex-direction: row;
+    }
+    .lan__tab-content-row-title {
+        max-width: 19rem;
+        text-align: right;
+    }
+    .lan__tab-content-row-wrapper {
+        flex-direction: row;
+    }
+    .lan__tab-content-row-total {
+        margin-right: 1rem;
+    }
+
+    .box__free-price-wrapper span {
+        margin-left: 1rem;
+        font-size: 1rem;
+    }
+}

@@ -108,6 +108,7 @@ function PhoneInput({
                                 : ".*"
                         }`}
                         maxLength={11}
+                        disabled={!!disabled}
                     />
                 </div>
                 {/* flag */}

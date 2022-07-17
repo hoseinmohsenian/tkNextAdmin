@@ -11,6 +11,7 @@ import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { BASE_URL } from "../../../../../../../constants";
+import { TimePicker } from "antd";
 
 function AddSessions({ token, id, theClass }) {
     const [formData, setFormData] = useState(theClass.session);
@@ -40,13 +41,13 @@ function AddSessions({ token, id, theClass }) {
             {}
         );
         newRow["time"] = 60;
+        newRow["hour"] = "00:00";
         setFormData([...formData, newRow]);
     };
 
-    const handleOnChange = (e, rowInd) => {
-        const name = e.target.name;
+    const handleOnChange = (value, rowInd, name) => {
         let updated = [...formData];
-        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
+        updated[rowInd] = { ...updated[rowInd], [name]: value };
         setFormData(() => updated);
     };
 
@@ -324,7 +325,11 @@ function AddSessions({ token, id, theClass }) {
                                                         id="title"
                                                         className="form__input"
                                                         onChange={(e) =>
-                                                            handleOnChange(e, i)
+                                                            handleOnChange(
+                                                                e.target.value,
+                                                                i,
+                                                                e.target.name
+                                                            )
                                                         }
                                                         value={item?.title}
                                                         required
@@ -352,19 +357,23 @@ function AddSessions({ token, id, theClass }) {
                                                         id="time"
                                                         className="form__input input-select"
                                                         onChange={(e) =>
-                                                            handleOnChange(e, i)
+                                                            handleOnChange(
+                                                                e.target.value,
+                                                                i,
+                                                                e.target.name
+                                                            )
                                                         }
                                                         value={item?.time}
                                                         required
                                                     >
                                                         <option value={60}>
-                                                            60
+                                                            ۶۰ دقیقه
                                                         </option>
                                                         <option value={90}>
-                                                            90
+                                                            ۹۰ دقیقه
                                                         </option>
                                                         <option value={120}>
-                                                            120
+                                                            ۱۲۰ دقیقه
                                                         </option>
                                                     </select>
                                                 </div>
@@ -430,21 +439,28 @@ function AddSessions({ token, id, theClass }) {
                                                     ساعت :
                                                 </label>
                                                 <div className="form-control">
-                                                    <input
-                                                        type="time"
-                                                        name="hour"
-                                                        id="hour"
-                                                        className={`form__input form__input-time ${styles["form__input-time"]}`}
-                                                        onChange={(e) =>
-                                                            handleOnChange(e, i)
+                                                    <TimePicker
+                                                        minuteStep={30}
+                                                        format="HH:mm"
+                                                        placeholder="انتخاب ساعت"
+                                                        bordered={false}
+                                                        onChange={(value) =>
+                                                            handleOnChange(
+                                                                moment(
+                                                                    value
+                                                                ).format(
+                                                                    "HH:mm"
+                                                                ),
+                                                                i,
+                                                                "hour"
+                                                            )
                                                         }
-                                                        value={item?.hour || ""}
-                                                        spellCheck={false}
-                                                        required
-                                                        placeholder="ساعت"
-                                                        pattern="[0-9]{2}:[0-9]{2}"
-                                                        step="1800"
-                                                        min="00:00"
+                                                        value={moment(
+                                                            item.hour || "",
+                                                            "HH:mm"
+                                                        )}
+                                                        className="time-picker"
+                                                        popupClassName="popup-time-picker"
                                                     />
                                                 </div>
                                             </div>

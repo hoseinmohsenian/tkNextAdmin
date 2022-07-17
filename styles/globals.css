@@ -29,6 +29,7 @@ html {
     scroll-behavior: smooth;
 }
 body {
+    font-family: var(--ff-primary) !important;
     background-color: var(--bg-color);
     color: var(--grey-color-1);
 }

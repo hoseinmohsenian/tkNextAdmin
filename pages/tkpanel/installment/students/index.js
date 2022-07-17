@@ -3,12 +3,16 @@ import StudentsCredit from "../../../../components/AdminDashboard/Main/Content/C
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
 
-function StudentsCreditsPage({ students, token }) {
+function StudentsCreditsPage({ students, token, teachers }) {
     return (
         <>
             <Header title="لیست زبان آموزان اعتباری | تیکا"></Header>
             <AdminDashboard>
-                <StudentsCredit fetchedStudents={students} token={token} />
+                <StudentsCredit
+                    fetchedStudents={students}
+                    token={token}
+                    teachers={teachers}
+                />
             </AdminDashboard>
         </>
     );
@@ -36,6 +40,13 @@ export async function getServerSideProps(context) {
                 "Access-Control-Allow-Origin": "*",
             },
         }),
+        fetch(`${BASE_URL}/admin/credit/teacher`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
     ]);
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
@@ -43,6 +54,7 @@ export async function getServerSideProps(context) {
     return {
         props: {
             students: dataArr[0].data,
+            teachers: dataArr[1].data,
             token,
         },
     };

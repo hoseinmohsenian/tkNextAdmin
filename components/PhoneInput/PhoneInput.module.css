@@ -31,7 +31,7 @@
     padding: 0.3rem 0.5rem;
     font: unset;
 }
-.phone-input__input:not(:valid) {
+.phone-input__input:not(:valid):not(:disabled) {
     border: 2px solid #dd2235;
 }
 .phone-input__flag-wrapper {

@@ -196,7 +196,7 @@ second, second and am/pm */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     transition: var(--transition);
     cursor: pointer;
     white-space: nowrap;
@@ -256,6 +256,27 @@ second, second and am/pm */
 .action-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* TimePicker */
+.time-picker {
+    width: 100%;
+    direction: ltr;
+    text-align: left;
+}
+.ant-picker-time-panel .ant-picker-content,
+.ant-picker-time-panel-column {
+    direction: ltr;
+}
+.ant-picker-input {
+    direction: ltr;
+}
+.ant-picker-input > input {
+    text-align: left;
+}
+.popup-time-picker {
+    direction: ltr !important;
+    text-align: left !important;
 }
 
 @media all and (min-width: 768px) {

@@ -17,7 +17,7 @@ function SearchMultiSelect(props) {
         showAlert,
         onAdd,
         disabled = false,
-        fontSize = 19.2,
+        fontSize = 14.4,
         background,
         displayPattern,
         stylesProps,

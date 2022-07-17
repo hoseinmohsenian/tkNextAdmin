@@ -1,4 +1,5 @@
 import { AppProvider } from "../context/index";
+import "antd/dist/antd.css";
 import "../styles/grid.css";
 import "../styles/general.css";
 import "../styles/globals.css";

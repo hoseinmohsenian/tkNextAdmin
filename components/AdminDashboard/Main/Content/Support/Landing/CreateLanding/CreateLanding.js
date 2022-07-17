@@ -6,11 +6,18 @@ import Box from "../../../Elements/Box/Box";
 
 function CreateLanding({ token }) {
     const [formData, setFormData] = useState({
+        title: "",
         url: "",
-        banner_desktop: null,
-        banner_mobile: null,
-        desc: "",
-        video_link: "",
+        banner_mobile_one: null,
+        banner_desktop_one: null,
+        banner_mobile_two: null,
+        banner_desktop_two: null,
+        banner_mobile_three: null,
+        banner_desktop_three: null,
+        banner_mobile_four: null,
+        banner_desktop_four: null,
+        banner_mobile_five: null,
+        banner_desktop_five: null,
     });
     const [alertData, setAlertData] = useState({
         show: false,
@@ -23,20 +30,43 @@ function CreateLanding({ token }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.url.trim()) {
+        if (formData.url.trim() && formData.title.trim()) {
             const fd = new FormData();
+            fd.append("title", formData.title);
             fd.append("url", formData.url);
-            if (formData.desc) {
-                fd.append("desc", formData.desc);
+
+            if (formData.banner_mobile_one) {
+                fd.append("banner_mobile_one", formData.banner_mobile_one);
             }
-            if (formData.video_link) {
-                fd.append("video_link", formData.video_link);
+            if (formData.banner_desktop_one) {
+                fd.append("banner_desktop_one", formData.banner_desktop_one);
             }
-            if (formData.banner_desktop) {
-                fd.append("banner_desktop", formData.banner_desktop);
+            if (formData.banner_mobile_two) {
+                fd.append("banner_mobile_two", formData.banner_mobile_two);
             }
-            if (formData.banner_mobile) {
-                fd.append("banner_mobile", formData.banner_mobile);
+            if (formData.banner_desktop_two) {
+                fd.append("banner_desktop_two", formData.banner_desktop_two);
+            }
+            if (formData.banner_mobile_three) {
+                fd.append("banner_mobile_three", formData.banner_mobile_three);
+            }
+            if (formData.banner_desktop_three) {
+                fd.append(
+                    "banner_desktop_three",
+                    formData.banner_desktop_three
+                );
+            }
+            if (formData.banner_mobile_four) {
+                fd.append("banner_mobile_four", formData.banner_mobile_four);
+            }
+            if (formData.banner_desktop_four) {
+                fd.append("banner_desktop_four", formData.banner_desktop_four);
+            }
+            if (formData.banner_mobile_five) {
+                fd.append("banner_mobile_five", formData.banner_mobile_five);
+            }
+            if (formData.banner_desktop_five) {
+                fd.append("banner_desktop_five", formData.banner_desktop_five);
             }
 
             await addLanding(fd);
@@ -75,7 +105,7 @@ function CreateLanding({ token }) {
             if (res.ok) {
                 let message = "لندینگ جدید باموفقیت اضافه شد";
                 showAlert(true, "success", message);
-                router.push("/tkpanel/landing/users/list");
+                router.push("/tkpanel/landing/interactive/list");
             } else {
                 const errData = await res.json();
                 showAlert(
@@ -103,6 +133,21 @@ function CreateLanding({ token }) {
             <Box title="ایجاد لندینگ">
                 <div className="form">
                     <div className="input-wrapper">
+                        <label htmlFor="title" className="form__label">
+                            عنوان :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="text"
+                                name="title"
+                                id="title"
+                                className="form__input"
+                                onChange={handleOnChange}
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="input-wrapper">
                         <label htmlFor="url" className="form__label">
                             url :<span className="form__star">*</span>
                         </label>
@@ -120,45 +165,15 @@ function CreateLanding({ token }) {
                             </div>
                         </div>
                     </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="desc" className="form__label">
-                            توضیحات :
-                        </label>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                name="desc"
-                                id="desc"
-                                className="form__input"
-                                onChange={handleOnChange}
-                                spellCheck={false}
-                            />
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="video_link" className="form__label">
-                            لینک ویدئو :
-                        </label>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                name="video_link"
-                                id="video_link"
-                                className="form__input form__input--ltr"
-                                onChange={handleOnChange}
-                                spellCheck={false}
-                            />
-                        </div>
-                    </div>
 
                     <div className={`row`}>
                         <div className={`col-xs-6`}>
                             <div className="input-wrapper">
                                 <label
-                                    htmlFor="banner_desktop"
+                                    htmlFor="banner_mobile_one"
                                     className="form__label"
                                 >
-                                    بنر دستکاپ :
+                                    بنر موبایل اول :
                                 </label>
                                 <div className="upload-box">
                                     <div
@@ -166,7 +181,7 @@ function CreateLanding({ token }) {
                                         onChange={(e) =>
                                             handleSelectFile(
                                                 e,
-                                                "banner_desktop"
+                                                "banner_mobile_one"
                                             )
                                         }
                                     >
@@ -178,7 +193,7 @@ function CreateLanding({ token }) {
                                         ></input>
                                     </div>
                                     <span className="upload-file-name">
-                                        {formData?.banner_desktop?.name}
+                                        {formData?.banner_mobile_one?.name}
                                     </span>
                                 </div>
                             </div>
@@ -186,16 +201,19 @@ function CreateLanding({ token }) {
                         <div className={`col-xs-6`}>
                             <div className="input-wrapper">
                                 <label
-                                    htmlFor="banner_mobile"
+                                    htmlFor="banner_desktop_one"
                                     className="form__label"
                                 >
-                                    بنر موبایل :
+                                    بنر دسکتاپ اول :
                                 </label>
                                 <div className="upload-box">
                                     <div
                                         className="upload-btn"
                                         onChange={(e) =>
-                                            handleSelectFile(e, "banner_mobile")
+                                            handleSelectFile(
+                                                e,
+                                                "banner_desktop_one"
+                                            )
                                         }
                                     >
                                         <span>آپلود تصویر</span>
@@ -206,7 +224,263 @@ function CreateLanding({ token }) {
                                         ></input>
                                     </div>
                                     <span className="upload-file-name">
-                                        {formData?.banner_mobile?.name}
+                                        {formData?.banner_desktop_one?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`row`}>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_mobile_two"
+                                    className="form__label"
+                                >
+                                    بنر موبایل دوم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_mobile_two"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_mobile_two?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_desktop_two"
+                                    className="form__label"
+                                >
+                                    بنر دسکتاپ دوم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_desktop_two"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_desktop_two?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`row`}>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_mobile_three"
+                                    className="form__label"
+                                >
+                                    بنر موبایل سوم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_mobile_three"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_mobile_three?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_desktop_three"
+                                    className="form__label"
+                                >
+                                    بنر دسکتاپ سوم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_desktop_three"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_desktop_three?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`row`}>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_mobile_four"
+                                    className="form__label"
+                                >
+                                    بنر موبایل چهارم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_mobile_four"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_mobile_four?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_desktop_four"
+                                    className="form__label"
+                                >
+                                    بنر دسکتاپ چهارم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_desktop_four"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_desktop_four?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`row`}>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_mobile_five"
+                                    className="form__label"
+                                >
+                                    بنر موبایل پنجم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_mobile_five"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_mobile_five?.name}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`col-xs-6`}>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="banner_desktop_five"
+                                    className="form__label"
+                                >
+                                    بنر دسکتاپ پنجم :
+                                </label>
+                                <div className="upload-box">
+                                    <div
+                                        className="upload-btn"
+                                        onChange={(e) =>
+                                            handleSelectFile(
+                                                e,
+                                                "banner_desktop_five"
+                                            )
+                                        }
+                                    >
+                                        <span>آپلود تصویر</span>
+                                        <input
+                                            type="file"
+                                            className="upload-input"
+                                            accept="image/png, image/jpg, image/jpeg"
+                                        ></input>
+                                    </div>
+                                    <span className="upload-file-name">
+                                        {formData?.banner_desktop_five?.name}
                                     </span>
                                 </div>
                             </div>

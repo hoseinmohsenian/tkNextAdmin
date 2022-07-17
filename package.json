@@ -12,6 +12,7 @@
         "@emotion/styled": "^11.9.3",
         "@hassanmojab/react-modern-calendar-datepicker": "^3.1.7",
         "@mui/material": "^5.8.7",
+        "antd": "^4.21.6",
         "axios": "^0.27.2",
         "chart.js": "^3.7.0",
         "cookies-next": "^2.1.1",

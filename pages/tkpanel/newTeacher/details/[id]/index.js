@@ -4,12 +4,26 @@ import Header from "../../../../../components/Head/Head";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-function MultiSessionPage({ token, languages }) {
+function MultiSessionPage({
+    languages,
+    levels,
+    addedLanguages,
+    countries,
+    tutorToken,
+    adminToken,
+}) {
     return (
         <div>
             <Header title="مشخصات استاد | تیکا"></Header>
             <AdminDashboard>
-                <Profile token={token} languages={languages} />
+                <Profile
+                    languages={languages}
+                    levels={levels}
+                    addedLanguages={addedLanguages}
+                    adminToken={adminToken}
+                    tutorToken={tutorToken}
+                    countries={countries}
+                />
             </AdminDashboard>
         </div>
     );
@@ -31,21 +45,54 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        // fetch(`${BASE_URL}/data/teacher/language?teacher_id=${id}`, {
-        //     headers: {
-        //         Authorization: `Bearer ${token}`,
-        //         "Content-type": "application/json",
-        //         "Access-Control-Allow-Origin": "*",
-        //     },
-        // }),
+        fetch(`${BASE_URL}/data/language`, {
+            headers: {
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
+        fetch(`${BASE_URL}/data/level`, {
+            headers: {
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
+        fetch(`${BASE_URL}/data/country`, {
+            headers: {
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
+        fetch(`${BASE_URL}/admin/teacher/create-token/${id}`, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
     ]);
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
+    const tutorToken = dataArr[3].data;
+
+    const res = await fetch(`${BASE_URL}/teacher/profile/return/languages`, {
+        headers: {
+            Authorization: `Bearer ${tutorToken}`,
+            "Content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        },
+    });
+    const { data: addedLanguages } = await res.json();
 
     return {
         props: {
-            token,
-            // languages: dataArr[0].data,
+            languages: dataArr[0].data,
+            levels: dataArr[1].data,
+            addedLanguages: addedLanguages,
+            countries: dataArr[2].data,
+            tutorToken: tutorToken,
+            adminToken: token,
         },
     };
 }

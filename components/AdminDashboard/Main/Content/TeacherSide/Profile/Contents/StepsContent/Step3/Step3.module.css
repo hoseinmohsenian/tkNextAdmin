@@ -1,0 +1,155 @@
+.step__row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.step__row--m0 {
+    margin-bottom: 0 !important;
+}
+.step__row:last-child {
+    margin-bottom: 0;
+}
+.step__row-title {
+    min-width: 5.5rem;
+    margin-left: 1rem;
+    font-size: 1.1rem;
+}
+.step__input-container {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0.4rem;
+    margin-right: 0.4rem;
+    width: 100%;
+}
+.step__row-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.star {
+    color: red;
+    margin: 0 0.4rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+.step__input-wrapper {
+    width: 100%;
+    max-width: 100%;
+    background-color: white;
+    display: flex;
+    border: 1px solid #cfcfcf;
+    border-radius: 0.7rem;
+    overflow: hidden;
+}
+.step__input-wrapper--ltr {
+    direction: ltr;
+}
+.step__input-wrapper--ltr .step__input-icon {
+    border-left: none;
+    border-right: 1px solid #cfcfcf;
+    direction: ltr;
+}
+.step__input-icon {
+    border-left: 1px solid #cfcfcf;
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 0.375rem 0.75rem;
+}
+.step__input {
+    border-right: none;
+    font: unset;
+    padding: 0.2rem 1rem;
+    width: 100%;
+    outline: none;
+    border: none;
+    font-size: 1.1rem;
+}
+.step__textarea {
+    min-height: 12.5rem;
+    max-height: 16rem;
+    width: 100%;
+    resize: vertical;
+}
+.step__input::placeholder {
+    font-size: 1rem;
+}
+.step__input:read-only {
+    background-color: #eeeeee;
+}
+.step__input--year {
+    color: #212529;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+.step__input-explanation {
+    color: #989a9c;
+    margin-right: 0.3rem;
+    width: 100%;
+    max-width: 18.75rem;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+.step__input-char-count {
+    color: #989a9c;
+    margin-top: 0.3rem;
+    margin-bottom: 2rem;
+}
+
+.step__btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 1.5rem;
+}
+.step__btn {
+    color: white;
+    padding: 0.1rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+}
+
+.step__btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 1.5rem;
+}
+.step__btn {
+    color: white;
+    padding: 0.1rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+    margin: 0 0.2rem;
+    background: -webkit-linear-gradient(-270deg, #9065d8 0, #712be5 100%);
+}
+.step__btn:hover {
+    box-shadow: 0 7px 8px 0 rgb(212, 212, 212);
+}
+
+@media all and (min-width: 576px) {
+    .step__input-container {
+        max-width: 28.12rem;
+    }
+}
+
+@media all and (min-width: 768px) {
+    .step__row-title {
+        min-width: 8.12rem;
+        margin-left: 1.25rem;
+        font-size: 1.3rem;
+    }
+    .step__input-container {
+        flex: 0.65;
+    }
+    .step__input-explanation {
+        flex: 0.35;
+    }
+}
+
+@media all and (min-width: 992px) {
+    .step__row-title {
+        min-width: 11.25rem;
+    }
+}

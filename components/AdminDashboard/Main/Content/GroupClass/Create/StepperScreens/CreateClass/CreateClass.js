@@ -761,7 +761,6 @@ function CreateClass(props) {
                                     min={2}
                                     max={3}
                                     showAlert={showAlert}
-                                    fontSize={16}
                                     background="#fafafa"
                                 />
                             </div>
@@ -796,7 +795,6 @@ function CreateClass(props) {
                                     min={3}
                                     max={5}
                                     showAlert={showAlert}
-                                    fontSize={16}
                                     background="#fafafa"
                                 />
                             </div>
@@ -955,10 +953,10 @@ function CreateClass(props) {
                                         value={formData.session_time}
                                     >
                                         <option value={0}>انتخاب کنید</option>
-                                        <option value={1}>30 دقیقه</option>
-                                        <option value={2}>60 دقیقه</option>
-                                        <option value={3}>90 دقیقه</option>
-                                        <option value={4}>120 دقیقه</option>
+                                        <option value={1}>۳۰ دقیقه</option>
+                                        <option value={2}>۶۰ دقیقه</option>
+                                        <option value={3}>۹۰ دقیقه</option>
+                                        <option value={4}>۱۲۰ دقیقه</option>
                                     </select>
                                 </div>
                             </div>

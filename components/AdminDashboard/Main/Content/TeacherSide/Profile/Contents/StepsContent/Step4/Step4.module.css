@@ -1,0 +1,201 @@
+.step__row {
+    display: flex;
+    align-items: center;
+}
+.step__row-errors {
+    display: flex;
+    margin: 0.5rem 0;
+}
+.step__newlan-wrapper {
+    display: flex;
+}
+.step__newlan-btn {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 3.1rem;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+.step__newlan-btn img {
+    height: 2.1rem;
+    width: 2.1rem;
+    border-radius: 50%;
+}
+.step__newlan-btn span {
+    color: #01af8f;
+    font-weight: 700;
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.step__box {
+    background-color: white;
+    margin-top: 1.25rem;
+    padding: 1.25rem;
+    border-radius: 0.3rem;
+    position: relative;
+}
+.addedLan__row {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 1.2rem;
+}
+.addedLan__title {
+    color: #212529;
+    min-width: 9.37rem;
+    text-align: center;
+    font-size: 1.1rem;
+}
+.addedLan__input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.addedLan__input {
+    font: unset;
+    outline: none;
+    border: 1px solid #cfcfcf;
+    padding: 0.3rem 1rem;
+    border-radius: 0.7rem;
+    font-size: 1.1rem;
+}
+.addedLan__input:read-only {
+    background-color: #eee;
+}
+.addLan__btn-wrapper {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+}
+.addLan__btn {
+    cursor: pointer;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: white;
+    margin: 0 0.2rem;
+}
+.addLan__btn--edit {
+    background: linear-gradient(to right, #0fecc3, #01af8f);
+}
+.addLan__btn--delete {
+    background: #d81c2f;
+}
+.addLan__btn:hover {
+    box-shadow: 1px 1px 5px #ccc;
+}
+.addLan__btn span:last-child {
+    display: none;
+}
+.addedLan__sugg {
+    color: #c2c2c2;
+    font-size: 0.95rem;
+}
+.addedLan__items-box {
+    width: 100%;
+    min-height: 35px;
+    color: #666;
+    background-color: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid #dcdee2;
+    border-radius: 0.25rem;
+    padding: 0.2rem;
+    width: 100%;
+    transition: var(--transition);
+    cursor: default;
+}
+.addedLan__item {
+    background-image: linear-gradient(to right, #8c2ce2, #4b01e0);
+    border-radius: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0px 5px;
+    margin: 3px 5px 3px 0;
+    font-size: 0.9rem;
+}
+
+.step__btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 1.5rem;
+}
+.step__btn {
+    color: white;
+    padding: 0.1rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+}
+
+.step__btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0 1.5rem;
+}
+.step__btn {
+    color: white;
+    padding: 0.1rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1.2rem;
+    margin: 0 0.2rem;
+    background: -webkit-linear-gradient(-270deg, #9065d8 0, #712be5 100%);
+}
+.step__btn:hover {
+    box-shadow: 0 7px 8px 0 rgb(212, 212, 212);
+}
+
+@media all and (min-width: 768px) {
+    .addedLan__row {
+        align-items: center;
+        flex-direction: row;
+    }
+    .addedLan__title {
+        min-width: 9.37rem;
+        text-align: right;
+    }
+    .addedLan__input-wrapper {
+        justify-content: space-between;
+    }
+    .addLan__btn {
+        width: auto;
+        height: auto;
+        border: 1px solid transparent;
+        border-radius: 1.9rem;
+        padding: 0rem 0.7rem;
+        font-size: 1.2rem;
+        background: transparent;
+        position: relative;
+        top: 0;
+        left: 0;
+    }
+    .addLan__btn--edit {
+        border-color: #01af8f;
+        color: #01af8f;
+    }
+    .addLan__btn--delete {
+        border-color: #d81c2f;
+        color: #d81c2f;
+    }
+    .addLan__btn span:first-child {
+        margin-left: 0.5rem;
+    }
+    .addLan__btn span:last-child {
+        display: block;
+    }
+}

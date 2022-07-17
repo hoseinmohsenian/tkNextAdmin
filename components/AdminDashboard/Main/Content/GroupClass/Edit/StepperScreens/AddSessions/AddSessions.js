@@ -3,7 +3,6 @@ import styles from "../../../Create/StepperScreens/AddSessions/AddSessions.modul
 import Box from "../../../../Elements/Box/Box";
 import Alert from "../../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { FaCheck } from "react-icons/fa";
 import { FaTrashAlt } from "react-icons/fa";
 import { IoAddSharp } from "react-icons/io5";
 import { MdEdit } from "react-icons/md";
@@ -11,6 +10,7 @@ import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { BASE_URL } from "../../../../../../../../constants";
+import { TimePicker } from "antd";
 
 function AddSessions(props) {
     const { token, showAlert, alertData, formData, setFormData, fetchedClass } =
@@ -73,25 +73,16 @@ function AddSessions(props) {
             (acc, curr) => ((acc[curr] = ""), acc),
             {}
         );
+        newRow = { ...newRow, time: "00:00" };
         setFormData({
             ...formData,
             session: [...formData?.session, newRow],
         });
     };
 
-    const handleOnChange = (e, rowInd) => {
-        const name = e.target.name;
+    const handleOnChange = (value, rowInd, name) => {
         let updated = [...formData?.session];
-        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
-        setFormData({
-            ...formData,
-            session: updated,
-        });
-    };
-
-    const dateOnChange = (value, rowInd) => {
-        let updated = [...formData?.session];
-        updated[rowInd] = { ...updated[rowInd], day: value };
+        updated[rowInd] = { ...updated[rowInd], [name]: value };
         setFormData({
             ...formData,
             session: updated,
@@ -316,7 +307,11 @@ function AddSessions(props) {
                                                         id="title"
                                                         className="form__input"
                                                         onChange={(e) =>
-                                                            handleOnChange(e, i)
+                                                            handleOnChange(
+                                                                e.target.value,
+                                                                i,
+                                                                e.target.name
+                                                            )
                                                         }
                                                         value={
                                                             item?.title || ""
@@ -349,7 +344,11 @@ function AddSessions(props) {
                                                         id="desc"
                                                         className="form__input"
                                                         onChange={(e) =>
-                                                            handleOnChange(e, i)
+                                                            handleOnChange(
+                                                                e.target.value,
+                                                                i,
+                                                                e.target.name
+                                                            )
                                                         }
                                                         value={item?.desc || ""}
                                                         spellCheck={false}
@@ -380,9 +379,10 @@ function AddSessions(props) {
                                                     <DatePicker
                                                         value={item.day}
                                                         onChange={(date) =>
-                                                            dateOnChange(
+                                                            handleOnChange(
                                                                 date,
-                                                                i
+                                                                i,
+                                                                "day"
                                                             )
                                                         }
                                                         shouldHighlightWeekends
@@ -424,21 +424,29 @@ function AddSessions(props) {
                                                 <div
                                                     className={`form-control ${styles["form-control-time"]}`}
                                                 >
-                                                    <input
-                                                        type="time"
-                                                        name="time"
-                                                        id="time"
-                                                        className={`form__input form__input-time ${styles["form__input-time"]}`}
-                                                        onChange={(e) =>
-                                                            handleOnChange(e, i)
+                                                    <TimePicker
+                                                        minuteStep={30}
+                                                        format="HH:mm"
+                                                        placeholder="انتخاب ساعت"
+                                                        bordered={false}
+                                                        onChange={(value) =>
+                                                            handleOnChange(
+                                                                moment(
+                                                                    value
+                                                                ).format(
+                                                                    "HH:mm"
+                                                                ),
+                                                                i,
+                                                                "time"
+                                                            )
                                                         }
-                                                        value={item?.time || ""}
-                                                        required
-                                                        placeholder="ساعت"
+                                                        value={moment(
+                                                            item.time || "",
+                                                            "HH:mm"
+                                                        )}
+                                                        className="time-picker"
+                                                        popupClassName="popup-time-picker"
                                                         disabled={loadings[i]}
-                                                        pattern="[0-9]{2}:[0-9]{2}"
-                                                        step="1800"
-                                                        min="00:00"
                                                     />
                                                 </div>
                                             </div>

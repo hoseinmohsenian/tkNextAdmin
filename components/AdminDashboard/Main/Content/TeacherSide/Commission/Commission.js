@@ -31,7 +31,7 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         setCommissions(() => filteredItems);
         setFormData(() => filteredItems);
     };
-    console.log(commissions);
+    
     const deleteCommission = async (commission_id, i) => {
         let temp = [...loadings];
         temp[i] = true;
@@ -93,6 +93,7 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
                 data: { data, ...restData },
             } = await res.json();
             setFormData(data);
+            setCommissions(data);
             setPagData(restData);
             // Scroll to top
             document.body.scrollTop = 0;
@@ -190,6 +191,7 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
                         showAlert={showAlert}
                         setIsModalOpen={setIsModalOpen}
                         token={token}
+                        readCommissions={readCommissions}
                     />
                 </Modal>
 

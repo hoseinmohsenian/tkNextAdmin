@@ -1,0 +1,108 @@
+.box {
+    background-color: white;
+    border: 1px solid #babec1;
+    border-radius: 0.7rem;
+    margin-bottom: 1.25rem;
+}
+.box__title {
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin: 0.5rem 1rem 1rem;
+}
+.table__wrapper {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.table {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0.7rem;
+    border-spacing: 0 5px;
+}
+.table__head-item {
+    text-align: center;
+    font-size: 1.3rem;
+    padding: 0.4rem 0.8rem;
+}
+.table__body-item {
+    padding: 0.3rem;
+    vertical-align: top;
+    border-top: 1px solid #babec1;
+}
+.table__input {
+    font: unset;
+    width: 200px;
+    height: calc(1.5em + 0.75rem);
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    outline: none;
+    font-size: 1.1rem;
+    padding: 0 0.5rem;
+}
+.table__select {
+    width: 4rem;
+    color: #495057;
+    height: calc(1.5em + 0.75rem);
+    font-size: 1.1rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ced4da;
+    margin: 0 0.2rem;
+    box-shadow: none;
+}
+.table__upload-btn {
+    min-width: 5rem;
+    height: 2.2rem;
+    background-color: #ccc;
+    color: #fff;
+    text-align: center;
+    padding: 1.1rem;
+    border-radius: 0.3rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 0 0 0.5rem 0.5rem;
+}
+.table__upload-input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.row-btn {
+    color: white;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+.row-btn--delete {
+    background-color: #dc3545;
+}
+.row-btn--delete:hover {
+    background-color: #cc2a3a;
+}
+.row-btn--add {
+    background-color: #27c497;
+}
+.row-btn--add:hover {
+    background-color: #22b98e;
+}
+.new-row-btn {
+    color: #29cc9d;
+    cursor: pointer;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0.5rem;
+}

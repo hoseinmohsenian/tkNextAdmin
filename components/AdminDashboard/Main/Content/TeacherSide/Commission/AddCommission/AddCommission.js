@@ -8,7 +8,7 @@ import FetchSearchSelect from "../../../Elements/FetchSearchSelect/FetchSearchSe
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name_family: "" };
 
-function AddCommission({ showAlert, setIsModalOpen, token }) {
+function AddCommission({ showAlert, setIsModalOpen, token, readCommissions }) {
     const [formData, setFormData] = useState({
         teacher_name: "",
         commission: 0,
@@ -65,6 +65,7 @@ function AddCommission({ showAlert, setIsModalOpen, token }) {
                 let message = "کمیسیون جدید اضافه شد";
                 showAlert(true, "success", message);
                 setIsModalOpen(false);
+                await readCommissions();
             } else {
                 showAlert(
                     true,

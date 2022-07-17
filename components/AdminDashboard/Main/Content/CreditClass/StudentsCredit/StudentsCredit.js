@@ -6,14 +6,18 @@ import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelec
 import styles from "./StudentsCredit.module.css";
 import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
+import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 
-const teacherSchema = { id: "", name_family: "", mobile: "", email: "" };
+const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
-function StudentsCredit({ fetchedStudents: { data, ...restData }, token }) {
+function StudentsCredit({
+    fetchedStudents: { data, ...restData },
+    token,
+    teachers,
+}) {
     const [list, setList] = useState(data);
     const [pagData, setPagData] = useState(restData);
-    const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [selectedStudent, setSelectedStudent] = useState(studentSchema);
@@ -230,7 +234,33 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, token }) {
                                     <div
                                         className={`form-control form-control-searchselect`}
                                     >
-                                        <FetchSearchSelect
+                                        <SearchSelect
+                                            list={teachers}
+                                            displayKey="family"
+                                            id="id"
+                                            displayPattern={[
+                                                {
+                                                    member: true,
+                                                    key: "name",
+                                                },
+                                                { member: false, key: " " },
+                                                {
+                                                    member: true,
+                                                    key: "family",
+                                                },
+                                                { member: false, key: " - " },
+                                                { member: true, key: "mobile" },
+                                            ]}
+                                            defaultText="استاد را انتخاب کنید."
+                                            selected={selectedTeacher}
+                                            setSelected={setSelectedTeacher}
+                                            noResText="استادی پیدا نشد"
+                                            stylesProps={{
+                                                width: "100%",
+                                            }}
+                                            background="#fafafa"
+                                        />
+                                        {/* <FetchSearchSelect
                                             list={teachers}
                                             setList={setTeachers}
                                             placeholder="جستجو کنید"
@@ -257,12 +287,11 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, token }) {
                                                 width: "100%",
                                             }}
                                             background="#fafafa"
-                                            fontSize={16}
                                             onSearch={(value) =>
                                                 searchTeachers(value)
                                             }
                                             openBottom={true}
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +331,6 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, token }) {
                                                 width: "100%",
                                             }}
                                             background="#fafafa"
-                                            fontSize={16}
                                             onSearch={(value) =>
                                                 searchStudents(value)
                                             }
