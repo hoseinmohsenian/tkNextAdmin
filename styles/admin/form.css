@@ -46,6 +46,9 @@
     width: 100%;
     position: relative;
 }
+.form__label--disabled {
+    opacity: 0.3;
+}
 .input-precode {
     direction: ltr;
     min-width: 2rem;
@@ -82,6 +85,10 @@
 }
 .form-control .form__input:disabled {
     opacity: 0.3;
+}
+.form__input--disabled:hover,
+.form-control .form__input:disabled:hover {
+    cursor: not-allowed;
 }
 .form__textarea:disabled {
     opacity: 0.7;

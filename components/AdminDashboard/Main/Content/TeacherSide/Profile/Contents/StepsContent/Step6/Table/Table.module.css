@@ -6,7 +6,7 @@
 }
 .box__title {
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     margin: 0.5rem 1rem 1rem;
 }
 .table__wrapper {
@@ -21,7 +21,7 @@
 }
 .table__head-item {
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1rem;
     padding: 0.4rem 0.8rem;
 }
 .table__body-item {
@@ -37,14 +37,14 @@
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
     outline: none;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     padding: 0 0.5rem;
 }
 .table__select {
     width: 4rem;
     color: #495057;
     height: calc(1.5em + 0.75rem);
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     border-radius: 0.25rem;
     border: 1px solid #ced4da;
     margin: 0 0.2rem;
@@ -62,7 +62,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-weight: 700;
     cursor: pointer;
     margin: 0 0 0.5rem 0.5rem;
@@ -102,7 +102,7 @@
 .new-row-btn {
     color: #29cc9d;
     cursor: pointer;
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: 700;
     margin: 0.5rem;
 }

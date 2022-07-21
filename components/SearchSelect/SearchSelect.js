@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import styles from "./SearchSelect.module.css";
 import { IoIosArrowDown } from "react-icons/io";
 
@@ -179,4 +179,4 @@ function SearchSelect({
     );
 }
 
-export default SearchSelect;
+export default memo(SearchSelect);

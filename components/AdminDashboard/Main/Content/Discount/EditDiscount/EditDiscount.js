@@ -11,7 +11,7 @@ import Box from "../../Elements/Box/Box";
 function EditDiscount({ token, discount }) {
     const [formData, setFormData] = useState({
         ...discount,
-        discount_type: 1,
+        discount_type: discount.value ? 1 : 0,
         start_at: null,
         expired_at: null,
     });
@@ -34,15 +34,8 @@ function EditDiscount({ token, discount }) {
             formData.expired_at.year
         ) {
             const fd = new FormData();
-            if (formData.name !== discount.name) {
-                fd.append("name", formData.name);
-            }
-            if (Number(formData.number) !== discount.number) {
-                fd.append("number", Number(formData.number));
-            }
-            if (Number(formData.active_status) !== discount.active_status) {
-                fd.append("active_status", Number(formData.active_status));
-            }
+            fd.append("number", Number(formData.number));
+            fd.append("active_status", Number(formData.active_status));
 
             let date = moment
                 .from(
@@ -55,9 +48,7 @@ function EditDiscount({ token, discount }) {
                 .replace("/", "-")
                 .replace("/", "-");
             let start_at = `${date} 00:00:00`;
-            if (start_at !== discount.start_at) {
-                fd.append("start_at", start_at);
-            }
+            fd.append("start_at", start_at);
             date = moment
                 .from(
                     `${formData.expired_at?.year}/${formData.expired_at?.month}/${formData.expired_at?.day}`,
@@ -69,14 +60,9 @@ function EditDiscount({ token, discount }) {
                 .replace("/", "-")
                 .replace("/", "-");
             let expired_at = `${date} 00:00:00`;
-            if (expired_at !== discount.expired_at) {
-                fd.append("expired_at", expired_at);
-            }
+            fd.append("expired_at", expired_at);
 
-            if (
-                Number(formData.type) &&
-                Number(formData.type) !== discount.type
-            ) {
+            if (formData.type && Number(formData.type) !== discount.type) {
                 fd.append("type", Number(formData.type));
             }
             if (Number(formData.discount_type) === 1) {
@@ -157,13 +143,14 @@ function EditDiscount({ token, discount }) {
 
     useEffect(() => {
         let shamsi_start_at = moment
-            .from(`${discount.start_at.substring(0, 8)}`, "en", "YYYY/MM/DD")
+            .from(`${discount.start_at.substring(0, 10)}`, "en", "YYYY/MM/DD")
             .locale("fa")
             .format("YYYY/MM/DD");
         let shamsi_expired_at = moment
-            .from(`${discount.expired_at.substring(0, 8)}`, "en", "YYYY/MM/DD")
+            .from(`${discount.expired_at.substring(0, 10)}`, "en", "YYYY/MM/DD")
             .locale("fa")
             .format("YYYY/MM/DD");
+        console.log(shamsi_expired_at);
         setFormData({
             ...formData,
             start_at: {
@@ -204,6 +191,7 @@ function EditDiscount({ token, discount }) {
                                 spellCheck={false}
                                 required
                                 value={formData.name}
+                                disabled
                             />
                         </div>
                     </div>
@@ -283,9 +271,15 @@ function EditDiscount({ token, discount }) {
                                         inputClassName="date-input"
                                         colorPrimary="#545cd8"
                                         minimumDate={{
-                                            year: moment().year(),
-                                            month: Number(moment().format("M")),
-                                            day: Number(moment().format("DD")),
+                                            year:
+                                                formData.start_at?.year ||
+                                                moment().year(),
+                                            month:
+                                                formData.start_at?.month ||
+                                                Number(moment().format("M")),
+                                            day:
+                                                formData.start_at?.day ||
+                                                Number(moment().format("DD")),
                                         }}
                                         inputPlaceholder="انتخاب کنید"
                                         calendarPopperPosition="bottom"
@@ -296,7 +290,7 @@ function EditDiscount({ token, discount }) {
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="type" className="form__label">
-                            تایپ :
+                            نوع : <span className="form__star">*</span>
                         </label>
                         <div className="form-control">
                             <select
@@ -345,6 +339,7 @@ function EditDiscount({ token, discount }) {
                                                 ) === 1
                                             }
                                             id="value"
+                                            disabled
                                         />
                                     </div>
                                     <div className="input-radio-wrapper">
@@ -365,6 +360,7 @@ function EditDiscount({ token, discount }) {
                                                 ) === 0
                                             }
                                             id="percent"
+                                            disabled
                                         />
                                     </div>
                                 </div>
@@ -426,7 +422,14 @@ function EditDiscount({ token, discount }) {
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
-                                <label htmlFor="value" className="form__label">
+                                <label
+                                    htmlFor="value"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 0
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
+                                >
                                     مبلغ تخفیف :
                                 </label>
                                 <div className="form-control">
@@ -449,23 +452,36 @@ function EditDiscount({ token, discount }) {
                             <div className="input-wrapper">
                                 <label
                                     htmlFor="percent"
-                                    className="form__label"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 1
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
                                 >
                                     درصد تخفیف :
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="number"
+                                    <select
                                         name="percent"
                                         id="percent"
-                                        className="form__input form__input--ltr"
+                                        className={`form__input input-select‍`}
                                         onChange={handleOnChange}
-                                        spellCheck={false}
+                                        value={formData.percent || ""}
                                         disabled={
                                             Number(formData.discount_type) === 1
                                         }
-                                        value={formData.percent || ""}
-                                    />
+                                    >
+                                        {Array(20)
+                                            .fill(0)
+                                            .map((_, i) => (
+                                                <option
+                                                    key={i}
+                                                    value={(i + 1) * 5}
+                                                >
+                                                    {(i + 1) * 5}%
+                                                </option>
+                                            ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -473,7 +489,14 @@ function EditDiscount({ token, discount }) {
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
-                                <label htmlFor="min" className="form__label">
+                                <label
+                                    htmlFor="min"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 0
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
+                                >
                                     حداقل قیمت :
                                 </label>
                                 <div className="form-control">
@@ -494,7 +517,14 @@ function EditDiscount({ token, discount }) {
                         </div>
                         <div className={`col-sm-6`}>
                             <div className="input-wrapper">
-                                <label htmlFor="max" className="form__label">
+                                <label
+                                    htmlFor="max"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 1
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
+                                >
                                     حداکثر قیمت :
                                 </label>
                                 <div className="form-control">

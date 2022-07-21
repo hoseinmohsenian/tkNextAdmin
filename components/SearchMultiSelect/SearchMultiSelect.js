@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState,memo } from "react";
 import styles from "./SearchMultiSelect.module.css";
 import { ImCross } from "react-icons/im";
 
@@ -232,4 +232,4 @@ function SearchMultiSelect(props) {
     );
 }
 
-export default SearchMultiSelect;
+export default memo(SearchMultiSelect);

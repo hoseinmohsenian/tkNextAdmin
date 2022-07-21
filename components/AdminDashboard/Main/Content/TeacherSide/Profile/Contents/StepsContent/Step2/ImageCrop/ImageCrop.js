@@ -35,7 +35,7 @@ function ImageCrop({ children, show, setter, disabled, onClick }) {
                         type="button"
                         onClick={handleClick}
                         disabled={disabled}
-                        className={`${styles["modal__fooer-btn"]} ${styles["modal__fooer-btn--green"]}`}
+                        className={`${styles["modal__fooer-btn"]} primary`}
                     >
                         برش
                     </button>

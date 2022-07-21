@@ -66,15 +66,12 @@
     cursor: pointer;
     padding: 0.2rem 0.8rem;
     border-radius: 0.3rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-left: 0.5rem;
     transition: var(--transition);
 }
 .modal__fooer-btn:hover {
     box-shadow: 0 3px 8px 0 rgb(2 106 86 / 21%);
-}
-.modal__fooer-btn--green {
-    background-color: #01af8f;
 }
 .modal__fooer-btn--gray {
     background-color: #989a9c;

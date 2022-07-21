@@ -17,10 +17,12 @@ export default function DeleteModal({ visible, hideModal, type, acceptFunc }) {
             >
                 <div
                     className="d-flex align-items-center "
-                    style={{ fontSize: "18px" }}
+                    style={{ fontSize: "15px" }}
                 >
                     <ExclamationCircleOutlined style={{ color: "red" }} />
-                    <p className="mr-2">ایا از حذف این {type} مطمئن هستید ؟</p>
+                    <p style={{ marginRight: 3 }}>
+                        آیا از حذف این {type} مطمئن هستید ؟
+                    </p>
                 </div>
             </Modal>
         </>

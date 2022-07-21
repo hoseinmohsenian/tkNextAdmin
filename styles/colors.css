@@ -1,5 +1,6 @@
 .primary {
     background-color: #007bff;
+    color: white !important;
 }
 .primary:hover,
 .primary-outline:hover {
@@ -25,6 +26,7 @@
 
 .warning {
     background-color: #ffc107;
+    color: white !important;
 }
 .warning:hover,
 .warning-outline:hover {
@@ -50,6 +52,7 @@
 
 .danger {
     background-color: #dc3545;
+    color: white !important;
 }
 .danger:hover,
 .danger-outline:hover {
@@ -75,6 +78,7 @@
 
 .success {
     background-color: #28a745;
+    color: white !important;
 }
 .success:hover,
 .success-outline:hover {

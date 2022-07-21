@@ -1,5 +1,5 @@
-import { useState } from "react";
 import styles from "./Table.module.css";
+import moment from "jalali-moment";
 
 function Table(props) {
     const {
@@ -16,6 +16,9 @@ function Table(props) {
         onEdit,
         showAlert,
     } = props;
+    moment.locale("fa");
+    const m = moment();
+    const diff = m.year() - 1356;
 
     // For selecting file
     const handleSelectFile = (e, rowInd) => {
@@ -30,6 +33,9 @@ function Table(props) {
             (acc, curr) => ((acc[curr] = ""), acc),
             {}
         );
+        if (inputNames?.indexOf("start") !== -1) {
+            newRow["start"] = newRow["end"] = m.year();
+        }
         setRows((oldRows) => [...oldRows, newRow]);
     };
 
@@ -54,15 +60,13 @@ function Table(props) {
     };
 
     const onAddHandler = async (rowInd) => {
-        console.log(rowInd)
-        console.log(!isEmpty(rowInd))
         if (!isEmpty(rowInd)) {
             await onAdd(rowInd);
             await read();
             let message = "فیلد جدید با موفقیت اضافه شد";
             showAlert(true, "success", message);
         } else {
-            alert("fill the fields");
+            alert("لطفا فیلدها را تکمیل کنید");
         }
     };
 
@@ -79,14 +83,9 @@ function Table(props) {
 
     // Checks if the inputs are empty or not
     const isEmpty = (rowInd) => {
-        console.log(rows[rowInd])
         for (let i = 0; i < inputNames?.length; i++) {
-            let item = inputNames[i];
-           
-            console.log(item)
-            console.log(rows[rowInd][item])
-
-            if (!rows[rowInd][item]) {
+            let name = inputNames[i];
+            if (!rows[rowInd][name] && name !== "file") {
                 return true;
             }
         }
@@ -114,7 +113,7 @@ function Table(props) {
                         </tr>
                     </thead>
                     <tbody className={styles["table__body"]}>
-                        {rows?.map((item, rowInd) => {
+                        {rows.map((item, rowInd) => {
                             return (
                                 <tr key={rowInd}>
                                     {inputTypes.map((type, typeInd) => {
@@ -140,7 +139,7 @@ function Table(props) {
                                                                 inputNames[
                                                                     typeInd
                                                                 ]
-                                                            ]
+                                                            ] || ""
                                                         }
                                                         onChange={(e) =>
                                                             handleOnChange(
@@ -172,7 +171,9 @@ function Table(props) {
                                                                 "table__select"
                                                             ]
                                                         }
-                                                        value={item["start"]}
+                                                        value={
+                                                            item["start"] || ""
+                                                        }
                                                         onChange={(e) =>
                                                             handleOnChange(
                                                                 e,
@@ -181,141 +182,22 @@ function Table(props) {
                                                             )
                                                         }
                                                     >
-                                                           <option value="1401">
-                                                            1401
-                                                        </option>
-                                                         <option value="1400">
-                                                            1400
-                                                        </option>
-                                                        <option value="1399">
-                                                            1399
-                                                        </option>
-                                                        <option value="1398">
-                                                            1398
-                                                        </option>
-                                                        <option value="1397">
-                                                            1397
-                                                        </option>
-                                                        <option value="1396">
-                                                            1396
-                                                        </option>
-                                                        <option value="1395">
-                                                            1395
-                                                        </option>
-                                                        <option value="1394">
-                                                            1394
-                                                        </option>
-                                                        <option value="1393">
-                                                            1393
-                                                        </option>
-                                                        <option value="1392">
-                                                            1392
-                                                        </option>
-                                                        <option value="1391">
-                                                            1391
-                                                        </option>
-                                                        <option value="1390">
-                                                            1390
-                                                        </option>
-                                                        <option value="1389">
-                                                            1389
-                                                        </option>
-                                                        <option value="1388">
-                                                            1388
-                                                        </option>
-                                                        <option value="1387">
-                                                            1387
-                                                        </option>
-                                                        <option value="1386">
-                                                            1386
-                                                        </option>
-                                                        <option value="1385">
-                                                            1385
-                                                        </option>
-                                                        <option value="1384">
-                                                            1384
-                                                        </option>
-                                                        <option value="1383">
-                                                            1383
-                                                        </option>
-                                                        <option value="1382">
-                                                            1382
-                                                        </option>
-                                                        <option value="1381">
-                                                            1381
-                                                        </option>
-                                                        <option value="1380">
-                                                            1380
-                                                        </option>
-                                                        <option value="1379">
-                                                            1379
-                                                        </option>
-                                                        <option value="1378">
-                                                            1378
-                                                        </option>
-                                                        <option value="1377">
-                                                            1377
-                                                        </option>
-                                                        <option value="1376">
-                                                            1376
-                                                        </option>
-                                                        <option value="1375">
-                                                            1375
-                                                        </option>
-                                                        <option value="1374">
-                                                            1374
-                                                        </option>
-                                                        <option value="1373">
-                                                            1373
-                                                        </option>
-                                                        <option value="1372">
-                                                            1372
-                                                        </option>
-                                                        <option value="1371">
-                                                            1371
-                                                        </option>
-                                                        <option value="1370">
-                                                            1370
-                                                        </option>
-                                                        <option value="1369">
-                                                            1369
-                                                        </option>
-                                                        <option value="1368">
-                                                            1368
-                                                        </option>
-                                                        <option value="1367">
-                                                            1367
-                                                        </option>
-                                                        <option value="1366">
-                                                            1366
-                                                        </option>
-                                                        <option value="1365">
-                                                            1365
-                                                        </option>
-                                                        <option value="1364">
-                                                            1364
-                                                        </option>
-                                                        <option value="1363">
-                                                            1363
-                                                        </option>
-                                                        <option value="1362">
-                                                            1362
-                                                        </option>
-                                                        <option value="1361">
-                                                            1361
-                                                        </option>
-                                                        <option value="1360">
-                                                            1360
-                                                        </option>
-                                                        <option value="1359">
-                                                            1359
-                                                        </option>
-                                                        <option value="1358">
-                                                            1358
-                                                        </option>
-                                                        <option value="1357">
-                                                            1357
-                                                        </option>
+                                                        {[...Array(diff)].map(
+                                                            (year, k) => {
+                                                                return (
+                                                                    <option
+                                                                        value={
+                                                                            m.year() -
+                                                                            k
+                                                                        }
+                                                                        key={k}
+                                                                    >
+                                                                        {m.year() -
+                                                                            k}
+                                                                    </option>
+                                                                );
+                                                            }
+                                                        )}
                                                     </select>
 
                                                     <span>تا</span>
@@ -325,7 +207,9 @@ function Table(props) {
                                                                 "table__select"
                                                             ]
                                                         }
-                                                        value={item["end"]}
+                                                        value={
+                                                            item["end"] || ""
+                                                        }
                                                         onChange={(e) =>
                                                             handleOnChange(
                                                                 e,
@@ -334,141 +218,22 @@ function Table(props) {
                                                             )
                                                         }
                                                     >
-                                                        <option value="1401">
-                                                            1401
-                                                        </option>
-                                                         <option value="1400">
-                                                            1400
-                                                        </option>
-                                                        <option value="1399">
-                                                            1399
-                                                        </option>
-                                                        <option value="1398">
-                                                            1398
-                                                        </option>
-                                                        <option value="1397">
-                                                            1397
-                                                        </option>
-                                                        <option value="1396">
-                                                            1396
-                                                        </option>
-                                                        <option value="1395">
-                                                            1395
-                                                        </option>
-                                                        <option value="1394">
-                                                            1394
-                                                        </option>
-                                                        <option value="1393">
-                                                            1393
-                                                        </option>
-                                                        <option value="1392">
-                                                            1392
-                                                        </option>
-                                                        <option value="1391">
-                                                            1391
-                                                        </option>
-                                                        <option value="1390">
-                                                            1390
-                                                        </option>
-                                                        <option value="1389">
-                                                            1389
-                                                        </option>
-                                                        <option value="1388">
-                                                            1388
-                                                        </option>
-                                                        <option value="1387">
-                                                            1387
-                                                        </option>
-                                                        <option value="1386">
-                                                            1386
-                                                        </option>
-                                                        <option value="1385">
-                                                            1385
-                                                        </option>
-                                                        <option value="1384">
-                                                            1384
-                                                        </option>
-                                                        <option value="1383">
-                                                            1383
-                                                        </option>
-                                                        <option value="1382">
-                                                            1382
-                                                        </option>
-                                                        <option value="1381">
-                                                            1381
-                                                        </option>
-                                                        <option value="1380">
-                                                            1380
-                                                        </option>
-                                                        <option value="1379">
-                                                            1379
-                                                        </option>
-                                                        <option value="1378">
-                                                            1378
-                                                        </option>
-                                                        <option value="1377">
-                                                            1377
-                                                        </option>
-                                                        <option value="1376">
-                                                            1376
-                                                        </option>
-                                                        <option value="1375">
-                                                            1375
-                                                        </option>
-                                                        <option value="1374">
-                                                            1374
-                                                        </option>
-                                                        <option value="1373">
-                                                            1373
-                                                        </option>
-                                                        <option value="1372">
-                                                            1372
-                                                        </option>
-                                                        <option value="1371">
-                                                            1371
-                                                        </option>
-                                                        <option value="1370">
-                                                            1370
-                                                        </option>
-                                                        <option value="1369">
-                                                            1369
-                                                        </option>
-                                                        <option value="1368">
-                                                            1368
-                                                        </option>
-                                                        <option value="1367">
-                                                            1367
-                                                        </option>
-                                                        <option value="1366">
-                                                            1366
-                                                        </option>
-                                                        <option value="1365">
-                                                            1365
-                                                        </option>
-                                                        <option value="1364">
-                                                            1364
-                                                        </option>
-                                                        <option value="1363">
-                                                            1363
-                                                        </option>
-                                                        <option value="1362">
-                                                            1362
-                                                        </option>
-                                                        <option value="1361">
-                                                            1361
-                                                        </option>
-                                                        <option value="1360">
-                                                            1360
-                                                        </option>
-                                                        <option value="1359">
-                                                            1359
-                                                        </option>
-                                                        <option value="1358">
-                                                            1358
-                                                        </option>
-                                                        <option value="1357">
-                                                            1357
-                                                        </option>
+                                                        {[...Array(diff)].map(
+                                                            (year, k) => {
+                                                                return (
+                                                                    <option
+                                                                        value={
+                                                                            m.year() -
+                                                                            k
+                                                                        }
+                                                                        key={k}
+                                                                    >
+                                                                        {m.year() -
+                                                                            k}
+                                                                    </option>
+                                                                );
+                                                            }
+                                                        )}
                                                     </select>
                                                 </td>
                                             );

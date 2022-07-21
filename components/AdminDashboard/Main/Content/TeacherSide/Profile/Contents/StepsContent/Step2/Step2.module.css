@@ -16,8 +16,9 @@
 }
 .step__upload-desc {
     color: #515050;
-    font-size: 1.1rem;
-    margin-bottom: 10rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: block;
 }
 .step__upload-row {
     display: flex;

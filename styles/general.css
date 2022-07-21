@@ -86,33 +86,6 @@ input:checked + .switch-slider:before {
     color: #712be5;
 }
 
-/* General Styles for Select Option */
-select {
-    outline: none;
-    border-radius: 0.4rem;
-    color: #939393;
-    font-family: inherit;
-    font-size: 0.9rem;
-    width: 7.5rem;
-    box-shadow: 0 3px 8px 0 rgb(39 39 39 / 16%);
-}
-select.fullwidth {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid #707070;
-    color: #707070;
-    border-radius: 0;
-    box-shadow: none;
-    padding: 0.5rem 0rem;
-    font-size: 1rem;
-    appearance: none;
-    background: url("../public/images/arrow-left.png") no-repeat left;
-    background-position-x: 0.7rem;
-}
-select.shortwidth {
-    width: 5.8rem;
-}
-
 .d-flex {
     display: flex;
 }

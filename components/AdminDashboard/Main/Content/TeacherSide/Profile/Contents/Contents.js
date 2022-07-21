@@ -22,6 +22,7 @@ function Contents({
         message: "",
         type: "",
     });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -43,20 +44,52 @@ function Contents({
                     token={token}
                     alertData={alertData}
                     showAlert={showAlert}
+                    BASE_URL={BASE_URL}
                 />
             )}
-            {step === 3 && <Step3 token={token} />}
+            {step === 3 && (
+                <Step3
+                    token={token}
+                    alertData={alertData}
+                    showAlert={showAlert}
+                />
+            )}
             {step === 4 && (
                 <Step4
                     languages={languages}
                     levels={levels}
                     addedLanguages={addedLanguages}
                     token={token}
+                    alertData={alertData}
+                    showAlert={showAlert}
+                    BASE_URL={BASE_URL}
                 />
             )}
-            {step === 5 && <Step5 />}
-            {step === 6 && <Step6 token={token} />}
-            {step === 7 && <Step7 token={token} />}
+            {step === 5 && (
+                <Step5
+                    addedLanguages={addedLanguages}
+                    token={token}
+                    alertData={alertData}
+                    showAlert={showAlert}
+                    BASE_URL={BASE_URL}
+                />
+            )}
+            {step === 6 && (
+                <Step6
+                    token={token}
+                    BASE_URL={BASE_URL}
+                    alertData={alertData}
+                    showAlert={showAlert}
+                />
+            )}
+            {step === 7 && (
+                <Step7
+                    token={token}
+                    BASE_URL={BASE_URL}
+                    alertData={alertData}
+                    showAlert={showAlert}
+                />
+            )}
         </div>
     );
 }

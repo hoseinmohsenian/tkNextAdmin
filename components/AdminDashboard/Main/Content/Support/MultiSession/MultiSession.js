@@ -273,10 +273,13 @@ function MultiSession({ token }) {
                                             </a>
                                         </Link>
                                         <Link
-                                            href={`/tkpanel/profiles/${item.id}`}
+                                            href={`/dashboard/student/${item.user_id}`}
                                         >
-                                            <a className={`action-btn primary`}>
-                                                ورود به پنل
+                                            <a
+                                                className={`action-btn primary`}
+                                                target="_blank"
+                                            >
+                                                ورودی به پنل
                                             </a>
                                         </Link>
                                         <button

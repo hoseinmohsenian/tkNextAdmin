@@ -27,6 +27,7 @@ function LanModal(props) {
         setSkills,
         languageSchema,
         showAlert,
+        BASE_URL,
     } = props;
 
     const checkLanguageStatus = async () => {
@@ -35,10 +36,6 @@ function LanModal(props) {
         let specMessage = "لطفا حداقل ۳ تخصص اضافه کنید.";
         let skillMessage = "لطفا حداقل ۱ مهارت اضافه کنید.";
         let levelMessage = "لطفا حداقل ۱ سطح اضافه کنید.";
-
-        console.log(selectedSpecialitys);
-        console.log(selectedSkills);
-        console.log(selectedLevels);
 
         const findError = (items, target) => {
             return items?.find((item) => item === target);
@@ -85,7 +82,7 @@ function LanModal(props) {
     const fetchSpecialitys = async (languageId) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/data/language/speciality/${languageId}`,
+                `${BASE_URL}/data/language/speciality/${languageId}`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -108,7 +105,7 @@ function LanModal(props) {
             .join("&");
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/data/language/skill?${params}`,
+                `${BASE_URL}/data/language/skill?${params}`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -126,7 +123,7 @@ function LanModal(props) {
     const addLanguage = async (id) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/add/language/${id}`,
+                `${BASE_URL}/teacher/profile/add/language/${id}`,
                 {
                     method: "POST",
                     headers: {
@@ -144,7 +141,7 @@ function LanModal(props) {
     const deleteLanguage = async (id) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/delete/language/${id}`,
+                `${BASE_URL}/teacher/profile/delete/language/${id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -162,7 +159,7 @@ function LanModal(props) {
     const addSpeciality = async (languageId, specId) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/add/language/${languageId}/speciality/${specId}`,
+                `${BASE_URL}/teacher/profile/add/language/${languageId}/speciality/${specId}`,
                 {
                     method: "POST",
                     headers: {
@@ -180,7 +177,7 @@ function LanModal(props) {
     const deleteSpeciality = async (specId) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/delete/speciality/${specId}`,
+                `${BASE_URL}/teacher/profile/delete/speciality/${specId}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -198,7 +195,7 @@ function LanModal(props) {
     const addSkill = async (specId, skillId) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/add/speciality/${specId}/skill/${skillId}`,
+                `${BASE_URL}/teacher/profile/add/speciality/${specId}/skill/${skillId}`,
                 {
                     method: "POST",
                     headers: {
@@ -216,7 +213,7 @@ function LanModal(props) {
     const deleteSkill = async (skillId) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/delete/skill/${skillId}`,
+                `${BASE_URL}/teacher/profile/delete/skill/${skillId}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -235,7 +232,7 @@ function LanModal(props) {
     const addLevel = async (languageId, levelId) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/add/language/${languageId}/level/${levelId}`,
+                `${BASE_URL}/teacher/profile/add/language/${languageId}/level/${levelId}`,
                 {
                     method: "POST",
                     headers: {
@@ -253,7 +250,7 @@ function LanModal(props) {
     const deleteLevel = async (levelId) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/delete/language/${selectedLan?.id}/level/${levelId}`,
+                `${BASE_URL}/teacher/profile/delete/language/${selectedLan?.id}/level/${levelId}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -388,7 +385,7 @@ function LanModal(props) {
                                     selected={selectedSpecialitys}
                                     setSelected={setSelectedSpecialitys}
                                     noResText="یافت نشد"
-                                    width="100%"
+                                    stylesProps={{ width: "100%" }}
                                     onRemove={deleteSpeciality}
                                     min={3}
                                     max={8}
@@ -408,7 +405,7 @@ function LanModal(props) {
                                     selected={selectedSkills}
                                     setSelected={setSelectedSkills}
                                     noResText="یافت نشد"
-                                    width="100%"
+                                    stylesProps={{ width: "100%" }}
                                     onRemove={deleteSkill}
                                     min={1}
                                     max={3}
@@ -435,7 +432,7 @@ function LanModal(props) {
                                         selected={selectedLevels}
                                         setSelected={setSelectedLevels}
                                         noResText="یافت نشد"
-                                        width="100%"
+                                        stylesProps={{ width: "100%" }}
                                         onRemove={deleteLevel}
                                         min={1}
                                         max={6}

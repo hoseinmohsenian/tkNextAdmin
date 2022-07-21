@@ -26,7 +26,7 @@
     color: #01af8f;
     font-weight: 700;
     margin-right: 0.5rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
 .step__box {
@@ -46,7 +46,7 @@
     color: #212529;
     min-width: 9.37rem;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 .addedLan__input-wrapper {
     display: flex;
@@ -60,7 +60,7 @@
     border: 1px solid #cfcfcf;
     padding: 0.3rem 1rem;
     border-radius: 0.7rem;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 .addedLan__input:read-only {
     background-color: #eee;
@@ -81,7 +81,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
+    font-size: 1rem;
     color: white;
     margin: 0 0.2rem;
 }
@@ -99,7 +99,7 @@
 }
 .addedLan__sugg {
     color: #c2c2c2;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 .addedLan__items-box {
     width: 100%;
@@ -124,7 +124,7 @@
     align-items: center;
     padding: 0px 5px;
     margin: 3px 5px 3px 0;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
 }
 
 .step__btn-wrapper {
@@ -178,7 +178,6 @@
         border: 1px solid transparent;
         border-radius: 1.9rem;
         padding: 0rem 0.7rem;
-        font-size: 1.2rem;
         background: transparent;
         position: relative;
         top: 0;

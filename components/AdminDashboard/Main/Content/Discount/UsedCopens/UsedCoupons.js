@@ -1,12 +1,10 @@
 import { useState } from "react";
-import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import moment from "jalali-moment";
 import Pagination from "../../Pagination/Pagination";
 import styles from "./UsedCoupons.module.css";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants/index";
-import Modal from "../../../../../Modal/Modal";
 
 function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
     const [copens, setCoupons] = useState(data);
@@ -17,10 +15,9 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
         teacher_mobile: "",
         user_mobile: "",
     });
-    const [openModal, setOpenModal] = useState(false);
-    const [selectedDiscount, setSelectedDiscount] = useState({});
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    moment.locale("fa", { useGregorianParser: true });
 
     const readCoupons = async (page = 1) => {
         // Constructing search parameters
@@ -75,89 +72,6 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
     return (
         <div>
             <Box title="لیست کدهای تخفیف استفاده شده">
-                {openModal && (
-                    <Modal
-                        backgroundColor="white"
-                        showHeader={true}
-                        show={openModal}
-                        setter={setOpenModal}
-                        padding={true}
-                    >
-                        <h3 className={"modal__title"}>جزئیات کوپن تخفیف</h3>
-                        <div className={"modal__wrapper"}>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    زبان آموز
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedDiscount?.user?.name_family}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    موبایل زبان آموز
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedDiscount?.user?.mobile}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    استاد
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedDiscount?.teacher?.name}{" "}
-                                    {selectedDiscount?.teacher?.family}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    موبایل استاد
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedDiscount?.teacher?.mobile}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    وضعیت
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedDiscount?.discount?.active_status
-                                        ? "فعال"
-                                        : "غیرفعال"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>نوع</span>
-                                <span className={"modal__item-body"}>
-                                    {selectedDiscount?.discount?.type || "-"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    تاریخ شروع
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {moment(
-                                        selectedDiscount?.discount?.start_at
-                                    ).format("YYYY/MM/DD hh:mm:ss")}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    تاریخ انقضا
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {moment(
-                                        selectedDiscount?.discount?.expired_at
-                                    ).format("YYYY/MM/DD hh:mm:ss")}
-                                </span>
-                            </div>
-                        </div>
-                    </Modal>
-                )}
-
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -273,69 +187,32 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">عنوان</th>
-                                <th className="table__head-item">درصد تخفیف</th>
-                                <th className="table__head-item">مبلغ تخفیف</th>
-                                <th className="table__head-item">حداقل قیمت</th>
                                 <th className="table__head-item">
-                                    حداکثر قیمت
+                                    نام زبان آموز
                                 </th>
-                                <th className="table__head-item">تعداد</th>
-                                <th className="table__head-item">اقدامات</th>
+                                <th className="table__head-item">نام استاد</th>
+                                <th className="table__head-item">کد تخفیف</th>
+                                <th className="table__head-item">تاریخ</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
                             {copens?.map((copen) => (
                                 <tr className="table__body-row" key={copen?.id}>
                                     <td className="table__body-item">
+                                        {copen?.name_family || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {copen?.teacher_name || "-"}
+                                    </td>
+                                    <td className="table__body-item">
                                         {copen?.discount?.name}
                                     </td>
                                     <td className="table__body-item">
-                                        {copen?.discount?.percent
-                                            ? `${copen.discount.percent}%`
+                                        {copen?.created_at
+                                            ? moment(copen?.created_at).format(
+                                                  "YYYY/MM/DD hh:mm:ss"
+                                              )
                                             : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {copen?.discount?.value
-                                            ? `${Intl.NumberFormat().format(
-                                                  copen.discount.value
-                                              )} تومان`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {copen?.discount?.min
-                                            ? `${Intl.NumberFormat().format(
-                                                  copen.discount.min
-                                              )} تومان`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {copen?.discount?.max
-                                            ? `${Intl.NumberFormat().format(
-                                                  copen.discount.max
-                                              )} تومان`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        {copen?.discount?.number || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <Link
-                                            href={`/tkpanel/copens/${copen.id}/edit`}
-                                        >
-                                            <a className={`action-btn warning`}>
-                                                ویرایش
-                                            </a>
-                                        </Link>
-                                        <button
-                                            className={`action-btn success`}
-                                            onClick={() => {
-                                                setSelectedDiscount(copen);
-                                                setOpenModal(true);
-                                            }}
-                                        >
-                                            جزئیات
-                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -344,7 +221,7 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
-                                        colSpan={11}
+                                        colSpan={4}
                                     >
                                         کوپنی یافت نشد
                                     </td>

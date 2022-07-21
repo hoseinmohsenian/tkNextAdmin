@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import styles from "./Step3.module.css";
 import Error from "../../../../../../../../Error/Error";
+import Alert from "../../../../../../../../Alert/Alert";
 
-function Step3({ token }) {
+function Step3({ token, alertData, showAlert }) {
     const [formData, setFormData] = useState({
         title: "",
         desc: "",
         experience: "",
     });
     const [errors, setErrors] = useState([]);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     useEffect(() => {
         if (token) {
@@ -25,26 +27,37 @@ function Step3({ token }) {
 
     const addTitle = async (formData, tokenS) => {
         try {
-            const res = await fetch(
-                "https://api.barmansms.ir/api/teacher/profile/add/title",
-                {
-                    method: "POST",
-                    body: JSON.stringify(formData),
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        // "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            console.log("res", res);
+            const res = await fetch(`${BASE_URL}/teacher/profile/add/title`, {
+                method: "POST",
+                body: JSON.stringify(formData),
+                headers: {
+                    "Content-type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                    // "Access-Control-Allow-Origin": "*",
+                },
+            });
+            if (res.ok) {
+                showAlert(
+                    true,
+                    "success",
+                    "توضیحات پروفایل با موفقیت ویرایش شد"
+                );
+                setErrors([]);
+            } else {
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error adding profile image ", error);
         }
     };
 
     const handleClick = (e) => {
-        console.log(e);
         e.preventDefault();
 
         if (
@@ -72,46 +85,41 @@ function Step3({ token }) {
 
             if (formData.title.trim() === "") {
                 if (findError(errors, titleMessage) === undefined) {
-                    setErrors((oldErrors) => [...oldErrors, titleMessage]);
+                    temp = [titleMessage, ...temp];
                 }
             } else {
-                temp = temp?.filter((item) => item != titleMessage);
-                setErrors(() => temp);
+                temp = temp?.filter((item) => item !== titleMessage);
             }
-            if (formData.desc.trim().length < 70) {
+            if (formData.desc.length < 70) {
                 if (formData.desc.trim() === "") {
+                    // desc required
                     if (findError(errors, descMessage) === undefined) {
-                        // desc required
-                        setErrors((oldErrors) => [...oldErrors, descMessage]);
-                        // min character for desc
-                        setErrors((oldErrors) => [
-                            ...oldErrors,
-                            descCharMessage,
-                        ]);
+                        temp = [descMessage, ...temp];
+                    }
+                    // min characters for desc
+                    if (findError(errors, descCharMessage) === undefined) {
+                        temp = [descCharMessage, ...temp];
                     }
                 } else {
                     if (findError(errors, descCharMessage) === undefined) {
-                        setErrors((oldErrors) => [
-                            ...oldErrors,
-                            descCharMessage,
-                        ]);
+                        temp = [descCharMessage, ...temp];
                     } else {
                         temp = temp?.filter((item) => item != descMessage);
-                        setErrors(() => temp);
                     }
                 }
             } else {
-                temp = temp?.filter((item) => item != descCharMessage);
-                setErrors(() => temp);
+                temp = temp?.filter((item) => item !== descCharMessage);
             }
+
+            setErrors(() => temp);
+            showAlert(true, "danger", "لطفا فیلدهای ضروری را تکمیل کنید");
         }
     };
 
     const getTitle = async () => {
-        // console.log(ee)
         try {
             const res = await fetch(
-                "https://api.barmansms.ir/api/teacher/profile/return/title",
+                `${BASE_URL}/teacher/profile/return/title`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -121,8 +129,6 @@ function Step3({ token }) {
                 }
             );
             const { data } = await res.json();
-            console.log("data");
-            console.log(data);
             setFormData(data);
         } catch (error) {
             console.log("Error reading public info ", error);
@@ -131,10 +137,14 @@ function Step3({ token }) {
 
     return (
         <div className={styles.step}>
+            {/* Alert */}
+            <Alert
+                {...alertData}
+                removeAlert={showAlert}
+                envoker={handleClick}
+            />
+
             <div className={styles.step__box}>
-                <div className={styles["step__row"]}>
-                    {errors?.length !== 0 && <Error errorList={errors} />}
-                </div>
                 <form>
                     <div className={styles["step__row"]}>
                         <div className={styles["step__row-wrapper"]}>
@@ -154,7 +164,7 @@ function Step3({ token }) {
                                 <span className={styles.star}>*</span>
                             </div>
                             <span className={styles["step__input-explanation"]}>
-                                به عنوان مثال مدرس آیلتس با 9 سال سابقه تدریس
+                                به عنوان مثال مدرس آیلتس با ۹ سال سابقه تدریس
                             </span>
                         </div>
                     </div>
@@ -225,10 +235,15 @@ function Step3({ token }) {
                     </div>
                 </form>
             </div>
+
+            <div className={styles["step__row"]}>
+                {errors?.length !== 0 && <Error errorList={errors} />}
+            </div>
+
             <div className={styles["step__btn-wrapper"]}>
                 <button
                     type="button"
-                    className={`${styles["step__btn"]} ${styles["step__btn--next"]}`}
+                    className={`${styles["step__btn"]} ${styles["step__btn--next"]} primary`}
                     onClick={handleClick}
                 >
                     ذخیره

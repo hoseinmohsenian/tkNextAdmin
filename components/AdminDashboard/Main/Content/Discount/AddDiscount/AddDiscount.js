@@ -68,10 +68,8 @@ function AddDiscount({ token }) {
                 .replace("/", "-");
             let expired_at = `${date} 00:00:00`;
             fd.append("expired_at", expired_at);
+            fd.append("type", Number(formData.type));
 
-            if (Number(formData.type)) {
-                fd.append("type", Number(formData.type));
-            }
             if (Number(formData.discount_type) === 1) {
                 if (Number(formData.min)) {
                     fd.append("min", Number(formData.min));
@@ -97,7 +95,12 @@ function AddDiscount({ token }) {
     const handleOnChange = (e) => {
         const type = e.target.type;
         const name = e.target.name;
-        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        let value = type === "checkbox" ? e.target.checked : e.target.value;
+
+        // Only English letters for "name" input
+        // if (name === "name") {
+        //     value = e.target.value.replace(/[^a-z]/gi, "");
+        // }
         setFormData({ ...formData, [name]: value });
     };
 
@@ -133,6 +136,37 @@ function AddDiscount({ token }) {
         }
     };
 
+    function handleKeyPress(e) {
+        var key = e.key;
+        // var regex = /[A-Za-z0-9]|\./;
+        // if (!regex.test(key)) {
+        //     e.preventDefault();
+        // }
+        let condition =
+            (key >= "0" && key <= "9") ||
+            (key.toLowerCase() >= "a" && key.toLowerCase() <= "z") ||
+            ["+", "(", ")", "-", "_", "@"].includes(key);
+        if (!condition) {
+            e.preventDefault();
+        }
+    }
+
+    function makeid(min, max) {
+        let difference = max - min;
+        let rand = Math.floor(Math.random() * difference) + min;
+
+        var result = "";
+        var characters =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < rand; i++) {
+            result += characters.charAt(
+                Math.floor(Math.random() * charactersLength)
+            );
+        }
+        return result;
+    }
+
     return (
         <form onSubmit={handleSubmit}>
             {/* Alert */}
@@ -153,12 +187,26 @@ function AddDiscount({ token }) {
                                 type="text"
                                 name="name"
                                 id="name"
-                                className="form__input"
+                                className="form__input form__input--ltr"
                                 onChange={handleOnChange}
+                                value={formData.name}
                                 spellCheck={false}
                                 required
+                                onKeyDown={(e) => handleKeyPress(e)}
                             />
                         </div>
+                        <button
+                            className={`action-btn primary ${styles["discount-btn"]}`}
+                            type="button"
+                            onClick={() => {
+                                setFormData({
+                                    ...formData,
+                                    name: makeid(8, 16),
+                                });
+                            }}
+                        >
+                            ایجاد کد تخفیف
+                        </button>
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="number" className="form__label">
@@ -236,9 +284,15 @@ function AddDiscount({ token }) {
                                         inputClassName="date-input"
                                         colorPrimary="#545cd8"
                                         minimumDate={{
-                                            year: moment().year(),
-                                            month: Number(moment().format("M")),
-                                            day: Number(moment().format("DD")),
+                                            year:
+                                                formData.start_at?.year ||
+                                                moment().year(),
+                                            month:
+                                                formData.start_at?.month ||
+                                                Number(moment().format("M")),
+                                            day:
+                                                formData.start_at?.day ||
+                                                Number(moment().format("DD")),
                                         }}
                                         inputPlaceholder="انتخاب کنید"
                                         calendarPopperPosition="bottom"
@@ -249,7 +303,7 @@ function AddDiscount({ token }) {
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="type" className="form__label">
-                            تایپ :
+                            نوع :<span className="form__star">*</span>
                         </label>
                         <div className="form-control">
                             <select
@@ -379,7 +433,14 @@ function AddDiscount({ token }) {
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
-                                <label htmlFor="value" className="form__label">
+                                <label
+                                    htmlFor="value"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 0
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
+                                >
                                     مبلغ تخفیف :
                                 </label>
                                 <div className="form-control">
@@ -387,13 +448,7 @@ function AddDiscount({ token }) {
                                         type="number"
                                         name="value"
                                         id="value"
-                                        className={`form__input form__input--ltr ${
-                                            Number(formData.discount_type) === 0
-                                                ? styles[
-                                                      "form__input--disabled"
-                                                  ]
-                                                : undefined
-                                        }`}
+                                        className={`form__input form__input--ltr`}
                                         onChange={handleOnChange}
                                         spellCheck={false}
                                         autoComplete="off"
@@ -408,29 +463,36 @@ function AddDiscount({ token }) {
                             <div className="input-wrapper">
                                 <label
                                     htmlFor="percent"
-                                    className="form__label"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 1
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
                                 >
                                     درصد تخفیف :
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="number"
+                                    <select
                                         name="percent"
                                         id="percent"
-                                        className={`form__input form__input--ltr ${
-                                            Number(formData.discount_type) === 1
-                                                ? styles[
-                                                      "form__input--disabled"
-                                                  ]
-                                                : undefined
-                                        }`}
+                                        className={`form__input input-select‍`}
                                         onChange={handleOnChange}
-                                        spellCheck={false}
-                                        autoComplete="off"
+                                        value={formData.percent || ""}
                                         disabled={
                                             Number(formData.discount_type) === 1
                                         }
-                                    />
+                                    >
+                                        {Array(20)
+                                            .fill(0)
+                                            .map((_, i) => (
+                                                <option
+                                                    key={i}
+                                                    value={(i + 1) * 5}
+                                                >
+                                                    {(i + 1) * 5}%
+                                                </option>
+                                            ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -438,7 +500,14 @@ function AddDiscount({ token }) {
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
-                                <label htmlFor="min" className="form__label">
+                                <label
+                                    htmlFor="min"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 0
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
+                                >
                                     حداقل قیمت :
                                 </label>
                                 <div className="form-control">
@@ -446,13 +515,7 @@ function AddDiscount({ token }) {
                                         type="number"
                                         name="min"
                                         id="min"
-                                        className={`form__input form__input--ltr ${
-                                            Number(formData.discount_type) === 0
-                                                ? styles[
-                                                      "form__input--disabled"
-                                                  ]
-                                                : undefined
-                                        }`}
+                                        className={`form__input form__input--ltr`}
                                         onChange={handleOnChange}
                                         spellCheck={false}
                                         autoComplete="off"
@@ -465,7 +528,14 @@ function AddDiscount({ token }) {
                         </div>
                         <div className={`col-sm-6`}>
                             <div className="input-wrapper">
-                                <label htmlFor="max" className="form__label">
+                                <label
+                                    htmlFor="max"
+                                    className={`form__label ${
+                                        Number(formData.discount_type) === 1
+                                            ? "form__label--disabled"
+                                            : undefined
+                                    }`}
+                                >
                                     حداکثر قیمت :
                                 </label>
                                 <div className="form-control">
@@ -473,13 +543,7 @@ function AddDiscount({ token }) {
                                         type="number"
                                         name="max"
                                         id="max"
-                                        className={`form__input form__input--ltr ${
-                                            Number(formData.discount_type) === 1
-                                                ? styles[
-                                                      "form__input--disabled"
-                                                  ]
-                                                : undefined
-                                        }`}
+                                        className={`form__input form__input--ltr`}
                                         onChange={handleOnChange}
                                         spellCheck={false}
                                         autoComplete="off"

@@ -62,7 +62,7 @@
     cursor: pointer;
     padding: 0.2rem 0.8rem;
     border-radius: 0.3rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin-left: 0.5rem;
 }
 .modal__fooer-btn--purple {
@@ -85,7 +85,7 @@
 }
 .lan__sugg {
     color: #c2c2c2;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 .lan__lans-list {
     width: 100%;
@@ -117,7 +117,7 @@
 .lan__lan-item span {
     color: #212529;
     margin-top: 0.5rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: center;
 }
 

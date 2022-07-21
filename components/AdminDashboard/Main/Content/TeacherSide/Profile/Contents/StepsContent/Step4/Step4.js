@@ -4,6 +4,7 @@ import LanModal from "./LanModal/LanModal";
 import Error from "../../../../../../../../Error/Error";
 import DeleteModal from "../../../../../Elements/ModalDelete/ModalDelete";
 import { AiFillDelete } from "react-icons/ai";
+import Alert from "../../../../../../../../Alert/Alert";
 
 const languageSchema = {
     id: "",
@@ -22,6 +23,9 @@ function Step4(props) {
         levels,
         addedLanguages: fetchedAddedLanguages,
         token,
+        alertData,
+        showAlert,
+        BASE_URL,
     } = props;
     const [openModal, setOpenModal] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -58,7 +62,7 @@ function Step4(props) {
     const fetchAddedLanguages = async () => {
         try {
             const res = await fetch(
-                "https://api.barmansms.ir/api/teacher/profile/return/languages",
+                `${BASE_URL}/teacher/profile/return/languages`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -77,7 +81,7 @@ function Step4(props) {
     const deleteLanguage = async (id) => {
         try {
             const res = await fetch(
-                `https://api.barmansms.ir/api/teacher/profile/delete/language/${id}`,
+                `${BASE_URL}/teacher/profile/delete/language/${id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -106,6 +110,13 @@ function Step4(props) {
 
     return (
         <div className={styles.step}>
+            {/* Alert */}
+            <Alert
+                {...alertData}
+                removeAlert={showAlert}
+                envoker={handleClick}
+            />
+
             <div className="container">
                 <div className={styles.step__row}>
                     {/* Add new language button */}
@@ -150,13 +161,10 @@ function Step4(props) {
                             skills={skills}
                             setSkills={setSkills}
                             languageSchema={languageSchema}
+                            showAlert={showAlert}
+                            BASE_URL={BASE_URL}
                         />
                     )}
-                </div>
-
-                {/* Errors */}
-                <div className={styles["step__row-errors"]}>
-                    {errors?.length !== 0 && <Error errorList={errors} />}
                 </div>
 
                 {addedLanguages?.map((item, ind) => {
@@ -293,14 +301,9 @@ function Step4(props) {
                     );
                 })}
 
-                <div className={styles["step__btn-wrapper"]}>
-                    <button
-                        type="button"
-                        className={styles["step__btn"]}
-                        onClick={handleClick}
-                    >
-                        ذخیره
-                    </button>
+                {/* Errors */}
+                <div className={styles["step__row-errors"]}>
+                    {errors?.length !== 0 && <Error errorList={errors} />}
                 </div>
             </div>
             {/* visible, setVisible */}

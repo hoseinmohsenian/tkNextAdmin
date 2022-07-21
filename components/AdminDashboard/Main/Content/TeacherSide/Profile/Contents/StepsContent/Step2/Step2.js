@@ -7,7 +7,7 @@ import ImageCrop from "./ImageCrop/ImageCrop";
 import tikkaaImg from "../../../../../../../../../public/images/tikka-default.png";
 import Alert from "../../../../../../../../Alert/Alert";
 
-function Step2({ token, alertData, showAlert }) {
+function Step2({ token, alertData, showAlert, BASE_URL }) {
     const [openModal, setOpenModal] = useState(false);
 
     // Crop variables
@@ -33,17 +33,14 @@ function Step2({ token, alertData, showAlert }) {
 
     const addProfileImage = async (image) => {
         try {
-            const res = await fetch(
-                "https://api.barmansms.ir/api/teacher/profile/add/image",
-                {
-                    method: "POST",
-                    body: image,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
+            const res = await fetch(`${BASE_URL}/teacher/profile/add/image`, {
+                method: "POST",
+                body: image,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
             if (res.ok) {
                 showAlert(
                     true,
@@ -60,7 +57,7 @@ function Step2({ token, alertData, showAlert }) {
     const getProfileImage = async () => {
         try {
             const res = await fetch(
-                "https://api.barmansms.ir/api/teacher/profile/return/image",
+                `${BASE_URL}/teacher/profile/return/image`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -120,20 +117,8 @@ function Step2({ token, alertData, showAlert }) {
             return;
         }
 
-        // let dataURL = canvas.toDataURL("image/jpeg", 0.6);
-        // let blob = dataURItoBlob(dataURL);
-        // let formData = new FormData();
-        // formData.append("image", blob);
-        // console.log("formData ", formData.get("image"));
-        // addProfileImage(blob); // Call api
-        // addProfileImage(canvas, crop); // Call api
-        // addProfileImage(formData.get("image") , dataURL); // Call api
-        // addProfileImage(formData.get("image")); // Call api
-
         let dataURL = canvas.toDataURL("image/jpeg", 0.6);
         let blob = dataURItoBlob(dataURL);
-        console.log("blob");
-        console.log(blob);
         let formData = new FormData();
         formData.append("image", blob);
         await addProfileImage(formData); // Call api

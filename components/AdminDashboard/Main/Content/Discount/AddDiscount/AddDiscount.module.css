@@ -1,8 +1,11 @@
 .row {
     margin: 0.4rem 0 0.8rem;
 }
-.form__input--disabled:hover {
-    cursor: not-allowed;
+.discount-btn {
+    white-space: nowrap;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
 }
 
 @media all and (min-width: 576px) {
@@ -15,5 +18,8 @@
     .row {
         align-items: center;
         flex-direction: row;
+    }
+    .discount-btn {
+        margin-bottom: 0;
     }
 }

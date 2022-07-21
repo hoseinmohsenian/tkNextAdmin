@@ -50,7 +50,7 @@ function EditClass(props) {
             selectedSkills.length >= 3 &&
             formData.class_capacity &&
             formData.class_number &&
-            formData.price
+            formData.price.replace(/,/g, "")
         ) {
             const fd = new FormData();
             if (selectedTeacher.id !== addedData.teacher_id) {
@@ -68,8 +68,8 @@ function EditClass(props) {
             if (Number(formData.class_number) !== addedData.class_number) {
                 fd.append("class_number", Number(formData.class_number));
             }
-            if (Number(formData.price) !== addedData.price) {
-                fd.append("price", Number(formData.price));
+            if (Number(formData.price).replace(/,/g, "") !== addedData.price) {
+                fd.append("price", Number(formData.price.replace(/,/g, "")));
             }
             let counter = 0;
             for (let i = 0; i < selectedSpecialitys.length; i++) {
@@ -234,7 +234,7 @@ function EditClass(props) {
             } else {
                 temp = temp?.filter((item) => item !== countMessage);
             }
-            if (!Number(formData.price)) {
+            if (!Number(formData.price.replace(/,/g, ""))) {
                 if (findError(errors, priceMessage) === undefined) {
                     temp = [...temp, priceMessage];
                 }
@@ -425,6 +425,18 @@ function EditClass(props) {
             console.log("Error deleting skill ", error);
         }
     };
+
+    function handleKeyPress(e) {
+        var key = e.key;
+        // var regex = /[A-Za-z0-9]|\./;
+        // if (!regex.test(key)) {
+        //     e.preventDefault();
+        // }
+        let condition = (key >= "0" && key <= "9") || [","].includes(key);
+        if (!condition) {
+            e.preventDefault();
+        }
+    }
 
     useEffect(() => {
         fetchSpecialitys();
@@ -732,12 +744,24 @@ function EditClass(props) {
                                 </label>
                                 <div className="form-control">
                                     <input
-                                        type="number"
+                                        type="text"
                                         name="price"
                                         id="price"
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
-                                        value={formData.price}
+                                        value={
+                                            typeof formData.price === "number"
+                                                ? Intl.NumberFormat().format(
+                                                      formData.price
+                                                  )
+                                                : Intl.NumberFormat().format(
+                                                      formData.price.replace(
+                                                          /,/g,
+                                                          ""
+                                                      )
+                                                  ) || ""
+                                        }
+                                        onKeyDown={(e) => handleKeyPress(e)}
                                         placeholder="تومان"
                                         required
                                     />

@@ -41,7 +41,16 @@ function Discount({ discounts }) {
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>نوع</span>
                                 <span className={"modal__item-body"}>
-                                    {selectedDiscount.type || "-"}
+                                    {selectedDiscount.type === 0 && "همه"}
+                                    {selectedDiscount.type === 1 &&
+                                        "جلسه آزمایشی"}
+                                    {selectedDiscount.type === 2 &&
+                                        "کلاس خصوصی"}
+                                    {selectedDiscount.type === 3 && "۵ جلسه"}
+                                    {selectedDiscount.type === 4 && "۱۰ جلسه"}
+                                    {selectedDiscount.type === 5 && "۱۶ جلسه"}
+                                    {selectedDiscount.type === 6 &&
+                                        "اولین خرید"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -73,9 +82,9 @@ function Discount({ discounts }) {
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">عنوان</th>
-                                <th className="table__head-item">درصد تخفیف</th>
                                 <th className="table__head-item">مبلغ تخفیف</th>
                                 <th className="table__head-item">حداقل قیمت</th>
+                                <th className="table__head-item">درصد تخفیف</th>
                                 <th className="table__head-item">
                                     حداکثر قیمت
                                 </th>
@@ -93,11 +102,6 @@ function Discount({ discounts }) {
                                         {discount.name}
                                     </td>
                                     <td className="table__body-item">
-                                        {discount?.percent
-                                            ? `${discount?.percent}%`
-                                            : "-"}
-                                    </td>
-                                    <td className="table__body-item">
                                         {discount?.value
                                             ? `${Intl.NumberFormat().format(
                                                   discount?.value
@@ -109,6 +113,11 @@ function Discount({ discounts }) {
                                             ? `${Intl.NumberFormat().format(
                                                   discount?.min
                                               )} تومان`
+                                            : "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {discount?.percent
+                                            ? `${discount?.percent}%`
                                             : "-"}
                                     </td>
                                     <td className="table__body-item">

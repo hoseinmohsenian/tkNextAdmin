@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import styles from "./PhoneInput.module.css";
 import { IoIosArrowDown } from "react-icons/io";
 
@@ -127,9 +127,7 @@ function PhoneInput({
                         </span>
                     )}
                     <img
-                        src={
-                            "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Iran.svg/255px-Flag_of_Iran.svg.png"
-                        }
+                        src={selectedCountry.flag}
                         alt={selectedCountry.name_fa}
                         className={styles["phone-input__content-flag"]}
                     />
@@ -186,9 +184,7 @@ function PhoneInput({
                                     <ShowItem item={item} />
                                 </div>
                                 <img
-                                    src={
-                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Iran.svg/255px-Flag_of_Iran.svg.png"
-                                    }
+                                    src={item.flag}
                                     alt={item.name_fa}
                                     className={
                                         styles["phone-input__content-flag"]
@@ -212,4 +208,4 @@ function PhoneInput({
     );
 }
 
-export default PhoneInput;
+export default memo(PhoneInput);
