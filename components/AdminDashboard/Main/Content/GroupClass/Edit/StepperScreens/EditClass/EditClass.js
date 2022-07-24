@@ -13,6 +13,10 @@ const Editor = dynamic(() => import("../../../../Editor/Editor"), {
 });
 import FetchSearchSelect from "../../../../Elements/FetchSearchSelect/FetchSearchSelect";
 import Error from "../../../../../../../Error/Error";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+} from "../../../../../../../../utils/priceFormat";
 
 const teacherSchema = { id: "", name: "", family: "" };
 
@@ -426,18 +430,6 @@ function EditClass(props) {
         }
     };
 
-    function handleKeyPress(e) {
-        var key = e.key;
-        // var regex = /[A-Za-z0-9]|\./;
-        // if (!regex.test(key)) {
-        //     e.preventDefault();
-        // }
-        let condition = (key >= "0" && key <= "9") || [","].includes(key);
-        if (!condition) {
-            e.preventDefault();
-        }
-    }
-
     useEffect(() => {
         fetchSpecialitys();
         setSelectedSpecialitys([]);
@@ -749,19 +741,12 @@ function EditClass(props) {
                                         id="price"
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
-                                        value={
-                                            typeof formData.price === "number"
-                                                ? Intl.NumberFormat().format(
-                                                      formData.price
-                                                  )
-                                                : Intl.NumberFormat().format(
-                                                      formData.price.replace(
-                                                          /,/g,
-                                                          ""
-                                                      )
-                                                  ) || ""
+                                        value={getFormattedPrice(
+                                            formData.price
+                                        )}
+                                        onKeyDown={(e) =>
+                                            checkValidPriceKeys(e)
                                         }
-                                        onKeyDown={(e) => handleKeyPress(e)}
                                         placeholder="تومان"
                                         required
                                     />

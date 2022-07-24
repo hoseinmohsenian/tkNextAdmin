@@ -57,8 +57,7 @@ function AddNewClass({ token, platforms, courses }) {
             selectedHours.length !== 0
         ) {
             let body = {
-                // teacher_id: selectedTeacher.id,
-                teacher_id: 16,
+                teacher_id: selectedTeacher.id,
                 user_id: selectedStudent.id,
                 language_id: Number(formData.language_id),
                 course_id: Number(formData.course_id),

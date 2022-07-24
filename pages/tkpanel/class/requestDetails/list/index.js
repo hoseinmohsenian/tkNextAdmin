@@ -1,14 +1,13 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import RequestDetailsList from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/RequestDetailsList/RequestDetailsList";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 
-function RequestDetailsListPage({ classes, token }) {
+function RequestDetailsListPage({ classes }) {
     return (
         <div>
             <Header title="وضعیت کلی کلاس ها | تیکا"></Header>
             <AdminDashboard>
-                <RequestDetailsList fetchedClasses={classes} token={token} />
+                <RequestDetailsList fetchedClasses={classes} />
             </AdminDashboard>
         </div>
     );
@@ -44,7 +43,6 @@ export async function getServerSideProps(context) {
         props: {
             // classes: dataArr[0].data,
             classes: { data: [], current_page: 1, first_page_url: "" },
-            token,
         },
     };
 }

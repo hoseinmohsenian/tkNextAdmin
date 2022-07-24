@@ -2,9 +2,7 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import Profiles from "../../../components/AdminDashboard/Main/Content/Profiles/Profiles";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
-import { checkResponseArr } from "../../../utils/checkResponse";
-import API from "../../../api";
-import { getCookie } from "cookies-next";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
 import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
 function ProfilesPage({ students, token, searchData, notAllowed }) {
@@ -64,14 +62,9 @@ export async function getServerSideProps(context) {
                 "Access-Control-Allow-Origin": "*",
             },
         }),
-        // API.get(`/admin/student/search?${params}`, {
-        //     headers: {
-        //         Authorization: `Bearer ${token}`,
-        //     },
-        // }),
     ]);
 
-    if (!checkResponseArr(responses)) {
+    if (!checkResponseArrAuth(responses)) {
         return {
             props: { notAllowed: true },
         };

@@ -1,4 +1,4 @@
-export function checkResponseArr(responses) {
+export function checkResponseArrAuth(responses) {
     for (let i = 0; i < responses.length; i++) {
         if (responses[i].status === 403) {
             return false;

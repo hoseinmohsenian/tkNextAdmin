@@ -7,6 +7,7 @@ import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import styles from "./CreateProfile.module.css";
 import PhoneInput from "../../../../../PhoneInput/PhoneInput";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import API from "../../../../../../api";
 
 const countrySchema = {
     id: "",
@@ -139,30 +140,26 @@ function CreateProfile({ token, countries }) {
     const addStudent = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/student/add`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/student/add`,
+                fd
+            );
+            console.log(status);
+            if (response?.status === 200 || status === 200) {
                 showAlert(true, "success", "زبان آموز جدید با موفقیت اضافه شد");
                 router.push("/tkpanel/profiles");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new student", error);
         }
+        setLoading(false);
     };
 
     const getProvinces = async (country_id) => {

@@ -603,13 +603,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             </a>
                                         </Link>
                                         <Link
-                                            href={`/tkpanel/newTeacher/languagesPrice/${teacher.id}`}
-                                        >
-                                            <a className={`action-btn success`} target="_blank">
-                                                تغییر قیمت
-                                            </a>
-                                        </Link>
-                                        <Link
                                             href={`/tkpanel/newTeacher/details/${teacher.id}`}
                                         >
                                             <a className={`action-btn primary`} target="_blank">

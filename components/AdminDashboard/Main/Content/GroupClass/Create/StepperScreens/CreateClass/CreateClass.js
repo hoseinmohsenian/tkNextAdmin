@@ -13,6 +13,11 @@ const Editor = dynamic(() => import("../../../../Editor/Editor"), {
 });
 import FetchSearchSelect from "../../../../Elements/FetchSearchSelect/FetchSearchSelect";
 import Error from "../../../../../../../Error/Error";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+    getUnformattedPrice,
+} from "../../../../../../../../utils/priceFormat";
 
 const teacherSchema = { id: "", name: "", family: "" };
 
@@ -315,7 +320,7 @@ function CreateClass(props) {
             } else {
                 temp = temp?.filter((item) => item !== countMessage);
             }
-            if (!Number(formData.price.replace(/,/g, ""))) {
+            if (!Number(getUnformattedPrice(formData.price))) {
                 if (findError(errors, priceMessage) === undefined) {
                     temp = [...temp, priceMessage];
                 }
@@ -587,18 +592,6 @@ function CreateClass(props) {
             setSelectedSkills(() => filteredSkills);
         }
     };
-
-    function handleKeyPress(e) {
-        var key = e.key;
-        // var regex = /[A-Za-z0-9]|\./;
-        // if (!regex.test(key)) {
-        //     e.preventDefault();
-        // }
-        let condition = (key >= "0" && key <= "9") || [","].includes(key);
-        if (!condition) {
-            e.preventDefault();
-        }
-    }
 
     useEffect(() => {
         fetchSpecialitys();
@@ -889,19 +882,12 @@ function CreateClass(props) {
                                         id="price"
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
-                                        value={
-                                            typeof formData.price === "number"
-                                                ? Intl.NumberFormat().format(
-                                                      formData.price
-                                                  )
-                                                : Intl.NumberFormat().format(
-                                                      formData.price.replace(
-                                                          /,/g,
-                                                          ""
-                                                      )
-                                                  ) || ""
+                                        value={getFormattedPrice(
+                                            formData.price
+                                        )}
+                                        onKeyDown={(e) =>
+                                            checkValidPriceKeys(e)
                                         }
-                                        onKeyDown={(e) => handleKeyPress(e)}
                                         placeholder="تومان"
                                     />
                                 </div>

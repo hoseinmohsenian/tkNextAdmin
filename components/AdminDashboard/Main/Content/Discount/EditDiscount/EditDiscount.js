@@ -34,8 +34,18 @@ function EditDiscount({ token, discount }) {
             formData.expired_at.year
         ) {
             const fd = new FormData();
-            fd.append("number", Number(formData.number));
-            fd.append("active_status", Number(formData.active_status));
+            if (
+                formData.number &&
+                Number(formData.number) !== discount.number
+            ) {
+                fd.append("number", Number(formData.number));
+            }
+            if (
+                formData.active_status &&
+                Number(formData.active_status) !== discount.active_status
+            ) {
+                fd.append("active_status", Number(formData.active_status));
+            }
 
             let date = moment
                 .from(
@@ -48,7 +58,9 @@ function EditDiscount({ token, discount }) {
                 .replace("/", "-")
                 .replace("/", "-");
             let start_at = `${date} 00:00:00`;
-            fd.append("start_at", start_at);
+            if (start_at && start_at !== discount.start_at) {
+                fd.append("start_at", start_at);
+            }
             date = moment
                 .from(
                     `${formData.expired_at?.year}/${formData.expired_at?.month}/${formData.expired_at?.day}`,
@@ -60,37 +72,8 @@ function EditDiscount({ token, discount }) {
                 .replace("/", "-")
                 .replace("/", "-");
             let expired_at = `${date} 00:00:00`;
-            fd.append("expired_at", expired_at);
-
-            if (formData.type && Number(formData.type) !== discount.type) {
-                fd.append("type", Number(formData.type));
-            }
-            if (Number(formData.discount_type) === 1) {
-                if (
-                    Number(formData.min) &&
-                    Number(formData.min) !== discount.min
-                ) {
-                    fd.append("min", Number(formData.min));
-                }
-                if (
-                    Number(formData.value) &&
-                    Number(formData.value) !== discount.value
-                ) {
-                    fd.append("value", Number(formData.value));
-                }
-            } else {
-                if (
-                    Number(formData.max) &&
-                    Number(formData.max) !== discount.max
-                ) {
-                    fd.append("max", Number(formData.max));
-                }
-                if (
-                    Number(formData.percent) &&
-                    Number(formData.percent) !== discount.percent
-                ) {
-                    fd.append("percent", Number(formData.percent));
-                }
+            if (expired_at && expired_at !== discount.expired_at) {
+                fd.append("expired_at", expired_at);
             }
 
             await editDiscount(fd);
@@ -125,7 +108,7 @@ function EditDiscount({ token, discount }) {
                 }
             );
             if (res.ok) {
-                showAlert(true, "success", "کوپن تخفیف ثبت شد");
+                showAlert(true, "success", "کوپن تخفیف ویرایش شد");
                 router.push("/tkpanel/copens");
             } else {
                 const errData = await res.json();
@@ -299,6 +282,7 @@ function EditDiscount({ token, discount }) {
                                 className="form__input input-select"
                                 onChange={handleOnChange}
                                 value={formData.type}
+                                disabled
                             >
                                 <option value={0}>همه</option>
                                 <option value={1}>جلسه آزمایشی</option>

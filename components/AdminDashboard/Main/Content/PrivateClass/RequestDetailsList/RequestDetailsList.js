@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "./RequestDetailsList.module.css";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
@@ -10,6 +9,7 @@ import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import API from "../../../../../../api";
 
 const filtersSchema = {
     user_name: "",
@@ -24,11 +24,7 @@ const appliedFiltersSchema = {
     user_mobile: false,
 };
 
-function RequestDetailsList(props) {
-    const {
-        fetchedClasses: { data, ...restData },
-        token,
-    } = props;
+function RequestDetailsList({ fetchedClasses: { data, ...restData } }) {
     const [filters, setFilters] = useState(filtersSchema);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [classes, setClasses] = useState(data);
@@ -81,28 +77,21 @@ function RequestDetailsList(props) {
 
         try {
             setLoading(true);
-            const res = await fetch(
-                `${BASE_URL}/admin/classroom?${searchQuery}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
+            const res = await API.get(`/admin/classroom?${searchQuery}`);
+
             const {
                 data: { data, ...restData },
-            } = await res.json();
+            } = res;
+
             setClasses(data);
             setPagData(restData);
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
-            setLoading(false);
         } catch (error) {
             console.log("Error reading classes", error);
         }
+        setLoading(false);
     };
 
     const removeFilters = () => {

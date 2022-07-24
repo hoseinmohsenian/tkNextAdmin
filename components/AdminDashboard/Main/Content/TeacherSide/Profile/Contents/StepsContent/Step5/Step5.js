@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import styles from "./Step5.module.css";
-import SearchSelect from "../../../../../../../../SearchSelect/SearchSelect";
 import { useRouter } from "next/router";
+import { 
+    checkValidPriceKeys, 
+    getFormattedPrice, 
+    getUnformattedPrice 
+} from "../../../../../../../../../utils/priceFormat";
 
 const formSchema = {
     language_id: "",
@@ -121,7 +125,7 @@ console.log(formData);
         }
         const body = {
             language_id: selectedLanguage.id,
-            price: Number(price),
+            price: Number(getUnformattedPrice(price)),
         };
 
         try {
@@ -352,7 +356,7 @@ console.log(formData);
                                                     </label>
                                                     <div className="form-control">
                                                         <input
-                                                            type="number"
+                                                            type="text"
                                                             className="form__input"
                                                             onChange={(e) =>
                                                                 handleFormChange(
@@ -361,8 +365,11 @@ console.log(formData);
                                                                     "pricePer1"
                                                                 )
                                                             }
-                                                            value={
+                                                            value={getFormattedPrice(
                                                                 formItem.pricePer1
+                                                            )}
+                                                            onKeyDown={(e) =>
+                                                                checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
                                                                 onBlurHandler(2)
@@ -389,13 +396,13 @@ console.log(formData);
                                                 }
                                             >
                                                 <div className={`input-wrapper ${styles["input-wrapper"]}`}>
-                                                    <label htmlFor="pricePer1" className={`form__label ${styles["form__label"]}`}>
+                                                    <label htmlFor="pricePer5" className={`form__label ${styles["form__label"]}`}>
                                                         هزینه ۵ جلسه ای (به ازای هر
                                                         جلسه آنلاین)
                                                     </label>
                                                     <div className="form-control">
                                                         <input
-                                                            type="number"
+                                                            type="text"
                                                             className="form__input"
                                                             onChange={(e) =>
                                                                 handleFormChange(
@@ -404,12 +411,16 @@ console.log(formData);
                                                                     "pricePer5"
                                                                 )
                                                             }
-                                                            value={
+                                                            value={getFormattedPrice(
                                                                 formItem.pricePer5
+                                                            )}
+                                                            onKeyDown={(e) =>
+                                                                checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
                                                                 onBlurHandler(3)
                                                             }
+                                                            id="pricePer5"
                                                         />
                                                     </div>
                                                 </div>
@@ -454,7 +465,7 @@ console.log(formData);
                                                     </label>
                                                     <div className="form-control">
                                                         <input
-                                                            type="number"
+                                                            type="text"
                                                             className="form__input"
                                                             onChange={(e) =>
                                                                 handleFormChange(
@@ -463,8 +474,11 @@ console.log(formData);
                                                                     "pricePer10"
                                                                 )
                                                             }
-                                                            value={
+                                                            value={getFormattedPrice(
                                                                 formItem.pricePer10
+                                                            )}
+                                                            onKeyDown={(e) =>
+                                                                checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
                                                                 onBlurHandler(4)
@@ -514,7 +528,7 @@ console.log(formData);
                                                     </label>
                                                     <div className="form-control">
                                                         <input
-                                                            type="number"
+                                                            type="text"
                                                             className="form__input"
                                                             onChange={(e) =>
                                                                 handleFormChange(
@@ -523,8 +537,11 @@ console.log(formData);
                                                                     "pricePer16"
                                                                 )
                                                             }
-                                                            value={
+                                                            value={getFormattedPrice(
                                                                 formItem.pricePer16
+                                                            )}
+                                                            onKeyDown={(e) =>
+                                                                checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
                                                                 onBlurHandler(5)
