@@ -140,23 +140,18 @@ function CreateProfile({ token, countries }) {
     const addStudent = async (fd) => {
         setLoading(true);
         try {
-            const { response, status } = await API.post(
-                `/admin/student/add`,
-                fd
-            );
-            console.log(status);
-            if (response?.status === 200 || status === 200) {
-                showAlert(true, "success", "زبان آموز جدید با موفقیت اضافه شد");
-                router.push("/tkpanel/profiles");
-            } else {
-                showAlert(
-                    true,
-                    "warning",
-                    response?.data?.error?.invalid_params[0]?.message ||
-                        "مشکلی پیش آمده"
-                );
-            }
+            const { response } = await API.post(`/admin/student/add`, fd);
+            console.log("response?.status", response?.status);
+
+            showAlert(true, "success", "زبان آموز جدید با موفقیت اضافه شد");
+            router.push("/tkpanel/profiles");
         } catch (error) {
+            showAlert(
+                true,
+                "warning",
+                response?.data?.error?.invalid_params[0]?.message ||
+                    "مشکلی پیش آمده"
+            );
             console.log("Error adding a new student", error);
         }
         setLoading(false);

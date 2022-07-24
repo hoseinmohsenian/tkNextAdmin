@@ -25,16 +25,7 @@ API.interceptors.response.use(
         return response.data;
     },
     (error) => {
-        if (error?.response?.status === 400) {
-            if (error?.response?.data?.error?.invalid_params) {
-                console.log(
-                    "error",
-                    error?.response?.data?.error?.invalid_params[0].message
-                );
-            } else {
-                console.log("عملیات ناموفق بود", "error");
-            }
-        } else if (error?.response?.status === 401) {
+        if (error?.response?.status === 401) {
             if (window) {
                 window.location.href = "/tkcp/login";
             }
@@ -43,16 +34,13 @@ API.interceptors.response.use(
                 window.location.href = "/notauthorized";
             }
         } else {
-            if (!error.response) console.log("error", "error");
-            if (error?.response?.status === 500)
-                console.log("error 500", "error");
+            if (error?.response?.status === 500) console.log("error 500");
             if (error && error.response && error?.response?.data) {
-                // console.log(error?.response?.data?.error, "error");
                 console.log("error", error?.response?.data?.error);
             }
         }
 
-        return Promise.reject(error);
+        return error;
     }
 );
 

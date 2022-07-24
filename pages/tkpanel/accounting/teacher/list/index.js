@@ -3,7 +3,7 @@ import TeacherIncome from "../../../../../components/AdminDashboard/Main/Content
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
-import { checkResponseArr } from "../../../../../utils/checkResponse";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 
 function TeacherIncomeDetailsPage({ token, chartData, notAllowed }) {
     if (!!notAllowed) {
@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
         }),
     ]);
 
-    if (!checkResponseArr(responses)) {
+    if (!checkResponseArrAuth(responses)) {
         return {
             props: { notAllowed: true },
         };
