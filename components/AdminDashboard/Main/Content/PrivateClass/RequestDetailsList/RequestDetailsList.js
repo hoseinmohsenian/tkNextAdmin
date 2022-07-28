@@ -81,7 +81,7 @@ function RequestDetailsList({ fetchedClasses: { data, ...restData } }) {
 
             const {
                 data: { data, ...restData },
-            } = res;
+            } = res.data;
 
             setClasses(data);
             setPagData(restData);
@@ -386,9 +386,11 @@ function RequestDetailsList({ fetchedClasses: { data, ...restData } }) {
                                             : "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
-                                        {moment(item?.date).format(
-                                            "YYYY/MM/DD"
-                                        )}
+                                        {item?.date
+                                            ? moment(item?.date).format(
+                                                  "YYYY/MM/DD"
+                                              )
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <button

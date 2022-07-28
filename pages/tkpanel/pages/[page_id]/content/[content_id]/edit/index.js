@@ -2,8 +2,19 @@ import AdminDashboard from "../../../../../../../components/AdminDashboard/Dashb
 import EditPagesList from "../../../../../../../components/AdminDashboard/Main/Content/SitePages/SitePagesContent/Edit/EditContent";
 import Header from "../../../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function EditSitePageContentPage({ content, token, page_id, content_id }) {
+function EditSitePageContentPage({
+    content,
+    token,
+    page_id,
+    content_id,
+    notAllowed,
+}) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="ویرایش محتوای صفحه | تیکا"></Header>
@@ -43,6 +54,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

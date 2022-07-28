@@ -1,9 +1,13 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import Teachers from "../../../components/AdminDashboard/Main/Content/TeacherSide/Teachers";
 import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TeacherSidePage({ teachers, token, searchData }) {
+function TeacherSidePage({ teachers, token, searchData, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="اساتید | تیکا"></Header>
@@ -22,6 +26,7 @@ export default TeacherSidePage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {
@@ -69,6 +74,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

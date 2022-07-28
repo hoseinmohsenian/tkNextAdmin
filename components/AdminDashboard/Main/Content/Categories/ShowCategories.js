@@ -170,12 +170,15 @@ function ShowCategories({
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className={styles["btn-wrapper"]}>
                                     <button
-                                        type="button"
+                                        type="submit"
                                         className={`btn primary ${styles["btn"]}`}
                                         disabled={loading}
-                                        onClick={() => searchCategories()}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            searchCategories();
+                                        }}
                                     >
-                                        {loading ? "در حال انجام ..." : "جستچو"}
+                                        {loading ? "در حال انجام ..." : "جستجو"}
                                     </button>
                                     {!showFilters() && (
                                         <button

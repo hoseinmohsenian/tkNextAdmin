@@ -224,7 +224,7 @@ function AddNewClass({ token, platforms, courses }) {
             });
             if (res.ok) {
                 showAlert(true, "success", "کلاس با موفقیت ایجاد شد");
-                router.push("/tkpanel");
+                router.push("/tkpanel/teacher/request/lists");
             } else {
                 const errData = await res.json();
                 showAlert(

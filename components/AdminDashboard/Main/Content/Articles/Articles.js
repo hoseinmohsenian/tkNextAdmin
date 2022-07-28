@@ -34,7 +34,7 @@ function Articles(props) {
     } = props;
     const [articles, setArticles] = useState(data);
     const [filters, setFilters] = useState(fetchedData);
-    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(fetchedData);
     const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
         show: false,

@@ -2,8 +2,13 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import ShowCategories from "../../../components/AdminDashboard/Main/Content/Categories/ShowCategories";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function SiteNewsCategoriesPage({ categories, token }) {
+function SiteNewsCategoriesPage({ categories, token, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="دسته بندی دوم مقالات | تیکا"></Header>
@@ -44,6 +49,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

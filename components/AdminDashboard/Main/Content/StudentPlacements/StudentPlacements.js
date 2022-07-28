@@ -6,6 +6,7 @@ import styles from "./StudentPlacements.module.css";
 import Alert from "../../../../Alert/Alert";
 import Link from "next/link";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import API from "../../../../../api";
 
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
@@ -38,66 +39,48 @@ function StudentPlacements({ token, levels }) {
     const searchStudents = async (student_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${student_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status, data } = await API.get(
+                `/admin/student/search?input=${student_name}`
             );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setStudents(data);
+            if (status === 200) {
+                setStudents(data?.data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching students", error);
         }
+        setLoading(false);
     };
 
     const readPlacements = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/placement?user_id=${selectedStudent.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status, data: { data } } = await API.get(
+                `/admin/student/placement?user_id=${selectedStudent.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
+            if (status === 200) {
                 setIsPlaced(data.length !== 0);
                 setPlacements(data);
                 setFormData(data);
                 setLoadings(Array(data?.length).fill(false));
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading placements", error);
         }
+        setLoading(false);
     };
 
     const handleOnChange = (e, rowInd, name) => {
@@ -115,27 +98,25 @@ function StudentPlacements({ token, levels }) {
     const editPlacement = async (body, id, i) => {
         loadingsHandler(i, true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/placement/${id}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({ ...body }),
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/student/placement/${id}`,
+                JSON.stringify({ ...body })
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(true, "success", "تعیین سطح ویرایش شد");
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            loadingsHandler(i, false);
         } catch (error) {
             console.log("Error editing placement", error);
         }
+        loadingsHandler(i, false);
     };
 
     const editHandler = async (e, placement_id, prop, i) => {
@@ -197,7 +178,6 @@ function StudentPlacements({ token, levels }) {
                                             width: "100%",
                                         }}
                                         background="#fafafa"
-                                        fontSize={16}
                                         onSearch={(value) =>
                                             searchStudents(value)
                                         }

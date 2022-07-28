@@ -1,10 +1,20 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import TodayMonitoring from "../../../../components/AdminDashboard/Main/Content/Monitoring/TodayMonitoring/TodayMonitoring";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 import moment from "jalali-moment";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TodayMonitoringPage({ token, monitorings, shamsi_date_obj, admins }) {
+function TodayMonitoringPage({
+    token,
+    monitorings,
+    shamsi_date_obj,
+    admins,
+    notAllowed,
+}) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="مانیتورینگ امروز | تیکا"></Header>
@@ -24,6 +34,7 @@ export default TodayMonitoringPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {
@@ -56,10 +67,16 @@ export async function getServerSideProps(context) {
         }),
     ]);
 
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     let shamsi_date = moment
-        .from(`${startDate.substring(0, 8)}`, "en", "YYYY/MM/DD")
+        .from(`${startDate.substring(0, 10)}`, "en", "YYYY/MM/DD")
         .locale("fa")
         .format("YYYY/MM/DD");
     let shamsi_date_obj = {

@@ -9,6 +9,9 @@ import Modal from "../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import styles from "./NotHeldClasses.module.css";
+import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
+import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 
 function NotHeldClasses(props) {
     const {
@@ -17,15 +20,54 @@ function NotHeldClasses(props) {
     } = props;
     const [classes, setClasses] = useState(data);
     const [pagData, setPagData] = useState(restData);
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
 
+    const showAlert = (show, type, message) => {
+        setAlertData({ show, type, message });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (startDate.year && endDate.year) {
+            await readData();
+        } else {
+            showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
+        }
+    };
+
+    const convertDate = (date) => {
+        return moment
+            .from(
+                `${date?.year}/${date?.month}/${date?.day}`,
+                "fa",
+                "YYYY/MM/DD"
+            )
+            .locale("en")
+            .format("YYYY/MM/DD")
+            .replace("/", "-")
+            .replace("/", "-");
+    };
+
     const readClasses = async (page = 1) => {
+        setLoading(true);
         let searchParams = {};
 
+        let query = "";
+        if (startDate.year) {
+            query = `start_date=${convertDate(startDate)}&`;
+        }
+        if (endDate.year) {
+            query += `end_date=${convertDate(endDate)}&`;
+        }
+        query += `page=${page}`;
         if (page !== 1) {
             searchParams = {
                 ...searchParams,
@@ -40,7 +82,7 @@ function NotHeldClasses(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/classroom/not-held?page=${page}`,
+                `${BASE_URL}/admin/classroom/not-held?${query}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -60,6 +102,7 @@ function NotHeldClasses(props) {
         } catch (error) {
             console.log("Error reading not held classes", error);
         }
+        setLoading(false);
     };
 
     return (
@@ -158,6 +201,75 @@ function NotHeldClasses(props) {
                         </div>
                     </Modal>
                 )}
+
+                <div className={styles["search"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className="input-wrapper">
+                                    <label
+                                        htmlFor="publish_time"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        تاریخ شروع :
+                                        <span className="form__star">*</span>
+                                    </label>
+                                    <div className="form-control">
+                                        <DatePicker
+                                            value={startDate}
+                                            onChange={setStartDate}
+                                            shouldHighlightWeekends
+                                            locale="fa"
+                                            wrapperClassName="date-input-wrapper"
+                                            inputClassName="date-input"
+                                            colorPrimary="#545cd8"
+                                            inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className="input-wrapper">
+                                    <label
+                                        htmlFor="publish_time"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        تاریخ پایان :
+                                        <span className="form__star">*</span>
+                                    </label>
+                                    <div className="form-control">
+                                        <DatePicker
+                                            value={endDate}
+                                            onChange={setEndDate}
+                                            shouldHighlightWeekends
+                                            locale="fa"
+                                            wrapperClassName="date-input-wrapper"
+                                            inputClassName="date-input"
+                                            colorPrimary="#545cd8"
+                                            inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readClasses()}
+                            >
+                                {loading ? "در حال انجام ..." : "جستجو"}
+                            </button>
+                        </div>
+                    </form>
+                </div>
 
                 <div className="table__wrapper">
                     <table className="table">

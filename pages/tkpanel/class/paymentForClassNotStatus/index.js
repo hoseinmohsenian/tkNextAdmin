@@ -1,9 +1,13 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import NotHeldClasses from "../../../../components/AdminDashboard/Main/Content/NotHeldClasses/NotHeldClasses";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function NotHeldClassesPage({ classes, token }) {
+function NotHeldClassesPage({ classes, token,notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="لیست کلاس های برگزار نشده | تیکا"></Header>
@@ -18,6 +22,7 @@ export default NotHeldClassesPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const { page } = context?.query;
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
     let searchParams = "";
@@ -46,6 +51,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

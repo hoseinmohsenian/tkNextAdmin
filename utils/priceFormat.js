@@ -23,5 +23,8 @@ export function getFormattedPrice(price) {
 }
 
 export function getUnformattedPrice(formatedPrice) {
+    if (typeof formatedPrice === "number") {
+        return formatedPrice;
+    }
     return formatedPrice.replace(/,/g, "");
 }

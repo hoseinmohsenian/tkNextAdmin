@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import AddPlacement from "../../../../../components/AdminDashboard/Main/Content/StudentPlacements/AddPlacement/AddPlacement";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants/index";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function AddPlacementPage({ token, levels, languages, user }) {
+function AddPlacementPage({ token, levels, languages, user, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="اضافه کردن تعیین سطح زبان آموز | تیکا"></Header>
@@ -55,6 +60,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

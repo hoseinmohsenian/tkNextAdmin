@@ -10,6 +10,7 @@ import Link from "next/link";
 import Modal from "../../../../../Modal/Modal";
 import { useGlobalContext } from "../../../../../../context";
 import { AiOutlineWhatsApp } from "react-icons/ai";
+import API from "../../../../../../api";
 
 function MultiSession({ token }) {
     const [classes, setClasses] = useState([]);
@@ -46,25 +47,29 @@ function MultiSession({ token }) {
 
         try {
             setLoading(true);
-            const res = await fetch(
-                `${BASE_URL}/admin/support/classroom/last?${searchQuery}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+
+            const { response, status, data } = await API.get(
+                `/admin/support/classroom/last?${searchQuery}`
             );
-            const { data } = await res.json();
-            setClasses(data);
+
+            if (status === 200) {
+                showAlert(true, "success", "جستجو انجام شد");
+                setClasses(data?.data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
-            setLoading(false);
         } catch (error) {
             console.log("Error reading classes", error);
         }
+        setLoading(false);
     };
 
     const readClassesHandler = async () => {

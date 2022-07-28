@@ -1,12 +1,12 @@
 import { useState } from "react";
 import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../../Editor/Editor"), {
     ssr: false,
 });
+import API from "../../../../../../../api";
 
 function CreatePagesList({ token, page_id }) {
     const [formData, setFormData] = useState({
@@ -70,32 +70,26 @@ function CreatePagesList({ token, page_id }) {
     const addPageContent = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/site-page/list/${page_id}`,
-                {
-                    method: "POST",
-                    body: fd,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/site-page/list/${page_id}`,
+                fd
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(true, "success", "محتوای جدید با موفقیت اضافه شد");
                 router.push(`/tkpanel/pages/${page_id}/content`);
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new page list", error);
         }
+        setLoading(false);
     };
 
     return (

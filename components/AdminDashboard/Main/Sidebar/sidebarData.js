@@ -48,14 +48,19 @@ import {
     BiTable,
     BiSitemap,
 } from "react-icons/bi";
-import { BsArrowRepeat } from "react-icons/bs";
+import { BsArrowRepeat, BsFillFileSpreadsheetFill } from "react-icons/bs";
 import {
     GiSkills,
     GiDirectionSign,
     GiLogicGateAnd,
     GiPlatform,
 } from "react-icons/gi";
-import { RiArticleFill, RiAdminLine } from "react-icons/ri";
+import {
+    RiArticleFill,
+    RiAdminLine,
+    RiNumber1,
+    RiNumber2,
+} from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
 import { FiPercent, FiUserX } from "react-icons/fi";
 import { GoReport } from "react-icons/go";
@@ -272,7 +277,7 @@ export default [
                 icon: <FaCommentDots />,
             },
             {
-                title: "5جلسه / 10 جلسه",
+                title: "۵ جلسه / ۱۰ جلسه",
                 path: "/tkpanel/multiSessionsList",
                 icon: <FaListUl />,
             },
@@ -442,6 +447,23 @@ export default [
                 ],
             },
             {
+                title: "آزمون تعیین سطح",
+                icon: <BsFillFileSpreadsheetFill />,
+                path: "#",
+                subNav: [
+                    {
+                        title: "لیست سطح اول",
+                        path: "/tkpanel/levelingTests",
+                        icon: <RiNumber1 />,
+                    },
+                    {
+                        title: "لیست سطح دوم",
+                        path: "/tkpanel/levelingTestDetails",
+                        icon: <RiNumber2 />,
+                    },
+                ],
+            },
+            {
                 title: "سئو",
                 icon: <IoPulseOutline />,
                 path: "#",
@@ -550,58 +572,8 @@ export default [
                 icon: <AiFillInfoCircle />,
             },
             {
-                title: "درباره ما",
-                path: "/tkpanel/siteAbouts",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "دوره ها",
-                path: "/tkpanel/page/doreh",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "تماس ما",
-                path: "/tkpanel/siteContacts",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "همکاری با ما",
-                path: "/tkpanel/cooperations",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "قوانین و مقررات",
-                path: "/tkpanel/policies",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "درخواست مدرک",
-                path: "/tkpanel/degrees",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "نحوه تدریس",
-                path: "/tkpanel/methods",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "حامیان ما",
-                path: "/tkpanel/supporters",
-                icon: <AiFillInfoCircle />,
-            },
-            {
                 title: "مصاحبه با اساتید",
                 path: "/tkpanel/teacherInterviewsCategories",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "دعوت از دوستان فوتر",
-                path: "/tkpanel/referralFooter",
-                icon: <AiFillInfoCircle />,
-            },
-            {
-                title: "داستان تیکا",
-                path: "/tkpanel/tikkaaStory",
                 icon: <AiFillInfoCircle />,
             },
             {

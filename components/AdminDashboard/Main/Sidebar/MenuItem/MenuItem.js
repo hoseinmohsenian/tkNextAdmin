@@ -33,9 +33,10 @@ function MenuItem({ data, openItem, setOpenItem, ind, showSidebar, asPath }) {
                 {subNav.map((navItem, i) => {
                     const { title, path, icon, subNav } = navItem;
 
-                    // if (path === asPath) {
-                    //     setOpenItem(ind);
-                    // }
+                    if (path === asPath) {
+                        // console.log("ind", ind);
+                        setOpenItem(ind);
+                    }
 
                     if (subNav) {
                         return (

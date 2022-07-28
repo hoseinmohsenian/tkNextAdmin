@@ -221,7 +221,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                           )
                                           .locale("fa")
                                           .format("DD MMMM YYYY")} , ${
-                                          item?.timmmme && item?.time !== "[]"
+                                          item?.time && item?.time !== "[]"
                                               ? formatTime(item?.time)
                                               : "-"
                                       }`
@@ -287,7 +287,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                                 جزئیات
                                             </button>
                                             <Link
-                                                href={`/tkpanel/multiSessionsList/logs/${item.id}`}
+                                                href={`/tkpanel/multiSessionsList/logs/${item.id}?type=monitoring`}
                                             >
                                                 <a
                                                     className={`action-btn warning`}

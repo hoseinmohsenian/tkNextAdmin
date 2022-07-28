@@ -35,7 +35,7 @@ const languageSchema = {
     updated_at: "",
 };
 
-function Step1({ token, countries, languages, alertData, showAlert }) {
+function Step1({ token, alertData, showAlert }) {
     const [formData, setFormData] = useState({
         id: "",
         gender: 1,
@@ -51,6 +51,8 @@ function Step1({ token, countries, languages, alertData, showAlert }) {
     });
     const [fetchedData, setFetchedData] = useState({});
     const [errors, setErrors] = useState([]);
+    const [languages, setLanguages] = useState([]);
+    const [countries, setCountries] = useState([]);
     const [provinces, setProvinces] = useState([]);
     const [cities, setCities] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(countrySchema);
@@ -166,6 +168,36 @@ function Step1({ token, countries, languages, alertData, showAlert }) {
         }
     };
 
+    const readLanguages = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/data/language`, {
+                headers: {
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+            const { data } = await res.json();
+            setLanguages(() => data);
+        } catch (error) {
+            console.log("error fetching languages ", error);
+        }
+    };
+
+    const readCountries = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/data/country`, {
+                headers: {
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+            const { data } = await res.json();
+            setCountries(() => data);
+        } catch (error) {
+            console.log("error fetching countries ", error);
+        }
+    };
+
     const getProvinces = async (country_id) => {
         try {
             const res = await fetch(
@@ -267,6 +299,8 @@ function Step1({ token, countries, languages, alertData, showAlert }) {
     useEffect(() => {
         if (token) {
             getPublicInfo();
+            readCountries();
+            readLanguages();
         }
     }, [token]);
 

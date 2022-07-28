@@ -20,28 +20,25 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-API.interceptors.response.use(
-    (response) => {
-        return response.data;
-    },
-    (error) => {
-        if (error?.response?.status === 401) {
-            if (window) {
-                window.location.href = "/tkcp/login";
-            }
-        } else if (error?.response?.status === 403) {
-            if (window) {
-                window.location.href = "/notauthorized";
-            }
-        } else {
-            if (error?.response?.status === 500) console.log("error 500");
-            if (error && error.response && error?.response?.data) {
-                console.log("error", error?.response?.data?.error);
-            }
+API.interceptors.response.use(null, (error) => {
+    if (error?.response?.status === 401) {
+        if (window) {
+            window.location.href = "/tkcp/login";
         }
-
-        return error;
+    } else if (error?.response?.status === 403) {
+        if (window) {
+            window.location.href = "/notauthorized";
+        }
+    } else {
+        if (!error.response) console.log("error", "error");
+        if (error?.response?.status === 500) console.log("error 500", "error");
+        if (error && error.response && error?.response?.data) {
+            // console.log(error?.response?.data?.error, "error");
+            console.log("error", error?.response?.data?.error);
+        }
     }
-);
+
+    return error;
+});
 
 export default API;

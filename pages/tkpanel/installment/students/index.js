@@ -1,16 +1,19 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import StudentsCredit from "../../../../components/AdminDashboard/Main/Content/CreditClass/StudentsCredit/StudentsCredit";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function StudentsCreditsPage({ students, token, teachers }) {
+function StudentsCreditsPage({ students, teachers, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="لیست زبان آموزان اعتباری | تیکا"></Header>
             <AdminDashboard>
                 <StudentsCredit
                     fetchedStudents={students}
-                    token={token}
                     teachers={teachers}
                 />
             </AdminDashboard>
@@ -22,6 +25,7 @@ export default StudentsCreditsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {
@@ -49,13 +53,18 @@ export async function getServerSideProps(context) {
         }),
     ]);
 
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
         props: {
             students: dataArr[0].data,
             teachers: dataArr[1].data,
-            token,
         },
     };
 }

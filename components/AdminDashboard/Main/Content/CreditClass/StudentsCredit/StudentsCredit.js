@@ -1,21 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Box from "../../Elements/Box/Box";
-import { BASE_URL } from "../../../../../../constants";
 import Alert from "../../../../../Alert/Alert";
-import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./StudentsCredit.module.css";
 import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
+import API from "../../../../../../api";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
-function StudentsCredit({
-    fetchedStudents: { data, ...restData },
-    token,
-    teachers,
-}) {
+function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
     const [list, setList] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [students, setStudents] = useState([]);
@@ -46,18 +41,23 @@ function StudentsCredit({
         });
 
         try {
-            const res = await fetch(`${BASE_URL}/admin/credit/enable`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            const {
-                data: { data, ...restData },
-            } = await res.json();
-            setList(data);
-            setPagData(restData);
+            const { data, status, response } = await API.get(
+                `/admin/credit/enable`
+            );
+
+            if (status === 200) {
+                const { data: listData, ...restData } = data?.data;
+                setList(listData);
+                setPagData(restData);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -88,131 +88,96 @@ function StudentsCredit({
     const removeStudent = async (user_id, i) => {
         handleLoadings(true, i);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/credit/enable/${user_id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { status, response } = await API.delete(
+                `/admin/credit/enable/${user_id}`
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 const filteredStudents = list.filter(
                     (user) => user.id !== user_id
                 );
                 setList(filteredStudents);
                 showAlert(true, "danger", "این زبان آموز حذف شد");
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            handleLoadings(false, i);
         } catch (error) {
             console.log("Error removing student", error);
         }
+        handleLoadings(false, i);
     };
 
-    const searchStudents = async (student_name) => {
+    const readStudents = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${student_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/student/${selectedTeacher.id}`
             );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data || []);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
-            console.log("Error searching teachers", error);
+            console.log("Error reading students", error);
         }
-    };
-
-    const searchTeachers = async (teacher_name) => {
-        setLoading(true);
-        try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/search?name=${teacher_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setTeachers(data);
-            } else {
-                showAlert(
-                    true,
-                    "warning",
-                    errData?.error?.invalid_params[0]?.message ||
-                        "مشکلی پیش آمده"
-                );
-            }
-            setLoading(false);
-        } catch (error) {
-            console.log("Error searching teachers", error);
-        }
+        setLoading(false);
     };
 
     const addStudent = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/credit/enable`, {
-                method: "POST",
-                body: JSON.stringify({
+            const { response, status } = await API.post(
+                `/admin/credit/enable`,
+                JSON.stringify({
                     user_id: selectedStudent.id,
                     teacher_id: selectedTeacher.id,
-                }),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+                })
+            );
+
+            if (status === 200) {
                 showAlert(
                     true,
                     "success",
                     `زبان آموز ${selectedStudent.name_family} اضافه شد`
                 );
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding student", error);
         }
+        setLoading(false);
     };
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
+
+    useEffect(() => {
+        if (selectedTeacher.id) {
+            readStudents();
+        } else {
+            setStudents([]);
+        }
+        setSelectedStudent(studentSchema);
+    }, [selectedTeacher]);
 
     return (
         <div>
@@ -309,31 +274,25 @@ function StudentsCredit({
                                     <div
                                         className={`form-control form-control-searchselect`}
                                     >
-                                        <FetchSearchSelect
+                                        <SearchSelect
                                             list={students}
-                                            setList={setStudents}
-                                            placeholder="جستجو کنید"
+                                            defaultText="انتخاب کنید"
                                             selected={selectedStudent}
-                                            id="id"
                                             displayKey="name_family"
-                                            displayPattern={[
-                                                {
-                                                    member: true,
-                                                    key: "name_family",
-                                                },
-                                                { member: false, key: " - " },
-                                                { member: true, key: "mobile" },
-                                            ]}
+                                            id="id"
                                             setSelected={setSelectedStudent}
-                                            noResText="زبان آموزی پیدا نشد"
                                             listSchema={studentSchema}
                                             stylesProps={{
                                                 width: "100%",
                                             }}
                                             background="#fafafa"
-                                            onSearch={(value) =>
-                                                searchStudents(value)
-                                            }
+                                            displayPattern={[
+                                                {
+                                                    member: true,
+                                                    key: "name_family",
+                                                },
+                                            ]}
+                                            noResText="زبان آموزی پیدا نشد"
                                             openBottom={true}
                                         />
                                     </div>

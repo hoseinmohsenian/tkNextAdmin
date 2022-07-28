@@ -3,6 +3,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
+import API from "../../../../../../api";
 
 function AddPlacement({ token, languages, levels, user }) {
     const [formData, setFormData] = useState({
@@ -49,30 +50,26 @@ function AddPlacement({ token, languages, levels, user }) {
                 language_id: formData.language_id,
                 teaching_level_id: formData.teaching_level_id,
             };
-            const res = await fetch(`${BASE_URL}/admin/student/placement`, {
-                method: "POST",
-                body: JSON.stringify(body),
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/student/placement`,
+                body
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "تعیین سطح با موفقیت ثبت شد");
                 router.push("/tkpanel/profileDetermineLevel");
             } else {
-                const { error } = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    error?.invalid_params[0]?.message || "مشکلی پیش آمده"
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding placement", error);
         }
+        setLoading(false);
     };
 
     return (

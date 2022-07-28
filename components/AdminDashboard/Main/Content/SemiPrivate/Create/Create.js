@@ -382,7 +382,6 @@ function CreateSemiPrivate({ token }) {
                                             }}
                                             background="#fafafa"
                                             max={4}
-                                            fontSize={16}
                                         />
                                     </div>
                                 </div>

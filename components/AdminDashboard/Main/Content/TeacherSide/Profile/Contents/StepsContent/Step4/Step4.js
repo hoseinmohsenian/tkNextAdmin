@@ -18,20 +18,13 @@ const languageSchema = {
 };
 
 function Step4(props) {
-    const {
-        languages,
-        levels,
-        addedLanguages: fetchedAddedLanguages,
-        token,
-        alertData,
-        showAlert,
-        BASE_URL,
-    } = props;
+    const { token, alertData, showAlert, BASE_URL } = props;
     const [openModal, setOpenModal] = useState(false);
     const [visible, setVisible] = useState(false);
     const [LanguageRowID, setLanguageRowID] = useState(" ");
-
-    const [addedLanguages, setAddedLanguages] = useState(fetchedAddedLanguages);
+    const [languages, setLanguages] = useState([]);
+    const [levels, setLevels] = useState([]);
+    const [addedLanguages, setAddedLanguages] = useState([]);
     const [selectedLan, setSelectedLan] = useState(languageSchema);
     const [selectedSpecialitys, setSelectedSpecialitys] = useState([]);
     const [selectedSkills, setSelectedSkills] = useState([]);
@@ -43,6 +36,36 @@ function Step4(props) {
 
     const handleClick = () => {
         console.log("clicked");
+    };
+
+    const readLanguages = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/data/language`, {
+                headers: {
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+            const { data } = await res.json();
+            setLanguages(() => data);
+        } catch (error) {
+            console.log("error fetching languages ", error);
+        }
+    };
+
+    const readLevels = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/data/level`, {
+                headers: {
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+            });
+            const { data } = await res.json();
+            setLevels(() => data);
+        } catch (error) {
+            console.log("error fetching levels ", error);
+        }
     };
 
     const findLan = (lanId) => {
@@ -107,6 +130,14 @@ function Step4(props) {
             fetchAddedLanguages();
         }
     }, [openModal]);
+
+    useEffect(() => {
+        if (token) {
+            fetchAddedLanguages();
+            readLanguages();
+            readLevels();
+        }
+    }, [token]);
 
     return (
         <div className={styles.step}>

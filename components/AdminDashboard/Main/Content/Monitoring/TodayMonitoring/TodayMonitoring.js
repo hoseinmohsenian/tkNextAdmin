@@ -163,22 +163,15 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                     پلتفرم
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.platform_name}
+                                    {selectedClass?.platform_name || "-"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    وضعیت کلاس
+                                    زبان
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.status === 0 &&
-                                        "تعیین وضعیت نشده"}
-                                    {selectedClass?.status === 1 &&
-                                        "برگزار شده"}
-                                    {selectedClass?.status === 2 && "کنسل شده"}
-                                    {selectedClass?.status === 3 &&
-                                        "لغو بازگشت پول"}
-                                    {selectedClass?.status === 4 && "غیبت"}
+                                    {selectedClass.language_name}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -193,12 +186,14 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    وضعیت پرداخت
+                                    قیمت
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.pay === 1
-                                        ? "پرداخت شده"
-                                        : "پرداخت نشده"}
+                                    {selectedClass?.price
+                                        ? `${Intl.NumberFormat().format(
+                                              selectedClass?.price
+                                          )} تومان`
+                                        : "-"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -330,8 +325,10 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                     موبایل زبان آموز
                                 </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">قیمت</th>
+                                <th className="table__head-item">وضعیت کلاس</th>
+                                <th className="table__head-item">
+                                    وضعیت پرداخت
+                                </th>
                                 <th className="table__head-item">تاریخ</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -349,7 +346,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                           )
                                           .locale("fa")
                                           .format("DD MMMM YYYY")} , ${
-                                          item?.timmmme && item?.time !== "[]"
+                                          item?.time && item?.time !== "[]"
                                               ? formatTime(item?.time)
                                               : "-"
                                       }`
@@ -391,14 +388,18 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                             </span>
                                         </td>
                                         <td className="table__body-item">
-                                            {item?.language_name}
+                                            {item?.status === 0 &&
+                                                "تعیین وضعیت نشده"}
+                                            {item?.status === 1 && "برگزار شده"}
+                                            {item?.status === 2 && "کنسل شده"}
+                                            {item?.status === 3 &&
+                                                "لغو بازگشت پول"}
+                                            {item?.status === 4 && "غیبت"}
                                         </td>
                                         <td className="table__body-item">
-                                            {item?.price
-                                                ? `${Intl.NumberFormat().format(
-                                                      item?.price
-                                                  )} تومان`
-                                                : "-"}
+                                            {item?.pay === 1
+                                                ? "پرداخت شده"
+                                                : "پرداخت نشده"}
                                         </td>
                                         <td className="table__body-item">
                                             {date}

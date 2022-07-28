@@ -10,14 +10,33 @@ import ReactTooltip from "react-tooltip";
 import Modal from "../../../../../Modal/Modal";
 import Alert from "../../../../../Alert/Alert";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import styles from "./RequestDetails.module.css";
+
+const filtersSchema = {
+    teacher_name: "",
+    teacher_mobile:"",
+    user_name:"",
+    user_mobile:"",
+    status: -1,
+};
+const appliedFiltersSchema = {
+    teacher_name: false,
+    teacher_mobile: false,
+    user_name: false,
+    user_mobile: false,
+    status: false,
+};
 
 function RequestDetails(props) {
     const {
         fetchedClasses: { data, ...restData },
         token,
+        searchData
     } = props;
     const [classes, setClasses] = useState(data);
     const [formData, setFormData] = useState(data);
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(searchData);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
@@ -36,17 +55,52 @@ function RequestDetails(props) {
         setAlertData({ show, type, message });
     };
 
-    const readClasses = async (page = 1) => {
+    const handleFilterOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const readClasses = async (page = 1, avoidFilters = false) => {
+        let searchParams = {};
+        const isFilterEnabled = (key) => 
+            Number(filters[key]) !== -1 && 
+            filters[key] !== undefined && 
+            filters[key] !== "";
+
+        // Constructing search parameters
         let searchQuery = "";
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (isFilterEnabled(key)) {
+                    searchParams = {
+                        ...searchParams,
+                        [key]: filters[key],
+                    };
+                    tempFilters[key] = true;
+                    searchQuery += `${key}=${filters[key]}&`;
+                }
+                else{
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
-        let searchParams = {};
         if (page !== 1) {
             searchParams = {
                 ...searchParams,
                 page,
             };
         }
+        
         router.push({
             pathname: `/tkpanel/teacher/request/lists`,
             query: searchParams,
@@ -129,7 +183,7 @@ function RequestDetails(props) {
         }
     };
 
-    const updateListHandler = (i)=>{
+    const updateListHandler = (i) => {
         let temp = [...classes];
             temp[i] = {...temp[i], ...selectedRequest};
             temp[i]?.status = Number(selectedRequest.status);
@@ -138,13 +192,35 @@ function RequestDetails(props) {
             setFormData(() => temp);
     }
 
+    const showFilters = () => {
+        const keys = Object.keys(appliedFilters);
+        const values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i], key = keys[i];
+            if (value || (key === "status" && value === -1)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readClasses(1, true);
+        router.push({
+            pathname: `/tkpanel/teacher/request/lists`,
+            query: {},
+        });
+    };
+
     return (
         <div>
             <BreadCrumbs
                 substituteObj={{
                     teacher: "کلاس",
-                    request:"وضعیت درخواست کلاس"
-                    ,lists:"لیست"
+                    request: "وضعیت درخواست کلاس",
+                    lists: "لیست"
                 }}
             />
 
@@ -242,6 +318,160 @@ function RequestDetails(props) {
                         </div>
                     </Modal>
                 )}
+
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]}>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="teacher_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام استاد :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="teacher_name"
+                                            id="teacher_name"
+                                            className="form__input"
+                                            onChange={handleFilterOnChange}
+                                            value={filters?.teacher_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="teacher_mobile"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        موبایل استاد :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="teacher_mobile"
+                                            id="teacher_mobile"
+                                            className="form__input"
+                                            onChange={handleFilterOnChange}
+                                            value={filters?.teacher_mobile}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام زبان آموز :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="user_name"
+                                            id="user_name"
+                                            className="form__input"
+                                            onChange={handleFilterOnChange}
+                                            value={filters?.user_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_mobile"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        موبایل زبان آموز :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="user_mobile"
+                                            id="user_mobile"
+                                            className="form__input"
+                                            onChange={handleFilterOnChange}
+                                            value={filters?.user_mobile}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className="input-wrapper">
+                                    <label
+                                        htmlFor="status"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        وضعیت :
+                                    </label>
+                                    <div className="form-control">
+                                        <select
+                                            name="status"
+                                            id="status"
+                                            className="form__input input-select"
+                                            onChange={handleFilterOnChange}
+                                            value={filters.status}
+                                        >
+                                            <option value={-1}>
+                                                همه
+                                            </option>
+                                            <option value={0}>
+                                                در انتظار تایید
+                                            </option>
+                                            <option value={1}>تایید شده</option>
+                                            <option value={2}>کنسل</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readClasses()}
+                            >
+                                {loading ? "در حال انجام ..." : "اعمال فیلتر"}
+                            </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
+                        </div>
+                    </form>
+                </div>
 
                 <div className="table__wrapper">
                     <table className="table">

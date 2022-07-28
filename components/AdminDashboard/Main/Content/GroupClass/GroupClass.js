@@ -7,15 +7,34 @@ import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
+import styles from "./GroupClass.module.css";
+
+const filtersSchema = {
+    teacher_name: "",
+    title: "",
+    status: -1,
+};
+const appliedFiltersSchema = {
+    teacher_name: false,
+    title: false,
+    status: false,
+};
 
 function GroupClass(props) {
     const {
         fetchedClasses: { data, ...restData },
         token,
+        searchData,
     } = props;
     const [classes, setClasses] = useState(data);
+    const [filters, setFilters] = useState({ ...filtersSchema, ...searchData });
+    const [appliedFilters, setAppliedFilters] = useState({
+        ...filtersSchema,
+        ...searchData,
+    });
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const [alertData, setAlertData] = useState({
         show: false,
@@ -26,8 +45,44 @@ function GroupClass(props) {
     const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
-    const readClasses = async (page = 1) => {
+    const handleFilterOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const readClasses = async (page = 1, avoidFilters = false) => {
         let searchParams = {};
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== -1 &&
+            filters[key] !== undefined &&
+            filters[key] !== "";
+
+        // Constructing search parameters
+        let searchQuery = "";
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (isFilterEnabled(key)) {
+                    console.log("key", key);
+                    searchParams = {
+                        ...searchParams,
+                        [key]: filters[key],
+                    };
+                    tempFilters[key] = true;
+                    searchQuery += `${key}=${filters[key]}&`;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
+        searchQuery += `page=${page}`;
 
         if (page !== 1) {
             searchParams = {
@@ -41,9 +96,10 @@ function GroupClass(props) {
             query: searchParams,
         });
 
+        setLoading(true);
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/group-class?page=${page}`,
+                `${BASE_URL}/admin/group-class?${searchQuery}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -63,8 +119,9 @@ function GroupClass(props) {
         } catch (error) {
             console.log("Error reading group-classes", error);
         }
+        setLoading(false);
     };
-
+    console.log(filters);
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
@@ -135,6 +192,29 @@ function GroupClass(props) {
         setLoadings(() => temp);
     };
 
+    const showFilters = () => {
+        const keys = Object.keys(appliedFilters);
+        const values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i],
+                key = keys[i];
+            if (value || (key === "status" && value === -1)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readClasses(1, true);
+        router.push({
+            pathname: `/tkpanel/groupClass`,
+            query: {},
+        });
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -184,6 +264,154 @@ function GroupClass(props) {
                     </Modal>
                 )}
 
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]}>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="title"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        عنوان :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="title"
+                                            id="title"
+                                            className="form__input"
+                                            onChange={handleFilterOnChange}
+                                            value={filters?.title}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="teacher_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام استاد :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="teacher_name"
+                                            id="teacher_name"
+                                            className="form__input"
+                                            onChange={handleFilterOnChange}
+                                            value={filters?.teacher_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div
+                                className={`col-sm-12 ${styles["search-col"]}`}
+                            >
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="status"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        وضعیت :
+                                    </label>
+                                    <div className="form-control form-control-radio">
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="active"
+                                                className="radio-title"
+                                            >
+                                                فعال
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                onChange={handleFilterOnChange}
+                                                value={1}
+                                                checked={
+                                                    Number(filters.status) === 1
+                                                }
+                                                id="active"
+                                            />
+                                        </div>
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="inactive"
+                                                className="radio-title"
+                                            >
+                                                غیرفعال
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                onChange={handleFilterOnChange}
+                                                value={0}
+                                                checked={
+                                                    Number(filters.status) === 0
+                                                }
+                                                id="inactive"
+                                            />
+                                        </div>
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="both"
+                                                className="radio-title"
+                                            >
+                                                هردو
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                onChange={handleFilterOnChange}
+                                                value={-1}
+                                                checked={
+                                                    Number(filters.status) ===
+                                                    -1
+                                                }
+                                                id="both"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readClasses()}
+                            >
+                                {loading ? "در حال انجام ..." : "اعمال فیلتر"}
+                            </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
+                        </div>
+                    </form>
+                </div>
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -213,9 +441,8 @@ function GroupClass(props) {
                                         {cls.commission}%
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.status === 0 && "در انتظار تایید"}
-                                        {cls.status === 1 && "تایید شده"}
-                                        {cls.status === 2 && "تایید نشده"}
+                                        {cls.status === 0 && "غیرفعال"}
+                                        {cls.status === 1 && "فعال"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {cls.start_date

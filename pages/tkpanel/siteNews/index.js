@@ -2,8 +2,20 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import Articles from "../../../components/AdminDashboard/Main/Content/Articles/Articles";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function ArticlesPage({ articles, token, languages, admins, searchData }) {
+function ArticlesPage({
+    articles,
+    token,
+    languages,
+    admins,
+    searchData,
+    notAllowed,
+}) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="لیست مقالات | تیکا"></Header>
@@ -60,6 +72,13 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
     let languages = dataArr[0].data,
         admins = dataArr[1].data;
@@ -111,6 +130,13 @@ export async function getServerSideProps(context) {
             "Access-Control-Allow-Origin": "*",
         },
     });
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const { data: articles } = await res.json();
 
     return {

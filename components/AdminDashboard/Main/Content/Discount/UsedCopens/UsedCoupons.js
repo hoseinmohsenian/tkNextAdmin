@@ -199,19 +199,19 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                             {copens?.map((copen) => (
                                 <tr className="table__body-row" key={copen?.id}>
                                     <td className="table__body-item">
-                                        {copen?.name_family || "-"}
+                                        {copen.user_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {copen?.teacher_name || "-"}
+                                        {copen.teacher_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {copen?.discount?.name}
+                                        {copen.discount?.name}
                                     </td>
                                     <td className="table__body-item">
-                                        {copen?.created_at
-                                            ? moment(copen?.created_at).format(
-                                                  "YYYY/MM/DD hh:mm:ss"
-                                              )
+                                        {copen.discount?.expired_at
+                                            ? moment(
+                                                  copen.discount?.expired_at
+                                              ).format("YYYY/MM/DD hh:mm:ss")
                                             : "-"}
                                     </td>
                                 </tr>

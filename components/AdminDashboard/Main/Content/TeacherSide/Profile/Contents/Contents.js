@@ -7,16 +7,8 @@ import Step4 from "./StepsContent/Step4/Step4";
 import Step5 from "./StepsContent/Step5/Step5";
 import Step6 from "./StepsContent/Step6/Step6";
 import Step7 from "./StepsContent/Step7/Step7";
-import { useGlobalContext } from "../../../../../../../context";
 
-function Contents({
-    step,
-    languages,
-    levels,
-    addedLanguages,
-    token,
-    countries,
-}) {
+function Contents({ step, token }) {
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -33,8 +25,6 @@ function Contents({
             {step === 1 && (
                 <Step1
                     token={token}
-                    countries={countries}
-                    languages={languages}
                     alertData={alertData}
                     showAlert={showAlert}
                 />
@@ -56,9 +46,6 @@ function Contents({
             )}
             {step === 4 && (
                 <Step4
-                    languages={languages}
-                    levels={levels}
-                    addedLanguages={addedLanguages}
                     token={token}
                     alertData={alertData}
                     showAlert={showAlert}
@@ -67,7 +54,6 @@ function Contents({
             )}
             {step === 5 && (
                 <Step5
-                    addedLanguages={addedLanguages}
                     token={token}
                     alertData={alertData}
                     showAlert={showAlert}

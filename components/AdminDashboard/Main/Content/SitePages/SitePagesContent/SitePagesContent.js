@@ -6,7 +6,7 @@ import Modal from "../../../../../Modal/Modal";
 import Alert from "../../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../../constants";
 
-function SitePagesContent({ list, token }) {
+function SitePagesContent({ list, token, parent }) {
     const router = useRouter();
     const { page_id } = router.query;
     const [openModal, setOpenModal] = useState(false);
@@ -66,7 +66,7 @@ function SitePagesContent({ list, token }) {
     return (
         <div>
             <Box
-                title="محتوای صفحات"
+                title={`محتوای صفحه «${parent.name}»`}
                 buttonInfo={{
                     name: "محتوای جدید",
                     url: `/tkpanel/pages/${page_id}/content/create`,
@@ -129,7 +129,7 @@ function SitePagesContent({ list, token }) {
                                         {item.title}
                                     </td>
                                     <td className="table__body-item">
-                                        {item.sum_desc}
+                                        {item.sum_desc || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <div
