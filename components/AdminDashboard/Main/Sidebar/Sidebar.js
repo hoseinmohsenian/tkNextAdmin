@@ -1,7 +1,7 @@
 import styles from "./Sidebar.module.css";
 import MenuItem from "./MenuItem/MenuItem";
 import sidebarData from "./sidebarData";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 function Sidebar({ showSidebar }) {
@@ -9,20 +9,48 @@ function Sidebar({ showSidebar }) {
     const router = useRouter();
     const { asPath } = router;
 
-    // let res = -9;
-    // for (let k = 0; k < sidebarData.length; k++) {
-    //     let { subNav } = sidebarData[k];
-    //     console.log(subNav);
-    //     subNav.map((navItem, i) => {
-    //         const { title, path, icon, subNav } = navItem;
+    const handleOpenSidebar = useCallback(() => {
+        sidebarData.map((data, ind) => {
+            const { subNav } = data;
 
-    //         if (path === asPath) {
-    //             // setOpenItem(k);
-    //             res = k;
-    //         }
-    //     });
-    // }
-    // setOpenItem(res);
+            subNav.map((navItem, i) => {
+                const { path, subNav } = navItem;
+
+                if (path === asPath) {
+                    setOpenItem(ind);
+                }
+
+                if (subNav) {
+                    subNav.map((item, ind1) => {
+                        if (item.path === asPath) {
+                            // setOpenItem(ind1);
+                            setOpenItem(ind);
+                        }
+
+                        if (item.subNav) {
+                            item.subNav?.map((it, ind2) => {
+                                if (it.path === asPath) {
+                                    setOpenItem(ind);
+                                }
+
+                                if(it.subNav){
+                                    it.subNav?.subNav.map((innerItem) => {
+                                        if (innerItem.path === asPath) {
+                                            setOpenItem(ind);
+                                        }
+                                    })
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    }, []);
+
+    useEffect(() => {
+        handleOpenSidebar();
+    }, []);
 
     return (
         <aside
