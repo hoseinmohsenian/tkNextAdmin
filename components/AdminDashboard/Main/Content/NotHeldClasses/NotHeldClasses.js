@@ -296,7 +296,9 @@ function NotHeldClasses(props) {
                                         {cls.user_mobile}
                                         {cls?.user_mobile && (
                                             <Link
-                                                href={`https://api.whatsapp.com/send?phone=${cls.user_mobile}`}
+                                                href={`https://api.whatsapp.com/send?phone=98${cls.user_mobile?.slice(
+                                                    1
+                                                )}`}
                                             >
                                                 <a
                                                     className="whatsapp-icon"

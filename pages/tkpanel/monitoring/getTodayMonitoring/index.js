@@ -10,6 +10,7 @@ function DoneMonitoringPage({
     monitorings,
     shamsi_date_obj,
     notAllowed,
+    admins
 }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
@@ -22,6 +23,7 @@ function DoneMonitoringPage({
                     token={token}
                     monitorings={monitorings}
                     shamsi_date_obj={shamsi_date_obj}
+                    admins={admins}
                 />
             </AdminDashboard>
         </div>
@@ -56,6 +58,13 @@ export async function getServerSideProps(context) {
                 "Access-Control-Allow-Origin": "*",
             },
         }),
+        fetch(`${BASE_URL}/admin/management/return`, {
+            headers: {
+                "Content-type": "application/json",
+                Authorization: `Bearer ${token}`,
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
     ]);
 
     if (!checkResponseArrAuth(responses)) {
@@ -77,6 +86,11 @@ export async function getServerSideProps(context) {
     };
 
     return {
-        props: { token, monitorings: dataArr[0].data, shamsi_date_obj },
+        props: { 
+            token, 
+            monitorings: dataArr[0].data,
+            shamsi_date_obj,
+            admins: dataArr[1].data,
+        },
     };
 }

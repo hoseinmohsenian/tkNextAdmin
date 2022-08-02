@@ -35,7 +35,8 @@ function EditHelp({ token, data }) {
             }
             if (
                 formData.redirect_url &&
-                formData.redirect_url !== data.redirect_url
+                formData.redirect_url !== data.redirect_url &&
+                Number(formData.redirect_status) === 1
             ) {
                 body = { ...body, redirect_url: formData.redirect_url };
             }
@@ -129,6 +130,25 @@ function EditHelp({ token, data }) {
                         </div>
                     </div>
                     <div className="input-wrapper">
+                        <label htmlFor="url" className="form__label">
+                            URL :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control form-control-url">
+                            <input
+                                type="text"
+                                name="url"
+                                id="url"
+                                className="form__input form__input--ltr"
+                                onChange={handleOnChange}
+                                value={formData.url}
+                                required
+                            />
+                            <div className="form-control-label">
+                                https://tikkaa.ir/help/
+                            </div>
+                        </div>
+                    </div>
+                    <div className="input-wrapper">
                         <label
                             htmlFor="redirect_status"
                             className={`form__label`}
@@ -156,26 +176,14 @@ function EditHelp({ token, data }) {
                         </div>
                     </div>
                     <div className="input-wrapper">
-                        <label htmlFor="url" className="form__label">
-                            URL :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control form-control-url">
-                            <input
-                                type="text"
-                                name="url"
-                                id="url"
-                                className="form__input form__input--ltr"
-                                onChange={handleOnChange}
-                                value={formData.url}
-                                required
-                            />
-                            <div className="form-control-label">
-                                https://tikkaa.ir/help/
-                            </div>
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="redirect_url" className="form__label">
+                        <label
+                            htmlFor="redirect_url"
+                            className={`form__label ${
+                                Number(formData.redirect_status) === 0
+                                    ? "form__label--disabled"
+                                    : undefined
+                            }`}
+                        >
                             URL ریدایرکت :
                         </label>
                         <div className="form-control form-control-url">
@@ -186,6 +194,9 @@ function EditHelp({ token, data }) {
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
                                 value={formData.redirect_url || ""}
+                                disabled={
+                                    Number(formData.redirect_status) === 0
+                                }
                             />
                             <div className="form-control-label">
                                 https://tikkaa.ir/help/

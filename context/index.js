@@ -110,9 +110,7 @@ const AppProvider = ({ children }) => {
     const formatTime = (hourString) => {
         return `${getTime(hourString)[0].startHour}:${
             getTime(hourString)[0].startMinute
-        }
-            تا 
-        ${getTime(hourString)[getTime(hourString).length - 1].endHour}:${
+        } تا ${getTime(hourString)[getTime(hourString).length - 1].endHour}:${
             getTime(hourString)[getTime(hourString).length - 1].endMinute
         }`;
     };

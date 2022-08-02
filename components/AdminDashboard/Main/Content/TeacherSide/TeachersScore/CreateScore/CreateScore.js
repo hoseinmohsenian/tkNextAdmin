@@ -48,7 +48,19 @@ function CreateScore({ token }) {
                     "accounting_effect",
                     Number(formData.accounting_effect)
                 );
-                if (formData.teacher_side_desc) {
+                if (
+                    !formData.teacher_side_desc &&
+                    Number(formData.notify_teacher) === 1
+                ) {
+                    showAlert(
+                        true,
+                        "danger",
+                        "توضیحات سمت استاد در صورت فعال بودن ارسال اعلان، اجباری است"
+                    );
+                } else if (
+                    formData.teacher_side_desc &&
+                    Number(formData.notify_teacher) === 0
+                ) {
                     fd.append("teacher_side_desc", formData.teacher_side_desc);
                 }
             }
@@ -219,7 +231,6 @@ function CreateScore({ token }) {
                                             width: "100%",
                                         }}
                                         background="#fafafa"
-                                        fontSize={16}
                                         onSearch={(value) =>
                                             searchTeachers(value)
                                         }
@@ -260,7 +271,6 @@ function CreateScore({ token }) {
                                         background="#fafafa"
                                         openBottom={true}
                                         id="id"
-                                        fontSize={16}
                                     />
                                 </div>
                             </div>
@@ -395,6 +405,9 @@ function CreateScore({ token }) {
                                 className="form__label"
                             >
                                 توضیحات سمت استاد :
+                                {Number(formData.notify_teacher) === 1 && (
+                                    <span className="form__star">*</span>
+                                )}
                             </label>
                             <textarea
                                 type="text"
@@ -403,6 +416,7 @@ function CreateScore({ token }) {
                                 className="form__textarea"
                                 onChange={handleOnChange}
                                 spellCheck={false}
+                                required={Number(formData.notify_teacher) === 1}
                             />
                         </div>
                     )}

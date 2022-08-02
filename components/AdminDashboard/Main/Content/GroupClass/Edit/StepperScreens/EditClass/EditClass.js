@@ -46,6 +46,8 @@ function EditClass(props) {
     moment.locale("fa", { useGregorianParser: true });
 
     const handleSubmit = async () => {
+        let price = formData.price?.toString().replace(/,/g, "");
+
         if (
             formData.language_id &&
             selectedTeacher.id &&
@@ -54,7 +56,7 @@ function EditClass(props) {
             selectedSkills.length >= 3 &&
             formData.class_capacity &&
             formData.class_number &&
-            formData.price.replace(/,/g, "")
+            price
         ) {
             const fd = new FormData();
             if (selectedTeacher.id !== addedData.teacher_id) {
@@ -72,8 +74,8 @@ function EditClass(props) {
             if (Number(formData.class_number) !== addedData.class_number) {
                 fd.append("class_number", Number(formData.class_number));
             }
-            if (Number(formData.price).replace(/,/g, "") !== addedData.price) {
-                fd.append("price", Number(formData.price.replace(/,/g, "")));
+            if (Number(price) !== addedData.price) {
+                fd.append("price", Number(price));
             }
             let counter = 0;
             for (let i = 0; i < selectedSpecialitys.length; i++) {
@@ -767,7 +769,7 @@ function EditClass(props) {
                                         id="commission"
                                         className="form__input input-select"
                                         onChange={handleOnChange}
-                                        value={formData.commission}
+                                        value={formData.commission || 0}
                                     >
                                         <option value={0}>انتخاب کنید</option>
                                         {Array(13)
@@ -820,15 +822,19 @@ function EditClass(props) {
                                     مدت زمان جلسه :
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="number"
+                                    <select
                                         name="session_time"
                                         id="session_time"
-                                        className="form__input form__input--ltr"
+                                        className="form__input input-select"
                                         onChange={handleOnChange}
-                                        value={formData.session_time || ""}
-                                        placeholder="دقیقه"
-                                    />
+                                        value={formData.session_time || 0}
+                                    >
+                                        <option value={0}>انتخاب کنید</option>
+                                        <option value={30}>۳۰ دقیقه</option>
+                                        <option value={60}>۶۰ دقیقه</option>
+                                        <option value={90}>۹۰ دقیقه</option>
+                                        <option value={120}>۱۲۰ دقیقه</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

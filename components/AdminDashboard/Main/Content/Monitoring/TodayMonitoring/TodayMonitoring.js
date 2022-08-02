@@ -22,7 +22,9 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
         type: "",
     });
     const [loading, setLoading] = useState(false);
-    const [followLoading, setFollowLoading] = useState(false);
+    const [loadings, setLoadings] = useState(
+        Array(monitorings?.length).fill(false)
+    );
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
     const [openModal, setOpenModal] = useState(false);
@@ -30,6 +32,12 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
+    };
+
+    const handleLoadings = (i, value) => {
+        let temp = [...loadings];
+        temp[i] = value;
+        setLoadings(() => temp);
     };
 
     const readMonitoring = async () => {
@@ -68,14 +76,16 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
         }
     };
 
-    const addFollower = async (monitoring_id, monitoring_follower, i) => {
+    const addFollower = async (i, monitoring_id, monitoring_follower) => {
         try {
-            setFollowLoading(true);
+            handleLoadings(i, true);
             const res = await fetch(
                 `${BASE_URL}/admin/classroom/monitoring/${monitoring_id}`,
                 {
                     method: "POST",
-                    body: JSON.stringify({ admin_id: monitoring_follower }),
+                    body: JSON.stringify({
+                        admin_id: Number(monitoring_follower),
+                    }),
                     headers: {
                         Authorization: `Bearer ${token}`,
                         "Content-type": "application/json",
@@ -85,7 +95,6 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
             );
             if (res.ok) {
                 showAlert(true, "success", "ادمین باموفقیت اضافه شد");
-                updateListHandler(i);
             } else {
                 const errData = await res.json();
                 showAlert(
@@ -95,40 +104,29 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                         "مشکلی پیش آمده"
                 );
             }
-            setFollowLoading(false);
         } catch (error) {
             console.log("Error adding monitoring follower", error);
         }
-    };
-
-    const addFollowerHandler = async (id, i) => {
-        if (
-            selectedClass.monitoring_follower !==
-            monitoringList[i]?.monitoring_follower
-        ) {
-            await addFollower(id, selectedClass.monitoring_follower, i);
-        }
+        handleLoadings(i, false);
     };
 
     const handleOnChange = (e, rowInd) => {
-        let updatedList = [...formData];
-        let updatedItem = {
-            ...updatedList[rowInd],
-            ...selectedClass,
-            monitoring_follower: Number(e.target.value),
+        let updated = [...monitoringList];
+        const monitoring_follower = e.target.value;
+        updated[rowInd] = {
+            ...updated[rowInd],
+            monitoring_follower: monitoring_follower,
         };
-        updatedList[rowInd] = updatedItem;
-        setSelectedClass(updatedItem);
-        setFormData(() => updatedList);
+        setMonitoringList(() => updated);
+
+        addFollowerHandler(rowInd, monitoring_follower);
     };
 
-    const updateListHandler = (i) => {
-        let temp = [...monitoringList];
-        temp[i] = { ...temp[i], ...selectedClass };
-        temp[i].monitoring_follower = selectedClass.monitoring_follower;
-        setSelectedClass(temp[i]);
-        setMonitoringList(() => temp);
-        setFormData(() => temp);
+    const addFollowerHandler = (i, monitoring_follower) => {
+        const monitoring_id = monitoringList[i].id;
+        if (Number(monitoring_follower) !== 0) {
+            addFollower(i, monitoring_id, monitoring_follower);
+        }
     };
 
     return (
@@ -198,77 +196,12 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    مدت کلاس
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.class_time
-                                        ? `${selectedClass?.class_time} دقیقه`
-                                        : "-"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
                                     ساعت کلاس
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedClass.time
                                         ? formatTime(selectedClass.time)
                                         : "-"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    پیگیری کلاس
-                                </span>
-                                <span
-                                    className={"modal__item-body"}
-                                    style={{ display: "flex" }}
-                                >
-                                    <div
-                                        className="form-control"
-                                        style={{ margin: 0 }}
-                                    >
-                                        <select
-                                            name="language_id"
-                                            id="language_id"
-                                            className="form__input input-select"
-                                            onChange={(e) =>
-                                                handleOnChange(
-                                                    e,
-                                                    selectedClass.index
-                                                )
-                                            }
-                                            value={
-                                                selectedClass.monitoring_follower ||
-                                                0
-                                            }
-                                            required
-                                        >
-                                            <option value={0}>
-                                                انتخاب کنید
-                                            </option>
-                                            {admins.map((admin) => (
-                                                <option
-                                                    key={admin.id}
-                                                    value={admin.id}
-                                                >
-                                                    {admin.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <button
-                                        className={`action-btn primary`}
-                                        onClick={() =>
-                                            addFollowerHandler(
-                                                selectedClass.id,
-                                                selectedClass.index
-                                            )
-                                        }
-                                        disabled={followLoading}
-                                    >
-                                        ثبت
-                                    </button>
                                 </span>
                             </div>
                         </div>
@@ -316,7 +249,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                     </form>
                 </div>
 
-                <div className="table__wrapper">
+                <div className="table__wrapper table__wrapper--wrap">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
@@ -329,6 +262,10 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                 <th className="table__head-item">
                                     وضعیت پرداخت
                                 </th>
+                                <th className="table__head-item">
+                                    پیگیری کلاس
+                                </th>
+                                <th className="table__head-item">مدت کلاس</th>
                                 <th className="table__head-item">تاریخ</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -351,6 +288,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                               : "-"
                                       }`
                                     : "-";
+
                                 return (
                                     <tr
                                         className="table__body-row"
@@ -363,7 +301,13 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                             {item?.user_mobile || "-"}
                                             {item?.user_mobile && (
                                                 <Link
-                                                    href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=سلام ${item.user_name} عزیز وقت بخیر افشاری، پشتیبان سامانه آموزش زبان تیکا هستم. کلاس شما، ${date} با استاد ${item?.teacher_name} تشکیل می شود. لینک ورود به کلاس، نیم ساعت قبل از شروع، پیامک(sms) می شود. موفق باشید.`}
+                                                    href={`https://api.whatsapp.com/send?phone=98${item.user_mobile?.slice(
+                                                        1
+                                                    )}&text=سلام ${
+                                                        item.user_name
+                                                    } عزیز وقت بخیر افشاری، پشتیبان سامانه آموزش زبان تیکا هستم. کلاس شما، ${date} با استاد ${
+                                                        item?.teacher_name
+                                                    } تشکیل می شود. لینک ورود به کلاس، نیم ساعت قبل از شروع، پیامک(sms) می شود. موفق باشید.`}
                                                 >
                                                     <a
                                                         className="whatsapp-icon"
@@ -402,18 +346,69 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                                 : "پرداخت نشده"}
                                         </td>
                                         <td className="table__body-item">
-                                            {date}
+                                            <div
+                                                className="form-control"
+                                                style={{
+                                                    width: "130px",
+                                                    margin: 0,
+                                                }}
+                                            >
+                                                <select
+                                                    name="monitoring_follower"
+                                                    id="monitoring_follower"
+                                                    className="form__input input-select"
+                                                    onChange={(e) =>
+                                                        handleOnChange(e, i)
+                                                    }
+                                                    value={
+                                                        item.monitoring_follower ||
+                                                        0
+                                                    }
+                                                    required
+                                                >
+                                                    <option value={0}>
+                                                        انتخاب کنید
+                                                    </option>
+                                                    {admins.map((admin) => (
+                                                        <option
+                                                            key={admin.id}
+                                                            value={admin.id}
+                                                        >
+                                                            {admin.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.class_time
+                                                ? `${item?.class_time} دقیقه`
+                                                : "-"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.date
+                                                ? `${moment
+                                                      .from(
+                                                          item?.date
+                                                              .replace("-", "/")
+                                                              .replace(
+                                                                  "-",
+                                                                  "/"
+                                                              ),
+                                                          "en",
+                                                          "YYYY/MM/DD"
+                                                      )
+                                                      .locale("fa")
+                                                      .format("DD MMMM YYYY")}`
+                                                : "-"}
                                         </td>
                                         <td className="table__body-item">
                                             <button
                                                 className={`action-btn success`}
                                                 onClick={() => {
-                                                    setSelectedClass(() => {
-                                                        return {
-                                                            ...item,
-                                                            index: i,
-                                                        };
-                                                    });
+                                                    setSelectedClass(
+                                                        () => item
+                                                    );
                                                     setOpenModal(true);
                                                 }}
                                             >

@@ -48,6 +48,7 @@ function CreateClass(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let price = formData.price?.toString().replace(/,/g, "");
 
         if (
             formData.language_id &&
@@ -57,7 +58,7 @@ function CreateClass(props) {
             selectedSkills.length >= 3 &&
             formData.class_capacity &&
             formData.class_number &&
-            formData.price
+            price
         ) {
             if (formData.id) {
                 const fd = new FormData();
@@ -81,13 +82,8 @@ function CreateClass(props) {
                 if (Number(formData.class_number) !== addedData.class_number) {
                     fd.append("class_number", Number(formData.class_number));
                 }
-                if (
-                    Number(formData.price.replace(/,/g, "")) !== addedData.price
-                ) {
-                    fd.append(
-                        "price",
-                        Number(formData.price.replace(/,/g, ""))
-                    );
+                if (Number(price) !== addedData.price) {
+                    fd.append("price", Number(price));
                 }
                 let counter = 0;
                 for (let i = 0; i < selectedSpecialitys.length; i++) {
@@ -156,10 +152,7 @@ function CreateClass(props) {
                     Number(formData.session_time) &&
                     Number(formData.session_time) !== addedData.session_time
                 ) {
-                    fd.append(
-                        "session_time",
-                        Number(formData.session_time) * 30
-                    );
+                    fd.append("session_time", Number(formData.session_time));
                 }
                 if (selectedDate?.year) {
                     let date = moment
@@ -194,7 +187,7 @@ function CreateClass(props) {
                 fd.append("title", formData.title);
                 fd.append("class_capacity", Number(formData.class_capacity));
                 fd.append("class_number", Number(formData.class_number));
-                fd.append("price", Number(formData.price.replace(/,/g, "")));
+                fd.append("price", Number(price));
                 for (let i = 0; i < selectedSpecialitys.length; i++) {
                     fd.append(`speciality_id[${i}]`, selectedSpecialitys[i].id);
                 }
@@ -218,10 +211,7 @@ function CreateClass(props) {
                     fd.append("commission", Number(formData.commission));
                 }
                 if (Number(formData.session_time)) {
-                    fd.append(
-                        "session_time",
-                        Number(formData.session_time) * 30
-                    );
+                    fd.append("session_time", Number(formData.session_time));
                 }
                 if (selectedDate?.year) {
                     let date = moment
@@ -907,7 +897,7 @@ function CreateClass(props) {
                                         id="commission"
                                         className="form__input input-select"
                                         onChange={handleOnChange}
-                                        value={formData.commission}
+                                        value={formData.commission || 0}
                                     >
                                         <option value={0}>انتخاب کنید</option>
                                         {Array(13)
@@ -965,13 +955,13 @@ function CreateClass(props) {
                                         id="session_time"
                                         className="form__input input-select"
                                         onChange={handleOnChange}
-                                        value={formData.session_time}
+                                        value={formData.session_time || 0}
                                     >
                                         <option value={0}>انتخاب کنید</option>
-                                        <option value={1}>۳۰ دقیقه</option>
-                                        <option value={2}>۶۰ دقیقه</option>
-                                        <option value={3}>۹۰ دقیقه</option>
-                                        <option value={4}>۱۲۰ دقیقه</option>
+                                        <option value={30}>۳۰ دقیقه</option>
+                                        <option value={60}>۶۰ دقیقه</option>
+                                        <option value={90}>۹۰ دقیقه</option>
+                                        <option value={120}>۱۲۰ دقیقه</option>
                                     </select>
                                 </div>
                             </div>

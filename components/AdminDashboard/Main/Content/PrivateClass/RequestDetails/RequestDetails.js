@@ -197,11 +197,15 @@ function RequestDetails(props) {
         const values = Object.values(appliedFilters);
         for (let i = 0; i < values.length; i++) {
             let value = values[i], key = keys[i];
-            if (value || (key === "status" && value === -1)) {
-                return false;
+            if (value) {
+                if (key !== "status") {
+                    return true;
+                } else if (value !== -1) {
+                    return true;
+                }
             }
         }
-        return true;
+        return false;
     };
 
     const removeFilters = () => {
@@ -246,6 +250,14 @@ function RequestDetails(props) {
                         <div className={"modal__wrapper"}>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
+                                    ایجاد کننده
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest.classroom?.admin_id ? "ادمین" : "زبان آموز"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
                                     تخفیف
                                 </span>
                                 <span className={"modal__item-body"}>
@@ -272,6 +284,23 @@ function RequestDetails(props) {
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedRequest?.step}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تاریخ ثبت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest.created_at ?
+                                        `${moment.from(selectedRequest.created_at
+                                                .replace("-", "/")
+                                                .replace("-", "/"),
+                                            "en",
+                                            "YYYY/MM/DD"
+                                        )
+                                        .locale("fa")
+                                        .format("DD MMMM YYYY")} ساعت   ${selectedRequest.created_at.substr(11, 8)}` : 
+                                    "-"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -459,7 +488,7 @@ function RequestDetails(props) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
-                            {!showFilters() && (
+                            {showFilters() && (
                                 <button
                                     type="button"
                                     className={`btn danger-outline ${styles["btn"]}`}
@@ -488,7 +517,7 @@ function RequestDetails(props) {
                                     قابل پرداخت
                                 </th>
                                 <th className="table__head-item">وضعیت کلاس</th>
-                                <th className="table__head-item">تاریخ کلاس</th>
+                                <th className="table__head-item">تاریخ جلسه</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -523,7 +552,7 @@ function RequestDetails(props) {
                                             {item?.user_mobile}
                                             {item?.user_mobile && (
                                                 <Link
-                                                    href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=${item.user_name} عزيز كلاس شما ${date} با استاد ${item?.teacher_name} تاييد شد`}
+                                                    href={`https://api.whatsapp.com/send?phone=98${item.user_mobile?.slice(1)}&text=${item.user_name} عزيز كلاس شما ${date} با استاد ${item?.teacher_name} تاييد شد`}
                                                 >
                                                     <a
                                                         className="whatsapp-icon"

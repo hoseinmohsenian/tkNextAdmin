@@ -259,6 +259,7 @@ second, second and am/pm */
     border-radius: 0.3rem;
     transition: var(--transition);
     cursor: pointer;
+    white-space: nowrap;
 }
 .action-btn:disabled {
     opacity: 0.5;

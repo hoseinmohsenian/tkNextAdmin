@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState,memo } from "react";
+import { useEffect, useRef, useState, memo } from "react";
 import styles from "./SearchMultiSelect.module.css";
 import { ImCross } from "react-icons/im";
 
@@ -222,6 +222,7 @@ function SearchMultiSelect(props) {
                     {filteredList?.length === 0 && (
                         <div
                             className={`${styles["search-select__content-item"]} ${styles["search-select__content-item--disabled"]}`}
+                            style={{ fontSize }}
                         >
                             {noResText}
                         </div>

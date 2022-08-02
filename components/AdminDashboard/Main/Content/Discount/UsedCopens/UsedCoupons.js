@@ -170,6 +170,30 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                             </div>
                         </div>
 
+                        {/* <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className="input-wrapper">
+                                    <label
+                                        htmlFor="user_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        کد تخفیف :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="user_name"
+                                            id="user_name"
+                                            className="form__input"
+                                            onChange={handleOnChange}
+                                            value={filters?.user_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div> */}
+
                         <div className={styles["btn-wrapper"]}>
                             <button
                                 type="button"

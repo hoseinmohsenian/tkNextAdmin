@@ -197,7 +197,6 @@ function TeachersCredit({ fetchedTeachers, token }) {
                                             width: "100%",
                                         }}
                                         background="#fafafa"
-                                        fontSize={16}
                                         onSearch={(value) =>
                                             searchTeachers(value)
                                         }

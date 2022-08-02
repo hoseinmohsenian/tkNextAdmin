@@ -351,7 +351,7 @@ function ChangePrice(props) {
                                         {price?.user_mobile || "-"}
                                         {price?.user_mobile && (
                                                 <Link
-                                                    href={`https://api.whatsapp.com/send?phone=${price.user_mobile}`}
+                                                    href={`https://api.whatsapp.com/send?phone=98${price.user_mobile?.slice(1)}`}
                                                 >
                                                     <a className="whatsapp-icon" target="_blank">
                                                         <span>

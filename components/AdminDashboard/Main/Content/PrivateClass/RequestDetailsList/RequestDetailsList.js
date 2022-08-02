@@ -357,7 +357,9 @@ function RequestDetailsList({ fetchedClasses: { data, ...restData } }) {
                                         {item?.user_mobile || "-"}
                                         {item?.user_mobile && (
                                             <Link
-                                                href={`https://api.whatsapp.com/send?phone=${item.user_mobile}`}
+                                                href={`https://api.whatsapp.com/send?phone=98${item.user_mobile?.slice(
+                                                    1
+                                                )}`}
                                             >
                                                 <a
                                                     className="whatsapp-icon"

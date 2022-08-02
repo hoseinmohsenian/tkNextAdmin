@@ -96,9 +96,9 @@ function Consultation(props) {
             );
             if (res.ok) {
                 let message = `این درخواست ${
-                    status === 1 ? "فعال" : "غیرفعال"
+                    status === 0 ? "فعال" : "غیرفعال"
                 } شد`;
-                showAlert(true, status === 1 ? "success" : "warning", message);
+                showAlert(true, status === 0 ? "success" : "warning", message);
                 let updated = [...consultaions];
                 updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
                 setConsultaions(() => updated);
@@ -167,7 +167,7 @@ function Consultation(props) {
                                         {clt?.mobile}
                                         {clt?.mobile && (
                                                 <Link
-                                                    href={`https://api.whatsapp.com/send?phone=${clt.mobile}&text=سلام وقتتون بخیر از پشتیبانی «آموزش زبان تیکا» پیام میدم خدمتتون. شما شمارتون و جهت مشاوره زبان برای ما در سایت https://tikkaa.ir قرار دادید. برای ادامه گفتگو از طریق لینک زیر اقدام کنید yun.ir/tkChat لطفاً نام و زبان مد نظر خود را برای ما ارسال کنید تا در خدمتتون باشیم.`}
+                                                    href={`https://api.whatsapp.com/send?phone=98${clt.mobile?.slice(1)}&text=سلام وقتتون بخیر از پشتیبانی «آموزش زبان تیکا» پیام میدم خدمتتون. شما شمارتون و جهت مشاوره زبان برای ما در سایت https://tikkaa.ir قرار دادید. برای ادامه گفتگو از طریق لینک زیر اقدام کنید yun.ir/tkChat لطفاً نام و زبان مد نظر خود را برای ما ارسال کنید تا در خدمتتون باشیم.`}
                                                 >
                                                     <a className="whatsapp-icon" target="_blank">
                                                         <span>
@@ -218,18 +218,18 @@ function Consultation(props) {
                                             />
                                         </div>
                                     </td>
-                                    <td className="table__body-item table__body-item--ltr">
+                                    <td className="table__body-item">
                                         {moment(clt?.created_at).format(
-                                            "YYYY/MM/DD hh:mm:ss"
+                                            "DD MMMM YYYY , hh:mm:ss"
                                         )}
                                     </td>
                                     <td className="table__body-item">
                                         <button
                                             type="button"
                                             className={`action-btn ${
-                                                clt?.status === 1
+                                                clt?.status === 0
                                                     ? "success"
-                                                    : "warning"
+                                                    : "danger"
                                             }`}
                                             onClick={() =>
                                                 changeStatus(

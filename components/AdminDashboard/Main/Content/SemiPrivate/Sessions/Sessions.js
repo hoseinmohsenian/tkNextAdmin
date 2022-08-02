@@ -308,7 +308,6 @@ function SemiPrivateSessions({ token }) {
                                                     width: "100%",
                                                 }}
                                                 background="#fafafa"
-                                                fontSize={16}
                                                 onSearch={(value) =>
                                                     searchTeachers(value)
                                                 }
@@ -359,7 +358,6 @@ function SemiPrivateSessions({ token }) {
                                                     width: "100%",
                                                 }}
                                                 background="#fafafa"
-                                                fontSize={16}
                                                 onSearch={(value) =>
                                                     searchStudents(value)
                                                 }
@@ -406,7 +404,6 @@ function SemiPrivateSessions({ token }) {
                                                 }}
                                                 background="#fafafa"
                                                 openBottom={true}
-                                                fontSize={16}
                                             />
                                         </div>
                                     </div>
@@ -462,7 +459,6 @@ function SemiPrivateSessions({ token }) {
                                                 }}
                                                 background="#fafafa"
                                                 openBottom={true}
-                                                fontSize={16}
                                             />
                                         </div>
                                     </div>

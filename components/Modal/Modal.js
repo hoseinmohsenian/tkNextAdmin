@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import styles from "./Modal.module.css";
 
 function Modal({ children, show, setter, showHeader, padding }) {
@@ -36,4 +36,4 @@ function Modal({ children, show, setter, showHeader, padding }) {
     );
 }
 
-export default Modal;
+export default memo(Modal);

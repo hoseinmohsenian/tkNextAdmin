@@ -299,7 +299,6 @@ function CreateSemiPrivate({ token }) {
                                             width: "100%",
                                         }}
                                         background="#fafafa"
-                                        fontSize={16}
                                         onSearch={(value) =>
                                             searchTeachers(value)
                                         }
@@ -382,6 +381,7 @@ function CreateSemiPrivate({ token }) {
                                             }}
                                             background="#fafafa"
                                             max={4}
+                                            showAlert={showAlert}
                                         />
                                     </div>
                                 </div>

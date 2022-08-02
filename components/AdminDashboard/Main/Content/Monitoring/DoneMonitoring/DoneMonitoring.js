@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Alert from "../../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import styles from "./DoneMonitoring.module.css";
@@ -11,14 +12,85 @@ import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
 
-function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
+function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
     const [selectedDate, setSelectedDate] = useState(shamsi_date_obj);
+    const [alertData, setAlertData] = useState({
+        show: false,
+        message: "",
+        type: "",
+    });
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
+    const [loadings, setLoadings] = useState(
+        Array(monitorings?.length).fill(false)
+    );
+
+    const showAlert = (show, type, message) => {
+        setAlertData({ show, type, message });
+    };
+
+    const handleLoadings = (i, value) => {
+        let temp = [...loadings];
+        temp[i] = value;
+        setLoadings(() => temp);
+    };
+
+    const addFollower = async (i, monitoring_id, monitoring_follower) => {
+        try {
+            handleLoadings(i, true);
+            const res = await fetch(
+                `${BASE_URL}/admin/classroom/monitoring/${monitoring_id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        admin_id: Number(monitoring_follower),
+                    }),
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                showAlert(true, "success", "ادمین باموفقیت اضافه شد");
+            } else {
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+        } catch (error) {
+            console.log("Error adding monitoring follower", error);
+        }
+        handleLoadings(i, false);
+    };
+
+    const handleOnChange = (e, rowInd) => {
+        let updated = [...monitoringList];
+        const monitoring_follower = e.target.value;
+        updated[rowInd] = {
+            ...updated[rowInd],
+            monitoring_follower: monitoring_follower,
+        };
+        setMonitoringList(() => updated);
+
+        addFollowerHandler(rowInd, monitoring_follower);
+    };
+
+    const addFollowerHandler = (i, monitoring_follower) => {
+        const monitoring_id = monitoringList[i].id;
+        if (Number(monitoring_follower) !== 0) {
+            addFollower(i, monitoring_id, monitoring_follower);
+        }
+    };
 
     const readMonitoring = async () => {
         // Constructing search parameters
@@ -57,6 +129,12 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
 
     return (
         <div>
+            <Alert
+                {...alertData}
+                removeAlert={showAlert}
+                envoker={readMonitoring}
+            />
+
             <Box title="مانیتورینگ انجام شده">
                 {openModal && (
                     <Modal
@@ -68,15 +146,6 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                     >
                         <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
                         <div className={"modal__wrapper"}>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    پیگیری کلاس
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.monitoring_follower_name ||
-                                        "-"}
-                                </span>
-                            </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
                                     کورس
@@ -95,17 +164,10 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    وضعیت کلاس
+                                    زبان
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.status === 0 &&
-                                        "تعیین وضعیت نشده"}
-                                    {selectedClass?.status === 1 &&
-                                        "برگزار شده"}
-                                    {selectedClass?.status === 2 && "کنسل شده"}
-                                    {selectedClass?.status === 3 &&
-                                        "لغو بازگشت پول"}
-                                    {selectedClass?.status === 4 && "غیبت"}
+                                    {selectedClass.language_name}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -120,21 +182,13 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    وضعیت پرداخت
+                                    قیمت
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.pay === 1
-                                        ? "پرداخت شده"
-                                        : "پرداخت نشده"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    مدت کلاس
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.class_time
-                                        ? `${selectedClass?.class_time} دقیقه`
+                                    {selectedClass?.price
+                                        ? `${Intl.NumberFormat().format(
+                                              selectedClass?.price
+                                          )} تومان`
                                         : "-"}
                                 </span>
                             </div>
@@ -193,7 +247,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                     </form>
                 </div>
 
-                <div className="table__wrapper">
+                <div className="table__wrapper table__wrapper--wrap">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
@@ -202,14 +256,20 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                     موبایل زبان آموز
                                 </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">قیمت</th>
+                                <th className="table__head-item">وضعیت کلاس</th>
+                                <th className="table__head-item">
+                                    وضعیت پرداخت
+                                </th>
+                                <th className="table__head-item">
+                                    پیگیری کلاس
+                                </th>
+                                <th className="table__head-item">مدت کلاس</th>
                                 <th className="table__head-item">تاریخ</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {monitoringList?.map((item) => {
+                            {monitoringList?.map((item, i) => {
                                 let date = item?.date
                                     ? `${moment
                                           .from(
@@ -239,7 +299,13 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                             {item?.user_mobile || "-"}
                                             {item?.user_mobile && (
                                                 <Link
-                                                    href={`https://api.whatsapp.com/send?phone=${item.user_mobile}&text=سلام ${item.user_name} عزیز وقت بخیر افشاری، پشتیبان سامانه آموزش زبان تیکا هستم. کلاس شما، ${date} با استاد ${item?.teacher_name} تشکیل می شود. لینک ورود به کلاس، نیم ساعت قبل از شروع، پیامک(sms) می شود. موفق باشید.`}
+                                                    href={`https://api.whatsapp.com/send?phone=98${item.user_mobile?.slice(
+                                                        1
+                                                    )}&text=سلام ${
+                                                        item.user_name
+                                                    } عزیز وقت بخیر افشاری، پشتیبان سامانه آموزش زبان تیکا هستم. کلاس شما، ${date} با استاد ${
+                                                        item?.teacher_name
+                                                    } تشکیل می شود. لینک ورود به کلاس، نیم ساعت قبل از شروع، پیامک(sms) می شود. موفق باشید.`}
                                                 >
                                                     <a
                                                         className="whatsapp-icon"
@@ -264,17 +330,75 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                             </span>
                                         </td>
                                         <td className="table__body-item">
-                                            {item?.language_name}
+                                            {item?.status === 0 &&
+                                                "تعیین وضعیت نشده"}
+                                            {item?.status === 1 && "برگزار شده"}
+                                            {item?.status === 2 && "کنسل شده"}
+                                            {item?.status === 3 &&
+                                                "لغو بازگشت پول"}
+                                            {item?.status === 4 && "غیبت"}
                                         </td>
                                         <td className="table__body-item">
-                                            {item?.price
-                                                ? `${Intl.NumberFormat().format(
-                                                      item?.price
-                                                  )} تومان`
+                                            {item?.pay === 1
+                                                ? "پرداخت شده"
+                                                : "پرداخت نشده"}
+                                        </td>
+                                        <td className="table__body-item">
+                                            <div
+                                                className="form-control"
+                                                style={{
+                                                    width: "130px",
+                                                    margin: 0,
+                                                }}
+                                            >
+                                                <select
+                                                    name="monitoring_follower"
+                                                    id="monitoring_follower"
+                                                    className="form__input input-select"
+                                                    onChange={(e) =>
+                                                        handleOnChange(e, i)
+                                                    }
+                                                    value={
+                                                        item.monitoring_follower ||
+                                                        0
+                                                    }
+                                                    required
+                                                >
+                                                    <option value={0}>
+                                                        انتخاب کنید
+                                                    </option>
+                                                    {admins.map((admin) => (
+                                                        <option
+                                                            key={admin.id}
+                                                            value={admin.id}
+                                                        >
+                                                            {admin.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td className="table__body-item">
+                                            {item?.class_time
+                                                ? `${item?.class_time} دقیقه`
                                                 : "-"}
                                         </td>
                                         <td className="table__body-item">
-                                            {date}
+                                            {item?.date
+                                                ? `${moment
+                                                      .from(
+                                                          item?.date
+                                                              .replace("-", "/")
+                                                              .replace(
+                                                                  "-",
+                                                                  "/"
+                                                              ),
+                                                          "en",
+                                                          "YYYY/MM/DD"
+                                                      )
+                                                      .locale("fa")
+                                                      .format("DD MMMM YYYY")}`
+                                                : "-"}
                                         </td>
                                         <td className="table__body-item">
                                             <button
@@ -287,7 +411,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj }) {
                                                 جزئیات
                                             </button>
                                             <Link
-                                                href={`/tkpanel/multiSessionsList/logs/${item.id}?type=monitoring`}
+                                                href={`/tkpanel/multiSessionsList/logs/${item.user_id}?type=student`}
                                             >
                                                 <a
                                                     className={`action-btn warning`}

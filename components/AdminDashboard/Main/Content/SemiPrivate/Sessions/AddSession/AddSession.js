@@ -422,6 +422,7 @@ function AddSessions({ token, id, theClass }) {
                                                             ),
                                                         }}
                                                         inputPlaceholder="انتخاب کنید"
+                                                        calendarPopperPosition="bottom"
                                                     />
                                                 </div>
                                             </div>

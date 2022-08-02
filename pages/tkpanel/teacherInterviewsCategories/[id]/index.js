@@ -1,31 +1,35 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
-import Consultation from "../../../../components/AdminDashboard/Main/Content/Support/Consultation/Consultation";
+import TeacherQuestions from "../../../../components/AdminDashboard/Main/Content/TeacherInterview/TeacherQuestions/TeacherQuestions";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function ConsultationsPage({ consultaions, token, notAllowed }) {
+function TeacherInterviewPage({ list, token, notAllowed, teacher }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
+
+    const fullName = `${teacher.name} ${teacher.family}`;
     return (
         <div>
-            <Header title="لیست درخواست مشاوره | تیکا"></Header>
+            <Header title={`پرسش های استاد ${fullName} | تیکا`}></Header>
             <AdminDashboard>
-                <Consultation
-                    fetchedConsultaions={consultaions}
+                <TeacherQuestions
                     token={token}
+                    fetchedList={list}
+                    teacher={teacher}
                 />
             </AdminDashboard>
         </div>
     );
 }
 
-export default ConsultationsPage;
+export default TeacherInterviewPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+    const id = context.params.id;
 
     if (!token) {
         return {
@@ -37,7 +41,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/support/consultation`, {
+        fetch(`${BASE_URL}/admin/teacher/interview/list?teacher_id=${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -55,9 +59,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: {
-            consultaions: dataArr[0].data,
-            token,
-        },
+        props: { list: dataArr[0]?.data, token, teacher: dataArr[0]?.meta },
     };
 }

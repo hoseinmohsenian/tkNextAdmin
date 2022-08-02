@@ -2,6 +2,9 @@
     overflow-x: auto;
     white-space: nowrap;
 }
+.table__wrapper--wrap {
+    white-space: normal;
+}
 .table {
     width: 100%;
     max-width: 100%;

@@ -4,7 +4,7 @@ import Header from "../../../components/Head/Head";
 import { checkResponseArrAuth } from "../../../utils/helperFunctions";
 import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TeacherInterviewPage({ teachers, token, notAllowed }) {
+function TeachersInterviewPage({ teachers, token, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -18,7 +18,7 @@ function TeacherInterviewPage({ teachers, token, notAllowed }) {
     );
 }
 
-export default TeacherInterviewPage;
+export default TeachersInterviewPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -33,36 +33,25 @@ export async function getServerSideProps(context) {
         };
     }
 
-    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
-    const { page } = context?.query;
-    let params = "";
+    const responses = await Promise.all([
+        fetch(`${BASE_URL}/admin/teacher/interview/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }),
+    ]);
 
-    if (isKeyValid(page)) {
-        if (Number(page) > 0) {
-            params += `page=${page}`;
-        }
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
     }
 
-    // const responses = await Promise.all([
-    //     fetch(`${BASE_URL}/admin/student/search?${params}`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`,
-    //             "Content-type": "application/json",
-    //             "Access-Control-Allow-Origin": "*",
-    //         },
-    //     }),
-    // ]);
-
-    // if (!checkResponseArrAuth(responses)) {
-    //     return {
-    //         props: { notAllowed: true },
-    //     };
-    // }
-
-    // const dataArr = await Promise.all(responses.map((res) => res.json()));
+    const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        // props: { students: dataArr[0]?.data, token, searchData },
-        props: { teachers: [], token },
+        props: { teachers: dataArr[0]?.data, token },
     };
 }

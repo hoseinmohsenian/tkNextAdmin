@@ -68,7 +68,6 @@ function GroupClass(props) {
 
             Object.keys(filters).forEach((key) => {
                 if (isFilterEnabled(key)) {
-                    console.log("key", key);
                     searchParams = {
                         ...searchParams,
                         [key]: filters[key],
@@ -121,7 +120,7 @@ function GroupClass(props) {
         }
         setLoading(false);
     };
-    console.log(filters);
+
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
@@ -198,11 +197,15 @@ function GroupClass(props) {
         for (let i = 0; i < values.length; i++) {
             let value = values[i],
                 key = keys[i];
-            if (value || (key === "status" && value === -1)) {
-                return false;
+            if (value) {
+                if (key !== "status") {
+                    return true;
+                } else if (value !== -1) {
+                    return true;
+                }
             }
         }
-        return true;
+        return false;
     };
 
     const removeFilters = () => {
@@ -398,7 +401,7 @@ function GroupClass(props) {
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
-                            {!showFilters() && (
+                            {showFilters() && (
                                 <button
                                     type="button"
                                     className={`btn danger-outline ${styles["btn"]}`}
@@ -444,7 +447,7 @@ function GroupClass(props) {
                                         {cls.status === 0 && "غیرفعال"}
                                         {cls.status === 1 && "فعال"}
                                     </td>
-                                    <td className="table__body-item table__body-item--ltr">
+                                    <td className="table__body-item">
                                         {cls.start_date
                                             ? moment
                                                   .from(
@@ -455,7 +458,7 @@ function GroupClass(props) {
                                                       "YYYY/MM/DD"
                                                   )
                                                   .locale("fa")
-                                                  .format("YYYY/MM/DD")
+                                                  .format("DD MMMM YYYY")
                                             : "-"}
                                     </td>
                                     <td className="table__body-item">

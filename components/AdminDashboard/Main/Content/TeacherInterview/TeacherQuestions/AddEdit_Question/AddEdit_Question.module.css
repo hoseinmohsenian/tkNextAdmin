@@ -1,0 +1,11 @@
+.title {
+    color: #353535;
+    font-weight: bold;
+}
+.form__label {
+    text-align: right;
+}
+.textarea {
+    min-height: 150px;
+    max-height: 200px;
+}
