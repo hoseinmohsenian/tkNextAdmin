@@ -3,9 +3,10 @@ import Box from "../../Elements/Box/Box";
 import styles from "./SubCategories.module.css";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import { useState } from "react";
-import { BASE_URL } from "../../../../../../constants";
+import Alert from "../../../../../Alert/Alert";
+import API from "../../../../../../api/index";
 
-function SubCategories({ token, categories }) {
+function SubCategories({ categories }) {
     const [subCategories, setSubCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState({
         id: 0,
@@ -20,28 +21,47 @@ function SubCategories({ token, categories }) {
         updated_at: "",
     });
     const [loading, setLoading] = useState(false);
+    const [alertData, setAlertData] = useState({
+        show: false,
+        message: "",
+        type: "",
+    });
+
+    const showAlert = (show, type, message) => {
+        setAlertData({ show, type, message });
+    };
 
     const readSubCategories = async () => {
         try {
             setLoading(true);
-            const res = await fetch(
-                `${BASE_URL}/admin/faq/category/sub/${selectedCategory.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status, data } = await API.get(
+                `admin/faq/category/sub/${selectedCategory.id}`
             );
-            const { data } = await res.json();
-            setSubCategories(data);
+
+            if (status === 200) {
+                setSubCategories(data.data || []);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
             setLoading(false);
         } catch (error) {
             console.log("Error reading sub-categories", error);
+        }
+    };
+
+    const handleClick = async () => {
+        if (selectedCategory.id) {
+            await readSubCategories();
+        } else {
+            showAlert(true, "danger", "لطفا دسته‌بندی اصلی را انتخاب کنید");
         }
     };
 
@@ -55,6 +75,12 @@ function SubCategories({ token, categories }) {
                     color: "primary",
                 }}
             >
+                <Alert
+                    {...alertData}
+                    removeAlert={showAlert}
+                    envoker={handleClick}
+                />
+
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -95,7 +121,7 @@ function SubCategories({ token, categories }) {
                                     type="button"
                                     className={`btn primary ${styles["btn"]}`}
                                     disabled={loading}
-                                    onClick={() => readSubCategories()}
+                                    onClick={handleClick}
                                 >
                                     {loading
                                         ? "در حال جستجو ..."

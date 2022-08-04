@@ -2,11 +2,16 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import Courses from "../../../components/AdminDashboard/Main/Content/Courses/Courses";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function CoursesPage({ token, courses }) {
+function CoursesPage({ token, courses, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
-            <Header title="کورس ها | تیکا"></Header>
+            <Header title="مدل های رزرو | تیکا"></Header>
             <AdminDashboard>
                 <Courses fetchedCourses={courses} token={token} />
             </AdminDashboard>
@@ -37,6 +42,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

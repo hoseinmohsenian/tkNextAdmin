@@ -51,7 +51,7 @@ function Requests(props) {
                 }
             );
             if (res.ok) {
-                let message = "تغییر وضعیت اعمال شد";
+                let message = "پیگیری انجام شد";
                 showAlert(true, "success", message);
                 let updated = requests.filter((item) => item.id !== request_id);
                 setRequests(() => updated);
@@ -200,7 +200,9 @@ function Requests(props) {
                                         {req?.user_mobile}
                                         {req?.user_mobile && (
                                             <Link
-                                                href={`https://api.whatsapp.com/send?phone=${req.user_mobile}`}
+                                                href={`https://api.whatsapp.com/send?phone=98${req.user_mobile?.slice(
+                                                    1
+                                                )}`}
                                             >
                                                 <a
                                                     className="whatsapp-icon"

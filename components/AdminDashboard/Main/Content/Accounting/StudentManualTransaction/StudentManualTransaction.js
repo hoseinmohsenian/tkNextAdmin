@@ -1,13 +1,18 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
+import API from "../../../../../../api/index";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+    getUnformattedPrice,
+} from "../../../../../../utils/priceFormat";
 
 const studentSchema = { id: "", name_family: "", mobile: "" };
 
-function StudentManualTransaction({ token }) {
+function StudentManualTransaction() {
     const [formData, setFormData] = useState({
         desc: "",
         status: 0,
@@ -26,10 +31,11 @@ function StudentManualTransaction({ token }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        let amount = getUnformattedPrice(formData.amount?.toString());
 
-        if (formData.amount && formData.desc && selectedStudent.id) {
+        if (amount && formData.desc && selectedStudent.id) {
             const fd = new FormData();
-            fd.append("amount", formData.amount);
+            fd.append("amount", Number(amount));
             fd.append("desc", formData.desc);
             fd.append("status", Number(formData.status));
             if (formData.image) {
@@ -59,64 +65,49 @@ function StudentManualTransaction({ token }) {
     const addTransaction = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/accounting/student/manual/transaction/${selectedStudent.id}`,
-                {
-                    method: "POST",
-                    body: fd,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/accounting/student/manual/transaction/${selectedStudent.id}`,
+                fd
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(true, "success", "اعتبار باموفقیت ثبت شد");
                 router.push("/tkpanel/logUser/profile/accountingCredite");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding transaction", error);
         }
+        setLoading(false);
     };
 
     const searchStudents = async (input) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${input}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/student/search?input=${input}`
             );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data?.data || []);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching students", error);
         }
+        setLoading(false);
     };
 
     return (
@@ -155,7 +146,6 @@ function StudentManualTransaction({ token }) {
                                     width: "100%",
                                 }}
                                 background="#fafafa"
-                                fontSize={16}
                                 onSearch={(value) => searchStudents(value)}
                             />
                         </div>
@@ -207,13 +197,14 @@ function StudentManualTransaction({ token }) {
                         </label>
                         <div className="form-control">
                             <input
-                                type="number"
+                                type="text"
                                 name="amount"
                                 id="amount"
                                 className="form__input form__input--ltr"
                                 onChange={handleOnChange}
+                                value={getFormattedPrice(formData.amount)}
+                                onKeyDown={(e) => checkValidPriceKeys(e)}
                                 placeholder="تومان"
-                                required
                             />
                         </div>
                     </div>
@@ -231,16 +222,24 @@ function StudentManualTransaction({ token }) {
                         />
                     </div>
                     <div className="input-wrapper">
-                        <label htmlFor="image" className="form__label">
+                        <label htmlFor="flag_image" className="form__label">
                             عکس :
                         </label>
-                        <div className="upload-btn" onChange={handleSelectFile}>
-                            <span>آپلود تصویر</span>
-                            <input
-                                type="file"
-                                className="upload-input"
-                                accept="image/png, image/jpg, image/jpeg"
-                            ></input>
+                        <div className="upload-box">
+                            <div
+                                className="upload-btn"
+                                onChange={handleSelectFile}
+                            >
+                                <span>آپلود تصویر</span>
+                                <input
+                                    type="file"
+                                    className="upload-input"
+                                    accept="image/png, image/jpg, image/jpeg"
+                                ></input>
+                            </div>
+                            <span className="upload-file-name">
+                                {formData?.image?.name}
+                            </span>
                         </div>
                     </div>
 

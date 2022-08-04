@@ -78,7 +78,7 @@ function CreateCourse({ token }) {
                 envoker={handleSubmit}
             />
 
-            <Box title="ایجاد کورس">
+            <Box title="ایجاد مدل رزرو">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">
                         <label htmlFor="name" className="form__label">
@@ -213,7 +213,7 @@ function CreateCourse({ token }) {
                         className="btn primary"
                         disabled={loading}
                     >
-                        {loading ? "در حال انجام ..." : "ایجاد کورس"}
+                        {loading ? "در حال انجام ..." : "ایجاد مدل"}
                     </button>
                 </form>
             </Box>

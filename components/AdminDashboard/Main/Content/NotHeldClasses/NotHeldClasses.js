@@ -130,7 +130,8 @@ function NotHeldClasses(props) {
                                     اعتبار زبان آموز
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.user_wallet
+                                    {typeof selectedClass?.user_wallet ===
+                                    "number"
                                         ? `${Intl.NumberFormat().format(
                                               selectedClass?.user_wallet
                                           )} تومان`
@@ -155,37 +156,12 @@ function NotHeldClasses(props) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    وضعیت کلاس
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.status === 0 &&
-                                        "تعیین وضعیت نشده"}
-                                    {selectedClass?.status === 1 &&
-                                        "برگزار شده"}
-                                    {selectedClass?.status === 2 && "کنسل شده"}
-                                    {selectedClass?.status === 3 &&
-                                        "لغو بازگشت پول"}
-                                    {selectedClass?.status === 4 && "غیبت"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
                                     جلسه اول
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedClass?.first_class === 1
                                         ? "است"
                                         : "نیست"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    وضعیت پرداخت
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.pay === 1
-                                        ? "پرداخت شده"
-                                        : "پرداخت نشده"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -271,7 +247,7 @@ function NotHeldClasses(props) {
                     </form>
                 </div>
 
-                <div className="table__wrapper">
+                <div className="table__wrapper table__wrapper--wrap">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
@@ -280,6 +256,10 @@ function NotHeldClasses(props) {
                                 </th>
                                 <th className="table__head-item">موبایل</th>
                                 <th className="table__head-item">استاد</th>
+                                <th className="table__head-item">وضعیت کلاس</th>
+                                <th className="table__head-item">
+                                    وضعیت پرداخت
+                                </th>
                                 <th className="table__head-item">قیمت</th>
                                 <th className="table__head-item">زمان کلاس</th>
                                 <th className="table__head-item">تاریخ کلاس</th>
@@ -315,9 +295,22 @@ function NotHeldClasses(props) {
                                         {cls.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {typeof cls.user_wallet === "number"
+                                        {cls?.status === 0 &&
+                                            "تعیین وضعیت نشده"}
+                                        {cls?.status === 1 && "برگزار شده"}
+                                        {cls?.status === 2 && "کنسل شده"}
+                                        {cls?.status === 3 && "لغو بازگشت پول"}
+                                        {cls?.status === 4 && "غیبت"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {cls?.pay === 1
+                                            ? "پرداخت شده"
+                                            : "پرداخت نشده"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {typeof cls.price === "number"
                                             ? `${Intl.NumberFormat().format(
-                                                  cls.user_wallet
+                                                  cls.price
                                               )} تومان`
                                             : "-"}
                                     </td>

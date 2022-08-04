@@ -433,12 +433,12 @@ export default [
                         ],
                     },
                     {
-                        title: "کورس",
+                        title: "مدل رزرو",
                         path: "#",
                         icon: <MdGolfCourse />,
                         subNav: [
                             {
-                                title: "کورس ها",
+                                title: "مدل های رزرو",
                                 path: "/content/course",
                                 icon: <MdGolfCourse />,
                             },

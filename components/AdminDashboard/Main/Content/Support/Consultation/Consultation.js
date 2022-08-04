@@ -12,7 +12,7 @@ function Consultation(props) {
         fetchedConsultaions: { data, ...restData },
         token,
     } = props;
-    const [formData, setFormData] = useState(data);
+    // const [formData, setFormData] = useState(data);
     const [consultaions, setConsultaions] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
@@ -22,11 +22,11 @@ function Consultation(props) {
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
 
-    const handleOnChange = (e, rowInd, name) => {
-        let updated = [...formData];
-        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
-        setFormData(() => updated);
-    };
+    // const handleOnChange = (e, rowInd, name) => {
+    //     let updated = [...formData];
+    //     updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
+    //     setFormData(() => updated);
+    // };
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -38,45 +38,44 @@ function Consultation(props) {
         setLoadings(() => temp);
     };
 
-    const addDesc = async (e, cslt_id, i) => {
-        try {
-            handleLoadings(i, true);
+    // const addDesc = async (e, cslt_id, i) => {
+    //     try {
+    //         handleLoadings(i, true);
 
-            const res = await fetch(
-                `${BASE_URL}/admin/support/consultation/${cslt_id}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({ admin_desc: e.target.value }),
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            if (res.ok) {
-                showAlert(
-                    true,
-                    "success",
-                    e.target.value ? "توضیحات اضافه شد" : "توضیحات برداشته شد"
-                );
-            }
+    //         const res = await fetch(
+    //             `${BASE_URL}/admin/support/consultation/${cslt_id}`,
+    //             {
+    //                 method: "POST",
+    //                 body: JSON.stringify({ admin_desc: e.target.value }),
+    //                 headers: {
+    //                     "Content-type": "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                     "Access-Control-Allow-Origin": "*",
+    //                 },
+    //             }
+    //         );
+    //         if (res.ok) {
+    //             showAlert(
+    //                 true,
+    //                 "success",
+    //                 e.target.value ? "توضیحات اضافه شد" : "توضیحات برداشته شد"
+    //             );
+    //         }
 
-            handleLoadings(i, false);
-        } catch (error) {
-            console.log("Error adding description", error);
-        }
-    };
+    //         handleLoadings(i, false);
+    //     } catch (error) {
+    //         console.log("Error adding description", error);
+    //     }
+    // };
 
-    
-    const addDescHandler = async (e, consult_id, i) => {
-        if (e.target.value !== consultaions[i]?.admin_desc) {
-            await addDesc(e, consult_id, i);
-            let temp = [...consultaions];
-            temp[i]?.admin_desc = (e.target.value);
-            setConsultaions(() => temp);
-        }
-    };
+    // const addDescHandler = async (e, consult_id, i) => {
+    //     if (e.target.value !== consultaions[i]?.admin_desc) {
+    //         await addDesc(e, consult_id, i);
+    //         let temp = [...consultaions];
+    //         temp[i]?.admin_desc = (e.target.value);
+    //         setConsultaions(() => temp);
+    //     }
+    // };
 
     const changeStatus = async (cslt_id, status, i) => {
         handleLoadings(i, true);
@@ -95,10 +94,8 @@ function Consultation(props) {
                 }
             );
             if (res.ok) {
-                let message = `این درخواست ${
-                    status === 0 ? "فعال" : "غیرفعال"
-                } شد`;
-                showAlert(true, status === 0 ? "success" : "warning", message);
+                let message = "درخواست انجام شد";
+                showAlert(true, "success", message);
                 let updated = [...consultaions];
                 updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
                 setConsultaions(() => updated);
@@ -152,37 +149,43 @@ function Consultation(props) {
                                     شماره موبایل
                                 </th>
                                 <th className="table__head-item">وضعیت</th>
-                                <th className="table__head-item">توضیحات</th>
+                                {/* <th className="table__head-item">توضیحات</th> */}
                                 <th className="table__head-item">تاریخ ثبت</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
                             {consultaions?.map((clt, i) => (
-                                <tr
-                                    className="table__body-row"
-                                    key={clt?.id}
-                                >
+                                <tr className="table__body-row" key={clt?.id}>
                                     <td className="table__body-item">
                                         {clt?.mobile}
                                         {clt?.mobile && (
-                                                <Link
-                                                    href={`https://api.whatsapp.com/send?phone=98${clt.mobile?.slice(1)}&text=سلام وقتتون بخیر از پشتیبانی «آموزش زبان تیکا» پیام میدم خدمتتون. شما شمارتون و جهت مشاوره زبان برای ما در سایت https://tikkaa.ir قرار دادید. برای ادامه گفتگو از طریق لینک زیر اقدام کنید yun.ir/tkChat لطفاً نام و زبان مد نظر خود را برای ما ارسال کنید تا در خدمتتون باشیم.`}
+                                            <Link
+                                                href={`https://api.whatsapp.com/send?phone=98${clt.mobile?.slice(
+                                                    1
+                                                )}&text=سلام وقتتون بخیر از پشتیبانی «آموزش زبان تیکا» پیام میدم خدمتتون. شما شمارتون و جهت مشاوره زبان برای ما در سایت https://tikkaa.ir قرار دادید. برای ادامه گفتگو از طریق لینک زیر اقدام کنید yun.ir/tkChat لطفاً نام و زبان مد نظر خود را برای ما ارسال کنید تا در خدمتتون باشیم.`}
+                                            >
+                                                <a
+                                                    className="whatsapp-icon"
+                                                    target="_blank"
                                                 >
-                                                    <a className="whatsapp-icon" target="_blank">
-                                                        <span>
-                                                            <AiOutlineWhatsApp />
-                                                        </span>
-                                                    </a>
-                                                </Link>
-                                            )}
+                                                    <span>
+                                                        <AiOutlineWhatsApp />
+                                                    </span>
+                                                </a>
+                                            </Link>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
-                                        {clt?.status === 1
-                                            ? "انجام شده"
-                                            : "انجام نشده"}
+                                        {clt?.status === 1 ? (
+                                            "انجام شده"
+                                        ) : (
+                                            <span className="danger">
+                                                انجام نشده
+                                            </span>
+                                        )}
                                     </td>
-                                    <td className="table__body-item">
+                                    {/* <td className="table__body-item">
                                         <div
                                             className="form-control"
                                             style={{
@@ -217,33 +220,29 @@ function Consultation(props) {
                                                 spellCheck={false}
                                             />
                                         </div>
-                                    </td>
+                                    </td> */}
                                     <td className="table__body-item">
                                         {moment(clt?.created_at).format(
                                             "DD MMMM YYYY , hh:mm:ss"
                                         )}
                                     </td>
                                     <td className="table__body-item">
-                                        <button
-                                            type="button"
-                                            className={`action-btn ${
-                                                clt?.status === 0
-                                                    ? "success"
-                                                    : "danger"
-                                            }`}
-                                            onClick={() =>
-                                                changeStatus(
-                                                    clt?.id,
-                                                    clt?.status,
-                                                    i
-                                                )
-                                            }
-                                            disabled={loadings[i]}
-                                        >
-                                            {clt?.status === 0
-                                                ? "فعال"
-                                                : "غیرفعال"}
-                                        </button>
+                                        {clt?.status === 0 && (
+                                            <button
+                                                type="button"
+                                                className={`action-btn primary`}
+                                                onClick={() =>
+                                                    changeStatus(
+                                                        clt?.id,
+                                                        clt?.status,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
+                                            >
+                                                انجام شده
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

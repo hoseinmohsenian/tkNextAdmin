@@ -2,12 +2,12 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import MultiSession from "../../../components/AdminDashboard/Main/Content/Support/MultiSession/MultiSession";
 import Header from "../../../components/Head/Head";
 
-function MultiSessionPage({ token }) {
+function MultiSessionPage() {
     return (
         <div>
             <Header title="۵ جلسه ۱۰ جلسه | تیکا"></Header>
             <AdminDashboard>
-                <MultiSession token={token} />
+                <MultiSession />
             </AdminDashboard>
         </div>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

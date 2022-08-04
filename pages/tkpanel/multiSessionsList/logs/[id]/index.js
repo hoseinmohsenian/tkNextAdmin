@@ -5,7 +5,7 @@ import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function STLogPage({ logs, type, token, id, notAllowed }) {
+function STLogPage({ logs, type, token, id, notAllowed, name }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -22,6 +22,7 @@ function STLogPage({ logs, type, token, id, notAllowed }) {
                     type={type}
                     token={token}
                     id={id}
+                    name={name}
                 />
             </AdminDashboard>
         </div>
@@ -80,6 +81,7 @@ export async function getServerSideProps(context) {
             token,
             type,
             id,
+            name: dataArr[0].meta,
         },
     };
 }

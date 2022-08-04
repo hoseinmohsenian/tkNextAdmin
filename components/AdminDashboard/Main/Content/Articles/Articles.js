@@ -253,6 +253,12 @@ function Articles(props) {
         return true;
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readArticles();
+    };
+
     return (
         <div>
             <Box
@@ -303,7 +309,10 @@ function Articles(props) {
                 )}
 
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">
@@ -504,10 +513,9 @@ function Articles(props) {
 
                         <div className={styles["btn-wrapper"]}>
                             <button
-                                type="button"
+                                type="submit"
                                 className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
-                                onClick={() => readArticles()}
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
@@ -570,9 +578,11 @@ function Articles(props) {
                                         {article?.admin_name || "-"}
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
-                                        {moment(article?.publish_time).format(
-                                            "YYYY/MM/DD hh:mm:ss"
-                                        )}
+                                        {article?.publish_time
+                                            ? moment(
+                                                  article?.publish_time
+                                              ).format("YYYY/MM/DD hh:mm:ss")
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <button

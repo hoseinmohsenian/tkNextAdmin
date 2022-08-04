@@ -118,7 +118,7 @@ function CreateHelp({ token }) {
                                 value={desc}
                                 setValue={setDesc}
                                 token={token}
-                                uploadImageUrl="/admin/blog/article/add/image"
+                                uploadImageUrl="/admin/help/image"
                             />
                         </div>
                     </div>

@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import StudentManualTransaction from "../../../../../components/AdminDashboard/Main/Content/Accounting/StudentManualTransaction/StudentManualTransaction";
 import Header from "../../../../../components/Head/Head";
 
-function StudentManualTransactionPage({ token }) {
+function StudentManualTransactionPage() {
     return (
         <>
             <Header title="افزایش اعتبار زبان آموز | تیکا"></Header>
             <AdminDashboard>
-                <StudentManualTransaction token={token} />
+                <StudentManualTransaction />
             </AdminDashboard>
         </>
     );
@@ -27,5 +27,5 @@ export async function getServerSideProps(context) {
         };
     }
 
-    return { props: { token } };
+    return { props: {} };
 }

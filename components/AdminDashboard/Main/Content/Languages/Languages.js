@@ -2,6 +2,8 @@ import Link from "next/link";
 import Box from "../Elements/Box/Box";
 
 function Languages({ languages }) {
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+
     return (
         <div>
             <Box
@@ -36,7 +38,7 @@ function Languages({ languages }) {
                                 <tr className="table__body-row" key={lan?.id}>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`/content/language/${lan?.id}/edit`}
+                                            href={`${SITE_URL}/find-teachers/${lan.url}`}
                                         >
                                             <a
                                                 className="table__body-link"
@@ -44,6 +46,7 @@ function Languages({ languages }) {
                                                     display: "flex",
                                                     alignItems: "center",
                                                 }}
+                                                target="_blank"
                                             >
                                                 <img
                                                     src={lan?.flag_image}

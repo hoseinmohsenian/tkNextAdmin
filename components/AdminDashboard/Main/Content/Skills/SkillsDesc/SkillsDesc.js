@@ -106,6 +106,12 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
         return true;
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readSkills();
+    };
+
     return (
         <div>
             <Box
@@ -161,7 +167,10 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
                 )}
 
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
@@ -218,10 +227,9 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
                         </div>
                         <div className={styles["btn-wrapper"]}>
                             <button
-                                type="button"
+                                type="submit"
                                 className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
-                                onClick={() => readSkills()}
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
@@ -289,6 +297,17 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
                                     </td>
                                 </tr>
                             ))}
+
+                            {skills?.length === 0 && (
+                                <tr className="table__body-row">
+                                    <td
+                                        className="table__body-item"
+                                        colSpan={5}
+                                    >
+                                        مهارتی پیدا نشد !
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

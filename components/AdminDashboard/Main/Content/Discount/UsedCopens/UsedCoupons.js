@@ -6,27 +6,48 @@ import styles from "./UsedCoupons.module.css";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants/index";
 
+const filtersSchema = {
+    user_name: "",
+    teacher_name: "",
+    teacher_mobile: "",
+    user_mobile: "",
+    discount_name: "",
+};
+
+const appliedFiltersSchema = {
+    user_name: false,
+    teacher_name: false,
+    teacher_mobile: false,
+    user_mobile: false,
+    discount_name: false,
+};
+
 function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
     const [copens, setCoupons] = useState(data);
     const [pagData, setPagData] = useState(restData);
-    const [filters, setFilters] = useState({
-        user_name: "",
-        teacher_name: "",
-        teacher_mobile: "",
-        user_mobile: "",
-    });
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
-    const readCoupons = async (page = 1) => {
+    const readCoupons = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters
         let searchQuery = "";
-        Object.keys(filters).forEach((key) => {
-            if (filters[key]) {
-                searchQuery += `${key}=${filters[key]}&`;
-            }
-        });
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
         searchQuery += `page=${page}`;
 
         router.push({
@@ -69,11 +90,41 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
         });
     };
 
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readCoupons(1, true);
+        router.push({
+            pathname: `/tkpanel/useCopen`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readCoupons();
+    };
+
     return (
         <div>
             <Box title="لیست کدهای تخفیف استفاده شده">
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">
@@ -170,11 +221,11 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                             </div>
                         </div>
 
-                        {/* <div className={`row ${styles["search-row"]}`}>
+                        <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">
                                     <label
-                                        htmlFor="user_name"
+                                        htmlFor="discount_name"
                                         className={`form__label ${styles["search-label"]}`}
                                     >
                                         کد تخفیف :
@@ -182,27 +233,36 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                                     <div className="form-control">
                                         <input
                                             type="text"
-                                            name="user_name"
-                                            id="user_name"
+                                            name="discount_name"
+                                            id="discount_name"
                                             className="form__input"
                                             onChange={handleOnChange}
-                                            value={filters?.user_name}
+                                            value={filters?.discount_name}
                                             spellCheck={false}
                                         />
                                     </div>
                                 </div>
                             </div>
-                        </div> */}
+                        </div>
 
                         <div className={styles["btn-wrapper"]}>
                             <button
-                                type="button"
+                                type="submit"
                                 className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
-                                onClick={() => readCoupons()}
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>
+                            {!showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
                         </div>
                     </form>
                 </div>

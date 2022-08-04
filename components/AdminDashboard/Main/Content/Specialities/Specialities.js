@@ -143,6 +143,12 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
         return true;
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readSpecialtys();
+    };
+
     return (
         <div>
             <Box
@@ -154,7 +160,10 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
                 }}
             >
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
@@ -211,10 +220,9 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
                         </div>
                         <div className={styles["btn-wrapper"]}>
                             <button
-                                type="button"
+                                type="submit"
                                 className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
-                                onClick={() => readSpecialtys()}
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>

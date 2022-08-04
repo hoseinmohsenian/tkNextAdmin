@@ -3,7 +3,7 @@
     white-space: nowrap;
 }
 .table__wrapper--wrap {
-    white-space: normal;
+    white-space: normal !important;
 }
 .table {
     width: 100%;

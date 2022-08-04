@@ -34,8 +34,8 @@
         flex-direction: row;
     }
     .search-label {
-        min-width: 45px;
-        max-width: 45px;
+        min-width: 60px;
+        max-width: 60px;
     }
     .search-row-btn-wrapper {
         display: flex;

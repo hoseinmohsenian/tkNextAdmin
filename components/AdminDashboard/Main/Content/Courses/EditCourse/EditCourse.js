@@ -90,7 +90,7 @@ function EditCourse({ token, course }) {
                 removeAlert={showAlert}
                 envoker={handleSubmit}
             />
-            <Box title="ویرایش کورس">
+            <Box title="ویرایش مدل رزرو">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">
                         <label htmlFor="name" className="form__label">
@@ -223,7 +223,7 @@ function EditCourse({ token, course }) {
                         className="btn primary"
                         disabled={loading}
                     >
-                        {loading ? "در حال انجام ..." : "ویرایش کورس"}
+                        {loading ? "در حال انجام ..." : "ویرایش مدل"}
                     </button>
                 </form>
             </Box>

@@ -152,7 +152,7 @@ function CreateLanguage({ token }) {
                         <div className="upload-box">
                             <div
                                 className="upload-btn"
-                                onChange={(e) => handleSelectFile(e, "image")}
+                                onChange={(e) => handleSelectFile(e)}
                             >
                                 <span>آپلود تصویر</span>
                                 <input

@@ -12,7 +12,7 @@ import { useGlobalContext } from "../../../../../../context";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import API from "../../../../../../api";
 
-function MultiSession({ token }) {
+function MultiSession() {
     const [classes, setClasses] = useState([]);
     const [selectedDate, setSelectedDate] = useState();
     const [alertData, setAlertData] = useState({
@@ -53,7 +53,11 @@ function MultiSession({ token }) {
             );
 
             if (status === 200) {
-                showAlert(true, "success", "جستجو انجام شد");
+                if (data?.data?.length === 0) {
+                    showAlert(true, "warning", "نتیجه ای یافت نشد");
+                } else {
+                    showAlert(true, "success", "جستجو انجام شد");
+                }
                 setClasses(data?.data);
             } else {
                 showAlert(

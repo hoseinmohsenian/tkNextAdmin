@@ -64,9 +64,9 @@ function Courses({ fetchedCourses, token }) {
     return (
         <div>
             <Box
-                title="لیست کورس ها"
+                title="مدل های رزرو"
                 buttonInfo={{
-                    name: "ایجاد کورس",
+                    name: "ایجاد مدل رزرو جدید",
                     url: "/content/course/create",
                     color: "primary",
                 }}

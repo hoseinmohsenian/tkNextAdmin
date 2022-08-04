@@ -572,7 +572,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             type="button"
                                             className={`action-btn ${
                                                 teacher?.status === 1
-                                                    ?"danger"
+                                                    ? "danger"
                                                     : "success"
                                             }`}
                                             onClick={() =>
@@ -592,14 +592,14 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             href={`/dashboard/teacher/${teacher.id}?step=${teacher.step}`}
                                         >
                                             <a className={`action-btn primary`} target="_blank">
-                                                ورودی به پنل
+                                                {"ورودی به پنل "}
                                             </a>
                                         </Link>
                                         <Link
                                             href={`/tkpanel/multiSessionsList/logs/${teacher.id}?type=teacher`}
                                         >
                                             <a className={`action-btn warning`} target="_blank">
-                                                لاگ پیگیری
+                                                لاگ پیگیری&nbsp;
                                             </a>
                                         </Link>
                                         <Link

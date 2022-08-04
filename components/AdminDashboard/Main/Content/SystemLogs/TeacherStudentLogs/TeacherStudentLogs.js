@@ -10,6 +10,7 @@ function TeacherStudentLogs({
     token,
     type,
     id,
+    name,
 }) {
     const [logs, setLogs] = useState(data);
     const [pagData, setPagData] = useState(restData);
@@ -59,7 +60,7 @@ function TeacherStudentLogs({
             <Box
                 title={`لاگ پیگیری ${
                     type === "student" ? "زبان آموز" : "استاد‌"
-                }`}
+                } «${name}»`}
                 buttonInfo={{
                     name: "ایجاد لاگ",
                     url: "/tkpanel/logReport/show/create",

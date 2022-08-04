@@ -125,7 +125,7 @@ function EditHelp({ token, data }) {
                                 value={desc}
                                 setValue={setDesc}
                                 token={token}
-                                uploadImageUrl="/admin/blog/article/add/image"
+                                uploadImageUrl="/admin/help/image"
                             />
                         </div>
                     </div>

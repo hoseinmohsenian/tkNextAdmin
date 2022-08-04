@@ -2,13 +2,18 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import SubCategories from "../../../components/AdminDashboard/Main/Content/FAQ/SubCategories/SubCategories";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function FAQSubCategoryPage({ token, categories }) {
+function FAQSubCategoryPage({ categories, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="لیست زیرگروه دسته بندی FAQ | تیکا"></Header>
             <AdminDashboard>
-                <SubCategories token={token} categories={categories} />
+                <SubCategories categories={categories} />
             </AdminDashboard>
         </>
     );
@@ -37,11 +42,17 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
         props: {
-            token,
             categories: dataArr[0].data,
         },
     };
