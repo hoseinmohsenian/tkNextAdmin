@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./Step4.module.css";
 import LanModal from "./LanModal/LanModal";
 import Error from "../../../../../../../../Error/Error";
-import DeleteModal from "../../../../../Elements/ModalDelete/ModalDelete";
+import DeleteModal from "../../../../../../../../DeleteModal/DeleteModal";
 import { AiFillDelete } from "react-icons/ai";
 import Alert from "../../../../../../../../Alert/Alert";
 
@@ -20,8 +20,6 @@ const languageSchema = {
 function Step4(props) {
     const { token, alertData, showAlert, BASE_URL } = props;
     const [openModal, setOpenModal] = useState(false);
-    const [visible, setVisible] = useState(false);
-    const [LanguageRowID, setLanguageRowID] = useState(" ");
     const [languages, setLanguages] = useState([]);
     const [levels, setLevels] = useState([]);
     const [addedLanguages, setAddedLanguages] = useState([]);
@@ -33,10 +31,9 @@ function Step4(props) {
     const [currentStep, setCurrentStep] = useState(1);
     const [specialitys, setSpecialitys] = useState([]);
     const [skills, setSkills] = useState([]);
-
-    const handleClick = () => {
-        console.log("clicked");
-    };
+    const [toBeDeletedLan, setToBeDeletedLan] = useState({});
+    const [dModalVisible, setDModalVisible] = useState(false);
+    const [loadings, setLoadings] = useState([]);
 
     const readLanguages = async () => {
         try {
@@ -96,12 +93,17 @@ function Step4(props) {
             );
             const { data } = await res.json();
             setAddedLanguages(() => data);
+            setLoadings(Array(data?.length).fill(false));
         } catch (error) {
             console.log("Error fetching added languages ", error);
         }
     };
 
-    const deleteLanguage = async (id) => {
+    const deleteLanguage = async (id, i) => {
+        let temp = [...loadings];
+        temp[i] = true;
+        setLoadings(() => temp);
+
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/delete/language/${id}`,
@@ -114,15 +116,18 @@ function Step4(props) {
                     },
                 }
             );
+            if (res.ok) {
+                showAlert(true, "danger", "این زبان حذف شد");
+                setDModalVisible(false);
+                await fetchAddedLanguages();
+            }
         } catch (error) {
             console.log("Error deleting language ", error);
         }
-    };
 
-    const deleteLanguageHandler = async (id) => {
-        await deleteLanguage(id);
-        await fetchAddedLanguages();
-        setVisible(false);
+        temp = [...loadings];
+        temp[i] = false;
+        setLoadings(() => temp);
     };
 
     useEffect(() => {
@@ -145,7 +150,18 @@ function Step4(props) {
             <Alert
                 {...alertData}
                 removeAlert={showAlert}
-                envoker={handleClick}
+                envoker={deleteLanguage}
+            />
+
+            <DeleteModal
+                visible={dModalVisible}
+                setVisible={setDModalVisible}
+                title="حذف زبان"
+                bodyDesc={`آیا از حذف زبان «${toBeDeletedLan.persian_name}» اطمینان دارید؟`}
+                handleOk={() => {
+                    deleteLanguage(toBeDeletedLan?.id, toBeDeletedLan.index);
+                }}
+                confirmLoading={loadings[toBeDeletedLan.index]}
             />
 
             <div className="container">
@@ -234,8 +250,11 @@ function Step4(props) {
                                             <button
                                                 className={`${styles["addLan__btn"]} ${styles["addLan__btn--delete"]}`}
                                                 onClick={() => {
-                                                    setLanguageRowID(item?.id),
-                                                        setVisible(true);
+                                                    setToBeDeletedLan({
+                                                        ...item,
+                                                        index: ind,
+                                                    });
+                                                    setDModalVisible(true);
                                                 }}
                                             >
                                                 <div className="d-flex align-items-center">
@@ -338,17 +357,6 @@ function Step4(props) {
                 </div>
             </div>
             {/* visible, setVisible */}
-
-            <DeleteModal
-                visible={visible}
-                hideModal={() => {
-                    setVisible(false);
-                }}
-                type={"زبان"}
-                acceptFunc={() => {
-                    deleteLanguageHandler(LanguageRowID);
-                }}
-            />
         </div>
     );
 }

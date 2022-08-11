@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import Alert from "../../../../../../Alert/Alert";
 import SearchSelect from "../../../../../../SearchSelect/SearchSelect";
-import { BASE_URL } from "../../../../../../../constants";
 import styles from "./AddCommission.module.css";
 import FetchSearchSelect from "../../../Elements/FetchSearchSelect/FetchSearchSelect";
+import API from "../../../../../../../api/index";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name_family: "" };
 
-function AddCommission({ showAlert, setIsModalOpen, token, readCommissions }) {
+function AddCommission({ showAlert, setIsModalOpen, readCommissions }) {
     const [formData, setFormData] = useState({
         teacher_name: "",
         commission: 0,
@@ -50,18 +50,12 @@ function AddCommission({ showAlert, setIsModalOpen, token, readCommissions }) {
     const addCommission = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/changeable/commission`,
-                {
-                    method: "POST",
-                    body: fd,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/teacher/changeable/commission`,
+                fd
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 let message = "کمیسیون جدید اضافه شد";
                 showAlert(true, "success", message);
                 setIsModalOpen(false);
@@ -70,75 +64,62 @@ function AddCommission({ showAlert, setIsModalOpen, token, readCommissions }) {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding commission", error);
         }
+        setLoading(false);
     };
 
     const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${teacher_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/name/search?name=${teacher_name}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data);
                 showAlert(true, "success", "اکنون استاد را انتخاب کنید");
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const readStudents = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/student/${selectedTeacher.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/student/${selectedTeacher.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                console.log(data);
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data || []);
                 showAlert(true, "success", "اکنون زبان آموز را انتخاب کنید");
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading students", error);
         }
+        setLoading(false);
     };
 
     useEffect(() => {

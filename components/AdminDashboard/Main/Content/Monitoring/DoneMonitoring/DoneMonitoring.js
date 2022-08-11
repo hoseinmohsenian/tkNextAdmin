@@ -411,7 +411,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                                 جزئیات
                                             </button>
                                             <Link
-                                                href={`/tkpanel/multiSessionsList/logs/${item.user_id}?type=student`}
+                                                href={`/tkpanel/logReport/show/create?type=class&user_name=${item.user_name}&user_id=${item.user_id}&teacher_name=${item.teacher_name}&teacher_id=${item.teacher_id}`}
                                             >
                                                 <a
                                                     className={`action-btn warning`}

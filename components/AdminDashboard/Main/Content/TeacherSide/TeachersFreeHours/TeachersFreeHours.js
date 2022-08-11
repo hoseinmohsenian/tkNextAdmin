@@ -6,9 +6,9 @@ import styles from "./TeachersFreeHours.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import { useRouter } from "next/router";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import API from "../../../../../../api/index";
 
 const filtersSchema = {
     gender: 0,
@@ -28,7 +28,7 @@ const appliedFiltersSchema = {
     date: false,
 };
 
-function TeachersFreeHours({ token, languages }) {
+function TeachersFreeHours({ languages }) {
     const [teachers, setTeachers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [filters, setFilters] = useState(filtersSchema);
@@ -113,38 +113,29 @@ function TeachersFreeHours({ token, languages }) {
 
         try {
             setLoading(true);
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/freetime/${filters.language_id}?${searchQuery}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/freetime/1?${searchQuery}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
-                // setFilters(data);
-                // setPagData(restData);
+
+            if (status === 200) {
+                setTeachers(data?.data);
                 showAlert(true, "success", "جستجو انجام شد");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
-                    "danger",
-                    errData?.error?.invalid_params[0]?.message ||
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
+
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const removeFilters = () => {
@@ -167,6 +158,21 @@ function TeachersFreeHours({ token, languages }) {
             }
         }
         return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (
+            Number(filters.language_id) &&
+            filters.from &&
+            filters.to &&
+            selectedDate.year
+        ) {
+            await searchTeachers();
+        } else {
+            showAlert(true, "danger", "لطفا فیلدهای ضروری را تکمیل کنید");
+        }
     };
 
     return (
@@ -195,7 +201,10 @@ function TeachersFreeHours({ token, languages }) {
                 }}
             >
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">
@@ -204,6 +213,7 @@ function TeachersFreeHours({ token, languages }) {
                                         className={`form__label ${styles["search-label"]}`}
                                     >
                                         زبان:
+                                        <span className="form__star">*</span>
                                     </label>
                                     <div className="form-control">
                                         <select
@@ -212,6 +222,7 @@ function TeachersFreeHours({ token, languages }) {
                                             className="form__input input-select"
                                             onChange={handleOnChange}
                                             value={filters.language_id}
+                                            required
                                         >
                                             <option value={0}>
                                                 انتخاب کنید
@@ -236,6 +247,7 @@ function TeachersFreeHours({ token, languages }) {
                                         className={`form__label ${styles["search-label"]}`}
                                     >
                                         روز:
+                                        <span className="form__star">*</span>
                                     </label>
                                     <div className="form-control">
                                         <DatePicker
@@ -450,10 +462,9 @@ function TeachersFreeHours({ token, languages }) {
 
                         <div className={styles["btn-wrapper"]}>
                             <button
-                                type="button"
+                                type="submit"
                                 className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
-                                onClick={() => searchTeachers()}
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>

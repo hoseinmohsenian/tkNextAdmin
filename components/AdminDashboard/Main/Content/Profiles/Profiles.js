@@ -33,26 +33,32 @@ function Profiles(props) {
     const readStudents = async (page = 1, avoidFilters = false) => {
         setLoading(true);
 
-        let tempFilters = { ...appliedFilters };
-
         // Constructing search parameters
         let searchQuery = "";
+        let searchParams = {};
         if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
             Object.keys(filters).forEach((key) => {
-                if (Number(filters[key]) !== 0) {
+                if (filters[key]) {
                     searchQuery += `${key}=${filters[key]}&`;
                     tempFilters[key] = true;
+                    searchParams = {
+                        ...searchParams,
+                        [key]: filters[key],
+                    };
                 } else {
                     tempFilters[key] = false;
                 }
             });
+
+            setAppliedFilters(tempFilters);
         }
         searchQuery += `page=${page}`;
-        setAppliedFilters(tempFilters);
 
         router.push({
             pathname: `/tkpanel/profiles`,
-            query: { page },
+            query: searchParams,
         });
 
         try {
@@ -93,6 +99,10 @@ function Profiles(props) {
         setFilters(filtersSchema);
         setAppliedFilters(appliedFiltersSchema);
         readStudents(1, true);
+        router.push({
+            pathname: `/tkpanel/profiles`,
+            query: {},
+        });
     };
 
     const showFilters = () => {
@@ -100,10 +110,16 @@ function Profiles(props) {
         for (let i = 0; i < values.length; i++) {
             let value = values[i];
             if (value) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readStudents();
     };
 
     return (
@@ -173,7 +189,10 @@ function Profiles(props) {
                 )}
 
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
@@ -205,16 +224,15 @@ function Profiles(props) {
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className={styles["btn-wrapper"]}>
                                     <button
-                                        type="button"
+                                        type="submit"
                                         className={`btn primary ${styles["btn"]}`}
                                         disabled={loading}
-                                        onClick={() => readStudents()}
                                     >
                                         {loading
                                             ? "در حال انجام ..."
                                             : "اعمال فیلتر"}
                                     </button>
-                                    {!showFilters() && (
+                                    {showFilters() && (
                                         <button
                                             type="button"
                                             className={`btn danger-outline ${styles["btn"]}`}

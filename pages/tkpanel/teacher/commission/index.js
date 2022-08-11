@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import Commission from "../../../../components/AdminDashboard/Main/Content/TeacherSide/Commission/Commission";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function CommissionsPage({ commissions, token }) {
+function CommissionsPage({ commissions, token, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="لیست کمیسیون متغیر استاد | تیکا"></Header>
@@ -37,6 +42,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

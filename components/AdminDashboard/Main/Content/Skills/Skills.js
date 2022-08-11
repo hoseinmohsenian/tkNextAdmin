@@ -6,6 +6,7 @@ import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import styles from "./Skills.module.css";
 import { useRouter } from "next/router";
+import DeleteModal from "../../../../DeleteModal/DeleteModal";
 
 const filtersSchema = {
     persian_name: "",
@@ -28,6 +29,8 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
     });
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [dModalVisible, setDModalVisible] = useState(false);
+    const [selectedSkill, setSelectedSkill] = useState({});
     const router = useRouter();
 
     const handleOnChange = (e) => {
@@ -57,6 +60,7 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
             );
             if (res.ok) {
                 showAlert(true, "danger", "این مهارت حذف شد");
+                setDModalVisible(false);
                 await readSkills();
             }
             let temp = [...loadings];
@@ -158,6 +162,17 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
                     color: "primary",
                 }}
             >
+                <DeleteModal
+                    visible={dModalVisible}
+                    setVisible={setDModalVisible}
+                    title="حذف مهارت"
+                    bodyDesc={`آیا از حذف مهارت «${selectedSkill.persian_name}» اطمینان دارید؟`}
+                    handleOk={() => {
+                        deleteSkill(selectedSkill?.id, selectedSkill.index);
+                    }}
+                    confirmLoading={loadings[selectedSkill.index]}
+                />
+
                 <div className={styles["search"]}>
                     <form
                         className={styles["search-wrapper"]}
@@ -296,9 +311,13 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
                                         <button
                                             type="button"
                                             className={`action-btn danger`}
-                                            onClick={() =>
-                                                deleteSkill(sk?.id, i)
-                                            }
+                                            onClick={() => {
+                                                setSelectedSkill({
+                                                    ...sk,
+                                                    index: i,
+                                                });
+                                                setDModalVisible(true);
+                                            }}
                                             disabled={loadings[i]}
                                         >
                                             حذف

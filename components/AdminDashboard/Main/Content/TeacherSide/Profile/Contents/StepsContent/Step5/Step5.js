@@ -9,6 +9,8 @@ import Alert from "../../../../../../../../Alert/Alert";
 
 const formSchema = {
     language_id: "",
+    pricePerTest: 0,
+    pricePerTestID: 0,
     pricePer1: 0,
     pricePer1ID:0,
     pricePer5: 0,
@@ -27,18 +29,24 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
     const [errors, setErrors] = useState([]);
 
     let freePrices = [
-        { id: 1, name: "رایگان" },
-        { id: 2, name: "۵ هزار تومان" },
-        { id: 3, name: "۱۰ هزار تومان" },
-        { id: 4, name: "۱۵ هزار تومان" },
-        { id: 5, name: "۲۰ هزار تومان" },
-        { id: 6, name: "۲۵ هزار تومان" },
+        { value: 0, name: "رایگان" },
+        { value: 5000, name: "۵ هزار تومان" },
+        { value: 10000, name: "۱۰ هزار تومان" },
+        { value: 15000, name: "۱۵ هزار تومان" },
+        { value: 20000, name: "۲۰ هزار تومان" },
+        { value: 25000, name: "۲۵ هزار تومان" },
     ];
 
     const handleFormChange = (e, rowInd, name) => {
+        const value = e.target.value;
         let updated = [...formData];
-        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
+        updated[rowInd] = { ...updated[rowInd], [name]: value };
         setFormData(() => updated);
+
+        // Call the API for Test Session here. bacause <select> doesn't have onBlur
+        if(name === "pricePerTest" && Number(value) !== -1){
+            onBlurHandler(formData[rowInd].pricePerTestID, Number(value))
+        }
     };
 
     // Onchange for categories
@@ -107,6 +115,10 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
             let updatedLanguage = tempFormData[lanInd];
 
             for (let i=0; i<data?.length; i++) {
+                if(data[i].course_id === 1){
+                    updatedLanguage?.pricePerTestID = data[i]?.id;
+                    updatedLanguage?.pricePerTest = data[i]?.price;
+                }
                 if(data[i].course_id === 2){
                     updatedLanguage?.pricePer1ID = data[i]?.id;
                     updatedLanguage?.pricePer1 = data[i]?.price;
@@ -270,29 +282,6 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                         })}
                     </div>
 
-                    {/* Free session */}
-                    <div>
-                        <div className="input-wrapper">
-                            <label htmlFor="freePrices" className="form__label">
-                                جلسه آزمایشی
-                            </label>
-                            <div className="form-control">
-                                <select
-                                    name="freePrices" 
-                                    id="freePrices"
-                                    className="form__input input-select"
-                                    onChange={handleOnChange}
-                                    // value={formData.language_id}
-                                    required
-                                >
-                                    <option value="-1">انتخاب کنید</option>
-                                        {freePrices.map((item)=><option key={item.id}>{item.name}</option>)}
-                                </select>
-                            </div>
-                        </div>
-                        
-                    </div>
-
                     <div className={styles["lan__pricing"]}>
                         {/* Content */}
                         <div>
@@ -305,6 +294,47 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                             }
                                             key={ind}
                                         >
+                                            <div
+                                                className={
+                                                    styles[
+                                                        "lan__tab-content-row"
+                                                    ]
+                                                }
+                                            >
+                                                <div className={`input-wrapper ${styles["input-wrapper"]}`}>
+                                                    <label htmlFor="freePrices" className={`form__label ${styles["form__label"]}`}>
+                                                        جلسه آزمایشی
+                                                    </label>
+                                                    <div className="form-control">
+                                                        <select
+                                                            name="freePrices" 
+                                                            id="freePrices"
+                                                            className="form__input input-select"
+                                                            onChange={(e) =>
+                                                                handleFormChange(
+                                                                    e,
+                                                                    ind,
+                                                                    "pricePerTest"
+                                                                )
+                                                            }
+                                                            value={formItem.pricePerTest}
+                                                            required
+                                                        >
+                                                            <option value={-1}>انتخاب کنید</option>
+                                                                {freePrices.map((item) => (
+                                                                    <option 
+                                                                        key={item.value}
+                                                                        value={item.value}
+                                                                    >
+                                                                            {item.name}
+                                                                    </option>
+                                                                    )
+                                                                )}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <div
                                                 className={
                                                     styles[

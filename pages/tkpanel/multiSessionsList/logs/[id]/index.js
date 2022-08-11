@@ -14,7 +14,7 @@ function STLogPage({ logs, type, token, id, notAllowed, name }) {
             <Header
                 title={`لاگ پیگیری ${
                     type === "student" ? "زبان آموز" : "استاد‌"
-                } | تیکا`}
+                } ${name} | تیکا`}
             ></Header>
             <AdminDashboard>
                 <TeacherStudentLogs
@@ -47,7 +47,7 @@ export async function getServerSideProps(context) {
     }
 
     // Redirect if there's no "type" query or it's neither "student" nor "teacher"
-    if (!isKeyValid(type) || (type !== "student" && type !== "teacher")) {
+    if (!isKeyValid(type) || !["student", "teacher"].includes(type)) {
         return {
             redirect: {
                 destination: "/tkpanel",

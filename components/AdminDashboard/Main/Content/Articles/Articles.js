@@ -8,6 +8,7 @@ import Link from "next/link";
 import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
 import Modal from "../../../../Modal/Modal";
+import DeleteModal from "../../../../DeleteModal/DeleteModal";
 
 const filtersSchema = {
     language_id: 0,
@@ -45,7 +46,9 @@ function Articles(props) {
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const [openModal, setOpenModal] = useState(false);
     const [selectedArticle, setSelectedArticle] = useState({});
+    const [dModalVisible, setDModalVisible] = useState(false);
     const router = useRouter();
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const handleOnChange = (e) => {
@@ -222,6 +225,7 @@ function Articles(props) {
             );
             if (res.ok) {
                 showAlert(true, "danger", "این مقاله حذف شد");
+                setDModalVisible(false);
                 await readArticles();
             }
             let temp = [...loadings];
@@ -307,6 +311,20 @@ function Articles(props) {
                         </div>
                     </Modal>
                 )}
+
+                <DeleteModal
+                    visible={dModalVisible}
+                    setVisible={setDModalVisible}
+                    title="حذف مقاله"
+                    bodyDesc={`آیا از حذف مقاله «${selectedArticle.title}» اطمینان دارید؟`}
+                    handleOk={() => {
+                        deleteArticle(
+                            selectedArticle?.id,
+                            selectedArticle.index
+                        );
+                    }}
+                    confirmLoading={loadings[selectedArticle.index]}
+                />
 
                 <div className={styles["search"]}>
                     <form
@@ -588,9 +606,13 @@ function Articles(props) {
                                         <button
                                             type="button"
                                             className={`action-btn danger`}
-                                            onClick={() =>
-                                                deleteArticle(article?.id, i)
-                                            }
+                                            onClick={() => {
+                                                setSelectedArticle({
+                                                    ...article,
+                                                    index: i,
+                                                });
+                                                setDModalVisible(true);
+                                            }}
                                             disabled={loadings[i]}
                                         >
                                             حذف
@@ -603,7 +625,7 @@ function Articles(props) {
                                             </a>
                                         </Link>
                                         <Link
-                                            href={`https://barmansms.ir/blog/${article?.url}`}
+                                            href={`${SITE_URL}/blog/${article?.url}`}
                                             disabled={loadings[i]}
                                         >
                                             <a

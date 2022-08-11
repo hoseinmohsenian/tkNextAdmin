@@ -1,19 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
-import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
+import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
+import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
+import moment from "jalali-moment";
+import { TimePicker } from "antd";
+import styles from "./EditLog.module.css";
+import API from "../../../../../../api/index";
 
-const studentSchema = { id: "", name_family: "", mobile: "" };
-const teacherSchema = { id: "", name: "", family: "", mobile: "" };
-
-function EditLog({ token, statusList, theLog, admins, logs }) {
+function EditLog({ statusList, theLog, admins, type }) {
     const [formData, setFormData] = useState(theLog);
-    const [students, setStudents] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState(studentSchema);
-    const [teachers, setTeachers] = useState([]);
-    const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -33,23 +30,11 @@ function EditLog({ token, statusList, theLog, admins, logs }) {
             if (formData.desc && formData.desc !== theLog.desc) {
                 fd.append("desc", formData.desc);
             }
-            if (selectedStudent.id && selectedStudent.id !== theLog.user_id) {
-                fd.append("user_id", selectedStudent.id);
-            }
-            if (
-                selectedTeacher.id &&
-                selectedTeacher.id !== theLog.teacher_id
-            ) {
-                fd.append("teacher_id", selectedTeacher.id);
-            }
             if (
                 Number(formData.admin_assign_id) !== 0 &&
                 Number(formData.admin_assign_id) !== theLog.admin_assign_id
             ) {
                 fd.append("admin_assign_id", Number(formData.admin_assign_id));
-            }
-            if (Number(formData.parent_id) !== 0) {
-                fd.append("parent_id", Number(formData.parent_id));
             }
 
             await editLog(fd);
@@ -61,7 +46,17 @@ function EditLog({ token, statusList, theLog, admins, logs }) {
     const handleOnChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setFormData({ ...formData, [name]: value });
+        let updatedFormData = { ...formData, [name]: value };
+
+        if (name === "status") {
+            updatedFormData = {
+                ...updatedFormData,
+                next_tracking_time_status: statusList.find(
+                    (sts) => sts.id === Number(value)
+                )?.next_tracking_time,
+            };
+        }
+        setFormData(updatedFormData);
     };
 
     const showAlert = (show, type, message) => {
@@ -71,94 +66,77 @@ function EditLog({ token, statusList, theLog, admins, logs }) {
     const editLog = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/tracking-log/${formData.id}`,
-                {
-                    method: "POST",
-                    body: fd,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/tracking-log/${formData.id}`,
+                fd
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(true, "success", "لاگ باموفقیت ویرایش شد");
-                router.push("/tkpanel/logReport/show");
+                router.push(
+                    `/tkpanel/multiSessionsList/logs/${
+                        type === "student"
+                            ? formData.user_id
+                            : formData.teacher_id
+                    }?type=${type}`
+                );
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding log", error);
         }
+        setLoading(false);
     };
 
-    const searchStudents = async (input) => {
-        setLoading(true);
-        try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${input}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setStudents(data);
-            } else {
-                showAlert(
-                    true,
-                    "warning",
-                    errData?.error?.invalid_params[0]?.message ||
-                        "مشکلی پیش آمده"
-                );
-            }
-            setLoading(false);
-        } catch (error) {
-            console.log("Error searching students", error);
-        }
-    };
+    useEffect(() => {
+        // Filling date and time for inputs
+        let updated = {
+            next_tracking_time_status: statusList.find(
+                (sts) => sts.id === Number(theLog.status)
+            )?.next_tracking_time,
+        };
 
-    const searchTeachers = async (input) => {
-        setLoading(true);
-        try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${input}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
-            } else {
-                showAlert(
-                    true,
-                    "warning",
-                    errData?.error?.invalid_params[0]?.message ||
-                        "مشکلی پیش آمده"
-                );
-            }
-            setLoading(false);
-        } catch (error) {
-            console.log("Error searching teachers", error);
+        if (theLog.next_tracking_time) {
+            let shamsi_date = moment
+                .from(
+                    `${theLog.next_tracking_time?.substring(0, 10)}`,
+                    "en",
+                    "YYYY/MM/DD"
+                )
+                .locale("fa")
+                .format("YYYY/MM/DD");
+
+            updated = {
+                ...updated,
+                next_tracking_date: {
+                    year: Number(shamsi_date?.substring(0, 4)),
+                    month: Number(shamsi_date?.substring(5, 7)),
+                    day: Number(shamsi_date?.substring(8, 10)),
+                },
+                next_tracking_time: theLog.next_tracking_time?.substring(
+                    11,
+                    16
+                ),
+            };
+        } else {
+            updated = {
+                ...updated,
+                next_tracking_date: null,
+                next_tracking_time: "00:00",
+            };
         }
-    };
+
+        setFormData({
+            ...formData,
+            ...updated,
+        });
+    }, []);
 
     return (
         <div>
@@ -193,6 +171,136 @@ function EditLog({ token, statusList, theLog, admins, logs }) {
                             </select>
                         </div>
                     </div>
+                    {formData.next_tracking_time_status ? (
+                        <div className="row">
+                            <div className={`col-md-6 ${styles.col}`}>
+                                <div
+                                    className="input-wrapper"
+                                    style={{ width: "100%" }}
+                                >
+                                    <label className="form__label">
+                                        تاریخ پیگیری بعدی :
+                                    </label>
+                                    <div className="form-control">
+                                        <DatePicker
+                                            value={formData.next_tracking_date}
+                                            onChange={(value) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    next_tracking_date: value,
+                                                })
+                                            }
+                                            shouldHighlightWeekends
+                                            locale="fa"
+                                            wrapperClassName="date-input-wrapper"
+                                            inputClassName="date-input"
+                                            colorPrimary="#545cd8"
+                                            minimumDate={{
+                                                year: moment().year(),
+                                                month: Number(
+                                                    moment().format("M")
+                                                ),
+                                                day: Number(
+                                                    moment().format("DD")
+                                                ),
+                                            }}
+                                            inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-md-6`}>
+                                <div
+                                    className={`input-wrapper`}
+                                    style={{ width: "100%" }}
+                                >
+                                    <label
+                                        htmlFor="time"
+                                        className={`form__label`}
+                                    >
+                                        ساعت :
+                                    </label>
+                                    <div className="form-control">
+                                        <TimePicker
+                                            minuteStep={30}
+                                            format="HH:mm"
+                                            placeholder="انتخاب ساعت"
+                                            bordered={false}
+                                            onChange={(value) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    next_tracking_time:
+                                                        moment(value).format(
+                                                            "HH:mm"
+                                                        ),
+                                                })
+                                            }
+                                            value={moment(
+                                                formData.next_tracking_time ||
+                                                    "",
+                                                "HH:mm"
+                                            )}
+                                            className="time-picker"
+                                            popupClassName="popup-time-picker"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
+                    {type !== "teacher" && (
+                        <div className="input-wrapper">
+                            <label htmlFor="user_name" className="form__label">
+                                زبان آموز :
+                            </label>
+                            <div className="form-control">
+                                <input
+                                    type="text"
+                                    name="user_name"
+                                    id="user_name"
+                                    className="form__input"
+                                    spellCheck={false}
+                                    value={formData.user_name || ""}
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                    )}
+                    {type !== "student" && (
+                        <div className="input-wrapper">
+                            <label
+                                htmlFor="teacher_name"
+                                className="form__label"
+                            >
+                                استاد :
+                            </label>
+                            <div className="form-control">
+                                <input
+                                    type="text"
+                                    name="teacher_name"
+                                    id="teacher_name"
+                                    className="form__input"
+                                    spellCheck={false}
+                                    value={formData.teacher_name || ""}
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                    )}
+                    <div className="input-wrapper">
+                        <label htmlFor="english_name" className="form__label">
+                            توضیحات :
+                        </label>
+                        <textarea
+                            type="text"
+                            name="desc"
+                            id="desc"
+                            className="form__textarea"
+                            onChange={handleOnChange}
+                            value={formData.desc}
+                        />
+                    </div>
                     <div className="input-wrapper">
                         <label
                             htmlFor="admin_assign_id"
@@ -216,102 +324,6 @@ function EditLog({ token, statusList, theLog, admins, logs }) {
                                 ))}
                             </select>
                         </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="parent_id" className="form__label">
-                            لاگ والد :
-                        </label>
-                        <div className="form-control">
-                            <select
-                                name="parent_id"
-                                id="parent_id"
-                                className="form__input input-select"
-                                onChange={handleOnChange}
-                                value={formData.parent_id}
-                            >
-                                <option value={0}>انتخاب کنید</option>
-                                {logs.data?.map((lg) => (
-                                    <option key={lg?.id} value={lg?.id}>
-                                        {lg?.desc}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="student" className="form__label">
-                            زبان آموز :
-                        </label>
-                        <div
-                            className={`form-control form-control-searchselect`}
-                        >
-                            <FetchSearchSelect
-                                list={students}
-                                setList={setStudents}
-                                placeholder="جستجو کنید"
-                                selected={selectedStudent}
-                                displayKey="name_family"
-                                displayPattern={[
-                                    { member: true, key: "name_family" },
-                                    { member: false, key: " - " },
-                                    { member: true, key: "mobile" },
-                                ]}
-                                setSelected={setSelectedStudent}
-                                noResText="زبان آموزی پیدا نشد"
-                                listSchema={studentSchema}
-                                stylesProps={{
-                                    width: "100%",
-                                }}
-                                background="#fafafa"
-                                fontSize={16}
-                                onSearch={(value) => searchStudents(value)}
-                            />
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="student" className="form__label">
-                            استاد :
-                        </label>
-                        <div
-                            className={`form-control form-control-searchselect`}
-                        >
-                            <FetchSearchSelect
-                                list={teachers}
-                                setList={setTeachers}
-                                placeholder="جستجو کنید"
-                                selected={selectedTeacher}
-                                displayKey="family"
-                                displayPattern={[
-                                    { member: true, key: "name" },
-                                    { member: false, key: " " },
-                                    { member: true, key: "family" },
-                                    { member: false, key: " - " },
-                                    { member: true, key: "mobile" },
-                                ]}
-                                setSelected={setSelectedTeacher}
-                                noResText="استادی پیدا نشد"
-                                listSchema={teacherSchema}
-                                stylesProps={{
-                                    width: "100%",
-                                }}
-                                background="#fafafa"
-                                fontSize={16}
-                                onSearch={(value) => searchTeachers(value)}
-                            />
-                        </div>
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="english_name" className="form__label">
-                            توضیحات :
-                        </label>
-                        <textarea
-                            type="text"
-                            name="desc"
-                            id="desc"
-                            className="form__textarea"
-                            onChange={handleOnChange}
-                            value={formData.desc}
-                        />
                     </div>
 
                     <button

@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import styles from "./CreateScore.module.css";
 import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
 import FetchSearchSelect from "../../../Elements/FetchSearchSelect/FetchSearchSelect";
 import SearchSelect from "../../../../../../SearchSelect/SearchSelect";
+import API from "../../../../../../../api";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
 
-function CreateScore({ token }) {
+function CreateScore() {
     const [formData, setFormData] = useState({
         desc: "",
         desc: false,
@@ -92,90 +92,75 @@ function CreateScore({ token }) {
     const addScore = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/teacher/point`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/teacher/point`,
+                fd
+            );
+
+            if (status === 200) {
                 let message = "امتیاز با موفقیت ثبت شد";
                 showAlert(true, "success", message);
                 router.push("/score/minus/getAllScores");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding point", error);
         }
+        setLoading(false);
     };
 
     const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${teacher_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/name/search?name=${teacher_name}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data);
+                showAlert(true, "success", "اکنون استاد را انتخاب کنید");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const readStudents = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/student/${selectedTeacher.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/student/${selectedTeacher.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data || []);
+                showAlert(true, "success", "اکنون زبان آموز را انتخاب کنید");
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading students", error);
         }
+        setLoading(false);
     };
 
     useEffect(() => {

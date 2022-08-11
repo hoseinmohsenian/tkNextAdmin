@@ -2,8 +2,13 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import TeachersComments from "../../../components/AdminDashboard/Main/Content/Support/TeachersComments/TeachersComments";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TeachersCommentsPage({ comments, token }) {
+function TeachersCommentsPage({ comments, token, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="کامنت های اساتید | تیکا"></Header>
@@ -37,6 +42,13 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {

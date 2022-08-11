@@ -46,7 +46,7 @@ export async function getServerSideProps(context) {
 
     if (isKeyValid(page)) {
         if (Number(page) > 0) {
-            params += `page=${page}`;
+            params += `page=${page}&`;
         }
     }
     if (isKeyValid(input)) {

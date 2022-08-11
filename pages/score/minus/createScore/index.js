@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateScore from "../../../../components/AdminDashboard/Main/Content/TeacherSide/TeachersScore/CreateScore/CreateScore";
 import Header from "../../../../components/Head/Head";
 
-function TeachersCreateScorePage({ token }) {
+function TeachersCreateScorePage() {
     return (
         <>
             <Header title="ایجاد امتیاز برای استاد | تیکا"></Header>
             <AdminDashboard>
-                <CreateScore token={token} />
+                <CreateScore />
             </AdminDashboard>
         </>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

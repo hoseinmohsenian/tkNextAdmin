@@ -83,7 +83,10 @@ function SitePages({ pages }) {
 
                             {pages.length === 0 && (
                                 <tr className="table__body-row">
-                                    <td className="table__body-item">
+                                    <td
+                                        className="table__body-item"
+                                        colSpan={4}
+                                    >
                                         صفحه ای وجود ندارد!
                                     </td>
                                 </tr>

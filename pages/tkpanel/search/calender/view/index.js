@@ -2,13 +2,18 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import TeachersFreeHours from "../../../../../components/AdminDashboard/Main/Content/TeacherSide/TeachersFreeHours/TeachersFreeHours";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TeachersFreeHoursPage({ token, languages }) {
+function TeachersFreeHoursPage({ languages, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="ساعت خالی استاد | تیکا"></Header>
             <AdminDashboard>
-                <TeachersFreeHours token={token} languages={languages} />
+                <TeachersFreeHours languages={languages} />
             </AdminDashboard>
         </div>
     );
@@ -37,7 +42,13 @@ export async function getServerSideProps(context) {
         }),
     ]);
 
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
-    return { props: { token, languages: dataArr[0].data } };
+    return { props: { languages: dataArr[0].data } };
 }

@@ -7,21 +7,56 @@ import { BASE_URL } from "../../../../../../constants";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import styles from "./StudentTransactionDetails.module.css";
+
+const filtersSchema = { tracking_code: "" };
+const appliedFiltersSchema = { tracking_code: false };
 
 function StudentTransactionDetails(props) {
     const {
         fetchedTransactions: { data, ...restData },
         token,
+        searchData,
     } = props;
     const [transactions, setTransactions] = useState(data);
     const [pagData, setPagData] = useState(restData);
+    const [filters, setFilters] = useState({ ...filtersSchema, ...searchData });
+    const [appliedFilters, setAppliedFilters] = useState({
+        ...appliedFiltersSchema,
+        ...searchData,
+    });
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
-    const readTransactions = async (page = 1) => {
+    const readTransactions = async (page = 1, avoidFilters = false) => {
+        setLoading(true);
+
+        // Constructing search parameters
         let searchParams = {};
+        let searchQuery = "";
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams = {
+                        ...searchParams,
+                        [key]: filters[key],
+                    };
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
+
+        searchQuery += `page=${page}`;
 
         if (page !== 1) {
             searchParams = {
@@ -37,7 +72,7 @@ function StudentTransactionDetails(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/student/transactions?page=${page}`,
+                `${BASE_URL}/admin/accounting/student/transactions?${searchQuery}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -57,6 +92,43 @@ function StudentTransactionDetails(props) {
         } catch (error) {
             console.log("Error reading transactions", error);
         }
+        setLoading(false);
+    };
+
+    const handleOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readTransactions(1, true);
+        router.push({
+            pathname: `/tkpanel/user/credits`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readTransactions();
     };
 
     return (
@@ -90,6 +162,14 @@ function StudentTransactionDetails(props) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
+                                    کد پیگیری
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTransaction.tracking_code || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
                                     تاریخ پرداخت
                                 </span>
                                 <span className={"modal__item-body"}>
@@ -106,6 +186,67 @@ function StudentTransactionDetails(props) {
                         </div>
                     </Modal>
                 )}
+
+                <div className={styles["search"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="tracking_code"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        کد پیگیری :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="tracking_code"
+                                            id="tracking_code"
+                                            className="form__input form__input--ltr"
+                                            onChange={handleOnChange}
+                                            value={filters.tracking_code}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className={styles["btn-wrapper"]}>
+                                    <button
+                                        type="submit"
+                                        className={`btn primary ${styles["btn"]}`}
+                                        disabled={loading}
+                                    >
+                                        {loading
+                                            ? "در حال انجام ..."
+                                            : "اعمال فیلتر"}
+                                    </button>
+                                    {showFilters() && (
+                                        <button
+                                            type="button"
+                                            className={`btn danger-outline ${styles["btn"]}`}
+                                            disabled={loading}
+                                            onClick={() => removeFilters()}
+                                        >
+                                            {loading
+                                                ? "در حال انجام ..."
+                                                : "حذف فیلتر"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 
                 <div className="table__wrapper">
                     <table className="table">

@@ -6,6 +6,7 @@ import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import styles from "./Specialities.module.css";
 import { useRouter } from "next/router";
+import DeleteModal from "../../../../DeleteModal/DeleteModal";
 
 const filtersSchema = {
     persian_name: "",
@@ -28,6 +29,8 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
     });
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [dModalVisible, setDModalVisible] = useState(false);
+    const [selectedSpec, setSelectedSpec] = useState({});
     const router = useRouter();
 
     const handleOnChange = (e) => {
@@ -58,6 +61,7 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
             );
             if (res.ok) {
                 showAlert(true, "danger", "این تخصص حذف شد");
+                setDModalVisible(false);
                 await readSpecialtys();
             }
             let temp = [...loadings];
@@ -159,6 +163,17 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
                     color: "primary",
                 }}
             >
+                <DeleteModal
+                    visible={dModalVisible}
+                    setVisible={setDModalVisible}
+                    title="حذف تخصص"
+                    bodyDesc={`آیا از حذف تخصص «${selectedSpec.persian_name}» اطمینان دارید؟`}
+                    handleOk={() => {
+                        deleteSpecialty(selectedSpec?.id, selectedSpec.index);
+                    }}
+                    confirmLoading={loadings[selectedSpec.index]}
+                />
+
                 <div className={styles["search"]}>
                     <form
                         className={styles["search-wrapper"]}
@@ -299,9 +314,13 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
                                         <button
                                             type="button"
                                             className={`action-btn danger`}
-                                            onClick={() =>
-                                                deleteSpecialty(spec?.id, i)
-                                            }
+                                            onClick={() => {
+                                                setSelectedSpec({
+                                                    ...spec,
+                                                    index: i,
+                                                });
+                                                setDModalVisible(true);
+                                            }}
                                             disabled={loadings[i]}
                                         >
                                             حذف

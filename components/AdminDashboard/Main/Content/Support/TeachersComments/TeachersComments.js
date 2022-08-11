@@ -196,6 +196,7 @@ function TeachersComments(props) {
                                 <th className="table__head-item">استاد</th>
                                 <th className="table__head-item">زبان آموز</th>
                                 <th className="table__head-item">شماره زبان آموز</th>
+                                <th className="table__head-item">ip زبان آموز</th>
                                 <th className="table__head-item table__head-item--ellipsis">نظر</th>
                                 <th className="table__head-item">ریپلای ادمین</th>
                                 <th className="table__head-item">امتیاز کلی</th>
@@ -227,6 +228,9 @@ function TeachersComments(props) {
                                                 </a>
                                             </Link>
                                         )}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {comment?.ip || "-"}
                                     </td>
                                     <td 
                                         className="table__body-item table__body-item--ellipsis"

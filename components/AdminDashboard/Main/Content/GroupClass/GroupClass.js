@@ -218,6 +218,12 @@ function GroupClass(props) {
         });
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readClasses();
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -268,7 +274,10 @@ function GroupClass(props) {
                 )}
 
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
@@ -394,10 +403,9 @@ function GroupClass(props) {
 
                         <div className={styles["btn-wrapper"]}>
                             <button
-                                type="button"
+                                type="submit"
                                 className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
-                                onClick={() => readClasses()}
                             >
                                 {loading ? "در حال انجام ..." : "اعمال فیلتر"}
                             </button>

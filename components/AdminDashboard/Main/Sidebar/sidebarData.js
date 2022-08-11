@@ -49,12 +49,7 @@ import {
     BiSitemap,
 } from "react-icons/bi";
 import { BsArrowRepeat, BsFillFileSpreadsheetFill } from "react-icons/bs";
-import {
-    GiSkills,
-    GiDirectionSign,
-    GiLogicGateAnd,
-    GiPlatform,
-} from "react-icons/gi";
+import { GiSkills, GiDirectionSign, GiPlatform } from "react-icons/gi";
 import {
     RiArticleFill,
     RiAdminLine,
@@ -607,11 +602,6 @@ export default [
                 title: "لیست جدول در کوئری",
                 path: "/tkpanel/database/query/building",
                 icon: <BiTable />,
-            },
-            {
-                title: "لاگ سیستم",
-                path: "/tkpanel/logReport/show",
-                icon: <GiLogicGateAnd />,
             },
             {
                 title: "وضعیت لاگ های سیستم",

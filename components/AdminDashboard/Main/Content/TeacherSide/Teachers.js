@@ -272,6 +272,11 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
         return true;
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await readTeachers();
+    }
+
     return (
         <div>
             <BreadCrumbs substituteObj={{ teachers: "استاد" }} />
@@ -332,7 +337,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                 )}
 
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form className={styles["search-wrapper"]} onSubmit={handleSubmit}>
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
@@ -418,10 +423,9 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className={styles["btn-wrapper"]}>
                                     <button
-                                        type="button"
+                                        type="submit"
                                         className={`btn primary ${styles["btn"]}`}
                                         disabled={loading}
-                                        onClick={() => readTeachers()}
                                     >
                                         {loading
                                             ? "در حال جستجو ..."

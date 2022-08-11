@@ -190,7 +190,6 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
                     <AddCommission
                         showAlert={showAlert}
                         setIsModalOpen={setIsModalOpen}
-                        token={token}
                         readCommissions={readCommissions}
                     />
                 </Modal>
