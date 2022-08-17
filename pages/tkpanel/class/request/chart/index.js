@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import ClassroomChart from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/ClassroomChart/ClassroomChart";
 import Header from "../../../../../components/Head/Head";
 
-function ClassroomChartPage({ token }) {
+function ClassroomChartPage() {
     return (
         <div>
             <Header title="ایجاد کلاس جدید | تیکا"></Header>
             <AdminDashboard>
-                <ClassroomChart token={token} />
+                <ClassroomChart />
             </AdminDashboard>
         </div>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

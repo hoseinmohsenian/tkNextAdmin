@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateCategory from "../../../../components/AdminDashboard/Main/Content/FAQ/Categires/CreateCategory/CreateCategory";
 import Header from "../../../../components/Head/Head";
 
-function FAQCreateCategoryPage({ token }) {
+function FAQCreateCategoryPage() {
     return (
         <>
             <Header title="ایجاد دسته بندی FAQ | تیکا"></Header>
             <AdminDashboard>
-                <CreateCategory token={token} />
+                <CreateCategory />
             </AdminDashboard>
         </>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

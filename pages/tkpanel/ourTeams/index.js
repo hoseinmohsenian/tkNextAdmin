@@ -1,25 +1,25 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import BlackList from "../../../components/AdminDashboard/Main/Content/BlackList/BlackList";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
 import { checkResponseArrAuth } from "../../../utils/helperFunctions";
 import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function BlackListPage({ list, notAllowed }) {
+function OurTeamPage({ members, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
     return (
-        <>
-            <Header title="لیست سیاه | تیکا"></Header>
+        <div>
+            <Header title="تیم ما | تیکا"></Header>
             <AdminDashboard>
-                <BlackList fetchedList={list} />
+                {/* <Profiles members={members} searchData={searchData} /> */}
+                <h1>در حال ساخت...</h1>
             </AdminDashboard>
-        </>
+        </div>
     );
 }
 
-export default BlackListPage;
+export default OurTeamPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/management/block-user`, {
+        fetch(`${BASE_URL}/admin/our-team`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -52,8 +52,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: {
-            list: dataArr[0].data,
-        },
+        props: { members: dataArr[0]?.data },
     };
 }

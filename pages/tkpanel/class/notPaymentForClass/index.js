@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import NotPaidClasses from "../../../../components/AdminDashboard/Main/Content/NotPaidClasses/NotPaidClasses";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function NotPaidClassesPage({ classes, token }) {
+function NotPaidClassesPage({ classes, token, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="لیست کلاس های پرداخت نشده | تیکا"></Header>
@@ -48,6 +53,12 @@ export async function getServerSideProps(context) {
     ]);
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     return {
         props: {

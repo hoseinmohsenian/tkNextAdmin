@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./ClassroomChart.module.css";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
@@ -10,8 +9,9 @@ import Chart from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { useGlobalContext } from "../../../../../../context/index";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import API from "../../../../../../api/index";
 
-function ClassroomChart({ token }) {
+function ClassroomChart() {
     const [info, setInfo] = useState({});
     const [chartData, setChartData] = useState({});
     const [adminsChart, setAdminsChart] = useState([]);
@@ -70,19 +70,13 @@ function ClassroomChart({ token }) {
     const readData = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/classroom/first-class/chart?start_date=${convertDate(
+            const { data, status, response } = await API.get(
+                `/admin/classroom/first-class/chart?start_date=${convertDate(
                     startDate
-                )}&end_date=${convertDate(endDate)}`,
-                {
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+                )}&end_date=${convertDate(endDate)}`
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 const {
                     data: {
                         admin,
@@ -90,23 +84,23 @@ function ClassroomChart({ token }) {
                         all,
                         admin_separation,
                         admin_list,
-                        ...data
+                        ...listData
                     },
-                } = await res.json();
-                setChartData(data);
+                } = data;
+                setChartData(listData);
                 setInfo({ admin, student, all, admin_separation, admin_list });
             } else {
-                const { error } = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    error?.invalid_params[0]?.message || "مشکلی پیش آمده"
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading data from API", error);
         }
+        setLoading(false);
     };
 
     const findAdmin = (id) => {
@@ -133,6 +127,14 @@ function ClassroomChart({ token }) {
                 },
             },
         },
+    };
+
+    const handleClick = async () => {
+        if (startDate?.year && endDate?.year) {
+            await readData();
+        } else {
+            showAlert(true, "danger", "لطفا تاریخ شروع و پایان را انتخاب کنید");
+        }
     };
 
     useEffect(() => {
@@ -252,7 +254,7 @@ function ClassroomChart({ token }) {
                                 type="button"
                                 className={`btn primary ${styles["btn"]}`}
                                 disabled={loading}
-                                onClick={() => readData()}
+                                onClick={handleClick}
                             >
                                 {loading ? "در حال انجام ..." : "جستجو"}
                             </button>

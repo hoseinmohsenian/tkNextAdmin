@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
+import API from "../../../../../../api/index";
 
-function CreateCourse({ token }) {
+function CreateCourse() {
     const [formData, setFormData] = useState({
         name: "",
         type: 1,
@@ -48,25 +48,26 @@ function CreateCourse({ token }) {
     const addCourse = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/course`, {
-                method: "POST",
-                body: JSON.stringify(formData),
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/course`,
+                JSON.stringify(formData)
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "کورس جدید با موفقیت اضافه شد");
                 router.push("/content/course");
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new course", error);
         }
+        setLoading(false);
     };
 
     return (

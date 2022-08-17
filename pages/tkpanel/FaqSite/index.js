@@ -2,8 +2,13 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import FAQ from "../../../components/AdminDashboard/Main/Content/FAQ/FAQ/FAQ";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function FAQListPage({ faqs, token }) {
+function FAQListPage({ faqs, token, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="سوالات FAQ | تیکا"></Header>
@@ -37,6 +42,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

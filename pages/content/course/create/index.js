@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateCourse from "../../../../components/AdminDashboard/Main/Content/Courses/CreateCourse/CreateCourse";
 import Header from "../../../../components/Head/Head";
 
-function CreateCoursePage({ token }) {
+function CreateCoursePage() {
     return (
         <>
             <Header title="ایجاد کورس | تیکا"></Header>
             <AdminDashboard>
-                <CreateCourse token={token} />
+                <CreateCourse />
             </AdminDashboard>
         </>
     );
@@ -27,5 +27,5 @@ export async function getServerSideProps(context) {
         };
     }
 
-    return { props: { token } };
+    return { props: {} };
 }

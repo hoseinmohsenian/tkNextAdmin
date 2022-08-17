@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreatePlatform from "../../../../components/AdminDashboard/Main/Content/CreatePlatform/CreatePlatform";
 import Header from "../../../../components/Head/Head";
 
-function CreatePlatformPage({ token }) {
+function CreatePlatformPage() {
     return (
         <>
             <Header title="پلتفرم جدید | تیکا"></Header>
             <AdminDashboard>
-                <CreatePlatform token={token} />
+                <CreatePlatform />
             </AdminDashboard>
         </>
     );
@@ -27,5 +27,5 @@ export async function getServerSideProps(context) {
         };
     }
 
-    return { props: { token } };
+    return { props: {} };
 }

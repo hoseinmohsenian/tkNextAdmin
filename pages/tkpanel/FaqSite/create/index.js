@@ -2,13 +2,18 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateQuestion from "../../../../components/AdminDashboard/Main/Content/FAQ/FAQ/CreateQuestion/CreateQuestion";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function FAQCreateEditPage({ token, categories }) {
+function FAQCreateEditPage({ categories, token, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="ایجاد سوال جدید | تیکا"></Header>
             <AdminDashboard>
-                <CreateQuestion token={token} categories={categories} />
+                <CreateQuestion categories={categories} token={token} />
             </AdminDashboard>
         </>
     );
@@ -37,6 +42,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

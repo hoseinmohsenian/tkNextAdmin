@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "./TeacherReporting.module.css";
-import { BASE_URL } from "../../../../../../constants";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
@@ -9,6 +8,7 @@ import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
 import { useRouter } from "next/router";
+import API from "../../../../../../api/index";
 
 const filtersSchema = {
     from: null,
@@ -27,7 +27,7 @@ const appliedFiltersSchema = {
     gender: false,
 };
 
-function TeacherReporting({ token }) {
+function TeacherReporting() {
     const [reportings, setReportings] = useState([]);
     const [filters, setFilters] = useState(filtersSchema);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
@@ -105,22 +105,24 @@ function TeacherReporting({ token }) {
         }
 
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/reporting/teacher?${searchQuery}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/reporting/teacher?${searchQuery}`
             );
-            const { data } = await res.json();
-            setReportings(data);
-            setLoading(false);
+
+            if (status === 200) {
+                setReportings(data?.data || []);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error reading reportings", error);
         }
+        setLoading(false);
     };
 
     const removeFilters = () => {
@@ -418,9 +420,8 @@ function TeacherReporting({ token }) {
                                         className="table__body-item"
                                         data-tip={report?.mobile || "-"}
                                     >
-                                        {filters.student
-                                            ? report.name_family
-                                            : `${report.name} ${report.family}`}
+                                        {report.name || "-"}{" "}
+                                        {report.family || "-"}
                                         <span className="info-icon">
                                             <AiOutlineInfoCircle />
                                         </span>

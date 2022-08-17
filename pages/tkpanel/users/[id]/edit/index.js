@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import EditUser from "../../../../../components/AdminDashboard/Main/Content/Users/EditUser/EditUser";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function EditUserPage({ admin, token, permissions }) {
+function EditUserPage({ admin, token, permissions, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="ویرایش ادمین | تیکا"></Header>
@@ -49,6 +54,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

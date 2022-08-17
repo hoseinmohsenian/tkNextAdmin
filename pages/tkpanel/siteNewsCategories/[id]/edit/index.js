@@ -2,8 +2,18 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import EditCategory from "../../../../../components/AdminDashboard/Main/Content/Categories/EditCategory/EditCategory";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function NewsSubcategoriesEditPage({ token, category, categoriesLevel1 }) {
+function NewsSubcategoriesEditPage({
+    token,
+    category,
+    categoriesLevel1,
+    notAllowed,
+}) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="ویرایش دسته بندی دوم مقالات | تیکا"></Header>
@@ -51,6 +61,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
+import API from "../../../../../../api/index";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
-function TeacherManualTransaction({ token }) {
+function TeacherManualTransaction() {
     const [formData, setFormData] = useState({
         desc: "",
         status: 0,
@@ -50,64 +50,49 @@ function TeacherManualTransaction({ token }) {
     const addTransaction = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/accounting/teacher/manual/transaction/${selectedTeacher.id}`,
-                {
-                    method: "POST",
-                    body: fd,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/accounting/teacher/manual/transaction/${selectedTeacher.id}`,
+                fd
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(true, "success", "اعتبار باموفقیت ثبت شد");
                 router.push("/tkpanel/teacher/credits");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding transaction", error);
         }
+        setLoading(false);
     };
 
     const searchTeachers = async (input) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/search?name=${input}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/search?name=${input}`
             );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     return (
@@ -148,7 +133,6 @@ function TeacherManualTransaction({ token }) {
                                     width: "100%",
                                 }}
                                 background="#fafafa"
-                                fontSize={16}
                                 onSearch={(value) => searchTeachers(value)}
                             />
                         </div>

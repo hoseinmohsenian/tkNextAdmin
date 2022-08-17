@@ -3,8 +3,9 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import API from "../../../../../api";
 
-function CreateLevel({ token }) {
+function CreateLevel() {
     const [formData, setFormData] = useState({
         persian_name: "",
         english_name: "",
@@ -48,25 +49,27 @@ function CreateLevel({ token }) {
             if (formData.url) {
                 body = { ...body, url: formData.url };
             }
-            const res = await fetch(`${BASE_URL}/admin/teaching/level`, {
-                method: "POST",
-                body: JSON.stringify(body),
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+
+            const { response, status } = await API.post(
+                `/admin/teaching/level`,
+                JSON.stringify(body)
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "سطح جدید با موفقیت اضافه شد");
                 router.push("/content/level");
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new level", error);
         }
+        setLoading(false);
     };
 
     return (

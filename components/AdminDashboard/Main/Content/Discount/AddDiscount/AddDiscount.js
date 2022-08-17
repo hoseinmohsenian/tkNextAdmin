@@ -2,13 +2,13 @@ import { useState } from "react";
 import styles from "./AddDiscount.module.css";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
+import API from "../../../../../../api/index";
 
-function AddDiscount({ token }) {
+function AddDiscount() {
     const [formData, setFormData] = useState({
         name: "",
         percent: "",
@@ -111,29 +111,23 @@ function AddDiscount({ token }) {
     const addDiscount = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/discount`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(`/admin/discount`, fd);
+
+            if (status === 200) {
                 showAlert(true, "success", "کوپن تخفیف ثبت شد");
                 router.push("/tkpanel/copens");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a discount", error);
         }
+        setLoading(false);
     };
 
     function handleKeyPress(e) {

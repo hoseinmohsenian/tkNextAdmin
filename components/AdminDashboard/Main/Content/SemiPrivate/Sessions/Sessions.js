@@ -3,14 +3,14 @@ import styles from "./Sessions.module.css";
 import Box from "../../Elements/Box/Box";
 import moment from "jalali-moment";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
+import API from "../../../../../../api/index";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 const studentSchema = { id: "", name_family: "", mobile: "" };
 
-function SemiPrivateSessions({ token }) {
+function SemiPrivateSessions() {
     const [formData, setFromData] = useState({ type: 1 });
     const [teachers, setTeachers] = useState([]);
     const [sessions, setSessions] = useState([]);
@@ -41,148 +41,116 @@ function SemiPrivateSessions({ token }) {
     const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${teacher_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/name/search?name=${teacher_name}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const searchStudents = async (student_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${student_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/student/search?input=${student_name}`
             );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading students", error);
         }
+        setLoading(false);
     };
 
     const getTeacherStudents = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/semi-private/search/teacher/students?teacher_id=${selectedTeacher.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/semi-private/search/teacher/students?teacher_id=${selectedTeacher.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data || []);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading students", error);
         }
+        setLoading(false);
     };
 
     const getStudentTeachers = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/semi-private/search/student/teachers?user_id=${selectedStudent.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/semi-private/search/student/teachers?user_id=${selectedStudent.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data || []);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading teachers", error);
         }
+        setLoading(false);
     };
 
     const searchSessions = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/semi-private/teacher/student/session?teacher_id=${selectedTeacher.id}&user_id=${selectedStudent.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/semi-private/teacher/student/session?teacher_id=${selectedTeacher.id}&user_id=${selectedStudent.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setSessions(data);
+
+            if (status === 200) {
+                setSessions(data?.data || []);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching sessions", error);
         }
+        setLoading(false);
     };
 
     const searchSessionsHandler = async () => {

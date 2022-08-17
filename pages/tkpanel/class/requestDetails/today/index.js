@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import TodayClass from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/TodayClass/TodayClass";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TodayClassPage({ classes, token, meta }) {
+function TodayClassPage({ classes, token, meta, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="کلاس های امروز | تیکا"></Header>
@@ -41,6 +46,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

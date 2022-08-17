@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import styles from "./CreateUser.module.css";
 import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
+import API from "../../../../../../api/index";
 
 const permissionsSchema = {
     id: "",
@@ -14,7 +14,7 @@ const permissionsSchema = {
     updated_at: "",
 };
 
-function CreateUser({ token, permissions }) {
+function CreateUser({ permissions }) {
     const [formData, setFormData] = useState({
         name: "",
         password: "",
@@ -67,30 +67,26 @@ function CreateUser({ token, permissions }) {
     const addAdmin = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/management/add`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/management/add`,
+                fd
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "ادمین جدید با موفقیت اضافه شد");
                 router.push("/tkpanel/users");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new admin", error);
         }
+        setLoading(false);
     };
 
     const handleSelectFile = (e, name) => {
@@ -260,7 +256,6 @@ function CreateUser({ token, permissions }) {
                                     }}
                                     background="#fafafa"
                                     max={24}
-                                    fontSize={16}
                                     openBottom={false}
                                 />
                             </div>

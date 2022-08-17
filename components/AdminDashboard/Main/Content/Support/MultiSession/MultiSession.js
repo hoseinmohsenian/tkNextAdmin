@@ -1,6 +1,10 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+    getUnformattedPrice,
+} from "../../../../../../utils/priceFormat";
 import Box from "../../Elements/Box/Box";
 import styles from "./MultiSession.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
@@ -15,6 +19,7 @@ import API from "../../../../../../api";
 function MultiSession() {
     const [classes, setClasses] = useState([]);
     const [selectedDate, setSelectedDate] = useState();
+    const [loadings, setLoadings] = useState([]);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -59,6 +64,7 @@ function MultiSession() {
                     showAlert(true, "success", "جستجو انجام شد");
                 }
                 setClasses(data?.data);
+                setLoadings(Array(data?.data?.length).fill(false))
             } else {
                 showAlert(
                     true,
@@ -81,6 +87,54 @@ function MultiSession() {
             await readClasses();
         } else {
             showAlert(true, "danger", "لطفا تاریخ را انتخاب کنید");
+        }
+    };
+
+    const priceOnChange = (e, rowInd) => {
+        let updated = [...classes];
+        updated[rowInd] = { ...updated[rowInd], price: e.target.value };
+        setClasses(() => updated);
+    };
+
+    const loadingsHanlder=  (i, value) => {
+        let temp = [...loadings];
+        temp[i] = value;
+        setLoadings(() => temp);
+    }
+
+    const changePrice = async (value, price_id, i) => {
+        try {
+            loadingsHanlder(i, true);
+            const { response, status } = await API.post(
+                `/admin/classroom/change-price/${price_id}`,
+                JSON.stringify({ price: Number(value) })
+            );
+
+            if (status === 200) {
+                let message = `قیمت به ${Intl.NumberFormat().format(
+                    Number(value)
+                )} تومان تغییر کرد`;
+                showAlert(true, "success", message);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+        } catch (error) {
+            console.log("Error changing price", error);
+        }
+        loadingsHanlder(i, false);
+    };
+
+    const changePriceHandler = async (value, price_id, i) => {
+        if (Number(value) !== classes[i]?.price && value) {
+            await changePrice(value, price_id, i);
+            let temp = [...classes];
+            temp[i]?.price = value;
+            setClasses(() => temp);
         }
     };
 
@@ -109,6 +163,14 @@ function MultiSession() {
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedClass?.course_name || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تاریخ آخرین تراکنش
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.last_transaction || "-"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -236,7 +298,7 @@ function MultiSession() {
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {classes?.map((item) => (
+                            {classes?.map((item, i) => (
                                 <tr className="table__body-row" key={item?.id}>
                                     <td className="table__body-item">
                                         {item?.user_name}
@@ -262,11 +324,35 @@ function MultiSession() {
                                         {item?.language_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.price
-                                            ? `${Intl.NumberFormat().format(
-                                                  item?.price
-                                              )} تومان`
-                                            : "-"}
+                                        <div className="form-control" style={{width:"80px",margin:0}}>
+                                            <input
+                                                type="text"
+                                                name="price"
+                                                id="price"
+                                                className="form__input form__input--ltr"
+                                                onChange={(e) =>
+                                                    priceOnChange(
+                                                        e,
+                                                        i,
+                                                    )
+                                                }
+                                                value={getFormattedPrice(
+                                                    classes[i]?.price
+                                                )}
+                                                onBlur={(e) =>
+                                                    changePriceHandler(
+                                                        getUnformattedPrice(e.target.value),
+                                                        item.id,
+                                                        i
+                                                    )
+                                                }
+                                                autoComplete="off"
+                                                onKeyDown={(e) =>
+                                                    checkValidPriceKeys(e)
+                                                }
+                                                disabled={loadings[i]}
+                                            />
+                                        </div>
                                     </td>
                                     <td className="table__body-item">
                                         {moment(item?.date).format(
@@ -278,7 +364,7 @@ function MultiSession() {
                                             href={`/tkpanel/multiSessionsList/logs/${item.id}`}
                                         >
                                             <a className={`action-btn warning`}>
-                                                لاگ پیگیری
+                                                لاگ پیگیری&nbsp;
                                             </a>
                                         </Link>
                                         <Link

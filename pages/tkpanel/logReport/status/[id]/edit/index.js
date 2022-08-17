@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../../../components/AdminDashboard/Dashboar
 import EditStatus from "../../../../../../components/AdminDashboard/Main/Content/SystemLogs/StatusList/EditStatus/EditStatus";
 import Header from "../../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function EditSystemLogStatusPage({ token, status }) {
+function EditSystemLogStatusPage({ token, status, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="ویرایش وضیعت پیگیری | تیکا"></Header>
@@ -38,6 +43,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

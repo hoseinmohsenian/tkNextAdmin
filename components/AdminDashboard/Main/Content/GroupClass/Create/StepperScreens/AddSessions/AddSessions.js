@@ -8,11 +8,11 @@ import { IoAddSharp } from "react-icons/io5";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
-import { BASE_URL } from "../../../../../../../../constants";
 import { TimePicker } from "antd";
+import API from "../../../../../../../../api";
 
 function AddSessions(props) {
-    const { token, showAlert, alertData, formData, setFormData } = props;
+    const { showAlert, alertData, formData, setFormData } = props;
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -86,35 +86,27 @@ function AddSessions(props) {
     const addSession = async (body) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/group-class/session/${formData.id}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify(body),
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                        "Content-Type": "application/json",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/group-class/session/${formData.id}`,
+                JSON.stringify(body)
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 let message = "جلسات باموفقیت ثبت شد";
                 showAlert(true, "success", message);
                 router.push("/tkpanel/groupClass");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding sessions", error);
         }
+        setLoading(false);
     };
 
     const isEmpty = (rowInd) => {
@@ -276,6 +268,7 @@ function AddSessions(props) {
                                                             ),
                                                         }}
                                                         inputPlaceholder="انتخاب کنید"
+                                                        calendarPopperPosition="bottom"
                                                     />
                                                 </div>
                                             </div>

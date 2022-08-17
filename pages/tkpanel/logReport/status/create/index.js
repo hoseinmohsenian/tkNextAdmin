@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import CreateStatus from "../../../../../components/AdminDashboard/Main/Content/SystemLogs/StatusList/CreateStatus/CreateStatus";
 import Header from "../../../../../components/Head/Head";
 
-function CreateSystemLogStatusPage({ token }) {
+function CreateSystemLogStatusPage() {
     return (
         <div>
             <Header title="ایجاد وضیعت پیگیری | تیکا"></Header>
             <AdminDashboard>
-                <CreateStatus token={token} />
+                <CreateStatus />
             </AdminDashboard>
         </div>
     );
@@ -28,6 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: { token },
+        props: {},
     };
 }

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import API from "../../../../../api/index";
 
-function CreateSkill({ token, languages }) {
+function CreateSkill({ languages }) {
     const [formData, setFormData] = useState({
         language_id: 0,
         speciality_id: 0,
@@ -66,40 +66,44 @@ function CreateSkill({ token, languages }) {
     const addSkill = async (body) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/teaching/skill`, {
-                method: "POST",
-                body: JSON.stringify(body),
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/teaching/skill`,
+                JSON.stringify(body)
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "مهارت جدید با موفقیت اضافه شد");
                 router.push("/content/skill");
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new skill", error);
         }
+        setLoading(false);
     };
 
     const fetchSpecialitys = async () => {
         try {
-            const res = await fetch(
-                `${BASE_URL}/data/language/speciality/${formData.language_id}`,
-                {
-                    headers: {
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/data/language/speciality/${formData.language_id}`
             );
-            const { data } = await res.json();
-            setSpecialities(data);
+
+            if (status === 200) {
+                setSpecialities(data?.data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error fetching specialitys ", error);
         }
@@ -219,7 +223,11 @@ function CreateSkill({ token, languages }) {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn" disabled={loading}>
+                    <button
+                        type="submit"
+                        className="btn primary"
+                        disabled={loading}
+                    >
                         {loading ? "در حال انجام ..." : "ایجاد مهارت‌"}
                     </button>
                 </form>

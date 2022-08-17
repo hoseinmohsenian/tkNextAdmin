@@ -16,7 +16,7 @@ const countrySchema = {
 };
 const provinceSchema = {
     id: "",
-    country_id: "89",
+    country_id: "",
     name: "",
 };
 const citySchema = {
@@ -62,6 +62,7 @@ function Step1({ token, alertData, showAlert }) {
         useState(languageSchema);
     const [selectedDate, setSelectedDate] = useState();
     const [loading, setLoading] = useState(false);
+    const [pageLoaded, setPageLoaded] = useState(false);
     const [selectedPreCode, setSelectedPreCode] = useState({
         id: 88,
         name_fa: "ایران",
@@ -71,6 +72,9 @@ function Step1({ token, alertData, showAlert }) {
         flag: "https://api.barmansms.ir/public/credential/country-flags/ir.png",
     });
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+    console.log("selectedCountry", selectedCountry);
+    console.log("selectedProvince", selectedProvince);
+    console.log("selectedCity", selectedCity);
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -81,7 +85,6 @@ function Step1({ token, alertData, showAlert }) {
 
     const handleClick = async (e) => {
         e.preventDefault();
-        console.log("hhhh");
 
         if (
             (Number(formData.gender) !== 1 || Number(formData.gender) !== 2) &&
@@ -128,7 +131,7 @@ function Step1({ token, alertData, showAlert }) {
             ) {
                 body = { ...body, mother_tongue_id: selectedMotherTongue.id };
             }
-            if (selectedDate.year) {
+            if (selectedDate?.year) {
                 let birth_date = `${selectedDate?.year}-${selectedDate?.month}-${selectedDate?.day}`;
                 if (birth_date !== fetchedData.birth_date) {
                     body = {
@@ -177,7 +180,13 @@ function Step1({ token, alertData, showAlert }) {
                 },
             });
             const { data } = await res.json();
-            setLanguages(() => data);
+            setLanguages(() => [
+                ...data,
+                {
+                    id: 0,
+                    persian_name: "فارسی",
+                },
+            ]);
         } catch (error) {
             console.log("error fetching languages ", error);
         }
@@ -216,10 +225,10 @@ function Step1({ token, alertData, showAlert }) {
         }
     };
 
-    const getCities = async () => {
+    const getCities = async (province_id) => {
         try {
             const res = await fetch(
-                `${BASE_URL}/data/country/city/${selectedProvince.id}`,
+                `${BASE_URL}/data/country/city/${province_id}`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -235,6 +244,7 @@ function Step1({ token, alertData, showAlert }) {
     };
 
     const getPublicInfo = async () => {
+        setPageLoaded(false);
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/return/public`,
@@ -257,9 +267,31 @@ function Step1({ token, alertData, showAlert }) {
                     day: parseInt(DateBirth[2]),
                 });
             }
+            if (data.country_id) {
+                setSelectedCountry({
+                    ...selectedCountry,
+                    id: data.country_id,
+                    name_fa: data.country_name,
+                });
+            }
+            // if (data.province_id) {
+            //     setSelectedProvince({
+            //         id: data.province_id,
+            //         name: data.province_name,
+            //         country_id: data.country_id,
+            //     });
+            // }
+            if (data.city_id) {
+                setSelectedCity({
+                    id: data.city_id,
+                    name: data.city_name,
+                    province_id: data.province_id,
+                });
+            }
         } catch (error) {
             console.log("Error reading public info ", error);
         }
+        setPageLoaded(true);
     };
 
     const editPublicInfo = async (body) => {
@@ -296,6 +328,7 @@ function Step1({ token, alertData, showAlert }) {
         return list?.find((item) => item?.id === id);
     };
 
+    // Fetching form data, countries list and languages list
     useEffect(() => {
         if (token) {
             getPublicInfo();
@@ -304,45 +337,64 @@ function Step1({ token, alertData, showAlert }) {
         }
     }, [token]);
 
-    // Updating selected country, selected province, and selected city field with fetched country_id
+    // Getting the selected mother tongue from when languages list are fetched
     useEffect(() => {
-        if (formData.country_id) {
-            let coRes = findItem(countries, formData?.country_id);
-            let pRes = findItem(provinces, formData?.province_id);
-            let ciRes = findItem(cities, formData?.city_id);
+        if (languages.length) {
             let lanRes = findItem(languages, formData?.mother_tongue_id);
-            if (coRes !== undefined) {
-                setSelectedCountry(coRes);
-            }
-            if (pRes !== undefined) {
-                setSelectedProvince(pRes);
-            }
-            if (ciRes !== undefined) {
-                setSelectedCity(ciRes);
-            }
             if (lanRes !== undefined) {
                 setSelectedMotherTongue(lanRes);
             }
         }
-    }, [formData.country_id, provinces, cities, languages]);
+    }, [languages]);
 
-    // Filling Provinces
     useEffect(() => {
-        let countryId = selectedCountry.id;
-        if (countryId) {
-            getProvinces(countryId);
-        }
-    }, [selectedCountry]);
+        // Filling selected country
+        // let coRes = findItem(countries, fetchedData?.country_id);
+        // if (coRes !== undefined) {
+        //     setSelectedCountry(() => coRes);
+        // }
 
-    // Filling Cities
+        setSelectedProvince(() => {
+            return {
+                id: fetchedData?.province_id || "",
+                name: fetchedData?.province_name || "",
+                country_id: fetchedData?.country_id || "",
+            };
+        });
+        setSelectedCity(() => {
+            return {
+                id: fetchedData?.city_id || "",
+                name: fetchedData?.city_name || "",
+                province_id: fetchedData?.province_id || "",
+            };
+        });
+    }, [fetchedData]);
+
     useEffect(() => {
-        let provinceId = selectedProvince.id;
-        // province_id:data.province_id,
-        setFormData({ ...formData, province_id: provinceId });
-        if (provinceId) {
-            getCities(provinceId);
+        setCities([]);
+        // setSelectedCity(citySchema);
+        if (selectedCountry.id) {
+            getProvinces(selectedCountry.id);
         }
-    }, [selectedProvince]);
+        if (selectedCountry.id !== selectedProvince.country_id) {
+            setSelectedProvince(provinceSchema);
+        }
+    }, [selectedCountry, fetchedData]);
+
+    useEffect(() => {
+        if (selectedProvince.id) {
+            getCities(selectedProvince.id);
+        } else {
+            setCities([]);
+            setSelectedCity(citySchema);
+        }
+        if (
+            selectedCity.province_id &&
+            selectedProvince.id !== selectedCity.province_id
+        ) {
+            setSelectedCity(citySchema);
+        }
+    }, [selectedProvince, fetchedData]);
 
     return (
         <div>
@@ -353,232 +405,248 @@ function Step1({ token, alertData, showAlert }) {
                 envoker={handleClick}
             />
 
-            <form onSubmit={handleClick}>
-                <div className="input-wrapper">
-                    <label htmlFor="status" className="form__label">
-                        جنسیت :<span className="form__star">*</span>
-                    </label>
-                    <div className="form-control form-control-radio">
-                        <div className="input-radio-wrapper">
-                            <label htmlFor="male" className="radio-title">
-                                مرد
-                            </label>
+            {pageLoaded ? (
+                <form onSubmit={handleClick}>
+                    <div className="input-wrapper">
+                        <label htmlFor="status" className="form__label">
+                            جنسیت :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control form-control-radio">
+                            <div className="input-radio-wrapper">
+                                <label htmlFor="male" className="radio-title">
+                                    مرد
+                                </label>
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    onChange={handleOnChange}
+                                    value={1}
+                                    checked={Number(formData.gender) === 1}
+                                    id="male"
+                                    required
+                                />
+                            </div>
+
+                            <div className="input-radio-wrapper">
+                                <label htmlFor="female" className="radio-title">
+                                    زن
+                                </label>
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    onChange={handleOnChange}
+                                    value={2}
+                                    checked={Number(formData.gender) === 2}
+                                    id="female"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="name" className="form__label">
+                            نام :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
                             <input
-                                type="radio"
-                                name="gender"
+                                type="text"
+                                name="name"
+                                id="name"
+                                className="form__input"
                                 onChange={handleOnChange}
-                                value={1}
-                                checked={Number(formData.gender) === 1}
-                                id="male"
-                                required
+                                value={formData.name || ""}
+                                spellCheck={false}
                             />
                         </div>
-
-                        <div className="input-radio-wrapper">
-                            <label htmlFor="female" className="radio-title">
-                                زن
-                            </label>
+                    </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="family" className="form__label">
+                            نام خانوادگی :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
                             <input
-                                type="radio"
-                                name="gender"
+                                type="text"
+                                name="family"
+                                id="family"
+                                className="form__input"
                                 onChange={handleOnChange}
-                                value={2}
-                                checked={Number(formData.gender) === 2}
-                                id="female"
-                                required
+                                value={formData.family || ""}
+                                spellCheck={false}
                             />
                         </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="name" className="form__label">
-                        نام :<span className="form__star">*</span>
-                    </label>
-                    <div className="form-control">
-                        <input
-                            type="text"
-                            name="name"
-                            id="name"
-                            className="form__input"
-                            onChange={handleOnChange}
-                            value={formData.name || ""}
-                            spellCheck={false}
-                        />
+                    <div className="input-wrapper">
+                        <label htmlFor="publish_time" className="form__label">
+                            تاریخ تولد :
+                        </label>
+                        <div className="form-control">
+                            <DatePicker
+                                value={selectedDate}
+                                onChange={setSelectedDate}
+                                shouldHighlightWeekends
+                                locale="fa"
+                                wrapperClassName="date-input-wrapper"
+                                inputClassName="date-input"
+                                colorPrimary="#545cd8"
+                                inputPlaceholder="انتخاب کنید"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="family" className="form__label">
-                        نام خانوادگی :<span className="form__star">*</span>
-                    </label>
-                    <div className="form-control">
-                        <input
-                            type="text"
-                            name="family"
-                            id="family"
-                            className="form__input"
-                            onChange={handleOnChange}
-                            value={formData.family || ""}
-                            spellCheck={false}
-                        />
+                    <div className="input-wrapper">
+                        <label htmlFor="title" className="form__label">
+                            کشور :
+                        </label>
+                        <div
+                            className={`form-control form-control-searchselect`}
+                        >
+                            <SearchSelect
+                                list={countries}
+                                defaultText="انتخاب کنید"
+                                selected={selectedCountry}
+                                displayKey="name_fa"
+                                setSelected={setSelectedCountry}
+                                noResText="کشور پیدا نشد"
+                                listSchema={countrySchema}
+                                background="#fafafa"
+                                stylesProps={{
+                                    width: "100%",
+                                }}
+                                id="id"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="publish_time" className="form__label">
-                        تاریخ تولد :
-                    </label>
-                    <div className="form-control">
-                        <DatePicker
-                            value={selectedDate}
-                            onChange={setSelectedDate}
-                            shouldHighlightWeekends
-                            locale="fa"
-                            wrapperClassName="date-input-wrapper"
-                            inputClassName="date-input"
-                            colorPrimary="#545cd8"
-                            inputPlaceholder="انتخاب کنید"
-                        />
+                    <div className="input-wrapper">
+                        <label htmlFor="title" className="form__label">
+                            استان :
+                        </label>
+                        <div
+                            className={`form-control form-control-searchselect`}
+                        >
+                            <SearchSelect
+                                list={provinces}
+                                defaultText="انتخاب کنید"
+                                selected={selectedProvince}
+                                displayKey="name"
+                                setSelected={setSelectedProvince}
+                                noResText="استان پیدا نشد"
+                                listSchema={provinceSchema}
+                                background="#fafafa"
+                                stylesProps={{
+                                    width: "100%",
+                                }}
+                                id="id"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="title" className="form__label">
-                        کشور :
-                    </label>
-                    <div className={`form-control form-control-searchselect`}>
-                        <SearchSelect
-                            list={countries}
-                            defaultText="انتخاب کنید"
-                            selected={selectedCountry}
-                            displayKey="name_fa"
-                            setSelected={setSelectedCountry}
-                            noResText="کشور پیدا نشد"
-                            listSchema={countrySchema}
-                            background="#fafafa"
-                            stylesProps={{
-                                width: "100%",
-                            }}
-                            id="id"
-                        />
+                    <div className="input-wrapper">
+                        <label htmlFor="title" className="form__label">
+                            شهر :
+                        </label>
+                        <div
+                            className={`form-control form-control-searchselect`}
+                        >
+                            <SearchSelect
+                                list={cities}
+                                defaultText="انتخاب کنید"
+                                selected={selectedCity}
+                                displayKey="name"
+                                setSelected={setSelectedCity}
+                                noResText="شهر پیدا نشد"
+                                listSchema={citySchema}
+                                background="#fafafa"
+                                stylesProps={{
+                                    width: "100%",
+                                }}
+                                id="id"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="title" className="form__label">
-                        استان :
-                    </label>
-                    <div className={`form-control form-control-searchselect`}>
-                        <SearchSelect
-                            list={provinces}
-                            defaultText="انتخاب کنید"
-                            selected={selectedProvince}
-                            displayKey="name"
-                            setSelected={setSelectedProvince}
-                            noResText="استان پیدا نشد"
-                            listSchema={provinceSchema}
-                            background="#fafafa"
-                            stylesProps={{
-                                width: "100%",
-                            }}
-                            id="id"
-                        />
+                    <div className="input-wrapper">
+                        <label htmlFor="title" className="form__label">
+                            زبان مادری :
+                        </label>
+                        <div
+                            className={`form-control form-control-searchselect`}
+                        >
+                            <SearchSelect
+                                list={languages}
+                                defaultText="انتخاب کنید"
+                                selected={selectedMotherTongue}
+                                displayKey="persian_name"
+                                setSelected={setSelectedMotherTongue}
+                                noResText="زبان پیدا نشد"
+                                listSchema={languageSchema}
+                                stylesProps={{
+                                    width: "100%",
+                                }}
+                                id="id"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="title" className="form__label">
-                        شهر :
-                    </label>
-                    <div className={`form-control form-control-searchselect`}>
-                        <SearchSelect
-                            list={cities}
-                            defaultText="انتخاب کنید"
-                            selected={selectedCity}
-                            displayKey="name"
-                            setSelected={setSelectedCity}
-                            noResText="شهر پیدا نشد"
-                            listSchema={citySchema}
-                            background="#fafafa"
-                            stylesProps={{
-                                width: "100%",
-                            }}
-                            id="id"
-                        />
+                    <div className="input-wrapper">
+                        <label htmlFor="email" className="form__label">
+                            ایمیل :
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                className="form__input form__input--ltr"
+                                value={formData.email || ""}
+                                onChange={handleOnChange}
+                                placeholder="example@domain.com"
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="title" className="form__label">
-                        زبان مادری :
-                    </label>
-                    <div className={`form-control form-control-searchselect`}>
-                        <SearchSelect
-                            list={languages}
-                            defaultText="انتخاب کنید"
-                            selected={selectedMotherTongue}
-                            displayKey="persian_name"
-                            setSelected={setSelectedMotherTongue}
-                            noResText="زبان پیدا نشد"
-                            listSchema={languageSchema}
-                            stylesProps={{
-                                width: "100%",
-                            }}
-                            id="id"
-                        />
+                    <div className="input-wrapper">
+                        <label htmlFor="mobile" className="form__label">
+                            موبایل :<span className="form__star">*</span>
+                        </label>
+                        <div
+                            className={`form-control form-control-searchselect`}
+                        >
+                            <PhoneInput
+                                list={countries}
+                                mobile={formData.mobile}
+                                mobileOnChange={(phone) =>
+                                    setFormData({
+                                        ...formData,
+                                        mobile: phone,
+                                    })
+                                }
+                                selectedCountry={selectedPreCode}
+                                setSelectedCountry={setSelectedPreCode}
+                                listSchema={countrySchema}
+                                background="#fafafa"
+                                stylesProps={{
+                                    width: "100%",
+                                }}
+                                id="id"
+                                openBottom={false}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="email" className="form__label">
-                        ایمیل :
-                    </label>
-                    <div className="form-control">
-                        <input
-                            type="email"
-                            name="email"
-                            id="email"
-                            className="form__input form__input--ltr"
-                            value={formData.email || ""}
-                            onChange={handleOnChange}
-                            placeholder="example@domain.com"
-                        />
-                    </div>
-                </div>
-                <div className="input-wrapper">
-                    <label htmlFor="mobile" className="form__label">
-                        موبایل :<span className="form__star">*</span>
-                    </label>
-                    <div className={`form-control form-control-searchselect`}>
-                        <PhoneInput
-                            list={countries}
-                            mobile={formData.mobile}
-                            mobileOnChange={(phone) =>
-                                setFormData({
-                                    ...formData,
-                                    mobile: phone,
-                                })
-                            }
-                            selectedCountry={selectedPreCode}
-                            setSelectedCountry={setSelectedPreCode}
-                            listSchema={countrySchema}
-                            background="#fafafa"
-                            stylesProps={{
-                                width: "100%",
-                            }}
-                            id="id"
-                            openBottom={false}
-                        />
-                    </div>
-                </div>
 
-                {errors?.length !== 0 && (
-                    <div>
-                        <Error errorList={errors} />
-                    </div>
-                )}
+                    {errors?.length !== 0 && (
+                        <div>
+                            <Error errorList={errors} />
+                        </div>
+                    )}
 
-                <button
-                    type="submit"
-                    className={`primary btn`}
-                    disabled={loading}
-                >
-                    {loading ? "در حال انجام ..." : "ذخیره پروفایل"}
-                </button>
-            </form>
+                    <button
+                        type="submit"
+                        className={`primary btn`}
+                        disabled={loading}
+                    >
+                        {loading ? "در حال انجام ..." : "ذخیره پروفایل"}
+                    </button>
+                </form>
+            ) : (
+                <div>
+                    <h2>در حال خواندن اطلاعات...</h2>
+                </div>
+            )}
         </div>
     );
 }

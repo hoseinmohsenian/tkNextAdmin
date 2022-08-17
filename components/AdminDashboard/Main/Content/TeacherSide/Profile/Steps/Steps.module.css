@@ -1,3 +1,6 @@
+.wrapper {
+    width: 100%;
+}
 .steps {
     width: 100%;
     margin-bottom: 0.8rem;
@@ -36,10 +39,11 @@
 }
 
 @media all and (min-width: 992px) {
+    .wrapper {
+        padding-left: 0.8rem;
+    }
     .steps {
-        width: 280px;
         margin-bottom: 0;
-        margin-left: 0.8rem;
         padding-bottom: 0;
         border: 1px solid #ccc;
         border-radius: 0.5rem;

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../constants";
 import SearchMultiSelect from "../../../../SearchMultiSelect/SearchMultiSelect";
 import Box from "../Elements/Box/Box";
+import API from "../../../../../api/index";
 
 function PinTeacher({ token, languages }) {
     const [formData, setFormData] = useState({
@@ -33,21 +34,24 @@ function PinTeacher({ token, languages }) {
     const readTeachers = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/pin/search/teacher/${formData.language_id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/blog/pin/search/teacher/${formData.language_id}`
             );
-            const { data } = await res.json();
-            setTeachers(data);
-            setLoading(false);
+
+            if (status === 200) {
+                setTeachers(data?.data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error reading teachers", error);
         }
+        setLoading(false);
     };
 
     const handleOnChange = (e) => {
@@ -60,54 +64,50 @@ function PinTeacher({ token, languages }) {
     const deleteTeacherPin = async (teacher_id) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/pin/language/${formData.language_id}?teacher_id=${teacher_id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { status, response } = await API.delete(
+                `/admin/blog/pin/language/${formData.language_id}?teacher_id=${teacher_id}`
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 let message = "پین حذف شد";
                 showAlert(true, "danger", message);
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error deleting teacher pin", error);
         }
+        setLoading(false);
     };
 
     const pinTeacher = async (teacher_id) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/pin/language/${formData.language_id}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify({ teacher_id: teacher_id }),
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/blog/pin/language/${formData.language_id}`,
+                JSON.stringify({ teacher_id: teacher_id })
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 let message = "این استاد پین شد";
                 showAlert(true, "success", message);
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error pinning teacher", error);
         }
+        setLoading(false);
     };
 
     const deleteTeacherHandler = async (teacher_id) => {

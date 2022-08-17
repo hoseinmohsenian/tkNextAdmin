@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import API from "../../../../../api/index";
 
-function CreateSpecialty({ token, languages }) {
+function CreateSpecialty({ languages }) {
     const [formData, setFormData] = useState({
         language_id: 0,
         persian_name: "",
@@ -55,25 +55,27 @@ function CreateSpecialty({ token, languages }) {
             if (formData.url) {
                 body = { ...body, url: formData.url };
             }
-            const res = await fetch(`${BASE_URL}/admin/teaching/speciality`, {
-                method: "POST",
-                body: JSON.stringify(body),
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+
+            const { response, status } = await API.post(
+                `/admin/teaching/speciality`,
+                JSON.stringify(body)
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "تخصص جدید با موفقیت اضافه شد");
                 router.push("/content/specialty");
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new specialty", error);
         }
+        setLoading(false);
     };
 
     return (

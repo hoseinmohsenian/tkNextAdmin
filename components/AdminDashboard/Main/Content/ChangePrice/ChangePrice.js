@@ -11,6 +11,11 @@ import { AiOutlineWhatsApp,AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+    getUnformattedPrice,
+} from "../../../../../utils/priceFormat";
 
 const filtersSchema = { user_name: "", teacher_name: "", teacher_mobile: "", user_mobile: "", };
 const appliedFiltersSchema = { 
@@ -26,6 +31,7 @@ function ChangePrice(props) {
         token,
     } = props;
     const [prices, setPrices] = useState(data);
+    const [loadings, setLoadings] = useState(Array(data.length).fill(false));
     const [filters, setFilters] = useState(filtersSchema);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [pagData, setPagData] = useState(restData);
@@ -106,6 +112,7 @@ function ChangePrice(props) {
                 data: { data, ...restData },
             } = await res.json();
             setPrices(data);
+            setLoadings(Array(data?.length).fill(false));
             setPagData(restData);
             // Scroll to top
             document.body.scrollTop = 0;
@@ -116,9 +123,15 @@ function ChangePrice(props) {
         }
     };
 
+    const loadingsHanlder=  (i, value) => {
+        let temp = [...loadings];
+        temp[i] = value;
+        setLoadings(() => temp);
+    }
+
     const changePrice = async (value, price_id, i) => {
         try {
-
+            loadingsHanlder(i, true);
             const res = await fetch(
                 `${BASE_URL}/admin/classroom/change-price/${price_id}`,
                 {
@@ -146,6 +159,7 @@ function ChangePrice(props) {
         } catch (error) {
             console.log("Error changing price", error);
         }
+        loadingsHanlder(i, false);
     };
 
     const changePriceHandler = async (value, price_id, i) => {
@@ -154,7 +168,6 @@ function ChangePrice(props) {
             let temp = [...prices];
             temp[i]?.price = value;
             setPrices(() => temp);
-            console.log(value);
         }
     };
 
@@ -374,7 +387,7 @@ function ChangePrice(props) {
                                         {price?.status === 1 ? "برگزار نشده" : "برگزار شده"}
                                     </td>
                                     <td className="table__body-item">
-                                        <div className="form-control" style={{width:"60px",margin:0}}>
+                                        <div className="form-control" style={{width:"80px",margin:0}}>
                                             <input
                                                 type="text"
                                                 name="price"
@@ -386,20 +399,21 @@ function ChangePrice(props) {
                                                         i,
                                                     )
                                                 }
-                                                value={
-                                                    typeof prices[i]?.price === "number" ?
-                                                    Intl.NumberFormat().format(prices[i]?.price) : 
-                                                    Intl.NumberFormat().format(prices[i]?.price.replace(/,/g, "")) 
-                                                        || ""
-                                                }
+                                                value={getFormattedPrice(
+                                                    prices[i]?.price
+                                                )}
                                                 onBlur={(e) =>
                                                     changePriceHandler(
-                                                        e.target.value.replace(/,/g, ""),
+                                                        getUnformattedPrice(e.target.value),
                                                         price.id,
                                                         i
                                                     )
                                                 }
                                                 autoComplete="off"
+                                                onKeyDown={(e) =>
+                                                    checkValidPriceKeys(e)
+                                                }
+                                                disabled={loadings[i]}
                                             />
                                         </div>
                                     </td>

@@ -9,6 +9,7 @@ const Editor = dynamic(() => import("../../Editor/Editor"), {
 });
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import Box from "../../Elements/Box/Box";
+import API from "../../../../../../api/index";
 
 function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
     const [formData, setFormData] = useState({
@@ -123,44 +124,48 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
     const addCategory = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/blog/category`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { data, response, status } = await API.post(
+                `/admin/blog/category`,
+                fd
+            );
+
+            if (status === 200) {
                 let message = "اکنون سوالات دسته بندی را اضافه کنید";
                 showAlert(true, "success", message);
-                const { data } = await res.json();
                 setFormData({
                     ...formData,
-                    id: data,
+                    id: data?.data,
                 });
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new category", error);
         }
+        setLoading(false);
     };
 
     const readSubCategories = async () => {
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/subcategory/${selectedCatg1.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/blog/subcategory/${selectedCatg1.id}`
             );
-            const { data } = await res.json();
-            setSubCategories(data);
+
+            if (status === 200) {
+                setSubCategories(data?.data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error reading subcategories", error);
         }
@@ -217,18 +222,19 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
             temp[i] = true;
             setLoadings(() => temp);
 
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/question/${question_id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { status, response } = await API.delete(
+                `/admin/blog/question/${question_id}`
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(true, "danger", "این سوال حذف شد");
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
 
             temp = [...loadings];
@@ -245,35 +251,34 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
             temp[rowInd] = true;
             setLoadings(() => temp);
 
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/question/${formData?.id}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify(formData?.questions[rowInd]),
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, response, status } = await API.post(
+                `/admin/blog/question/${formData?.id}`,
+                JSON.stringify(formData?.questions[rowInd])
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 let message = "سوال جدید با موفقیت اضافه شد";
                 showAlert(true, "success", message);
-                const { data } = await res.json();
                 let updated = [...formData?.questions];
-                updated[rowInd] = { ...updated[rowInd], id: data };
+                updated[rowInd] = { ...updated[rowInd], id: data?.data };
                 setFormData({
                     ...formData,
                     questions: updated,
                 });
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
 
             temp = [...loadings];
             temp[rowInd] = false;
             setLoadings(() => temp);
         } catch (error) {
-            console.log("Error adding new question");
+            console.log("Error adding new question", error);
         }
     };
 
@@ -283,21 +288,21 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
             temp[i] = true;
             setLoadings(() => temp);
 
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/question/edit/${id}`,
-                {
-                    method: "POST",
-                    body: JSON.stringify(formData?.questions[i]),
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/blog/question/edit/${id}`,
+                JSON.stringify(formData?.questions[i])
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 let message = "این سوال با موفقیت ویرایش شد";
                 showAlert(true, "success", message);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
 
             temp = [...loadings];

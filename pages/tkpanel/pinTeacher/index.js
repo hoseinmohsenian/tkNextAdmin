@@ -2,13 +2,18 @@ import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import PinTeacher from "../../../components/AdminDashboard/Main/Content/PinTeacher/PinTeacher";
 import Header from "../../../components/Head/Head";
 import { BASE_URL } from "../../../constants";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function PinTeacherPage({ languages, token }) {
+function PinTeacherPage({ languages, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="پین کردن استاد | تیکا"></Header>
             <AdminDashboard>
-                <PinTeacher token={token} languages={languages} />
+                <PinTeacher languages={languages} />
             </AdminDashboard>
         </>
     );
@@ -38,12 +43,17 @@ export async function getServerSideProps(context) {
         }),
     ]);
 
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
         props: {
             languages: dataArr[0].data,
-            token,
         },
     };
 }

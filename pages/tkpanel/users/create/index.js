@@ -2,13 +2,18 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateUser from "../../../../components/AdminDashboard/Main/Content/Users/CreateUser/CreateUser";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function CreateUserPage({ token, permissions }) {
+function CreateUserPage({ permissions, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="ایجاد ادمین | تیکا"></Header>
             <AdminDashboard>
-                <CreateUser token={token} permissions={permissions} />
+                <CreateUser permissions={permissions} />
             </AdminDashboard>
         </div>
     );
@@ -38,9 +43,15 @@ export async function getServerSideProps(context) {
         }),
     ]);
 
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { token, permissions: dataArr[0].data },
+        props: { permissions: dataArr[0].data },
     };
 }

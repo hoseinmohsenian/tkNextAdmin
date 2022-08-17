@@ -115,6 +115,9 @@ export async function getServerSideProps(context) {
             searchParams += `order_by=${order_by}&`;
             searchData = { ...searchData, order_by: order_by };
         }
+    } else {
+        searchParams += `order_by=desc&`;
+        searchData = { ...searchData, order_by: "desc" };
     }
     if (isKeyValid(page)) {
         if (Number(page) > 0) {

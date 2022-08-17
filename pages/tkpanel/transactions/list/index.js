@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import TeacherWithdrawalRequests from "../../../../components/AdminDashboard/Main/Content/Accounting/TeacherWithdrawalRequests/TeacherWithdrawalRequests";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TeacherWithdrawalRequestsPage({ token, requests }) {
+function TeacherWithdrawalRequestsPage({ token, requests, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="درخواست تسویه اساتید | تیکا"></Header>
@@ -50,11 +55,17 @@ export async function getServerSideProps(context) {
         }),
     ]);
 
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        // props: { requests: dataArr[0].data, token },
         props: {
+            // requests: dataArr[0].data,
             requests: {
                 current_page: 1,
                 data: [

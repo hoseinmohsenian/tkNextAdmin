@@ -21,7 +21,7 @@ function Contents({ step, token }) {
     };
 
     return (
-        <div className={styles.contents}>
+        <div className={`col-sm-9 ${styles.contents}`}>
             {step === 1 && (
                 <Step1
                     token={token}

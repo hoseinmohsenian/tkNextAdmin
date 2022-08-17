@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import AddSessions from "../../../../../components/AdminDashboard/Main/Content/SemiPrivate/Sessions/AddSession/AddSession";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function GroupClassPage({ token, id, theClass }) {
+function GroupClassPage({ token, id, theClass, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="جلسات کلاس نیمه خصوصی | تیکا"></Header>
@@ -38,6 +43,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

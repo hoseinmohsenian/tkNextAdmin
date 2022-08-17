@@ -8,6 +8,7 @@ import moment from "jalali-moment";
 import { TimePicker } from "antd";
 import styles from "./EditLog.module.css";
 import API from "../../../../../../api/index";
+import Link from "next/link";
 
 function EditLog({ statusList, theLog, admins, type }) {
     const [formData, setFormData] = useState(theLog);
@@ -170,6 +171,14 @@ function EditLog({ statusList, theLog, admins, type }) {
                                 ))}
                             </select>
                         </div>
+                        <Link href="/tkpanel/logReport/status/create">
+                            <a
+                                className={`action-btn primary ${styles["discount-btn"]}`}
+                                target="_blank"
+                            >
+                                ایجاد وضعیت
+                            </a>
+                        </Link>
                     </div>
                     {formData.next_tracking_time_status ? (
                         <div className="row">

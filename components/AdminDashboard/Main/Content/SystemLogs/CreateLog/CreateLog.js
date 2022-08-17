@@ -8,6 +8,7 @@ import moment from "jalali-moment";
 import { TimePicker } from "antd";
 import styles from "./CreateLog.module.css";
 import API from "../../../../../../api/index";
+import Link from "next/link";
 
 function CreateLog({
     statusList,
@@ -144,14 +145,7 @@ function CreateLog({
                 envoker={handleSubmit}
             />
 
-            <Box
-                title="ایجاد لاگ"
-                buttonInfo={{
-                    name: "ایجاد وضعیت",
-                    url: "/tkpanel/logReport/status/create",
-                    color: "primary",
-                }}
-            >
+            <Box title="ایجاد لاگ">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">
                         <label htmlFor="status" className="form__label">
@@ -174,6 +168,14 @@ function CreateLog({
                                 ))}
                             </select>
                         </div>
+                        <Link href="/tkpanel/logReport/status/create">
+                            <a
+                                className={`action-btn primary ${styles["discount-btn"]}`}
+                                target="_blank"
+                            >
+                                ایجاد وضعیت
+                            </a>
+                        </Link>
                     </div>
                     {formData.next_tracking_time_status ? (
                         <div className="row">
@@ -269,6 +271,16 @@ function CreateLog({
                                     disabled
                                 />
                             </div>
+                            <Link
+                                href={`/tkpanel/multiSessionsList/logs/${user_id}?type=student`}
+                            >
+                                <a
+                                    className={`action-btn primary ${styles["discount-btn"]}`}
+                                    target="_blank"
+                                >
+                                    لاگ
+                                </a>
+                            </Link>
                         </div>
                     )}
                     {type !== "student" && (
@@ -290,6 +302,16 @@ function CreateLog({
                                     disabled
                                 />
                             </div>
+                            <Link
+                                href={`/tkpanel/multiSessionsList/logs/${teacher_id}?type=teacher`}
+                            >
+                                <a
+                                    className={`action-btn primary ${styles["discount-btn"]}`}
+                                    target="_blank"
+                                >
+                                    لاگ
+                                </a>
+                            </Link>
                         </div>
                     )}
                     <div className="input-wrapper">

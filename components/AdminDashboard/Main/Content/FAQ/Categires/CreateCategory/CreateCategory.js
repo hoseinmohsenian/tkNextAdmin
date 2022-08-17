@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
+import API from "../../../../../../../api/index";
 
-function CreateCategory({ token }) {
+function CreateCategory() {
     const [formData, setFormData] = useState({
         title: "",
         url: "",
@@ -66,30 +66,26 @@ function CreateCategory({ token }) {
     const addCategory = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/faq/category`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/faq/category`,
+                fd
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "دسته بندی باموفقیت اضافه شد");
                 router.push("/tkpanel/FaqCategory");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new category", error);
         }
+        setLoading(false);
     };
 
     return (

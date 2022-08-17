@@ -383,7 +383,7 @@ function CreateScore() {
                             </div>
                         </div>
                     </div>
-                    {Number(formData.point_type) === 0 && (
+                    {/* {Number(formData.point_type) === 0 && (
                         <div className="input-wrapper">
                             <label
                                 htmlFor="teacher_side_desc"
@@ -404,7 +404,7 @@ function CreateScore() {
                                 required={Number(formData.notify_teacher) === 1}
                             />
                         </div>
-                    )}
+                    )} */}
                     {Number(formData.point_type) === 0 && (
                         <div className="input-wrapper">
                             <label

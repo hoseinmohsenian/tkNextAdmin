@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateLanguage from "../../../../components/AdminDashboard/Main/Content/CreateLanguage/CreateLanguage";
 import Header from "../../../../components/Head/Head";
 
-function CreateLanguagePage({ token }) {
+function CreateLanguagePage() {
     return (
         <>
             <Header title="ایجاد زبان | تیکا"></Header>
             <AdminDashboard>
-                <CreateLanguage token={token} />
+                <CreateLanguage />
             </AdminDashboard>
         </>
     );
@@ -27,5 +27,5 @@ export async function getServerSideProps(context) {
         };
     }
 
-    return { props: { token } };
+    return { props: {} };
 }

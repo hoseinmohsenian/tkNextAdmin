@@ -144,7 +144,7 @@ function EditHelp({ token, data }) {
                                 required
                             />
                             <div className="form-control-label">
-                                https://tikkaa.ir/help/
+                                https://tikkaa.ir/
                             </div>
                         </div>
                     </div>
@@ -199,7 +199,7 @@ function EditHelp({ token, data }) {
                                 }
                             />
                             <div className="form-control-label">
-                                https://tikkaa.ir/help/
+                                https://tikkaa.ir/
                             </div>
                         </div>
                     </div>

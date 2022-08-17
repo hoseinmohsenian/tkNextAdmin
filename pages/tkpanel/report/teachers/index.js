@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import TeacherReporting from "../../../../components/AdminDashboard/Main/Content/Reporting/TeacherReporting/TeacherReporting";
 import Header from "../../../../components/Head/Head";
 
-function ArticlesPage({ token }) {
+function ArticlesPage() {
     return (
         <div>
             <Header title="گزارش گیری استاد | تیکا"></Header>
             <AdminDashboard>
-                <TeacherReporting token={token} />
+                <TeacherReporting />
             </AdminDashboard>
         </div>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

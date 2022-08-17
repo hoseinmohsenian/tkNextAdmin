@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import StatusList from "../../../../components/AdminDashboard/Main/Content/SystemLogs/StatusList/StatusList";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function SystemLogStatusPage({ statusList }) {
+function SystemLogStatusPage({ statusList, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="وضیعت های پیگیری | تیکا"></Header>
@@ -37,6 +42,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

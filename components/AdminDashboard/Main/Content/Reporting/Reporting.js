@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import styles from "./Reporting.module.css";
-import { BASE_URL } from "../../../../../constants";
 import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { useRouter } from "next/router";
+import API from "../../../../../api/index";
 
 const filtersSchema = {
     from: null,
@@ -21,7 +21,7 @@ const appliedFiltersSchema = {
     language_id: false,
 };
 
-function Reporting({ token, languages }) {
+function Reporting({ languages }) {
     const [reportings, setReportings] = useState([]);
     const [filters, setFilters] = useState(filtersSchema);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
@@ -92,19 +92,24 @@ function Reporting({ token, languages }) {
             ? "admin/reporting/marketing/student"
             : "admin/reporting/marketing/teacher";
         try {
-            const res = await fetch(`${BASE_URL}/${apiString}?${searchQuery}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            const { data } = await res.json();
-            setReportings(data);
-            setLoading(false);
+            const { data, status, response } = await API.get(
+                `/${apiString}?${searchQuery}`
+            );
+
+            if (status === 200) {
+                setReportings(data?.data || []);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error reading reportings", error);
         }
+        setLoading(false);
     };
 
     useEffect(() => {

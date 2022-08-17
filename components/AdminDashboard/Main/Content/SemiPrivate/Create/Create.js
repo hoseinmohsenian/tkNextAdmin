@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import styles from "./Create.module.css";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
+import API from "../../../../../../api/index";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
 
-function CreateSemiPrivate({ token }) {
+function CreateSemiPrivate() {
     const [formData, setFormData] = useState({
         title: "",
         price: 0,
@@ -63,30 +63,24 @@ function CreateSemiPrivate({ token }) {
     const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${teacher_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/name/search?name=${teacher_name}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const showAlert = (show, type, message) => {
@@ -96,58 +90,49 @@ function CreateSemiPrivate({ token }) {
     const addClass = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/semi-private`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/semi-private`,
+                fd
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "کلاس جدید با موفقیت اضافه شد");
                 router.push("/tkpanel/semi-private-admin");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new semi-private class", error);
         }
+        setLoading(false);
     };
 
     const readStudents = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/student/${selectedTeacher.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/student/${selectedTeacher.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data || []);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading students", error);
         }
+        setLoading(false);
     };
 
     const clacPrice = () => {
@@ -173,60 +158,47 @@ function CreateSemiPrivate({ token }) {
     const readPrice = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/semi-private/course/price?teacher_id=${selectedTeacher.id}&language_id=${formData.language_id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/semi-private/course/price?teacher_id=${selectedTeacher.id}&language_id=${formData.language_id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
+
+            if (status === 200) {
                 setFormData({ ...formData, rate: data === null ? 0 : data });
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading price", error);
         }
+        setLoading(false);
     };
 
     const readTeacherLanguages = async () => {
         setLoading(true);
-
         try {
-            const res = await fetch(
-                `${BASE_URL}/data/teacher/language?teacher_id=${selectedTeacher.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/data/teacher/language?teacher_id=${selectedTeacher.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setLanguages(data);
+
+            if (status === 200) {
+                setLanguages(data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading teacher languages", error);
         }
+        setLoading(false);
     };
 
     useEffect(() => {

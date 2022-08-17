@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import TikkaaIncome from "../../../../../components/AdminDashboard/Main/Content/Accounting/TikkaaIncome/TikkaaIncome";
 import Header from "../../../../../components/Head/Head";
 
-function TikkaaIncomeDetailsPage({ token }) {
+function TikkaaIncomeDetailsPage() {
     return (
         <div>
             <Header title="جزئیات درآمد تیکا | تیکا"></Header>
             <AdminDashboard>
-                <TikkaaIncome token={token} />
+                <TikkaaIncome />
             </AdminDashboard>
         </div>
     );
@@ -28,6 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: { token },
+        props: {},
     };
 }

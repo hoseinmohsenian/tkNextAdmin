@@ -3,12 +3,12 @@ import CreateSubCategory from "../../../../components/AdminDashboard/Main/Conten
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
 
-function FAQCreateSubCategoryPage({ token, categories }) {
+function FAQCreateSubCategoryPage({ categories }) {
     return (
         <>
             <Header title="ایجاد زیرگروه دسته بندی FAQ | تیکا"></Header>
             <AdminDashboard>
-                <CreateSubCategory token={token} categories={categories} />
+                <CreateSubCategory categories={categories} />
             </AdminDashboard>
         </>
     );
@@ -42,7 +42,6 @@ export async function getServerSideProps(context) {
 
     return {
         props: {
-            token,
             categories: dataArr[0].data,
         },
     };

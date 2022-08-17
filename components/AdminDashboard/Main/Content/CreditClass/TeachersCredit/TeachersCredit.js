@@ -4,6 +4,7 @@ import { BASE_URL } from "../../../../../../constants";
 import Alert from "../../../../../Alert/Alert";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./TeachersCredit.module.css";
+import API from "../../../../../../api/index";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
@@ -85,32 +86,24 @@ function TeachersCredit({ fetchedTeachers, token }) {
     const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/search?name=${teacher_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/name/search?name=${teacher_name}`
             );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const addTeacher = async () => {

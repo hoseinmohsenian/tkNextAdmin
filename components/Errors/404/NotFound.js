@@ -18,7 +18,7 @@ function NotFound() {
                 </div>
                 <h2 className={styles.title}>این صفحه پیدا نشد</h2>
                 <div className={styles["link-wrapper"]}>
-                    <Link href="/">
+                    <Link href="/tkpanel">
                         <a className={styles.link}>
                             <Image
                                 src="/icons/home.png"
@@ -29,7 +29,7 @@ function NotFound() {
                             <span>صفحه اصلی</span>
                         </a>
                     </Link>
-                    <Link href="/find-teachers">
+                    <Link href="/tkpanel/teachers">
                         <a className={styles.link}>
                             <Image
                                 src="/icons/teachers.png"

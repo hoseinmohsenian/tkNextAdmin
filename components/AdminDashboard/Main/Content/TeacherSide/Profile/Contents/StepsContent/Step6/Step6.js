@@ -9,6 +9,9 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
     const [fetchedTeaching, setFetchedTeaching] = useState([]);
     const [degrees, setDegrees] = useState([]);
     const [fetchedDegrees, setFetchedDegrees] = useState([]);
+    const [educLoaded, seteducLoaded] = useState(false);
+    const [teachingLoaded, setTeachingLoaded] = useState(false);
+    const [degreesLoaded, setDegreesLoaded] = useState(false);
 
     const readAll = async () => {
         await readTeachings();
@@ -64,6 +67,7 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
     };
 
     const readEducations = async () => {
+        seteducLoaded(false);
         try {
             const res = await fetch(`${BASE_URL}/teacher/profile/education`, {
                 headers: {
@@ -78,6 +82,7 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
         } catch (error) {
             console.log("Error reading education ", error);
         }
+        seteducLoaded(true);
     };
 
     const editEducation = async (rowInd, id) => {
@@ -170,6 +175,7 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
     };
 
     const readTeachings = async () => {
+        setTeachingLoaded(false);
         try {
             const res = await fetch(`${BASE_URL}/teacher/profile/teaching`, {
                 headers: {
@@ -184,6 +190,7 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
         } catch (error) {
             console.log("Error reading teaching ", error);
         }
+        setTeachingLoaded(true);
     };
 
     const editTeaching = async (rowInd, id) => {
@@ -266,6 +273,7 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
     };
 
     const readDegrees = async () => {
+        setDegreesLoaded(false);
         try {
             const res = await fetch(`${BASE_URL}/teacher/profile/degree`, {
                 headers: {
@@ -280,6 +288,7 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
         } catch (error) {
             console.log("Error reading degree ", error);
         }
+        setDegreesLoaded(true);
     };
 
     const editDegree = async (rowInd, id) => {
@@ -319,7 +328,7 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
     }, []);
 
     return (
-        <div className="container">
+        <div>
             {/* Alert */}
             <Alert
                 {...alertData}
@@ -337,61 +346,83 @@ function Step6({ token, alertData, showAlert, BASE_URL }) {
                 }
             />
 
-            <Table
-                title="سابقه تدریس"
-                newRowText="اضافه کردن سابقه تحصیل"
-                headers={[
-                    "رشته تحصیلی",
-                    "مقطع تحصیلی",
-                    "دانشگاه",
-                    "مدت تحصیل",
-                    "مدرک",
-                ]}
-                inputNames={[
-                    "field",
-                    "grade",
-                    "university",
-                    "start",
-                    "end",
-                    "file",
-                ]}
-                inputTypes={["text", "text", "text", "time", "file"]}
-                rows={education}
-                setRows={setEducation}
-                onAdd={addEducation}
-                onDelete={deleteEducation}
-                read={readEducations}
-                onEdit={editEducation}
-                showAlert={showAlert}
-            />
-            <Table
-                title="سابقه ی تدریس"
-                headers={["آموزشگاه/شرکت/سازمان", "موقعیت شغلی", "مدت تحصیل"]}
-                newRowText="اضافه کردن سابقه تدریس"
-                inputNames={["name", "position", "start", "end"]}
-                inputTypes={["text", "text", "time"]}
-                rows={teaching}
-                setRows={setTeaching}
-                onAdd={addTeaching}
-                onDelete={deleteTeaching}
-                read={readTeachings}
-                onEdit={editTeaching}
-                showAlert={showAlert}
-            />
-            <Table
-                title="مدارک آموزشی"
-                headers={["نام مدرک", "توضیح", "عکس"]}
-                newRowText="اضافه کردن مدرک"
-                inputNames={["name", "desc", "file"]}
-                inputTypes={["text", "text", "file"]}
-                rows={degrees}
-                setRows={setDegrees}
-                onAdd={addDegree}
-                onDelete={deleteDegree}
-                read={readDegrees}
-                onEdit={editDegree}
-                showAlert={showAlert}
-            />
+            {educLoaded ? (
+                <Table
+                    title="سابقه تحصیل"
+                    newRowText="اضافه کردن سابقه تحصیل"
+                    headers={[
+                        "رشته تحصیلی",
+                        "مقطع تحصیلی",
+                        "دانشگاه",
+                        "مدت تحصیل",
+                        "مدرک",
+                    ]}
+                    inputNames={[
+                        "field",
+                        "grade",
+                        "university",
+                        "start",
+                        "end",
+                        "file",
+                    ]}
+                    inputTypes={["text", "text", "text", "time", "file"]}
+                    rows={education}
+                    setRows={setEducation}
+                    onAdd={addEducation}
+                    onDelete={deleteEducation}
+                    read={readEducations}
+                    onEdit={editEducation}
+                    showAlert={showAlert}
+                />
+            ) : (
+                <div>
+                    <h2>در حال خواندن سابقه تحصیل...</h2>
+                </div>
+            )}
+            {teachingLoaded ? (
+                <Table
+                    title="سابقه ی تدریس"
+                    headers={[
+                        "آموزشگاه/شرکت/سازمان",
+                        "موقعیت شغلی",
+                        "مدت تحصیل",
+                    ]}
+                    newRowText="اضافه کردن سابقه تدریس"
+                    inputNames={["name", "position", "start", "end"]}
+                    inputTypes={["text", "text", "time"]}
+                    rows={teaching}
+                    setRows={setTeaching}
+                    onAdd={addTeaching}
+                    onDelete={deleteTeaching}
+                    read={readTeachings}
+                    onEdit={editTeaching}
+                    showAlert={showAlert}
+                />
+            ) : (
+                <div>
+                    <h2>در حال خواندن سابقه تدریس...</h2>
+                </div>
+            )}
+            {degreesLoaded ? (
+                <Table
+                    title="مدارک آموزشی"
+                    headers={["نام مدرک", "توضیح", "عکس"]}
+                    newRowText="اضافه کردن مدرک"
+                    inputNames={["name", "desc", "file"]}
+                    inputTypes={["text", "text", "file"]}
+                    rows={degrees}
+                    setRows={setDegrees}
+                    onAdd={addDegree}
+                    onDelete={deleteDegree}
+                    read={readDegrees}
+                    onEdit={editDegree}
+                    showAlert={showAlert}
+                />
+            ) : (
+                <div>
+                    <h2>در حال خواندن مدارک آموزشی...</h2>
+                </div>
+            )}
         </div>
     );
 }

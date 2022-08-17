@@ -1,14 +1,13 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import AddDiscount from "../../../../components/AdminDashboard/Main/Content/Discount/AddDiscount/AddDiscount";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 
-function AddDiscountPage({ token }) {
+function AddDiscountPage() {
     return (
         <>
             <Header title="ایجاد کوپن تخفیف | تیکا"></Header>
             <AdminDashboard>
-                <AddDiscount token={token} />
+                <AddDiscount />
             </AdminDashboard>
         </>
     );
@@ -29,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

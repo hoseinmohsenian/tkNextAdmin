@@ -44,7 +44,7 @@ function Platforms({ fetchedPlatforms }) {
                                         </div>
                                     </td>
                                     <td className="table__body-item">
-                                        {pf?.desc}
+                                        {pf?.desc || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {pf?.status === 1 ? "فعال" : "غیر فعال"}

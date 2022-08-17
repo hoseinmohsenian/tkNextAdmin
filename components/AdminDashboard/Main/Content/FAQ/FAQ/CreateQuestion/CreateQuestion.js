@@ -9,6 +9,7 @@ const Editor = dynamic(() => import("../../../Editor/Editor"), {
 });
 import SearchSelect from "../../../../../../SearchSelect/SearchSelect";
 import SearchMultiSelect from "../../../../../../SearchMultiSelect/SearchMultiSelect";
+import API from "../../../../../../../api/index";
 
 const categorySchema = {
     id: 0,
@@ -79,32 +80,25 @@ function CreateQuestion({ token, categories }) {
     const readSubCategories = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/faq/category/sub/${selectedCategory.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/faq/category/sub/${selectedCategory.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setSubcategories(data);
+
+            if (status === 200) {
+                setSubcategories(data?.data);
                 showAlert(true, "success", "اکنون زیردسته بندی را انتخاب کنید");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading sub-categories", error);
         }
+        setLoading(false);
     };
 
     const showAlert = (show, type, message) => {
@@ -114,31 +108,26 @@ function CreateQuestion({ token, categories }) {
     const addQuestion = async (body) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/faq/question`, {
-                method: "POST",
-                body: JSON.stringify(body),
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                    "Content-Type": "application/json",
-                },
-            });
-            if (res.ok) {
+            const { response, status } = await API.post(
+                `/admin/faq/question`,
+                fd
+            );
+
+            if (status === 200) {
                 showAlert(true, "success", "سوال باموفقیت اضافه شد");
                 router.push("/tkpanel/FaqSite");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error adding a new question", error);
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -214,7 +203,6 @@ function CreateQuestion({ token, categories }) {
                                 min={3}
                                 max={5}
                                 showAlert={showAlert}
-                                fontSize={16}
                                 background="#fafafa"
                             />
                         </div>

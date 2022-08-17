@@ -2,8 +2,19 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import EditGroupClass from "../../../../../components/AdminDashboard/Main/Content/GroupClass/Edit/Edit";
 import Header from "../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function EditGroupClassPage({ token, languages, levels, fetchedClass }) {
+function EditGroupClassPage({
+    token,
+    languages,
+    levels,
+    fetchedClass,
+    notAllowed,
+}) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <>
             <Header title="ویرایش کلاس گروهی | تیکا"></Header>
@@ -55,6 +66,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

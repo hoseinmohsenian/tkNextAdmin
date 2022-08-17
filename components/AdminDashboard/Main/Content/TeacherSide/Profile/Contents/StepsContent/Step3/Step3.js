@@ -10,6 +10,7 @@ function Step3({ token, alertData, showAlert }) {
         experience: "",
     });
     const [errors, setErrors] = useState([]);
+    const [pageLoaded, setPageLoaded] = useState(false);
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     useEffect(() => {
@@ -117,6 +118,7 @@ function Step3({ token, alertData, showAlert }) {
     };
 
     const getTitle = async () => {
+        setPageLoaded(false);
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/return/title`,
@@ -133,6 +135,7 @@ function Step3({ token, alertData, showAlert }) {
         } catch (error) {
             console.log("Error reading public info ", error);
         }
+        setPageLoaded(true);
     };
 
     return (
@@ -144,111 +147,152 @@ function Step3({ token, alertData, showAlert }) {
                 envoker={handleClick}
             />
 
-            <div className={styles.step__box}>
-                <form>
-                    <div className={styles["step__row"]}>
-                        <div className={styles["step__row-wrapper"]}>
-                            <div
-                                className={`${styles["step__input-container"]}`}
-                            >
-                                <div className={styles["step__input-wrapper"]}>
-                                    <input
-                                        type="text"
-                                        name="title"
-                                        value={formData.title || ""}
-                                        onChange={handleOnChange}
-                                        className={styles.step__input}
-                                        placeholder="عنوان پروفایل"
-                                    />
-                                </div>
-                                <span className={styles.star}>*</span>
-                            </div>
-                            <span className={styles["step__input-explanation"]}>
-                                به عنوان مثال مدرس آیلتس با ۹ سال سابقه تدریس
-                            </span>
-                        </div>
-                    </div>
-                    <div>
-                        <div
-                            className={`${styles["step__row"]} ${styles["step__row--m0"]}`}
-                        >
-                            <div className={styles["step__row-wrapper"]}>
-                                <div
-                                    className={`${styles["step__input-container"]}`}
-                                >
+            {pageLoaded ? (
+                <>
+                    <div className={styles.step__box}>
+                        <form>
+                            <div className={styles["step__row"]}>
+                                <div className={styles["step__row-wrapper"]}>
                                     <div
+                                        className={`${styles["step__input-container"]}`}
+                                    >
+                                        <div
+                                            className={
+                                                styles["step__input-wrapper"]
+                                            }
+                                        >
+                                            <input
+                                                type="text"
+                                                name="title"
+                                                value={formData.title || ""}
+                                                onChange={handleOnChange}
+                                                className={styles.step__input}
+                                                placeholder="عنوان پروفایل"
+                                            />
+                                        </div>
+                                        <span className={styles.star}>*</span>
+                                    </div>
+                                    <span
                                         className={
-                                            styles["step__input-wrapper"]
+                                            styles["step__input-explanation"]
                                         }
                                     >
-                                        <textarea
-                                            name="desc"
-                                            value={formData.desc || ""}
-                                            onChange={handleOnChange}
-                                            className={`${styles.step__input} ${styles.step__textarea}`}
-                                            placeholder="توضیحات (حداقل 70 کاراکتر)"
-                                        />
-                                    </div>
-                                    <span className={styles.star}>*</span>
+                                        به عنوان مثال مدرس آیلتس با ۹ سال سابقه
+                                        تدریس
+                                    </span>
                                 </div>
-                                <span
-                                    className={
-                                        styles["step__input-explanation"]
-                                    }
-                                >
-                                    لطفا در توضیحات حتما منابع مورد استفاده در
-                                    تدریس، سابقه تدریس خود و خلاصه ای از روش های
-                                    تدریس زبانی که از آن ها استفاده میکنید را
-                                    ذکر کنید.
-                                </span>
                             </div>
-                        </div>
-                        <div className={styles["step__input-char-count"]}>
-                            تعداد کاراکتر: {formData.desc?.length || 0}
-                        </div>
+                            <div>
+                                <div
+                                    className={`${styles["step__row"]} ${styles["step__row--m0"]}`}
+                                >
+                                    <div
+                                        className={styles["step__row-wrapper"]}
+                                    >
+                                        <div
+                                            className={`${styles["step__input-container"]}`}
+                                        >
+                                            <div
+                                                className={
+                                                    styles[
+                                                        "step__input-wrapper"
+                                                    ]
+                                                }
+                                            >
+                                                <textarea
+                                                    name="desc"
+                                                    value={formData.desc || ""}
+                                                    onChange={handleOnChange}
+                                                    className={`${styles.step__input} ${styles.step__textarea}`}
+                                                    placeholder="توضیحات (حداقل 70 کاراکتر)"
+                                                />
+                                            </div>
+                                            <span className={styles.star}>
+                                                *
+                                            </span>
+                                        </div>
+                                        <span
+                                            className={
+                                                styles[
+                                                    "step__input-explanation"
+                                                ]
+                                            }
+                                        >
+                                            لطفا در توضیحات حتما منابع مورد
+                                            استفاده در تدریس، سابقه تدریس خود و
+                                            خلاصه ای از روش های تدریس زبانی که
+                                            از آن ها استفاده میکنید را ذکر کنید.
+                                        </span>
+                                    </div>
+                                </div>
+                                <div
+                                    className={styles["step__input-char-count"]}
+                                >
+                                    تعداد کاراکتر: {formData.desc?.length || 0}
+                                </div>
+                            </div>
+
+                            <div className={styles["step__row"]}>
+                                <div className={styles["step__row-wrapper"]}>
+                                    <div
+                                        className={`${styles["step__input-container"]}`}
+                                    >
+                                        <span
+                                            className={
+                                                styles["step__row-title"]
+                                            }
+                                        >
+                                            تجربه تدریس
+                                        </span>
+                                        <div
+                                            className={
+                                                styles["step__input-wrapper"]
+                                            }
+                                        >
+                                            <input
+                                                type="number"
+                                                placeholder="3"
+                                                maxLength={2}
+                                                name="experience"
+                                                value={
+                                                    formData.experience || ""
+                                                }
+                                                onChange={handleOnChange}
+                                                className={styles.step__input}
+                                            />
+                                        </div>
+                                        <span
+                                            className={
+                                                styles["step__input--year"]
+                                            }
+                                        >
+                                            سال
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
                     <div className={styles["step__row"]}>
-                        <div className={styles["step__row-wrapper"]}>
-                            <div
-                                className={`${styles["step__input-container"]}`}
-                            >
-                                <span className={styles["step__row-title"]}>
-                                    تجربه تدریس
-                                </span>
-                                <div className={styles["step__input-wrapper"]}>
-                                    <input
-                                        type="number"
-                                        placeholder="3"
-                                        maxLength={2}
-                                        name="experience"
-                                        value={formData.experience || ""}
-                                        onChange={handleOnChange}
-                                        className={styles.step__input}
-                                    />
-                                </div>
-                                <span className={styles["step__input--year"]}>
-                                    سال
-                                </span>
-                            </div>
-                        </div>
+                        {errors?.length !== 0 && <Error errorList={errors} />}
                     </div>
-                </form>
-            </div>
 
-            <div className={styles["step__row"]}>
-                {errors?.length !== 0 && <Error errorList={errors} />}
-            </div>
-
-            <div className={styles["step__btn-wrapper"]}>
-                <button
-                    type="button"
-                    className={`${styles["step__btn"]} ${styles["step__btn--next"]} primary`}
-                    onClick={handleClick}
-                >
-                    ذخیره
-                </button>
-            </div>
+                    <div className={styles["step__btn-wrapper"]}>
+                        <button
+                            type="button"
+                            className={`${styles["step__btn"]} ${styles["step__btn--next"]} primary`}
+                            onClick={handleClick}
+                        >
+                            ذخیره
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <div>
+                    <h2>در حال خواندن اطلاعات...</h2>
+                </div>
+            )}
         </div>
     );
 }

@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import SemiPrivateSessions from "../../../../components/AdminDashboard/Main/Content/SemiPrivate/Sessions/Sessions";
 import Header from "../../../../components/Head/Head";
 
-function GroupClassPage({ token }) {
+function GroupClassPage() {
     return (
         <>
             <Header title="جلسات کلاس های نیمه خصوصی | تیکا"></Header>
             <AdminDashboard>
-                <SemiPrivateSessions token={token} />
+                <SemiPrivateSessions />
             </AdminDashboard>
         </>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

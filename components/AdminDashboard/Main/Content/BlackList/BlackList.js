@@ -1,17 +1,17 @@
 import { useState } from "react";
 import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
-import { BASE_URL } from "../../../../../constants";
 import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import FetchSearchSelect from "../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./BlackList.module.css";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import API from "../../../../../api/index";
 
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
-function BlackList({ fetchedList: { data, ...restData }, token }) {
+function BlackList({ fetchedList: { data, ...restData } }) {
     const [users, setUsers] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [students, setStudents] = useState([]);
@@ -41,21 +41,23 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
         });
 
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/management/block-user?page=${page}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/management/block-user?page=${page}`
             );
-            const {
-                data: { data, ...restData },
-            } = await res.json();
-            setUsers(data);
-            setPagData(restData);
+
+            if (status === 200) {
+                const { data: list, ...restData } = data?.data;
+                setUsers(list);
+                setPagData(restData);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -82,94 +84,78 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
     const unblockUser = async (user_id, i) => {
         handleLoadings(true, i);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/management/unblock-user/${user_id}`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/management/unblock-user/${user_id}`
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 const filteredUsers = users.filter(
                     (user) => user.id !== user_id
                 );
                 setUsers(filteredUsers);
                 showAlert(true, "success", "زبان آموز آنبلاک شد");
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
-            handleLoadings(false, i);
         } catch (error) {
             console.log("Error unblocking user", error);
         }
+        handleLoadings(false, i);
     };
 
     const searchStudents = async (student_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/student/search?input=${student_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/student/search?input=${student_name}`
             );
-            if (res.ok) {
-                const {
-                    data: { data },
-                } = await res.json();
-                setStudents(data);
+
+            if (status === 200) {
+                setStudents(data?.data?.data || []);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const blockUser = async () => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/management/block-user/${selectedStudent.id}`,
-                {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/management/block-user/${selectedStudent.id}`
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(
                     true,
                     "success",
                     `${selectedStudent.name_family} بلاک شد`
                 );
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error blocking user", error);
         }
+        setLoading(false);
     };
 
     const showAlert = (show, type, message) => {
@@ -217,7 +203,6 @@ function BlackList({ fetchedList: { data, ...restData }, token }) {
                                             width: "100%",
                                         }}
                                         background="#fafafa"
-                                        fontSize={16}
                                         onSearch={(value) =>
                                             searchStudents(value)
                                         }

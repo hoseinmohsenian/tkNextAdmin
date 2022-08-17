@@ -5,8 +5,10 @@ import Alert from "../../../../../../../../Alert/Alert";
 function Step7({ token, BASE_URL, alertData, showAlert }) {
     const [video, setVideo] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [pageLoaded, setPageLoaded] = useState(false);
 
     const getVideo = async () => {
+        setPageLoaded(false);
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/return/video`,
@@ -23,6 +25,7 @@ function Step7({ token, BASE_URL, alertData, showAlert }) {
         } catch (error) {
             console.log("error fetching cities", error);
         }
+        setPageLoaded(true);
     };
 
     const handleSelectFile = async (e) => {
@@ -69,47 +72,55 @@ function Step7({ token, BASE_URL, alertData, showAlert }) {
         <div className={styles.box}>
             <Alert {...alertData} removeAlert={showAlert} envoker={addVideo} />
 
-            <p>لطفا ویدئو معرفی خود را بارگذاری نمایید.</p>
-            <div className={styles["box__btn-wrapper"]}>
-                <div
-                    className={styles["step__upload-btn"]}
-                    onChange={handleSelectFile}
-                >
-                    <span>آپلود ویدئو</span>
-                    <input
-                        type="file"
-                        className={styles["step__upload-input"]}
-                        accept="video/*"
-                        disabled={loading}
-                    />
-                </div>
-            </div>
-            <div className={styles.step__content}>
-                {video ? (
-                    <video
-                        src={video}
-                        style={{ width: "40vw" }}
-                        className="mt-2"
-                        controls
-                    />
-                ) : (
-                    <span
-                        style={{ fontSize: "1.05rem" }}
-                        className="danger-color"
-                    >
-                        ویدئویی وجود ندارد!
-                    </span>
-                )}
+            {pageLoaded ? (
+                <>
+                    <p>لطفا ویدئو معرفی خود را بارگذاری نمایید.</p>
+                    <div className={styles["box__btn-wrapper"]}>
+                        <div
+                            className={styles["step__upload-btn"]}
+                            onChange={handleSelectFile}
+                        >
+                            <span>آپلود ویدئو</span>
+                            <input
+                                type="file"
+                                className={styles["step__upload-input"]}
+                                accept="video/*"
+                                disabled={loading}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.step__content}>
+                        {video ? (
+                            <video
+                                src={video}
+                                style={{ width: "40vw" }}
+                                className="mt-2"
+                                controls
+                            />
+                        ) : (
+                            <span
+                                style={{ fontSize: "1.05rem" }}
+                                className="danger-color"
+                            >
+                                ویدئویی وجود ندارد!
+                            </span>
+                        )}
 
-                {loading && (
-                    <span
-                        style={{ fontSize: "1.05rem", marginTop: 10 }}
-                        className="primary-color"
-                    >
-                        درحال آپلود ویدئو. لطفا صبر کنید.
-                    </span>
-                )}
-            </div>
+                        {loading && (
+                            <span
+                                style={{ fontSize: "1.05rem", marginTop: 10 }}
+                                className="primary-color"
+                            >
+                                درحال آپلود ویدئو. لطفا صبر کنید.
+                            </span>
+                        )}
+                    </div>
+                </>
+            ) : (
+                <div>
+                    <h2>در حال خواندن اطلاعات...</h2>
+                </div>
+            )}
         </div>
     );
 }

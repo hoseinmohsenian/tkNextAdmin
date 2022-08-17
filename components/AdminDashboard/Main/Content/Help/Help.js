@@ -79,8 +79,10 @@ function Help({ fetchedList: { data, ...restData }, token }) {
                         <thead className="table__head">
                             <tr>
                                 <th className="table__head-item">عنوان</th>
-                                <th className="table__head-item">ریدایرکت</th>
                                 <th className="table__head-item">URL</th>
+                                <th className="table__head-item">
+                                    وضعیت ریدایرکت
+                                </th>
                                 <th className="table__head-item">
                                     URL ریدایرکت
                                 </th>

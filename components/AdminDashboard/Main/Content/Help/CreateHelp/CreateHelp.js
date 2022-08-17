@@ -136,7 +136,7 @@ function CreateHelp({ token }) {
                                 required
                             />
                             <div className="form-control-label">
-                                https://tikkaa.ir/help/
+                                https://tikkaa.ir/
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@ function CreateHelp({ token }) {
                                 }
                             />
                             <div className="form-control-label">
-                                https://tikkaa.ir/help/
+                                https://tikkaa.ir/
                             </div>
                         </div>
                     </div>

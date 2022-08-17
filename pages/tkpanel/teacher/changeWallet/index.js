@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import TeacherManualTransaction from "../../../../components/AdminDashboard/Main/Content/Accounting/TeacherManualTransaction/TeacherManualTransaction";
 import Header from "../../../../components/Head/Head";
 
-function TeacherManualTransactionPage({ token }) {
+function TeacherManualTransactionPage() {
     return (
         <>
             <Header title="تغییر اعتبار استاد | تیکا"></Header>
             <AdminDashboard>
-                <TeacherManualTransaction token={token} />
+                <TeacherManualTransaction />
             </AdminDashboard>
         </>
     );
@@ -27,5 +27,5 @@ export async function getServerSideProps(context) {
         };
     }
 
-    return { props: { token } };
+    return { props: {} };
 }

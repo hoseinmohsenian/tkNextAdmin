@@ -6,13 +6,18 @@ import Chart from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
-import { BASE_URL } from "../../../../../../constants/index";
+import API from "../../../../../../api/index";
 
-function TikkaaIncome({ token }) {
+function TikkaaIncome() {
     const [chartData, setChartData] = useState({});
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [loading, setLoading] = useState(false);
+    const [alertData, setAlertData] = useState({
+        show: false,
+        message: "",
+        type: "",
+    });
     moment.locale("fa", { useGregorianParser: true });
 
     // Chart init
@@ -76,31 +81,24 @@ function TikkaaIncome({ token }) {
                 to = `to=${convertDate(endDate)}`;
             }
 
-            const res = await fetch(
-                `${BASE_URL}/admin/accounting/tikkaa/income?${from}${to}`,
-                {
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/accounting/tikkaa/income?${from}${to}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setChartData(data);
+
+            if (status === 200) {
+                setChartData(data?.data);
             } else {
-                const { error } = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    error?.invalid_params[0]?.message || "مشکلی پیش آمده"
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading data from API", error);
         }
+        setLoading(false);
     };
 
     return (

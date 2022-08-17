@@ -3,18 +3,12 @@ import CreateSpecialty from "../../../../components/AdminDashboard/Main/Content/
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
 
-function CreateSpecialtyPage({ token, languages }) {
+function CreateSpecialtyPage({ languages }) {
     return (
         <>
-            <Header
-                title="ایجاد تخصص | تیکا"
-                description="آموزش زبان انگلیسی با متد تیکا٬ تیکا بهترین نرم افزار آموزش زبان برای استفاده سنین و  کلیه سطوح ، یادگیری تعاملی زبان و دریافت مدرک معتبر بهمراه محتوای بروز"
-                keywords="تیکا, اپلیکیشن زبان انگلیسی, اپلیکیشن آموزش زبان, آموزش رایگان زبان انگلیسی, مکالمه روان انگلیسی, تقویت مکالمه زبان انگلیسی, یادگیری لغات انگلیسی"
-                og_description="آموزش زبان انگلیسی با متد تیکا٬ بهترین نرم افزار آموزش زبان برای استفاده سنین و  کلیه سطوح ، یادگیری تعاملی زبان و دریافت مدرک معتبر بهمراه محتوای بروز"
-                og_title="آموزش زبان انگلیسی | تیکا | tikkaa"
-            ></Header>
+            <Header title="ایجاد تخصص | تیکا"></Header>
             <AdminDashboard>
-                <CreateSpecialty token={token} languages={languages} />
+                <CreateSpecialty languages={languages} />
             </AdminDashboard>
         </>
     );
@@ -45,5 +39,5 @@ export async function getServerSideProps(context) {
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
-    return { props: { token, languages: dataArr[0].data } };
+    return { props: { languages: dataArr[0].data } };
 }

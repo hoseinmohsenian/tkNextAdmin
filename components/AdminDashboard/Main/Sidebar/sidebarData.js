@@ -530,11 +530,6 @@ export default [
                 icon: <FaCommentDots />,
             },
             {
-                title: "لیست بارگذاری مقالات اساتید",
-                path: "/tkpanel/siteNews/teachers/lists",
-                icon: <IoIosListBox />,
-            },
-            {
                 title: "اساتید پین شده",
                 path: "/tkpanel/showPinTeachers",
                 icon: <BsPinAngleFill />,

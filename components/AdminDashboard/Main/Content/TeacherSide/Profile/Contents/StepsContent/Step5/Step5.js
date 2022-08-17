@@ -21,11 +21,22 @@ const formSchema = {
     pricePer16ID:0,
 };
 
+const loadingsSchema = {
+    "1": false,
+    "2": false,
+    "3": false,
+    "4": false,
+    "5": false
+};
+
 function Step5({ token, BASE_URL, alertData, showAlert }) {
     const [addedLanguages, setAddedLanguages] = useState([]);
     const [selectedLanguage, setSelectedLanguage] = useState({});
     const [formData, setFormData] = useState([]);
     const [targetGroups, setTargetGroups] = useState(new Array(4).fill(false));
+    const [loadings, setLoadings] = useState(loadingsSchema);
+    const [pricesLoaded, setPricesLoaded] = useState(false);
+    const [catgsLoaded, setCatgsLoaded] = useState(false);
     const [errors, setErrors] = useState([]);
 
     let freePrices = [
@@ -45,7 +56,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
 
         // Call the API for Test Session here. bacause <select> doesn't have onBlur
         if(name === "pricePerTest" && Number(value) !== -1){
-            onBlurHandler(formData[rowInd].pricePerTestID, Number(value))
+            onBlurHandler(formData[rowInd].pricePerTestID, Number(value), "1")
         }
     };
 
@@ -65,17 +76,19 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         );
     };
 
-    const onBlurHandler = (id, price) => {
-        editCourse(id, price);
+    const onBlurHandler = (id, price, course_id) => {
+        let unformattedPrice = Number(getUnformattedPrice(price));
+        editCourse(id, unformattedPrice, course_id);
     };
 
-    const editCourse = async (id, price) => {
+    const editCourse = async (id, price, course_id) => {
+        setLoadings({...loadings, [course_id]:true})
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/course/edit/${id}`,
                 {
                     method: "POST",
-                    body: JSON.stringify({price: Number(getUnformattedPrice(price))}),
+                    body: JSON.stringify({ price }),
                     headers: {
                         "Content-type": "application/json",
                         Authorization: `Bearer ${token}`,
@@ -97,9 +110,11 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         } catch (error) {
             console.log("Error editing course ", error);
         }
+        setLoadings({...loadings, [course_id]:false})
     };
 
     const readCourses = async (language_id, tempFormData, lanInd) => {
+        setPricesLoaded(false);
         try {
             const res = await fetch(`${BASE_URL}/teacher/course/language/${language_id}`,
                 {
@@ -145,6 +160,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         } catch (error) {
             console.log("Error fetching language courses ", error);
         }
+        setPricesLoaded(true);
     };
 
     const addAgeCategory = async (category_id) => {
@@ -184,6 +200,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
     };
 
     const readAgeCategorys = async () => {
+        setCatgsLoaded(false);
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/age`,
@@ -208,6 +225,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         } catch (error) {
             console.log("Error adding category ", error);
         }
+        setCatgsLoaded(true);
     };
 
     const fetchAddedLanguages = async () => {
@@ -260,7 +278,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                 <div className={styles["step__row"]}>
                     {errors?.length !== 0 && <Error errorList={errors} />}
                 </div>
-                <div className={styles.box}>
+                {pricesLoaded ? (<div className={styles.box}>
                     {/* Language tabs */}
                     <div className={styles["lan__pricing-tabs"]}>
                         {addedLanguages?.map((lan, i) => {
@@ -319,17 +337,18 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                                             }
                                                             value={formItem.pricePerTest}
                                                             required
+                                                            disabled={loadings["1"]}
                                                         >
                                                             <option value={-1}>انتخاب کنید</option>
-                                                                {freePrices.map((item) => (
-                                                                    <option 
-                                                                        key={item.value}
-                                                                        value={item.value}
-                                                                    >
-                                                                            {item.name}
-                                                                    </option>
-                                                                    )
-                                                                )}
+                                                            {freePrices.map((item) => (
+                                                                <option 
+                                                                    key={item.value}
+                                                                    value={item.value}
+                                                                >
+                                                                        {item.name}
+                                                                </option>
+                                                                )
+                                                            )}
                                                         </select>
                                                     </div>
                                                 </div>
@@ -364,9 +383,10 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                                                 checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
-                                                                onBlurHandler(formItem.pricePer1ID, formItem.pricePer1)
+                                                                onBlurHandler(formItem.pricePer1ID, formItem.pricePer1, "2")
                                                             }
                                                             id="pricePer1"
+                                                            disabled={loadings["2"]}
                                                         />
                                                     </div>
                                                 </div>
@@ -410,9 +430,10 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                                                 checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
-                                                                onBlurHandler(formItem.pricePer5ID, formItem.pricePer5)
+                                                                onBlurHandler(formItem.pricePer5ID, formItem.pricePer5, "3")
                                                             }
                                                             id="pricePer5"
+                                                            disabled={loadings["3"]}
                                                         />
                                                     </div>
                                                 </div>
@@ -473,9 +494,10 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                                                 checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
-                                                                onBlurHandler(formItem.pricePer10ID, formItem.pricePer10)
+                                                                onBlurHandler(formItem.pricePer10ID, formItem.pricePer10, "4")
                                                             }
                                                             id="pricePer10"
+                                                            disabled={loadings["4"]}
                                                         />
                                                     </div>
                                                 </div>
@@ -536,9 +558,10 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                                                 checkValidPriceKeys(e)
                                                             }
                                                             onBlur={() =>
-                                                                onBlurHandler(formItem.pricePer16ID, formItem.pricePer16)
+                                                                onBlurHandler(formItem.pricePer16ID, formItem.pricePer16, "5")
                                                             }
                                                             id="pricePer16"
+                                                            disabled={loadings["5"]}
                                                         />
                                                     </div>
                                                 </div>
@@ -575,9 +598,12 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                             })}
                         </div>
                     </div>
-                </div>
+                </div>) : (<div>
+                    <h2>در حال خواندن هزینه‌ها...</h2>
+                </div>)
+                }
 
-                <div className={styles.box} style={{marginTop: 36}}>
+                {catgsLoaded?(<div className={styles.box} style={{marginTop: 36}}>
                     <h4 className={styles["box__title"]}>
                         گروه سنی مدنظر زبان آموزان شما
                     </h4>
@@ -671,7 +697,11 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                             </label>
                         </div>
                     </div>
-                </div>
+                </div>) : (
+                    <div>
+                        <h2>در حال خواندن دسته بندی‌ها...</h2>
+                    </div>
+                )}
             </div>
         </div>
     );

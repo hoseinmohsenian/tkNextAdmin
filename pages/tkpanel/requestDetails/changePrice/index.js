@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import ChangePrice from "../../../../components/AdminDashboard/Main/Content/ChangePrice/ChangePrice";
 import Header from "../../../../components/Head/Head";
 import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function ChangePricePage({ pirces, token }) {
+function ChangePricePage({ pirces, token, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="لیست تغییر قیمت کلاس | تیکا"></Header>
@@ -37,6 +42,12 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
 
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 

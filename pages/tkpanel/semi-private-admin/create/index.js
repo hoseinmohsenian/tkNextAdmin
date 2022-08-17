@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateSemiPrivate from "../../../../components/AdminDashboard/Main/Content/SemiPrivate/Create/Create";
 import Header from "../../../../components/Head/Head";
 
-function GroupClassPage({ token }) {
+function GroupClassPage() {
     return (
         <>
             <Header title="کلاس نیمه خصوصی جدید |‌ تیکا"></Header>
             <AdminDashboard>
-                <CreateSemiPrivate token={token} />
+                <CreateSemiPrivate />
             </AdminDashboard>
         </>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

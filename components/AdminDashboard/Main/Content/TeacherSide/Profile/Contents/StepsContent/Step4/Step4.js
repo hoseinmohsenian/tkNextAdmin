@@ -34,6 +34,7 @@ function Step4(props) {
     const [toBeDeletedLan, setToBeDeletedLan] = useState({});
     const [dModalVisible, setDModalVisible] = useState(false);
     const [loadings, setLoadings] = useState([]);
+    const [pageLoaded, setPageLoaded] = useState(false);
 
     const readLanguages = async () => {
         try {
@@ -80,6 +81,7 @@ function Step4(props) {
     };
 
     const fetchAddedLanguages = async () => {
+        setPageLoaded(false);
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/return/languages`,
@@ -97,6 +99,7 @@ function Step4(props) {
         } catch (error) {
             console.log("Error fetching added languages ", error);
         }
+        setPageLoaded(true);
     };
 
     const deleteLanguage = async (id, i) => {
@@ -164,199 +167,226 @@ function Step4(props) {
                 confirmLoading={loadings[toBeDeletedLan.index]}
             />
 
-            <div className="container">
-                <div className={styles.step__row}>
-                    {/* Add new language button */}
-                    <div className={styles["step__newlan-wrapper"]}>
-                        <button
-                            className={styles["step__newlan-btn"]}
-                            type="button"
-                            onClick={() => setOpenModal(true)}
-                        >
-                            <img
-                                src="/icons/plus.png"
-                                alt="plus icon"
-                                width={38}
-                                height={38}
+            {pageLoaded ? (
+                <div className="container">
+                    <div className={styles.step__row}>
+                        {/* Add new language button */}
+                        <div className={styles["step__newlan-wrapper"]}>
+                            <button
+                                className={styles["step__newlan-btn"]}
+                                type="button"
+                                onClick={() => setOpenModal(true)}
+                            >
+                                <img
+                                    src="/icons/plus.png"
+                                    alt="plus icon"
+                                    width={38}
+                                    height={38}
+                                />
+                                <span>اضافه کردن زبان جدید</span>
+                            </button>
+                        </div>
+
+                        {/* New language modal */}
+                        {openModal && (
+                            <LanModal
+                                show={openModal}
+                                setter={setOpenModal}
+                                selectedLan={selectedLan}
+                                setSelectedLan={setSelectedLan}
+                                selectedSpecialitys={selectedSpecialitys}
+                                setSelectedSpecialitys={setSelectedSpecialitys}
+                                selectedSkills={selectedSkills}
+                                setSelectedSkills={setSelectedSkills}
+                                selectedLevels={selectedLevels}
+                                setSelectedLevels={setSelectedLevels}
+                                errors={errors}
+                                setErrors={setErrors}
+                                languages={languages}
+                                levels={levels}
+                                token={token}
+                                currentStep={currentStep}
+                                setCurrentStep={setCurrentStep}
+                                specialitys={specialitys}
+                                setSpecialitys={setSpecialitys}
+                                skills={skills}
+                                setSkills={setSkills}
+                                languageSchema={languageSchema}
+                                showAlert={showAlert}
+                                BASE_URL={BASE_URL}
                             />
-                            <span>اضافه کردن زبان جدید</span>
-                        </button>
+                        )}
                     </div>
 
-                    {/* New language modal */}
-                    {openModal && (
-                        <LanModal
-                            show={openModal}
-                            setter={setOpenModal}
-                            selectedLan={selectedLan}
-                            setSelectedLan={setSelectedLan}
-                            selectedSpecialitys={selectedSpecialitys}
-                            setSelectedSpecialitys={setSelectedSpecialitys}
-                            selectedSkills={selectedSkills}
-                            setSelectedSkills={setSelectedSkills}
-                            selectedLevels={selectedLevels}
-                            setSelectedLevels={setSelectedLevels}
-                            errors={errors}
-                            setErrors={setErrors}
-                            languages={languages}
-                            levels={levels}
-                            token={token}
-                            currentStep={currentStep}
-                            setCurrentStep={setCurrentStep}
-                            specialitys={specialitys}
-                            setSpecialitys={setSpecialitys}
-                            skills={skills}
-                            setSkills={setSkills}
-                            languageSchema={languageSchema}
-                            showAlert={showAlert}
-                            BASE_URL={BASE_URL}
-                        />
-                    )}
-                </div>
-
-                {addedLanguages?.map((item, ind) => {
-                    return (
-                        <div className={styles["step__box"]} key={ind}>
-                            <div>
-                                <div className={styles.addedLan__row}>
-                                    <span className={styles.addedLan__title}>
-                                        زبان مورد تدریس
-                                    </span>
-                                    <div
-                                        className={
-                                            styles["addedLan__input-wrapper"]
-                                        }
-                                    >
-                                        <input
-                                            type="text"
-                                            readOnly={true}
-                                            defaultValue={item?.persian_name}
-                                            className={styles.addedLan__input}
-                                        />
+                    {addedLanguages?.map((item, ind) => {
+                        return (
+                            <div className={styles["step__box"]} key={ind}>
+                                <div>
+                                    <div className={styles.addedLan__row}>
+                                        <span
+                                            className={styles.addedLan__title}
+                                        >
+                                            زبان مورد تدریس
+                                        </span>
                                         <div
                                             className={
-                                                styles["addLan__btn-wrapper"]
+                                                styles[
+                                                    "addedLan__input-wrapper"
+                                                ]
                                             }
                                         >
-                                            <button
-                                                className={`${styles["addLan__btn"]} ${styles["addLan__btn--edit"]}`}
-                                                onClick={() =>
-                                                    editLanguage(item)
+                                            <input
+                                                type="text"
+                                                readOnly={true}
+                                                defaultValue={
+                                                    item?.persian_name
+                                                }
+                                                className={
+                                                    styles.addedLan__input
+                                                }
+                                            />
+                                            <div
+                                                className={
+                                                    styles[
+                                                        "addLan__btn-wrapper"
+                                                    ]
                                                 }
                                             >
-                                                <span>&#x270E;</span>
-                                                <span>ویرایش</span>
-                                            </button>
-                                            <button
-                                                className={`${styles["addLan__btn"]} ${styles["addLan__btn--delete"]}`}
-                                                onClick={() => {
-                                                    setToBeDeletedLan({
-                                                        ...item,
-                                                        index: ind,
-                                                    });
-                                                    setDModalVisible(true);
-                                                }}
-                                            >
-                                                <div className="d-flex align-items-center">
-                                                    <AiFillDelete className="ml-2" />
-                                                    <span>حذف</span>
-                                                </div>
-                                            </button>
+                                                <button
+                                                    className={`${styles["addLan__btn"]} ${styles["addLan__btn--edit"]}`}
+                                                    onClick={() =>
+                                                        editLanguage(item)
+                                                    }
+                                                >
+                                                    <span>&#x270E;</span>
+                                                    <span>ویرایش</span>
+                                                </button>
+                                                <button
+                                                    className={`${styles["addLan__btn"]} ${styles["addLan__btn--delete"]}`}
+                                                    onClick={() => {
+                                                        setToBeDeletedLan({
+                                                            ...item,
+                                                            index: ind,
+                                                        });
+                                                        setDModalVisible(true);
+                                                    }}
+                                                >
+                                                    <div className="d-flex align-items-center">
+                                                        <AiFillDelete className="ml-2" />
+                                                        <span>حذف</span>
+                                                    </div>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className={styles.addedLan__row}>
-                                    <span className={styles.addedLan__title}>
-                                        تخصص مورد تدریس
-                                    </span>
-                                    <div
-                                        className={
-                                            styles["addedLan__items-box"]
-                                        }
-                                    >
-                                        {item?.speciality?.map(
-                                            (specItem, i) => {
-                                                return (
-                                                    <div
-                                                        className={
-                                                            styles.addedLan__item
-                                                        }
-                                                        key={i}
-                                                    >
-                                                        {specItem?.persian_name}
-                                                    </div>
-                                                );
+                                    <div className={styles.addedLan__row}>
+                                        <span
+                                            className={styles.addedLan__title}
+                                        >
+                                            تخصص مورد تدریس
+                                        </span>
+                                        <div
+                                            className={
+                                                styles["addedLan__items-box"]
                                             }
-                                        )}
+                                        >
+                                            {item?.speciality?.map(
+                                                (specItem, i) => {
+                                                    return (
+                                                        <div
+                                                            className={
+                                                                styles.addedLan__item
+                                                            }
+                                                            key={i}
+                                                        >
+                                                            {
+                                                                specItem?.persian_name
+                                                            }
+                                                        </div>
+                                                    );
+                                                }
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={styles.addedLan__row}>
-                                    <span className={styles.addedLan__title}>
-                                        مهارت مورد تدریس
-                                    </span>
-                                    <div
-                                        className={
-                                            styles["addedLan__items-box"]
-                                        }
-                                    >
-                                        {Object.values(item?.skill).map(
-                                            (skillItem, i) => {
-                                                return (
-                                                    <div
-                                                        className={
-                                                            styles.addedLan__item
-                                                        }
-                                                        key={i}
-                                                    >
-                                                        {
-                                                            skillItem?.persian_name
-                                                        }
-                                                    </div>
-                                                );
+                                    <div className={styles.addedLan__row}>
+                                        <span
+                                            className={styles.addedLan__title}
+                                        >
+                                            مهارت مورد تدریس
+                                        </span>
+                                        <div
+                                            className={
+                                                styles["addedLan__items-box"]
                                             }
-                                        )}
+                                        >
+                                            {Object.values(item?.skill).map(
+                                                (skillItem, i) => {
+                                                    return (
+                                                        <div
+                                                            className={
+                                                                styles.addedLan__item
+                                                            }
+                                                            key={i}
+                                                        >
+                                                            {
+                                                                skillItem?.persian_name
+                                                            }
+                                                        </div>
+                                                    );
+                                                }
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={styles.addedLan__row}>
-                                    <span className={styles.addedLan__title}>
-                                        سطح مورد تدریس
-                                    </span>
-                                    <div
-                                        className={
-                                            styles["addedLan__items-box"]
-                                        }
-                                    >
-                                        {item?.level?.map((levelItem, i) => {
-                                            return (
-                                                <div
-                                                    className={
-                                                        styles.addedLan__item
-                                                    }
-                                                    key={i}
-                                                >
-                                                    {levelItem?.persian_name}
-                                                </div>
-                                            );
-                                        })}
+                                    <div className={styles.addedLan__row}>
+                                        <span
+                                            className={styles.addedLan__title}
+                                        >
+                                            سطح مورد تدریس
+                                        </span>
+                                        <div
+                                            className={
+                                                styles["addedLan__items-box"]
+                                            }
+                                        >
+                                            {item?.level?.map(
+                                                (levelItem, i) => {
+                                                    return (
+                                                        <div
+                                                            className={
+                                                                styles.addedLan__item
+                                                            }
+                                                            key={i}
+                                                        >
+                                                            {
+                                                                levelItem?.persian_name
+                                                            }
+                                                        </div>
+                                                    );
+                                                }
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className={styles.addedLan__row}>
-                                    <span className={styles.addedLan__sugg}>
-                                        برای اینکه در صفحه اساتید بهتر دیده شوید
-                                        مواردی را انتخاب کنید.
-                                    </span>
+                                    <div className={styles.addedLan__row}>
+                                        <span className={styles.addedLan__sugg}>
+                                            برای اینکه در صفحه اساتید بهتر دیده
+                                            شوید مواردی را انتخاب کنید.
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
 
-                {/* Errors */}
-                <div className={styles["step__row-errors"]}>
-                    {errors?.length !== 0 && <Error errorList={errors} />}
+                    {/* Errors */}
+                    <div className={styles["step__row-errors"]}>
+                        {errors?.length !== 0 && <Error errorList={errors} />}
+                    </div>
                 </div>
-            </div>
-            {/* visible, setVisible */}
+            ) : (
+                <div>
+                    <h2>در حال خواندن اطلاعات...</h2>
+                </div>
+            )}
         </div>
     );
 }

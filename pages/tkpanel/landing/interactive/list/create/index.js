@@ -2,12 +2,12 @@ import AdminDashboard from "../../../../../../components/AdminDashboard/Dashboar
 import CreateLanding from "../../../../../../components/AdminDashboard/Main/Content/Support/Landing/CreateLanding/CreateLanding";
 import Header from "../../../../../../components/Head/Head";
 
-function CreateLandingPage({ token }) {
+function CreateLandingPage() {
     return (
         <div>
             <Header title="ایجاد لندینگ | تیکا"></Header>
             <AdminDashboard>
-                <CreateLanding token={token} />
+                <CreateLanding />
             </AdminDashboard>
         </div>
     );
@@ -28,8 +28,6 @@ export async function getServerSideProps(context) {
     }
 
     return {
-        props: {
-            token,
-        },
+        props: {},
     };
 }

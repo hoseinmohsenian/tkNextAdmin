@@ -2,18 +2,12 @@ import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateLevel from "../../../../components/AdminDashboard/Main/Content/CreateLevel/CreateLevel";
 import Header from "../../../../components/Head/Head";
 
-function CreateLevelPage({ token }) {
+function CreateLevelPage() {
     return (
         <>
-            <Header
-                title="ایجاد سطح | تیکا"
-                description="آموزش زبان انگلیسی با متد تیکا٬ تیکا بهترین نرم افزار آموزش زبان برای استفاده سنین و  کلیه سطوح ، یادگیری تعاملی زبان و دریافت مدرک معتبر بهمراه محتوای بروز"
-                keywords="تیکا, اپلیکیشن زبان انگلیسی, اپلیکیشن آموزش زبان, آموزش رایگان زبان انگلیسی, مکالمه روان انگلیسی, تقویت مکالمه زبان انگلیسی, یادگیری لغات انگلیسی"
-                og_description="آموزش زبان انگلیسی با متد تیکا٬ بهترین نرم افزار آموزش زبان برای استفاده سنین و  کلیه سطوح ، یادگیری تعاملی زبان و دریافت مدرک معتبر بهمراه محتوای بروز"
-                og_title="آموزش زبان انگلیسی | تیکا | tikkaa"
-            ></Header>
+            <Header title="ایجاد سطح | تیکا"></Header>
             <AdminDashboard>
-                <CreateLevel token={token} />
+                <CreateLevel />
             </AdminDashboard>
         </>
     );
@@ -33,5 +27,5 @@ export async function getServerSideProps(context) {
         };
     }
 
-    return { props: { token } };
+    return { props: {} };
 }

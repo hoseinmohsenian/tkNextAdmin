@@ -294,7 +294,6 @@ function CreateUser({ token, permissions, admin }) {
                                 }}
                                 background="#fafafa"
                                 max={24}
-                                fontSize={16}
                                 openBottom={false}
                                 onRemove={deleteArticleCategory}
                                 showAlert={showAlert}

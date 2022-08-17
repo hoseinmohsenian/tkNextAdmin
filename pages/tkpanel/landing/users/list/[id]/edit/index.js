@@ -2,8 +2,13 @@ import AdminDashboard from "../../../../../../../components/AdminDashboard/Dashb
 import EditLanding from "../../../../../../../components/AdminDashboard/Main/Content/Support/Landing/EditLanding/EditLanding";
 import Header from "../../../../../../../components/Head/Head";
 import { BASE_URL } from "../../../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function EditLandingPage({ token, landing }) {
+function EditLandingPage({ token, landing, notAllowed }) {
+    if (!!notAllowed) {
+        return <NotAuthorized />;
+    }
     return (
         <div>
             <Header title="ویرایش لندینگ | تیکا"></Header>
@@ -37,6 +42,13 @@ export async function getServerSideProps(context) {
             },
         }),
     ]);
+
+    if (!checkResponseArrAuth(responses)) {
+        return {
+            props: { notAllowed: true },
+        };
+    }
+
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {

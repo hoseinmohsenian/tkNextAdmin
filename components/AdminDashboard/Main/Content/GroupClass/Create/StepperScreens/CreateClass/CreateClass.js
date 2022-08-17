@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./CreateClass.module.css";
 import Alert from "../../../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../../../constants";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
@@ -18,6 +17,7 @@ import {
     getFormattedPrice,
     getUnformattedPrice,
 } from "../../../../../../../../utils/priceFormat";
+import API from "../../../../../../../../api/index";
 
 const teacherSchema = { id: "", name: "", family: "" };
 
@@ -325,30 +325,24 @@ function CreateClass(props) {
         setLoading(true);
 
         try {
-            const res = await fetch(
-                `${BASE_URL}/data/teacher/language?teacher_id=${selectedTeacher.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/data/teacher/language?teacher_id=${selectedTeacher.id}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setLanguages(data);
+
+            if (status === 200) {
+                setLanguages(data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error reading teacher languages", error);
         }
+        setLoading(false);
     };
 
     const handleOnChange = (e) => {
@@ -366,47 +360,38 @@ function CreateClass(props) {
     const searchTeachers = async (teacher_name) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teacher/name/search?name=${teacher_name}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/teacher/name/search?name=${teacher_name}`
             );
-            if (res.ok) {
-                const { data } = await res.json();
-                setTeachers(data);
+
+            if (status === 200) {
+                setTeachers(data?.data);
             } else {
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error searching teachers", error);
         }
+        setLoading(false);
     };
 
     const createClass = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(`${BASE_URL}/admin/group-class`, {
-                method: "POST",
-                body: fd,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
-            if (res.ok) {
+            const { data, response, status } = await API.post(
+                `/admin/group-class`,
+                fd
+            );
+
+            if (status === 200) {
                 const {
                     data: { id, ...restData },
-                } = await res.json();
+                } = data;
                 setFormData({
                     ...formData,
                     id: id,
@@ -414,64 +399,57 @@ function CreateClass(props) {
                 setAddedData(restData);
                 setCurrentStep(1);
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error creating group class", error);
         }
+        setLoading(false);
     };
 
     const editClass = async (fd) => {
         setLoading(true);
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/group-class/${formData.id}`,
-                {
-                    method: "POST",
-                    body: fd,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { response, status } = await API.post(
+                `/admin/group-class/${formData.id}`,
+                fd
             );
-            if (res.ok) {
+
+            if (status === 200) {
                 showAlert(true, "success", "کلاس باموفقیت ویرایش شد");
             } else {
-                const errData = await res.json();
                 showAlert(
                     true,
                     "warning",
-                    errData?.error?.invalid_params[0]?.message ||
+                    response?.data?.error?.invalid_params[0]?.message ||
                         "مشکلی پیش آمده"
                 );
             }
-            setLoading(false);
         } catch (error) {
             console.log("Error editing group class", error);
         }
+        setLoading(false);
     };
 
     const deleteSpeciality = async (speciality_id) => {
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/group-class/${formData.id}/speciality/${speciality_id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { status, response } = await API.delete(
+                `/admin/group-class/${formData.id}/speciality/${speciality_id}`
             );
+
+            if (status !== 200) {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error deleting speciality", error);
         }
@@ -479,17 +457,18 @@ function CreateClass(props) {
 
     const deleteSkill = async (skill_id) => {
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/group-class/${formData.id}/skill/${skill_id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { status, response } = await API.delete(
+                `/admin/group-class/${formData.id}/skill/${skill_id}`
             );
+
+            if (status !== 200) {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error deleting skill ", error);
         }
@@ -503,18 +482,21 @@ function CreateClass(props) {
 
     const readClassData = async () => {
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/group-class/${formData.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/group-class/${formData.id}`
             );
-            const { data } = await res.json();
-            setAddedData({ ...data, ...data });
+
+            if (status === 200) {
+                let fetchedData = data?.data;
+                setAddedData({ ...fetchedData, ...fetchedData });
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error reading class data", error);
         }
@@ -522,17 +504,20 @@ function CreateClass(props) {
 
     const fetchSpecialitys = async () => {
         try {
-            const res = await fetch(
-                `${BASE_URL}/data/language/speciality/${formData.language_id}`,
-                {
-                    headers: {
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/data/language/speciality/${formData.language_id}`
             );
-            const { data } = await res.json();
-            setSpecialitys(() => data);
+
+            if (status === 200) {
+                setSpecialitys(() => data?.data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error fetching specialitys ", error);
         }
@@ -543,17 +528,20 @@ function CreateClass(props) {
             ?.map((specItem, ind) => `speciality[${ind}]=${specItem?.id}`)
             .join("&");
         try {
-            const res = await fetch(
-                `${BASE_URL}/data/language/skill?${params}`,
-                {
-                    headers: {
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/data/language/skill?${params}`
             );
-            const { data } = await res.json();
-            setSkills(() => data);
+
+            if (status === 200) {
+                setSkills(() => data?.data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
         } catch (error) {
             console.log("Error fetching skills ", error);
         }
@@ -584,7 +572,9 @@ function CreateClass(props) {
     };
 
     useEffect(() => {
-        fetchSpecialitys();
+        if (Number(formData.language_id)) {
+            fetchSpecialitys();
+        }
         setSelectedSpecialitys([]);
     }, [formData.language_id]);
 
@@ -649,7 +639,6 @@ function CreateClass(props) {
                                     width: "100%",
                                 }}
                                 background="#fafafa"
-                                fontSize={16}
                                 onSearch={(value) => searchTeachers(value)}
                             />
                         </div>

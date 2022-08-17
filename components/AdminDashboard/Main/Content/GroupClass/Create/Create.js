@@ -66,7 +66,6 @@ function CreateGroupClass({ token, levels }) {
                             title: "ثبت جلسات",
                             Component: AddSessions,
                             props: {
-                                token,
                                 showAlert,
                                 alertData,
                                 formData,
