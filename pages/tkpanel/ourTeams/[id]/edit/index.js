@@ -1,28 +1,29 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
-import { checkResponseArrAuth } from "../../../utils/helperFunctions";
-import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
-import OurTeam from "../../../components/AdminDashboard/Main/Content/OurTeam/OurTeam";
+import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
+import Header from "../../../../../components/Head/Head";
+import { BASE_URL } from "../../../../../constants";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
+import EditTeam from "../../../../../components/AdminDashboard/Main/Content/OurTeam/EditTeam/EditTeam";
 
-function OurTeamPage({ members, notAllowed }) {
+function EditOurTeamPage({ member, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
     return (
         <div>
-            <Header title="تیم ما | تیکا"></Header>
+            <Header title="ویرایش عضو | تیکا"></Header>
             <AdminDashboard>
-                <OurTeam fetchedMembers={members} />
+                <EditTeam member={member} />
             </AdminDashboard>
         </div>
     );
 }
 
-export default OurTeamPage;
+export default EditOurTeamPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const id = context.params.id;
 
     if (!token) {
         return {
@@ -34,7 +35,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/our-team`, {
+        fetch(`${BASE_URL}/admin/our-team/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -52,6 +53,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { members: dataArr[0]?.data },
+        props: { member: dataArr[0]?.data },
     };
 }

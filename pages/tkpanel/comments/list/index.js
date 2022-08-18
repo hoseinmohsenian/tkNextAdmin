@@ -1,11 +1,11 @@
-import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
-import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
-import { checkResponseArrAuth } from "../../../utils/helperFunctions";
-import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
-import OurTeam from "../../../components/AdminDashboard/Main/Content/OurTeam/OurTeam";
+import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
+import Header from "../../../../components/Head/Head";
+import { BASE_URL } from "../../../../constants";
+import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
+import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
+import ArticleComments from "../../../../components/AdminDashboard/Main/Content/ArticleComments/ArticleComments";
 
-function OurTeamPage({ members, notAllowed }) {
+function CommentsPage({ comments, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -13,13 +13,13 @@ function OurTeamPage({ members, notAllowed }) {
         <div>
             <Header title="تیم ما | تیکا"></Header>
             <AdminDashboard>
-                <OurTeam fetchedMembers={members} />
+                <ArticleComments fetchedComments={comments} />
             </AdminDashboard>
         </div>
     );
 }
 
-export default OurTeamPage;
+export default CommentsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/our-team`, {
+        fetch(`${BASE_URL}/admin/blog/article/comment`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -52,6 +52,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { members: dataArr[0]?.data },
+        props: { comments: dataArr[0]?.data },
     };
 }
