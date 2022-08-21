@@ -1,10 +1,18 @@
 import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function StatusList({ statusData, token }) {
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    logReport: "مدیریت سایت",
+                    status: "وضعیت های لاگ سیستم",
+                }}
+            />
+
             <Box
                 title="وضعیت های لاگ سیستم"
                 buttonInfo={{

@@ -5,6 +5,7 @@ import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function SubCategories({ categories }) {
     const [subCategories, setSubCategories] = useState([]);
@@ -67,6 +68,12 @@ function SubCategories({ categories }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    FaqSubCategory: "زیرگروه دسته بندی FAQ",
+                }}
+            />
+
             <Box
                 title="زیرگروه دسته بندی FAQ"
                 buttonInfo={{

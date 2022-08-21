@@ -5,6 +5,7 @@ import Pagination from "../../Pagination/Pagination";
 import styles from "./UsedCoupons.module.css";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     user_name: "",
@@ -119,6 +120,11 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    useCopen: "کدهای تخفیف استفاده شده",
+                }}
+            />
             <Box title="لیست کدهای تخفیف استفاده شده">
                 <div className={styles["search"]}>
                     <form

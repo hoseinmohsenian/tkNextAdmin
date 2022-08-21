@@ -11,14 +11,19 @@ const formSchema = {
     language_id: "",
     pricePerTest: 0,
     pricePerTestID: 0,
+    perTestCourseId: 0,
     pricePer1: 0,
-    pricePer1ID:0,
+    pricePer1ID: 0,
+    per1CourseId: 0,
     pricePer5: 0,
-    pricePer5ID:0,
+    pricePer5ID: 0,
+    per5CourseId: 0,
     pricePer10: 0,
-    pricePer10ID:0,
+    pricePer10ID: 0,
+    per10CourseId: 0,
     pricePer16: 0,
-    pricePer16ID:0,
+    pricePer16ID: 0,
+    per16CourseId: 0,
 };
 
 const loadingsSchema = {
@@ -78,7 +83,11 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
 
     const onBlurHandler = (id, price, course_id) => {
         let unformattedPrice = Number(getUnformattedPrice(price));
-        editCourse(id, unformattedPrice, course_id);
+        if(id){
+            editCourse(id, unformattedPrice, course_id);
+        } else{
+            createCourse(unformattedPrice, course_id);
+        }
     };
 
     const editCourse = async (id, price, course_id) => {
@@ -98,6 +107,40 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
             );
             if(res.ok){
                 showAlert(true, "success", "هزینه کلاس ویرایش شد");
+            } else{
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+        } catch (error) {
+            console.log("Error editing course ", error);
+        }
+        setLoadings({...loadings, [course_id]:false})
+    };
+
+    const createCourse = async (price, course_id) => {
+        setLoadings({...loadings, [course_id]:true})
+        try {
+            const res = await fetch(
+                `${BASE_URL}/teacher/course/${course_id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ price, language_id: selectedLanguage.id }),
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if(res.ok){
+                showAlert(true, "success", "هزینه کلاس ویرایش شد");
+                let index = selectedLanguage.index;
+                await readCourses(selectedLanguage.id, formData, index);
             } else{
                 const errData = await res.json();
                 showAlert(
@@ -133,22 +176,27 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                 if(data[i].course_id === 1){
                     updatedLanguage?.pricePerTestID = data[i]?.id;
                     updatedLanguage?.pricePerTest = data[i]?.price;
+                    updatedLanguage?.perTestCourseId = data[i]?.course_id;
                 }
                 if(data[i].course_id === 2){
                     updatedLanguage?.pricePer1ID = data[i]?.id;
                     updatedLanguage?.pricePer1 = data[i]?.price;
+                    updatedLanguage?.per1CourseId = data[i]?.course_id;
                 }
                 else if(data[i].course_id === 3){
                     updatedLanguage?.pricePer5ID = data[i]?.id;
                     updatedLanguage?.pricePer5 = data[i]?.price;
+                    updatedLanguage?.per5CourseId = data[i]?.course_id;
                 }
                 else if(data[i].course_id === 4){
                     updatedLanguage?.pricePer10ID = data[i]?.id;
                     updatedLanguage?.pricePer10 = data[i]?.price;
+                    updatedLanguage?.per10CourseId = data[i]?.course_id;
                 }
                 else if(data[i].course_id === 5){
                     updatedLanguage?.pricePer16ID = data[i]?.id;
                     updatedLanguage?.pricePer16 = data[i]?.price;
+                    updatedLanguage?.per16CourseId = data[i]?.course_id;
                 }
             }
 
@@ -291,7 +339,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                         selectedLanguage?.id === lan?.id ?
                                         styles["lan__pricing-tab-item--active"] : undefined
                                     }`}
-                                    onClick={() => setSelectedLanguage(lan)}
+                                    onClick={() => setSelectedLanguage({...lan, index: i})}
                                     key={i}
                                 >
                                     {lan?.persian_name}

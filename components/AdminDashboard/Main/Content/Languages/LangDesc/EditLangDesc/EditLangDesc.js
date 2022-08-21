@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../../Editor/Editor"), {
     ssr: false,
 });
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditLangDesc({ token, language }) {
     const [formData, setFormData] = useState(language);
@@ -105,6 +106,15 @@ function EditLangDesc({ token, language }) {
                 removeAlert={showAlert}
                 envoker={handleSubmit}
             />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    lang: "زبان ها",
+                    des: "توضیحات زبان",
+                    edit: "ویرایش",
+                }}
+            />
+
             <Box title="ویرایش توضیحات زبان">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">

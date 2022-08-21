@@ -3,6 +3,8 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import API from "../../../../../../api";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+
 
 function CreateSitePage({ token }) {
     const [formData, setFormData] = useState({
@@ -78,6 +80,12 @@ function CreateSitePage({ token }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                pages: "صفحات سایت",
+                create:"ایجاد"
+                }}
             />
 
             <Box title="ایجاد صفحه">

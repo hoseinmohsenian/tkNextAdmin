@@ -9,6 +9,7 @@ import {
     getFormattedPrice,
     getUnformattedPrice,
 } from "../../../../../../utils/priceFormat";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const studentSchema = { id: "", name_family: "", mobile: "" };
 
@@ -117,6 +118,14 @@ function StudentManualTransaction() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    profile: "حسابداری",
+                    credit: "زبان آموز",
+                    index: "افزایش اعتبار زبان آموز",
+                }}
             />
 
             <Box title="افزایش اعتبار زبان آموز">

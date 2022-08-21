@@ -6,6 +6,7 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { useRouter } from "next/router";
 import API from "../../../../../api/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     from: null,
@@ -147,6 +148,12 @@ function Reporting({ languages }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    database: "مدیریت سایت",
+                    query: "گزارش گیری",
+                }}
+            />
             <Box title="گزارش گیری">
                 <div className={styles["search"]}>
                     <div className={styles["search__header"]}>

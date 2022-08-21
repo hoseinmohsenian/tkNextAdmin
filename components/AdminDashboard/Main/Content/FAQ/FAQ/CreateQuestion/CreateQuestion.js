@@ -10,6 +10,7 @@ const Editor = dynamic(() => import("../../../Editor/Editor"), {
 import SearchSelect from "../../../../../../SearchSelect/SearchSelect";
 import SearchMultiSelect from "../../../../../../SearchMultiSelect/SearchMultiSelect";
 import API from "../../../../../../../api/index";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 const categorySchema = {
     id: 0,
@@ -146,6 +147,12 @@ function CreateQuestion({ token, categories }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    FaqSite: "سوالات FAQ",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد سوال">

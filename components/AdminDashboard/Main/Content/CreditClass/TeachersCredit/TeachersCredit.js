@@ -5,6 +5,7 @@ import Alert from "../../../../../Alert/Alert";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./TeachersCredit.module.css";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
@@ -147,6 +148,13 @@ function TeachersCredit({ fetchedTeachers, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    installment: "کلاس اعتباری",
+                    teachers: "اساتید اعتباری",
+                }}
+            />
+
             <Box title="لیست اساتید اعتباری">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>

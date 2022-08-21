@@ -3,6 +3,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateTeam() {
     const [formData, setFormData] = useState({
@@ -83,6 +84,12 @@ function CreateTeam() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    ourTeams: "تیم ما",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد عضو">

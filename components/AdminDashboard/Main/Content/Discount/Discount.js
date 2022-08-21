@@ -3,6 +3,7 @@ import Link from "next/link";
 import Box from "../Elements/Box/Box";
 import moment from "jalali-moment";
 import Modal from "../../../../Modal/Modal";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function Discount({ discounts }) {
     const [openModal, setOpenModal] = useState(false);
@@ -10,6 +11,11 @@ function Discount({ discounts }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    copens: "کوپن تخفیف",
+                }}
+            />
             <Box
                 title="لیست کوپن تخفیف"
                 buttonInfo={{

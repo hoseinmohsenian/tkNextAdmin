@@ -6,6 +6,7 @@ import Box from "../../Elements/Box/Box";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
@@ -232,6 +233,13 @@ function CreateSemiPrivate() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    "semi-private-admin": "کلاس نیمه خصوصی",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد کلاس نیمه خصوصی">

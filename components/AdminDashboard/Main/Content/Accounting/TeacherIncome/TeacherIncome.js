@@ -7,6 +7,7 @@ import { Line } from "react-chartjs-2";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { BASE_URL } from "../../../../../../constants/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TeacherIncome({ token }) {
     const [chartData, setChartData] = useState({});
@@ -104,6 +105,14 @@ function TeacherIncome({ token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    accounting: "حسابداری",
+                    teacher: "استاد",
+                    list: "جزئیات درآمد اساتید",
+                }}
+            />
+
             <Box title="جزئیات درآمد اساتید">
                 <div className={styles["search"]}>
                     <form

@@ -8,6 +8,7 @@ import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function StudentManualTransactions(props) {
     const {
@@ -62,6 +63,14 @@ function StudentManualTransactions(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    logUser: "حسابداری",
+                    profile: "زبان آموز",
+                    accountingCredite: "لیست افزایش اعتبار دستی",
+                }}
+            />
+
             <Box title="لیست افزایش اعتبار دستی">
                 {openModal && (
                     <Modal

@@ -6,6 +6,7 @@ import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function Consultation(props) {
     const {
@@ -133,6 +134,13 @@ function Consultation(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    adviceRequests: "درخواست مشاوره",
+                    list: "لیست",
+                }}
+            />
+
             <Box title="لیست درخواست مشاوره">
                 {/* Alert */}
                 <Alert

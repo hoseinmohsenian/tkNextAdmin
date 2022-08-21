@@ -8,6 +8,7 @@ import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
 import styles from "./StudentTransactionDetails.module.css";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = { tracking_code: "" };
 const appliedFiltersSchema = { tracking_code: false };
@@ -133,6 +134,13 @@ function StudentTransactionDetails(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    user: "حسابداری",
+                    credits: "جزئیات پرداخت زبان آموز"
+                }}
+            />
+
             <Box title="جزئیات پرداخت زبان آموز">
                 {openModal && (
                     <Modal

@@ -9,6 +9,7 @@ import { TimePicker } from "antd";
 import styles from "./EditLog.module.css";
 import API from "../../../../../../api/index";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditLog({ statusList, theLog, admins, type }) {
     const [formData, setFormData] = useState(theLog);
@@ -146,6 +147,13 @@ function EditLog({ statusList, theLog, admins, type }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    logReport: type === "student" ? "زبان‌آموز" : "استاد‌",
+                    show: "تاریخچه لاگ‌",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش لاگ">

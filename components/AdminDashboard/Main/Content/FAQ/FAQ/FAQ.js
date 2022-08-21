@@ -3,6 +3,7 @@ import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import Alert from "../../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../../constants";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function FAQ({ faqs: fetchedData, token }) {
     const [faqs, setFaqs] = useState(fetchedData);
@@ -79,6 +80,11 @@ function FAQ({ faqs: fetchedData, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    FaqSite: "سوالات FAQ",
+                }}
+            />
             <Box
                 title="سوالات FAQ"
                 buttonInfo={{

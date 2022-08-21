@@ -5,6 +5,7 @@ import Box from "../../Elements/Box/Box";
 import styles from "./CreateUser.module.css";
 import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const permissionsSchema = {
     id: "",
@@ -101,6 +102,12 @@ function CreateUser({ permissions }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    users: "ادمین ها",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد ادمین">

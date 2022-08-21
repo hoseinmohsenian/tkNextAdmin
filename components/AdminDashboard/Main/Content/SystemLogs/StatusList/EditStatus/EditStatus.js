@@ -3,6 +3,7 @@ import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditStatus({ token, status }) {
     const [formData, setFormData] = useState(status);
@@ -90,6 +91,13 @@ function EditStatus({ token, status }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    logReport: "مدیریت سایت",
+                    status: "وضعیت های لاگ سیستم",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش وضعیت">

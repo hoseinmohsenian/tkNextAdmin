@@ -3,6 +3,7 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditSpecialty({ token, specialty }) {
     const [formData, setFormData] = useState(specialty);
@@ -87,6 +88,14 @@ function EditSpecialty({ token, specialty }) {
                 removeAlert={showAlert}
                 envoker={handleSubmit}
             />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    specialty: "تخصص ها",
+                    edit: "ویرایش",
+                }}
+            />
+
             <Box title="ویرایش تخصص">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">

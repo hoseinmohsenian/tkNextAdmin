@@ -9,6 +9,7 @@ const Editor = dynamic(() => import("../../Editor/Editor"), {
 });
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import Box from "../../Elements/Box/Box";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditCategory({ token, categoriesLevel1, category, title, mainPage }) {
     const [formData, setFormData] = useState(category);
@@ -359,6 +360,15 @@ function EditCategory({ token, categoriesLevel1, category, title, mainPage }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    newsSubCategories: "دسته بندی اول مقالات",
+                    siteNewsCategories: "دسته بندی دوم مقالات",
+                    categoriesLevel3: "دسته بندی سوم مقالات",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title={title}>

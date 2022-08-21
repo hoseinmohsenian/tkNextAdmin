@@ -3,6 +3,7 @@ import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../../../Elements/Box/Box";
 import API from "../../../../../../../api/index";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateLanding() {
     const [formData, setFormData] = useState({
@@ -124,6 +125,15 @@ function CreateLanding() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    landing: "لندینگ",
+                    interactive: "لندینگ تعاملی",
+                    list: "لیست",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد لندینگ">

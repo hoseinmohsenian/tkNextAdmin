@@ -3,6 +3,7 @@ import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../../../Elements/Box/Box";
 import API from "../../../../../../../api/index";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateSubCategory({ categories }) {
     const [formData, setFormData] = useState({
@@ -105,6 +106,12 @@ function CreateSubCategory({ categories }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    FaqSubCategory: "زیرگروه دسته بندی FAQ",
+                    create:"ایجاد"
+                }}
             />
 
             <Box title="ایجاد زیرگروه دسته بندی">

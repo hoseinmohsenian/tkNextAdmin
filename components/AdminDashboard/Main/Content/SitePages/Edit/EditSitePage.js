@@ -3,6 +3,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditSitePage({ token, page }) {
     const [formData, setFormData] = useState(page);
@@ -83,6 +84,12 @@ function EditSitePage({ token, page }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    pages: "صفحات سایت",
+                    edit:"ویرایش"
+                }}
             />
 
             <Box title="ویرایش صفحه سایت">

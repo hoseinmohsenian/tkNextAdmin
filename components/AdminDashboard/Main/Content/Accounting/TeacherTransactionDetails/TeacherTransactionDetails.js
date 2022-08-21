@@ -4,6 +4,7 @@ import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import { BASE_URL } from "../../../../../../constants";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TeacherTransactionDetails(props) {
     const {
@@ -56,6 +57,13 @@ function TeacherTransactionDetails(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    teacher: "حسابداری",
+                    credits: "جزئیات پرداختی برای استاد",
+                }}
+            />
+
             <Box title="جزئیات پرداختی برای استاد">
                 <div className="table__wrapper">
                     <table className="table">

@@ -25,7 +25,7 @@ const citySchema = {
     name: "",
 };
 const languageSchema = {
-    id: "",
+    id: -1,
     persian_name: "",
     english_name: "",
     url: "",
@@ -72,9 +72,6 @@ function Step1({ token, alertData, showAlert }) {
         flag: "https://api.barmansms.ir/public/credential/country-flags/ir.png",
     });
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-    console.log("selectedCountry", selectedCountry);
-    console.log("selectedProvince", selectedProvince);
-    console.log("selectedCity", selectedCity);
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -126,7 +123,7 @@ function Step1({ token, alertData, showAlert }) {
                 body = { ...body, city_id: selectedCity.id };
             }
             if (
-                selectedMotherTongue.id &&
+                selectedMotherTongue.id !== -1 &&
                 selectedMotherTongue.id !== fetchedData.mother_tongue_id
             ) {
                 body = { ...body, mother_tongue_id: selectedMotherTongue.id };

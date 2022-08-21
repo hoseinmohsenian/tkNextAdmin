@@ -2,12 +2,18 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./Platforms.module.css";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function Platforms({ fetchedPlatforms }) {
     const [platforms] = useState(fetchedPlatforms);
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    multiplatform: "پلتفرم ها",
+                }}
+            />
             <Box
                 title="لیست پلتفرم ها"
                 buttonInfo={{

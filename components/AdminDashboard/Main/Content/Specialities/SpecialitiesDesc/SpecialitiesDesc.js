@@ -6,6 +6,7 @@ import Modal from "../../../../../Modal/Modal";
 import styles from "../Specialities.module.css";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     persian_name: "",
@@ -117,6 +118,14 @@ function SpecialitiesDesc({
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    specialty: "تخصص ها",
+                    information: "توضیحات",
+                    desc: "توضیحات تخصص ها",
+                }}
+            /
             <Box
                 title="توضیحات تخصص ها"
                 buttonInfo={{

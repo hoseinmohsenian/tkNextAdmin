@@ -3,6 +3,7 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
 import API from "../../../../../api/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreatePlatform() {
     const [formData, setFormData] = useState({
@@ -84,6 +85,12 @@ function CreatePlatform() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    multiplatform: "پلتفرم ها",
+                    create: "ایجاد",
+                }}
             />
             <Box title="ایجاد پلتفرم">
                 <form onSubmit={handleSubmit} className="form">

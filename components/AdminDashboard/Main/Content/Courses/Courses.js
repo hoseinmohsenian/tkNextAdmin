@@ -3,6 +3,7 @@ import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function Courses({ fetchedCourses, token }) {
     const [courses, setCourses] = useState(fetchedCourses);
@@ -63,6 +64,12 @@ function Courses({ fetchedCourses, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    course: "مدل های رزرو",
+                }}
+            />
             <Box
                 title="مدل های رزرو"
                 buttonInfo={{

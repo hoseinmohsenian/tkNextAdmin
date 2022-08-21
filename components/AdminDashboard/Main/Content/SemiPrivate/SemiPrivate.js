@@ -7,6 +7,7 @@ import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function SemiPrivate(props) {
     const {
@@ -110,6 +111,12 @@ function SemiPrivate(props) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={changeStatus}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    "semi-private-admin": "کلاس نیمه خصوصی",
+                }}
             />
 
             <Box

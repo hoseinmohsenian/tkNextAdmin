@@ -3,6 +3,7 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditLanguage({ token, language }) {
     const [formData, setFormData] = useState(language);
@@ -96,6 +97,15 @@ function EditLanguage({ token, language }) {
                 removeAlert={showAlert}
                 envoker={handleSubmit}
             />
+
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    language: "زبان ها",
+                    edit: "ویرایش",
+                }}
+            />
+
             <Box title="ویرایش زبان">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
@@ -102,6 +103,13 @@ function TeacherManualTransaction() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    teacher: "حسابداری",
+                    changeWallet: "تغییر اعتبار استاد",
+                }}
             />
 
             <Box title="تغییر اعتبار استاد">

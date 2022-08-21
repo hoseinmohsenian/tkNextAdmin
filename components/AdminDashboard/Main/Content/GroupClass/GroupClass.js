@@ -8,6 +8,7 @@ import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
 import styles from "./GroupClass.module.css";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     teacher_name: "",
@@ -231,6 +232,12 @@ function GroupClass(props) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={changeStatus}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    groupClass: "کلاس گروهی",
+                }}
             />
 
             <Box

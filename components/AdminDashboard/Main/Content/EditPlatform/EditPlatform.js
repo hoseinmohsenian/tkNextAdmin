@@ -3,6 +3,7 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditPlatform({ token, platform }) {
     const [formData, setFormData] = useState(platform);
@@ -89,6 +90,12 @@ function EditPlatform({ token, platform }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    multiplatform: "پلتفرم ها",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش پلتفرم">

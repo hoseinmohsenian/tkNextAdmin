@@ -2,6 +2,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function LangDesc({ languages }) {
     const [openModal, setOpenModal] = useState(false);
@@ -9,6 +10,14 @@ function LangDesc({ languages }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    lang: "زبان ها",
+                    des: "توضیحات زبان",
+                }}
+            />
+
             <Box
                 title="توضیحات زبان ها"
                 buttonInfo={{

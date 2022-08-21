@@ -11,6 +11,7 @@ import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -137,6 +138,14 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                 removeAlert={showAlert}
                 envoker={readMonitoring}
             />
+
+            <BreadCrumbs
+                substituteObj={{
+                    monitoring: "مانیتورینگ",
+                    getTodayClasses: "مانیتورینگ امروز",
+                }}
+            />
+
             <Box title="مانیتورینگ امروز">
                 {openModal && (
                     <Modal

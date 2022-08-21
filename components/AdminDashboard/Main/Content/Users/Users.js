@@ -1,9 +1,15 @@
 import Box from "../Elements/Box/Box";
 import Link from "next/link";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function Users({ admins }) {
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    users: "ادمین ها",
+                }}
+            />
             <Box
                 title="لیست ادمین ها"
                 buttonInfo={{

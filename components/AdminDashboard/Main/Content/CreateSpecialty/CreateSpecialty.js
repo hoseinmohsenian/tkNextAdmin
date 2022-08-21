@@ -3,6 +3,7 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
 import API from "../../../../../api/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateSpecialty({ languages }) {
     const [formData, setFormData] = useState({
@@ -85,6 +86,13 @@ function CreateSpecialty({ languages }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    specialty: "تخصص ها",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد تخصص">

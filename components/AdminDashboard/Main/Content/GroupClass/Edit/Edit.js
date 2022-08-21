@@ -3,6 +3,7 @@ import styles from "../Create/CreateGroupClass.module.css";
 import Stepper from "../../Elements/Stepper/Stepper";
 import AddSessions from "./StepperScreens/AddSessions/AddSessions";
 import CreateClass from "./StepperScreens/EditClass/EditClass";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditGroupClass({ token, languages, levels, fetchedClass }) {
     const [formData, setFormData] = useState(fetchedClass);
@@ -19,6 +20,13 @@ function EditGroupClass({ token, languages, levels, fetchedClass }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    groupClass: "کلاس گروهی",
+                    edit: "ویرایش",
+                }}
+            />
+
             <div className={styles.stepper}>
                 <Stepper
                     currentStep={currentStep}

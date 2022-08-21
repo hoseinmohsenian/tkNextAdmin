@@ -7,6 +7,7 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function AddDiscount() {
     const [formData, setFormData] = useState({
@@ -168,6 +169,12 @@ function AddDiscount() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    copens: "کوپن تخفیف",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="کوپن تخفیف جدید">

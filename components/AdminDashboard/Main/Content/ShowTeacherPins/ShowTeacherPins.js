@@ -2,6 +2,7 @@ import { useState } from "react";
 import Box from "../Elements/Box/Box";
 import { BASE_URL } from "../../../../../constants";
 import Alert from "../../../../Alert/Alert";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function ShowTeacherPins({ teachers: fetchedTeachers, token }) {
     const [loadings, setLoadings] = useState(
@@ -64,6 +65,12 @@ function ShowTeacherPins({ teachers: fetchedTeachers, token }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={deleteTeacherPin}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    showPinTeachers: "اساتید پین شده",
+                }}
             />
 
             <Box title="لیست اساتید پین شده">

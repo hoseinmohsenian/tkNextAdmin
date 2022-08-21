@@ -3,6 +3,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditTeam({ member }) {
     const [formData, setFormData] = useState(member);
@@ -89,6 +90,12 @@ function EditTeam({ member }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    ourTeams: "تیم ما",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش عضو">

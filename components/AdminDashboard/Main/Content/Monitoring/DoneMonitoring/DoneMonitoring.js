@@ -11,6 +11,7 @@ import { useGlobalContext } from "../../../../../../context";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -133,6 +134,13 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={readMonitoring}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    monitoring: "مانیتورینگ",
+                    getTodayMonitoring: "مانیتورینگ انجام شده",
+                }}
             />
 
             <Box title="مانیتورینگ انجام شده">

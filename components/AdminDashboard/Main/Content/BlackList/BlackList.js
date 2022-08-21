@@ -8,6 +8,7 @@ import styles from "./BlackList.module.css";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
 import API from "../../../../../api/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
@@ -164,6 +165,11 @@ function BlackList({ fetchedList: { data, ...restData } }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    blackLists: "لیست سیاه",
+                }}
+            />
             <Box title="لیست سیاه">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>

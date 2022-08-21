@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function Requests(props) {
     const {
@@ -100,6 +101,12 @@ function Requests(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    requestFailed: "درخواست های ناتمام",
+                }}
+            />
+
             <Box title="لیست درخواست های ناتمام">
                 {/* Alert */}
                 <Alert

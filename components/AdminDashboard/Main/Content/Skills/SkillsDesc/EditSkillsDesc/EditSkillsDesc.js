@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../../Editor/Editor"), {
     ssr: false,
 });
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditSkillsDesc({ token, skill }) {
     const [formData, setFormData] = useState(skill);
@@ -101,6 +102,14 @@ function EditSkillsDesc({ token, skill }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    skill: "مهارت ها",
+                    description: "توضیحات مهارت ها",
+                    edit: "ویرایش",
+                }}
             />
             <Box title="ویرایش توضیحات مهارت">
                 <form onSubmit={handleSubmit} className="form">

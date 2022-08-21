@@ -5,6 +5,7 @@ import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import styles from "../CreateUser/CreateUser.module.css";
 import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const permissionsSchema = {
     id: "",
@@ -143,6 +144,12 @@ function CreateUser({ token, permissions, admin }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    users: "ادمین ها",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش ادمین">

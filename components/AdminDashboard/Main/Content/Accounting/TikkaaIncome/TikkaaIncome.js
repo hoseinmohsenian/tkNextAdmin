@@ -7,6 +7,7 @@ import { Line } from "react-chartjs-2";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TikkaaIncome() {
     const [chartData, setChartData] = useState({});
@@ -103,6 +104,14 @@ function TikkaaIncome() {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    accounting: "حسابداری",
+                    tk: "تیکا",
+                    today: "جزئیات درآمد تیکا",
+                }}
+            />
+
             <Box title="جزئیات درآمد تیکا">
                 <div className={styles["search"]}>
                     <form

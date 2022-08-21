@@ -6,6 +6,7 @@ import { BASE_URL } from "../../../../../../constants";
 import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 import Alert from "../../../../../Alert/Alert";
 import { BsCheckLg } from "react-icons/bs";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TeacherWithdrawalRequests(props) {
     const {
@@ -180,6 +181,13 @@ function TeacherWithdrawalRequests(props) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={verifyAccount}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    transactions: "حسابداری",
+                    list: "درخواست تسویه اساتید",
+                }}
             />
 
             <Box title="لیست درخواست تسویه اساتید">

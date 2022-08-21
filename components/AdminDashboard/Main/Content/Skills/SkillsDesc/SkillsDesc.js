@@ -6,6 +6,7 @@ import Modal from "../../../../../Modal/Modal";
 import { BASE_URL } from "../../../../../../constants";
 import { useRouter } from "next/router";
 import styles from "../Skills.module.css";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     persian_name: "",
@@ -114,6 +115,14 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    skill: "مهارت ها",
+                    description: "توضیحات مهارت ها",
+                }}
+            />
+
             <Box
                 title="توضیحات مهارت ها"
                 buttonInfo={{

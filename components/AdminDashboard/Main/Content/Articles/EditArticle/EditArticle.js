@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../Editor/Editor"), {
     ssr: false,
 });
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const categorySchema = { id: "", title: "", type: "" };
 
@@ -337,6 +338,13 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    siteNews: "مقالات",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ایجاد مقاله">

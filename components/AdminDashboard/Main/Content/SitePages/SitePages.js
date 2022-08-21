@@ -1,9 +1,15 @@
 import Link from "next/link";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function SitePages({ pages }) {
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    pages: "صفحات سایت",
+                }}
+            />
             <Box
                 title="صفحات سایت"
                 buttonInfo={{

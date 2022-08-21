@@ -1,11 +1,19 @@
 import Link from "next/link";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function Languages({ languages }) {
     const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    language: "زبان ها",
+                }}
+            />
+
             <Box
                 title="لیست زبان ها"
                 buttonInfo={{

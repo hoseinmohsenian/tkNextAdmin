@@ -9,6 +9,7 @@ import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
 import Modal from "../../../../Modal/Modal";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     language_id: 0,
@@ -265,6 +266,12 @@ function Articles(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    siteNews: "مقالات",
+                }}
+            />
+
             <Box
                 title="لیست مقالات"
                 buttonInfo={{

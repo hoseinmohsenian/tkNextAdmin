@@ -6,6 +6,7 @@ import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import API from "../../../../../../api";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
@@ -181,6 +182,13 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    installment: "کلاس اعتباری",
+                    students: "زبان آموزان اعتباری",
+                }}
+            />
+
             <Box title="لیست زبان آموزان اعتباری">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>

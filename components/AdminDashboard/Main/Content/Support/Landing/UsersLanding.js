@@ -8,6 +8,7 @@ import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
 import { AiOutlineWhatsApp } from "react-icons/ai"
 import { useRouter } from "next/router";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     mobile: "",
@@ -208,6 +209,14 @@ function UsersLanding(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    landing: "لندینگ",
+                    users: "لندینگ تعاملی کاربران",
+                    list: "لیست",
+                }}
+            />
+
             <Box title="لندینگ تعاملی کاربران">
 
                 <div className={styles["search"]}>

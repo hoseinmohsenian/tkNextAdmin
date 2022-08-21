@@ -7,6 +7,7 @@ import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TeachersComments(props) {
     const {
@@ -139,6 +140,13 @@ function TeachersComments(props) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    comments:"وبلاگ",
+                    list: "کامنت های اساتید",
+                }}
+            />
+
             <Box title="کامنت های اساتید">
                 {/* Alert */}
                 <Alert

@@ -3,6 +3,7 @@ import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditLanding({ token, landing }) {
     const [formData, setFormData] = useState({
@@ -140,6 +141,15 @@ function EditLanding({ token, landing }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    landing: "لندینگ",
+                    interactive: "لندینگ تعاملی",
+                    list: "لیست",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش لندینگ">

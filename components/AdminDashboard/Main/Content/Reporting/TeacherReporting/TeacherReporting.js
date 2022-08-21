@@ -9,6 +9,7 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import ReactTooltip from "react-tooltip";
 import { useRouter } from "next/router";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     from: null,
@@ -148,6 +149,12 @@ function TeacherReporting() {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    report: "مدیریت سایت",
+                    teachers: "گزارش گیری استاد",
+                }}
+            />
             <Box title="گزارش گیری استاد">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>

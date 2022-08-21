@@ -7,6 +7,7 @@ import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditDiscount({ token, discount }) {
     const [formData, setFormData] = useState({
@@ -156,6 +157,12 @@ function EditDiscount({ token, discount }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    copens: "کوپن تخفیف",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش کوپن تخفیف">

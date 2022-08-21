@@ -3,6 +3,7 @@ import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditSubCategory({ token, category, categories }) {
     const [formData, setFormData] = useState(category);
@@ -112,6 +113,12 @@ function EditSubCategory({ token, category, categories }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    FaqSubCategory: "زیرگروه دسته بندی FAQ",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش دسته بندی">

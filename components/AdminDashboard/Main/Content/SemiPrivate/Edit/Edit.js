@@ -4,6 +4,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditSemiPrivate({ token, theClass }) {
     const [formData, setFormData] = useState({ ...theClass, rate: 0 });
@@ -80,6 +81,13 @@ function EditSemiPrivate({ token, theClass }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    "semi-private-admin": "کلاس نیمه خصوصی",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش کلاس نیمه خصوصی">

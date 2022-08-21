@@ -3,6 +3,7 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
 import API from "../../../../../api/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateLanguage() {
     const [formData, setFormData] = useState({
@@ -84,6 +85,14 @@ function CreateLanguage() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    language: "زبان ها",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد زبان">

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 import API from "../../../../../api";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateLevel() {
     const [formData, setFormData] = useState({
@@ -79,6 +80,13 @@ function CreateLevel() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    level: "سطح ها",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد سطح">

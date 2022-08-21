@@ -1,10 +1,5 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import {
-    checkValidPriceKeys,
-    getFormattedPrice,
-    getUnformattedPrice,
-} from "../../../../../../utils/priceFormat";
 import Box from "../../Elements/Box/Box";
 import styles from "./MultiSession.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
@@ -15,6 +10,7 @@ import Modal from "../../../../../Modal/Modal";
 import { useGlobalContext } from "../../../../../../context";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import API from "../../../../../../api";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function MultiSession() {
     const [classes, setClasses] = useState([]);
@@ -64,7 +60,7 @@ function MultiSession() {
                     showAlert(true, "success", "جستجو انجام شد");
                 }
                 setClasses(data?.data);
-                setLoadings(Array(data?.data?.length).fill(false))
+                setLoadings(Array(data?.data?.length).fill(false));
             } else {
                 showAlert(
                     true,
@@ -90,52 +86,10 @@ function MultiSession() {
         }
     };
 
-    const priceOnChange = (e, rowInd) => {
-        let updated = [...classes];
-        updated[rowInd] = { ...updated[rowInd], price: e.target.value };
-        setClasses(() => updated);
-    };
-
-    const loadingsHanlder=  (i, value) => {
+    const loadingsHanlder = (i, value) => {
         let temp = [...loadings];
         temp[i] = value;
         setLoadings(() => temp);
-    }
-
-    const changePrice = async (value, price_id, i) => {
-        try {
-            loadingsHanlder(i, true);
-            const { response, status } = await API.post(
-                `/admin/classroom/change-price/${price_id}`,
-                JSON.stringify({ price: Number(value) })
-            );
-
-            if (status === 200) {
-                let message = `قیمت به ${Intl.NumberFormat().format(
-                    Number(value)
-                )} تومان تغییر کرد`;
-                showAlert(true, "success", message);
-            } else {
-                showAlert(
-                    true,
-                    "warning",
-                    response?.data?.error?.invalid_params[0]?.message ||
-                        "مشکلی پیش آمده"
-                );
-            }
-        } catch (error) {
-            console.log("Error changing price", error);
-        }
-        loadingsHanlder(i, false);
-    };
-
-    const changePriceHandler = async (value, price_id, i) => {
-        if (Number(value) !== classes[i]?.price && value) {
-            await changePrice(value, price_id, i);
-            let temp = [...classes];
-            temp[i]?.price = value;
-            setClasses(() => temp);
-        }
     };
 
     return (
@@ -146,6 +100,13 @@ function MultiSession() {
                 removeAlert={showAlert}
                 envoker={readClasses}
             />
+
+            <BreadCrumbs
+                substituteObj={{
+                    multiSessionsList: "۵ جلسه ۱۰ جلسه",
+                }}
+            />
+
             <Box title="۵ جلسه ۱۰ جلسه">
                 {openModal && (
                     <Modal
@@ -159,18 +120,10 @@ function MultiSession() {
                         <div className={"modal__wrapper"}>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    کورس
+                                    زبان
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedClass?.course_name || "-"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    تاریخ آخرین تراکنش
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.last_transaction || "-"}
+                                    {selectedClass.language_name || "-"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -179,21 +132,6 @@ function MultiSession() {
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedClass?.platform_name || "-"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    وضعیت کلاس
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass?.status === 0 &&
-                                        "تعیین وضعیت نشده"}
-                                    {selectedClass?.status === 1 &&
-                                        "برگزار شده"}
-                                    {selectedClass?.status === 2 && "کنسل شده"}
-                                    {selectedClass?.status === 3 &&
-                                        "لغو بازگشت پول"}
-                                    {selectedClass?.status === 4 && "غیبت"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -218,6 +156,18 @@ function MultiSession() {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
+                                    قیمت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass.price
+                                        ? `${Intl.NumberFormat().format(
+                                              selectedClass.price
+                                          )} تومان`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
                                     مدت کلاس
                                 </span>
                                 <span className={"modal__item-body"}>
@@ -234,6 +184,18 @@ function MultiSession() {
                                     {selectedClass.time &&
                                     selectedClass.time !== "[]"
                                         ? formatTime(selectedClass.time)
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تاریخ
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass.date
+                                        ? moment(selectedClass.date).format(
+                                              "YYYY/MM/DD"
+                                          )
                                         : "-"}
                                 </span>
                             </div>
@@ -290,10 +252,12 @@ function MultiSession() {
                                 <th className="table__head-item">
                                     موبایل زبان آموز
                                 </th>
+                                <th className="table__head-item">نوع جلسه</th>
+                                <th className="table__head-item">وضعیت کلاس</th>
+                                <th className="table__head-item">
+                                    تاریخ آخرین تراکنش
+                                </th>
                                 <th className="table__head-item">استاد</th>
-                                <th className="table__head-item">زبان</th>
-                                <th className="table__head-item">قیمت</th>
-                                <th className="table__head-item">تاریخ</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -318,52 +282,30 @@ function MultiSession() {
                                         )}
                                     </td>
                                     <td className="table__body-item">
+                                        {item.course_name || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.status === 0 &&
+                                            "تعیین وضعیت نشده"}
+                                        {item?.status === 1 && "برگزار شده"}
+                                        {item?.status === 2 && "کنسل شده"}
+                                        {item?.status === 3 && "لغو بازگشت پول"}
+                                        {item?.status === 4 && "غیبت"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {item?.last_transaction || "-"}
+                                    </td>
+                                    <td className="table__body-item">
                                         {item?.teacher_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {item?.language_name || "-"}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <div className="form-control" style={{width:"80px",margin:0}}>
-                                            <input
-                                                type="text"
-                                                name="price"
-                                                id="price"
-                                                className="form__input form__input--ltr"
-                                                onChange={(e) =>
-                                                    priceOnChange(
-                                                        e,
-                                                        i,
-                                                    )
-                                                }
-                                                value={getFormattedPrice(
-                                                    classes[i]?.price
-                                                )}
-                                                onBlur={(e) =>
-                                                    changePriceHandler(
-                                                        getUnformattedPrice(e.target.value),
-                                                        item.id,
-                                                        i
-                                                    )
-                                                }
-                                                autoComplete="off"
-                                                onKeyDown={(e) =>
-                                                    checkValidPriceKeys(e)
-                                                }
-                                                disabled={loadings[i]}
-                                            />
-                                        </div>
-                                    </td>
-                                    <td className="table__body-item">
-                                        {moment(item?.date).format(
-                                            "YYYY/MM/DD"
-                                        )}
-                                    </td>
-                                    <td className="table__body-item">
                                         <Link
-                                            href={`/tkpanel/multiSessionsList/logs/${item.id}`}
+                                            href={`/tkpanel/multiSessionsList/logs/${item.user_id}?type=student`}
                                         >
-                                            <a className={`action-btn warning`}>
+                                            <a
+                                                className={`action-btn warning`}
+                                                target="_blank"
+                                            >
                                                 لاگ پیگیری&nbsp;
                                             </a>
                                         </Link>

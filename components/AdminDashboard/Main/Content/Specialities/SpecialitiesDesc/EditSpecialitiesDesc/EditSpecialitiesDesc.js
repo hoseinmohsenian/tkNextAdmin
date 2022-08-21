@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../../Editor/Editor"), {
     ssr: false,
 });
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditSpecialitiesDesc({ token, specialty }) {
     const [formData, setFormData] = useState(specialty);
@@ -105,6 +106,16 @@ function EditSpecialitiesDesc({ token, specialty }) {
                 removeAlert={showAlert}
                 envoker={handleSubmit}
             />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    specialty: "تخصص ها",
+                    information: "توضیحات",
+                    desc: "توضیحات تخصص ها",
+                    edit: "ویرایش",
+                }}
+            />
+
             <Box title="ویرایش توضیحات تخصص">
                 <form onSubmit={handleSubmit} className="form">
                     <div className="input-wrapper">

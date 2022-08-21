@@ -3,6 +3,7 @@ import styles from "./CreateGroupClass.module.css";
 import Stepper from "../../Elements/Stepper/Stepper";
 import AddSessions from "./StepperScreens/AddSessions/AddSessions";
 import CreateClass from "./StepperScreens/CreateClass/CreateClass";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateGroupClass({ token, levels }) {
     const [formData, setFormData] = useState({
@@ -43,6 +44,13 @@ function CreateGroupClass({ token, levels }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    groupClass: "کلاس گروهی",
+                    create: "ایجاد",
+                }}
+            />
+
             <div className={styles.stepper}>
                 <Stepper
                     currentStep={currentStep}

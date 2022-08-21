@@ -3,6 +3,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateCourse() {
     const [formData, setFormData] = useState({
@@ -77,6 +78,13 @@ function CreateCourse() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    course: "مدل های رزرو",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد مدل رزرو">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function Levels({ fetchedLevels, token }) {
     const [levels, setLevels] = useState(fetchedLevels);
@@ -66,6 +67,12 @@ function Levels({ fetchedLevels, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    level: "سطح ها",
+                }}
+            />
             <Box
                 title="لیست سطح ها"
                 buttonInfo={{

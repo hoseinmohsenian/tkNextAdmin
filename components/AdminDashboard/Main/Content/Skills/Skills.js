@@ -7,6 +7,7 @@ import Pagination from "../Pagination/Pagination";
 import styles from "./Skills.module.css";
 import { useRouter } from "next/router";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     persian_name: "",
@@ -154,6 +155,13 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    skill: "مهارت ها",
+                }}
+            />
+
             <Box
                 title="لیست مهارت ها"
                 buttonInfo={{

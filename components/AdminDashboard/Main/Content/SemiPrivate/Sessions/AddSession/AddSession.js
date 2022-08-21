@@ -12,6 +12,7 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { BASE_URL } from "../../../../../../../constants";
 import { TimePicker } from "antd";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function AddSessions({ token, id, theClass }) {
     const [formData, setFormData] = useState(theClass.session);
@@ -253,6 +254,13 @@ function AddSessions({ token, id, theClass }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={addSession || editSession}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    "semi-private-admin": "کلاس نیمه خصوصی",
+                    sessions: "جلسات",
+                }}
             />
 
             <Box title="جلسات کلاس نیمه خصوصی">

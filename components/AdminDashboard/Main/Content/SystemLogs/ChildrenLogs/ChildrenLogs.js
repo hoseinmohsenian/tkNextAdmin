@@ -1,9 +1,17 @@
 import Box from "../../Elements/Box/Box";
 import Link from "next/link";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function ChildrenLogs({ logs, type }) {
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    logReport: type === "student" ? "زبان‌آموز" : "استاد‌",
+                    show: "تاریخچه لاگ‌",
+                    children: "لاگ های فرزند",
+                }}
+            />
             <Box title="لاگ های فرزند">
                 <div className="table__wrapper">
                     <table className="table">

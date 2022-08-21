@@ -5,6 +5,7 @@ import { BASE_URL } from "../../../../../../constants";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import moment from "jalali-moment";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TeacherStudentLogs({
     fetchedLogs: { data, ...restData },
@@ -60,6 +61,13 @@ function TeacherStudentLogs({
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    multiSessionsList:
+                        type === "student" ? "زبان‌آموز" : "استاد‌",
+                    logs: "تاریخچه لاگ‌",
+                }}
+            />
             <Box
                 title={`تاریخچه لاگ‌ ${
                     type === "student" ? "زبان‌آموز" : "استاد‌"

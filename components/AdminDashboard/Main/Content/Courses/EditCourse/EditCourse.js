@@ -3,6 +3,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditCourse({ token, course }) {
     const [formData, setFormData] = useState(course);
@@ -89,6 +90,13 @@ function EditCourse({ token, course }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    course: "مدل های رزرو",
+                    edit: "ویرایش",
+                }}
             />
             <Box title="ویرایش مدل رزرو">
                 <form onSubmit={handleSubmit} className="form">

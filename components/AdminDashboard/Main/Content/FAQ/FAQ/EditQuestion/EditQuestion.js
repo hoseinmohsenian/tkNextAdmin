@@ -9,6 +9,7 @@ const Editor = dynamic(() => import("../../../Editor/Editor"), {
 });
 import SearchSelect from "../../../../../../SearchSelect/SearchSelect";
 import SearchMultiSelect from "../../../../../../SearchMultiSelect/SearchMultiSelect";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 const categorySchema = {
     id: 0,
@@ -165,6 +166,12 @@ function EditQuestion({ token, categories, question }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    FaqSite: "سوالات FAQ",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش سوال">

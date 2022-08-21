@@ -1,12 +1,21 @@
 import Link from "next/link";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function Landing({ landings }) {
     moment.locale("fa", { useGregorianParser: true });
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    landing: "لندینگ",
+                    interactive: "لندینگ تعاملی",
+                    list: "لیست",
+                }}
+            />
+
             <Box
                 title="لندینگ تعاملی"
                 buttonInfo={{

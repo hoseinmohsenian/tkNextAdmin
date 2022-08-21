@@ -3,6 +3,7 @@ import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import Box from "../../../Elements/Box/Box";
 import API from "../../../../../../../api/index";
+import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateStatus() {
     const [formData, setFormData] = useState({
@@ -79,6 +80,13 @@ function CreateStatus() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    logReport: "مدیریت سایت",
+                    status: "وضعیت های لاگ سیستم",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد وضعیت">

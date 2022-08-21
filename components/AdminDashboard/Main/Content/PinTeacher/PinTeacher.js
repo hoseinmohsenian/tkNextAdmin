@@ -6,6 +6,7 @@ import { BASE_URL } from "../../../../../constants";
 import SearchMultiSelect from "../../../../SearchMultiSelect/SearchMultiSelect";
 import Box from "../Elements/Box/Box";
 import API from "../../../../../api/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function PinTeacher({ token, languages }) {
     const [formData, setFormData] = useState({
@@ -132,6 +133,12 @@ function PinTeacher({ token, languages }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    pinTeacher: "پین کردن استاد",
+                }}
             />
 
             <Box title="پین کردن استاد">

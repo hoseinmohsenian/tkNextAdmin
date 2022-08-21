@@ -3,6 +3,7 @@ import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
 import Alert from "../../../../../Alert/Alert";
 import AddEdit_Question from "./AddEdit_Question/AddEdit_Question";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const formDataSchema = {
     id: "",
@@ -101,6 +102,11 @@ function TeacherQuestions({ fetchedList, teacher, token }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={deleteQuestion}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    teacherInterviewsCategories: "مصاحبه اساتید",
+                }}
             />
 
             <Box

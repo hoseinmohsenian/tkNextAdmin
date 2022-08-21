@@ -3,6 +3,7 @@ import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditSkill({ token, skill }) {
     const [formData, setFormData] = useState(skill);
@@ -86,6 +87,13 @@ function EditSkill({ token, skill }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    skill: "مهارت ها",
+                    edit: "ویرایش",
+                }}
             />
 
             <Box title="ویرایش مهارت">

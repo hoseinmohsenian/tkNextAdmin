@@ -2,15 +2,20 @@ import { useState } from "react";
 import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function Categories({ categories }) {
     const [openModal, setOpenModal] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
 
-    console.log(categories);
-
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    FaqCategory: "دسته بندی FAQ",
+                }}
+            />
+
             <Box
                 title="دسته بندی FAQ"
                 buttonInfo={{

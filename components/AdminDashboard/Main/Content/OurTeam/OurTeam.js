@@ -4,6 +4,7 @@ import Alert from "../../../../Alert/Alert";
 import Box from "../Elements/Box/Box";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
 import API from "../../../../../api/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function OurTeam({ fetchedMembers }) {
     const [members, setMembers] = useState(fetchedMembers);
@@ -58,6 +59,12 @@ function OurTeam({ fetchedMembers }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    ourTeams: "تیم ما",
+                }}
+            />
+
             <Box
                 title="تیم ما"
                 buttonInfo={{

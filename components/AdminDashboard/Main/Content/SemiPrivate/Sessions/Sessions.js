@@ -6,6 +6,7 @@ import Alert from "../../../../../Alert/Alert";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import API from "../../../../../../api/index";
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 const studentSchema = { id: "", name_family: "", mobile: "" };
@@ -188,6 +189,13 @@ function SemiPrivateSessions() {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={searchSessionsHandler}
+            />
+
+            <BreadCrumbs
+                substituteObj={{
+                    "semi-private-admin": "کلاس نیمه خصوصی",
+                    "all-sessions": "لیست جلسات",
+                }}
             />
 
             <Box

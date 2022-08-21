@@ -7,6 +7,7 @@ import Pagination from "../Pagination/Pagination";
 import styles from "./Specialities.module.css";
 import { useRouter } from "next/router";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     persian_name: "",
@@ -155,6 +156,13 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    content: "محتوا",
+                    specialty: "تخصص ها",
+                }}
+            />
+
             <Box
                 title="لیست تخصص ها"
                 buttonInfo={{

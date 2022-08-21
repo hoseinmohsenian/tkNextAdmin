@@ -4,6 +4,7 @@ import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 function Help({ fetchedList: { data, ...restData }, token }) {
     const [list, setList] = useState(data);
@@ -66,6 +67,12 @@ function Help({ fetchedList: { data, ...restData }, token }) {
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    help: "صحفات سایت",
+                    admin: "راهنما",
+                }}
+            />
             <Box
                 title="راهنما"
                 buttonInfo={{

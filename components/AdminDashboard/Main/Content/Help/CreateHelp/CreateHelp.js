@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../Editor/Editor"), {
     ssr: false,
 });
+import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function CreateHelp({ token }) {
     const [formData, setFormData] = useState({
@@ -89,6 +90,13 @@ function CreateHelp({ token }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={handleSubmit}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    help: "صحفات سایت",
+                    admin: "راهنما",
+                    create: "ایجاد",
+                }}
             />
 
             <Box title="ایجاد راهنما">

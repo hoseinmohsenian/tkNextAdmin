@@ -6,6 +6,7 @@ import FetchSearchSelect from "../Elements/FetchSearchSelect/FetchSearchSelect";
 import API from "../../../../../api/index";
 import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
@@ -64,6 +65,11 @@ function TeacherInterview({ teachers: teachersInterviews, token }) {
                 {...alertData}
                 removeAlert={showAlert}
                 envoker={searchTeachers}
+            />
+            <BreadCrumbs
+                substituteObj={{
+                    teacherInterviewsCategories: "مصاحبه اساتید",
+                }}
             />
 
             <Box title="مصاحبه اساتید">

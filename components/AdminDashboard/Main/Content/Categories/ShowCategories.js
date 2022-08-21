@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
 import Modal from "../../../../Modal/Modal";
 import { BASE_URL } from "../../../../../constants/index";
+import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
     title: "",
@@ -99,6 +100,14 @@ function ShowCategories({
 
     return (
         <div>
+            <BreadCrumbs
+                substituteObj={{
+                    newsSubCategories: "دسته بندی اول مقالات",
+                    siteNewsCategories: "دسته بندی دوم مقالات",
+                    categoriesLevel3: "دسته بندی سوم مقالات",
+                }}
+            />
+
             <Box
                 title={title}
                 buttonInfo={{
