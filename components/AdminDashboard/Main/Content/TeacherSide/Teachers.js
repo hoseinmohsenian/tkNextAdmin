@@ -71,6 +71,39 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
         }
     };
 
+    const changeShow = async (teacher_id, show, i) => {
+        let temp = [...loadings];
+        temp[i] = true;
+        setLoadings(() => temp);
+
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/teacher/show/${teacher_id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ show: show === 0 ? 1 : 0 }),
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                let message = `استاد ${teachers[i].name} ${teachers[i].family} در لیست اساتید ${
+                    show === 0 ? "فعال" : "غیرفعال"
+                } شد`;
+                showAlert(true, show === 0 ? "success" : "danger", message);
+                await readTeachers(pagData?.current_page);
+            }
+            let temp = [...loadings];
+            temp[i] = false;
+            setLoadings(() => temp);
+        } catch (error) {
+            console.log("Error changing show", error);
+        }
+    };
+
     const readTeachers = async (page = 1, avoidFilters = false) => {
         let searchParams = {};
 
@@ -145,9 +178,12 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
             setTeachers(data);
             setFormData(data);
             setPagData(restData);
+
             // Scroll to top
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
+            if(pagData?.current_page !== page){
+                document.body.scrollTop = 0;
+                document.documentElement.scrollTop = 0;
+            }
             setLoading(false)
         } catch (error) {
             console.log("Error reading teachers", error);
@@ -455,6 +491,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                     <table className="table">
                         <thead className="table__head">
                             <tr>
+                                <th className="table__head-item">ID</th>
                                 <th className="table__head-item">نام</th>
                                 <th className="table__head-item">نام خانوادگی</th>
                                 <th className="table__head-item">زبان</th>
@@ -466,18 +503,21 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                         </thead>
                         <tbody className="table__body">
                             {teachers?.map((teacher, i) => (
-                                <tr className="table__body-row" key={teacher?.id}>
+                                <tr className="table__body-row" key={teacher.id}>
                                     <td className="table__body-item">
-                                        {teacher?.name}
+                                        {teacher.id}
                                     </td>
-                                    <td className="table__body-item" data-tip={teacher?.mobile || "-"}>
-                                        {teacher?.family}
+                                    <td className="table__body-item">
+                                        {teacher.name}
+                                    </td>
+                                    <td className="table__body-item" data-tip={teacher.mobile || "-"}>
+                                        {teacher.family}
                                         <span className="info-icon">
                                             <AiOutlineInfoCircle />
                                         </span>
                                     </td>
                                     <td className="table__body-item">
-                                        {teacher?.language_name?.map((lan, ind) => (
+                                        {teacher.language_name?.map((lan, ind) => (
                                             <span
                                                 key={generateKey(lan?.english_name)}
                                             >
@@ -488,7 +528,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                 &nbsp;
                                             </span>
                                         ))}
-                                        {teacher?.language_name?.length === 0 && (
+                                        {teacher.language_name?.length === 0 && (
                                             <span>-</span>
                                         )}
                                     </td>
@@ -567,6 +607,14 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             <div 
                                                 className={`${styles["status-circle"]} ${teacher.show === 1 ? "success" : "danger"}`} 
                                                 data-tip={`وضعیت نمایش در لیست اساتید:‌ ${teacher.show === 1 ? "فعال" : "غیرفعال"}`}
+                                                onClick={() =>
+                                                    changeShow(
+                                                        teacher.id,
+                                                        teacher.show,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
                                             ></div>
                                         </div>
                                     </td>
@@ -575,20 +623,20 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                         <button
                                             type="button"
                                             className={`action-btn ${
-                                                teacher?.status === 1
+                                                teacher.status === 1
                                                     ? "danger"
                                                     : "success"
                                             }`}
                                             onClick={() =>
                                                 changeStatus(
-                                                    teacher?.id,
-                                                    teacher?.status,
+                                                    teacher.id,
+                                                    teacher.status,
                                                     i
                                                 )
                                             }
                                             disabled={loadings[i]}
                                         >
-                                            {teacher?.status === 0
+                                            {teacher.status === 0
                                                 ? "فعال"
                                                 : "غیر فعال"}
                                         </button>

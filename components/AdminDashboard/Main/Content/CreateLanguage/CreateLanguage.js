@@ -26,15 +26,14 @@ function CreateLanguage() {
         if (
             formData.persian_name.trim() &&
             formData.english_name.trim() &&
-            formData.url.trim()
+            formData.url.trim() &&
+            formData.flag_image
         ) {
             const fd = new FormData();
             fd.append("persian_name", formData.persian_name);
             fd.append("english_name", formData.english_name);
             fd.append("url", formData.url);
-            if (formData.flag_image) {
-                fd.append("flag_image", formData.flag_image);
-            }
+            fd.append("flag_image", formData.flag_image);
             await addLanguage(fd);
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
@@ -150,7 +149,7 @@ function CreateLanguage() {
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="flag_image" className="form__label">
-                            پرچم :
+                            پرچم :<span className="form__star">*</span>
                         </label>
                         <div className="upload-box">
                             <div
@@ -162,6 +161,7 @@ function CreateLanguage() {
                                     type="file"
                                     className="upload-input"
                                     accept="image/png, image/jpg, image/jpeg"
+                                    required
                                 ></input>
                             </div>
                             <span className="upload-file-name">

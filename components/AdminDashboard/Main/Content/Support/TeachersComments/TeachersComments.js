@@ -100,12 +100,10 @@ function TeachersComments(props) {
             );
             if (res.ok) {
                 let message = `این درخواست ${
-                    status === 1 ? "فعال" : "غیرفعال"
+                    status === 0 ? "فعال" : "غیرفعال"
                 } شد`;
-                showAlert(true, status === 1 ? "success" : "warning", message);
-                let updated = [...comments];
-                updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
-                setComments(() => updated);
+                showAlert(true, status === 0 ? "success" : "danger", message);
+                await readComments();
             }
             handleLoadings(i, false);
         } catch (error) {
@@ -292,9 +290,9 @@ function TeachersComments(props) {
                                         <button
                                             type="button"
                                             className={`action-btn ${
-                                                comment?.status === 1
-                                                    ? "success"
-                                                    : "warning"
+                                                comment?.status === 0
+                                                    ? "primary"
+                                                    : "danger"
                                             }`}
                                             onClick={() =>
                                                 changeStatus(

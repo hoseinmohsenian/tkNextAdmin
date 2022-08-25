@@ -8,6 +8,7 @@ import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelec
 import { useRouter } from "next/router";
 import Caresoul from "../../../../../Carousel/Carousel";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import { useGlobalContext } from "../../../../../../context";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name_family: "", mobile: "" };
@@ -39,6 +40,7 @@ function AddNewClass({ token, platforms, courses }) {
     });
     moment.locale("fa", { useGregorianParser: true });
     const router = useRouter();
+    const { getKeyfromHourandMin } = useGlobalContext();
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -74,11 +76,9 @@ function AddNewClass({ token, platforms, courses }) {
                     "YYYY/MM/DD"
                 )
                     .locale("en")
-                    .format("YYYY-M-D"),
+                    .format("YYYY-MM-D"),
                 ids: item.hours.map((hour) =>
-                    hour.min === "00"
-                        ? parseInt(hour.start) * 2
-                        : parseInt(hour.start) * 2 + 1
+                    getKeyfromHourandMin(hour.start, hour.min)
                 ),
             }));
             let data = {};
@@ -92,13 +92,11 @@ function AddNewClass({ token, platforms, courses }) {
                         0: item.ids,
                     };
                 } else {
-                    let lenght = Object.keys(data[item.date]).length;
-                    data[item.date][lenght] = item.ids;
+                    let length = Object.keys(data[item.date]).length;
+                    data[item.date][length] = item.ids;
                 }
             });
             body = { ...body, data };
-
-            // ************************* APPEND DATA
 
             await createClass(body);
         } else {

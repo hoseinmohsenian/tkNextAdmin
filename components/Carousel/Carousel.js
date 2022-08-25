@@ -500,7 +500,10 @@ function Caresoul(props) {
                                                                             ind +
                                                                             1
                                                                         ).toString() +
-                                                                            i.toString()
+                                                                            (
+                                                                                i +
+                                                                                1
+                                                                            ).toString()
                                                                     )
                                                                         ? "d-block"
                                                                         : ReservedtimeList.includes(
@@ -508,17 +511,16 @@ function Caresoul(props) {
                                                                                   ind +
                                                                                   1
                                                                               ).toString() +
-                                                                                  i.toString()
+                                                                                  (
+                                                                                      i +
+                                                                                      1
+                                                                                  ).toString()
                                                                           )
                                                                         ? styles[
                                                                               "caresoul__item-hour--reserved"
                                                                           ]
                                                                         : "d-none"
                                                                 }
-                                                                //   // id={(ind + 1).toString() + i.toString()}
-                                                                //   id={ (7 * index + ind + 1).toString() +
-                                                                //     i.toString()
-                                                                // }
                                                                 key={i}
                                                                 onClick={(e) =>
                                                                     selectedHoursHandler(

@@ -1,17 +1,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
-import DeleteModal from "../../../../DeleteModal/DeleteModal";
+import API from "../../../../../api/index";
 
-function ArticleComments({ fetchedSpecialitys: { data, ...restData }, token }) {
-    const [specialities, setSpecialities] = useState(data);
+function ArticleComments({ fetchedComments: { data, ...restData } }) {
+    const [comments, setComments] = useState(data);
     const [pagData, setPagData] = useState(restData);
-    const [filters, setFilters] = useState(filtersSchema);
-    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -19,8 +16,6 @@ function ArticleComments({ fetchedSpecialitys: { data, ...restData }, token }) {
     });
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
-    const [dModalVisible, setDModalVisible] = useState(false);
-    const [selectedSpec, setSelectedSpec] = useState({});
     const router = useRouter();
 
     const handleOnChange = (e) => {
@@ -32,83 +27,41 @@ function ArticleComments({ fetchedSpecialitys: { data, ...restData }, token }) {
         });
     };
 
-    const deleteSpecialty = async (spec_id, i) => {
-        let temp = [...loadings];
-        temp[i] = true;
-        setLoadings(() => temp);
-
-        try {
-            const res = await fetch(
-                `${BASE_URL}/admin/teaching/speciality/${spec_id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-            if (res.ok) {
-                showAlert(true, "danger", "این تخصص حذف شد");
-                setDModalVisible(false);
-                await readSpecialtys();
-            }
-            let temp = [...loadings];
-            temp[i] = false;
-            setLoadings(() => temp);
-        } catch (error) {
-            console.log("Error deleting specialty", error);
-        }
-    };
-
-    const readSpecialtys = async (page = 1, avoidFilters = false) => {
+    const readComments = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters
         let searchQuery = "";
-        if (!avoidFilters) {
-            let tempFilters = { ...appliedFilters };
-
-            Object.keys(filters).forEach((key) => {
-                if (filters[key]) {
-                    searchQuery += `${key}=${filters[key]}&`;
-                    tempFilters[key] = true;
-                } else {
-                    tempFilters[key] = false;
-                }
-            });
-
-            setAppliedFilters(tempFilters);
-        }
         searchQuery += `page=${page}`;
 
         router.push({
-            pathname: `/content/specialty`,
+            pathname: `/tkpanel/comments/list`,
             query: { page },
         });
 
         try {
             setLoading(true);
-            const res = await fetch(
-                `${BASE_URL}/admin/teaching/speciality?${searchQuery}`,
-                {
-                    headers: {
-                        "Content-type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/blog/article/detail/comment?${searchQuery}`
             );
-            const {
-                data: { data, ...restData },
-            } = await res.json();
-            setSpecialities(data);
-            setPagData(restData);
+
+            if (status === 200) {
+                const { data: listData, ...restData } = data?.data;
+                setComments(listData);
+                setPagData(restData);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
             setLoading(false);
         } catch (error) {
-            console.log("Error reading specialtys", error);
+            console.log("Error reading comments", error);
         }
     };
 
@@ -116,141 +69,115 @@ function ArticleComments({ fetchedSpecialitys: { data, ...restData }, token }) {
         setAlertData({ show, type, message });
     };
 
-    const removeFilters = () => {
-        setFilters(filtersSchema);
-        setAppliedFilters(appliedFiltersSchema);
-        readSpecialtys(1, true);
-        router.push({
-            pathname: `/content/specialty`,
-            query: {},
-        });
-    };
+    const changeStatus = async (comment_id, status, i) => {
+        let temp = [...loadings];
+        temp[i] = true;
+        setLoadings(() => temp);
 
-    const showFilters = () => {
-        let values = Object.values(appliedFilters);
-        for (let i = 0; i < values.length; i++) {
-            let value = values[i];
-            if (value) {
-                return false;
+        try {
+            const { response, status: apiStatus } = await API.post(
+                `/admin/blog/article/detail/comment/${comment_id}`,
+                JSON.stringify({ status: status === 0 ? 1 : 0 })
+            );
+
+            if (apiStatus === 200) {
+                let message = `این کامنت ${
+                    status === 0 ? "فعال" : "غیرفعال"
+                } شد`;
+                showAlert(true, status === 0 ? "success" : "danger", message);
+                let updated = [...comments];
+                updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
+                setComments(() => updated);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
+
+            temp = [...loadings];
+            temp[i] = false;
+            setLoadings(() => temp);
+        } catch (error) {
+            console.log("Error changing status", error);
         }
-        return true;
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        await readSpecialtys();
     };
 
     return (
         <div>
-            <Box
-                title="لیست کامنت مقالات"
-                buttonInfo={{
-                    name: "ایجاد تخصص",
-                    url: "/content/specialty/create",
-                    color: "primary",
-                }}
-            >
-                <DeleteModal
-                    visible={dModalVisible}
-                    setVisible={setDModalVisible}
-                    title="حذف تخصص"
-                    bodyDesc={`آیا از حذف تخصص «${selectedSpec.persian_name}» اطمینان دارید؟`}
-                    handleOk={() => {
-                        deleteSpecialty(selectedSpec?.id, selectedSpec.index);
-                    }}
-                    confirmLoading={loadings[selectedSpec.index]}
-                />
-
-                <div className="table__wrapper">
+            <Box title="لیست کامنت مقالات">
+                <div className="table__wrapper table__wrapper--wrap">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">نام زبان</th>
-                                <th className="table__head-item">
-                                    عنوان فارسی
-                                </th>
-                                <th className="table__head-item">
-                                    عنوان انگلیسی
-                                </th>
                                 <th
                                     className="table__head-item"
-                                    style={{ fontSize: "1rem" }}
+                                    style={{ width: 120 }}
                                 >
-                                    url
+                                    نام کاربر
                                 </th>
-                                <th className="table__head-item">توضیحات</th>
+                                <th className="table__head-item">
+                                    موضوع مقاله
+                                </th>
+                                <th className="table__head-item">کامنت</th>
+                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {specialities?.map((spec, i) => (
-                                <tr className="table__body-row" key={spec?.id}>
+                            {comments?.map((comment, i) => (
+                                <tr
+                                    className="table__body-row"
+                                    key={comment.id}
+                                >
                                     <td className="table__body-item">
-                                        <Link
-                                            href={`/content/specialty/${spec?.id}/edit`}
-                                        >
-                                            <a className="table__body-link">
-                                                {spec?.language?.persian_name}
-                                            </a>
-                                        </Link>
+                                        {comment.user_name}
                                     </td>
                                     <td className="table__body-item">
-                                        {spec?.persian_name}
+                                        {comment.article_header}
                                     </td>
                                     <td className="table__body-item">
-                                        {spec?.english_name}
+                                        {comment.comment}
                                     </td>
                                     <td className="table__body-item">
-                                        {spec?.url}
-                                    </td>
-                                    <td className="table__body-item">
-                                        <Link
-                                            href={`/content/specialty/${spec?.id}`}
-                                        >
-                                            <a className={`action-btn primary`}>
-                                                افزودن&nbsp;
-                                            </a>
-                                        </Link>
-                                        <Link
-                                            href={`/content/specialty/${spec?.id}/edit`}
-                                        >
-                                            <a className={`action-btn warning`}>
-                                                ویرایش
-                                            </a>
-                                        </Link>
                                         <button
                                             type="button"
-                                            className={`action-btn danger`}
-                                            onClick={() => {
-                                                setSelectedSpec({
-                                                    ...spec,
-                                                    index: i,
-                                                });
-                                                setDModalVisible(true);
-                                            }}
+                                            className={`action-btn ${
+                                                comment.status === 0
+                                                    ? "primary"
+                                                    : "danger"
+                                            }`}
+                                            onClick={() =>
+                                                changeStatus(
+                                                    comment.id,
+                                                    comment.status,
+                                                    i
+                                                )
+                                            }
                                             disabled={loadings[i]}
                                         >
-                                            حذف
+                                            {comment?.status === 0
+                                                ? "فعال"
+                                                : "غیرفعال"}
                                         </button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
 
-                        {specialities?.length === 0 && (
+                        {comments?.length === 0 && (
                             <tr className="table__body-row">
                                 <td className="table__body-item" colSpan={5}>
-                                    تخصصی پیدا نشد !
+                                    کانتی پیدا نشد !
                                 </td>
                             </tr>
                         )}
                     </table>
                 </div>
 
-                {specialities.length !== 0 && (
-                    <Pagination read={readSpecialtys} pagData={pagData} />
+                {comments.length !== 0 && (
+                    <Pagination read={readComments} pagData={pagData} />
                 )}
             </Box>
 
@@ -258,7 +185,7 @@ function ArticleComments({ fetchedSpecialitys: { data, ...restData }, token }) {
             <Alert
                 {...alertData}
                 removeAlert={showAlert}
-                envoker={deleteSpecialty}
+                envoker={changeStatus}
             />
         </div>
     );

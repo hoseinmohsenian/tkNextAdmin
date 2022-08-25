@@ -321,6 +321,7 @@ function AddDiscount() {
                                 <option value={4}>۱۰ جلسه</option>
                                 <option value={5}>۱۶ جلسه</option>
                                 <option value={6}>اولین خرید</option>
+                                <option value={30}>کلاس گروهی</option>
                             </select>
                         </div>
                     </div>

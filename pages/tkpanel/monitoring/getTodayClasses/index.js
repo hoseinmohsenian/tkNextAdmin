@@ -49,7 +49,6 @@ export async function getServerSideProps(context) {
     let startDate = `${date.getFullYear()}-${
         date.getMonth() + 1
     }-${date.getDate()}`;
-    console.log(startDate)
 
     const responses = await Promise.all([
         fetch(`${BASE_URL}/admin/classroom/monitoring?date=${startDate}`, {

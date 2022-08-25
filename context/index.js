@@ -85,22 +85,32 @@ const AppProvider = ({ children }) => {
     }
 
     // Constructing times array
-    let times = [];
-    moment.locale("fa", { useGregorianParser: true });
-    const m = moment();
-    m.set("hour", 24);
-    m.set("minute", 0);
-    for (let i = 1; i <= 48; i++) {
-        let startHour = m.format("HH");
-        let startMinute = m.format("mm");
-        m.add(30, "minute");
-        let endHour = m.format("HH");
-        let endMinute = m.format("mm");
-        let newItem = { key: i, startHour, startMinute, endHour, endMinute };
-        times.push(newItem);
-    }
+    const constructTimes48 = () => {
+        let times = [];
+        moment.locale("fa", { useGregorianParser: true });
+        const m = moment();
+        m.set("hour", 24);
+        m.set("minute", 0);
+        for (let i = 1; i <= 48; i++) {
+            let startHour = m.format("HH");
+            let startMinute = m.format("mm");
+            m.add(30, "minute");
+            let endHour = m.format("HH");
+            let endMinute = m.format("mm");
+            let newItem = {
+                key: i,
+                startHour,
+                startMinute,
+                endHour,
+                endMinute,
+            };
+            times.push(newItem);
+        }
+        return times;
+    };
 
     const getTime = (hourString) => {
+        const times = constructTimes48();
         const hoursArr = hourString
             .substring(1, hourString.length - 1)
             .split(",");
@@ -108,11 +118,18 @@ const AppProvider = ({ children }) => {
     };
 
     const formatTime = (hourString) => {
-        return `${getTime(hourString)[0].startHour}:${
-            getTime(hourString)[0].startMinute
-        } تا ${getTime(hourString)[getTime(hourString).length - 1].endHour}:${
-            getTime(hourString)[getTime(hourString).length - 1].endMinute
-        }`;
+        const theTime = getTime(hourString);
+        const theTimeLen = theTime.length;
+        return `${theTime[0].startHour}:${theTime[0].startMinute} تا ${
+            theTime[theTimeLen - 1].endHour
+        }:${theTime[theTimeLen - 1].endMinute}`;
+    };
+
+    const getKeyfromHourandMin = (hour, min) => {
+        const times = constructTimes48();
+        return times.find(
+            (time) => time.startHour === hour && time.startMinute === min
+        )?.key;
     };
 
     return (
@@ -128,8 +145,9 @@ const AppProvider = ({ children }) => {
                 useOutsideAlerter,
                 useWindowSize,
                 getTime,
-                times,
                 formatTime,
+                getKeyfromHourandMin,
+                constructTimes48,
                 isAllowed,
                 setIsAllowed,
             }}

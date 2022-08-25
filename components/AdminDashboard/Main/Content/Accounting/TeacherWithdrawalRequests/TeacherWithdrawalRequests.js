@@ -174,6 +174,69 @@ function TeacherWithdrawalRequests(props) {
         });
     };
 
+    const changeSheba = async (e, request_id, i) => {
+        try {
+            let temp = [...loadings];
+            temp[i] = true;
+            setLoadings(() => temp);
+
+            const res = await fetch(
+                `${BASE_URL}/admin/accounting/edit/account/${request_id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ sheba: e.target.value }),
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                let message = `شماره شبا ویرایش شد`;
+                showAlert(true, "success", message);
+            } else {
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
+            temp = [...loadings];
+            temp[i] = false;
+            setLoadings(() => temp);
+        } catch (error) {
+            console.log("Error changing sheba", error);
+        }
+    };
+
+    const changeShebaHandler = async (e, request_id, i) => {
+        if (
+            // e.target.value !== requests[i]?.account?.sheba_number &&
+            e.target.value
+        ) {
+            await changeSheba(e, request_id, i);
+            let temp = [...requests];
+            temp[i]?.account?.sheba_number = e.target.value;
+            setRequests(() => temp);
+        }
+    };
+
+    const handleInputOnChange = (e, rowInd) => {
+        let updated = [...requests];
+        updated[rowInd] = { 
+            ...updated[rowInd], 
+            account: { 
+                ...updated[rowInd].account, 
+                sheba_number: e.target.value 
+            } 
+        };
+        setRequests(() => updated);
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -266,7 +329,31 @@ function TeacherWithdrawalRequests(props) {
                                         {request.account?.card_number}
                                     </td>
                                     <td className="table__body-item">
-                                        {request.account?.sheba_number}
+                                        <div className="form-control" style={{width:"220px",margin:0}}>
+                                            <input
+                                                type="text"
+                                                name="commission"
+                                                id="commission"
+                                                className="form__input"
+                                                onChange={(e) =>
+                                                    handleInputOnChange(
+                                                        e,
+                                                        i
+                                                    )
+                                                }
+                                                value={requests[i]?.account?.sheba_number || ""}
+                                                onBlur={(e) =>
+                                                    changeShebaHandler(
+                                                        e,
+                                                        request?.id,
+                                                        i
+                                                    )
+                                                }
+                                                disabled={loadings[i]}
+                                                maxLength={26}
+                                                required
+                                            />
+                                        </div>
                                     </td>
                                     <td className="table__body-item">
                                         {request.account?.name || "-"}
@@ -343,7 +430,7 @@ function TeacherWithdrawalRequests(props) {
                                         className="table__body-item"
                                         colSpan={7}
                                     >
-                                        درخواستی پیدا نشد.
+                                        درخواستی وجود ندارد.
                                     </td>
                                 </tr>
                             )}

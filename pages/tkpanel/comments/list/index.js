@@ -11,7 +11,7 @@ function CommentsPage({ comments, notAllowed }) {
     }
     return (
         <div>
-            <Header title="تیم ما | تیکا"></Header>
+            <Header title="کامنت مقالات | تیکا"></Header>
             <AdminDashboard>
                 <ArticleComments fetchedComments={comments} />
             </AdminDashboard>
@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/blog/article/comment`, {
+        fetch(`${BASE_URL}/admin/blog/article/detail/comment`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
