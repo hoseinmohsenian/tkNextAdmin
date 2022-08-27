@@ -125,7 +125,7 @@ function SpecialitiesDesc({
                     information: "توضیحات",
                     desc: "توضیحات تخصص ها",
                 }}
-            /
+            />
             <Box
                 title="توضیحات تخصص ها"
                 buttonInfo={{
