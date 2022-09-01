@@ -32,11 +32,7 @@ function AddSessions(props) {
         for (let i = 0; i < formData.session.length; i++) {
             if (isEmpty(i)) {
                 emptySessionInput = true;
-                return;
-            }
-            if (!isMinuteValid(formData.session[i].time)) {
-                showAlert(true, "danger", "دقیقه باید ۳۰ یا ۰ باشد");
-                return;
+                break;
             }
         }
 
@@ -68,16 +64,17 @@ function AddSessions(props) {
         }
     };
 
-    const addNewRow = () => {
-        let newRow = ["title", "desc", "time", "day"].reduce(
+    const addNewRow = (currLen) => {
+        let newRow = ["title", "desc", "time", "date"].reduce(
             (acc, curr) => ((acc[curr] = ""), acc),
             {}
         );
-        newRow = { ...newRow, time: "00:00" };
-        setFormData({
-            ...formData,
-            session: [...formData?.session, newRow],
-        });
+        newRow = {
+            ...newRow,
+            title: `جلسه ${currLen + 1}`,
+            time: "00:00",
+        };
+        return newRow;
     };
 
     const handleOnChange = (value, rowInd, name) => {
@@ -461,7 +458,19 @@ function AddSessions(props) {
                         <button
                             className={`success ${styles["session-add-btn"]}`}
                             type="button"
-                            onClick={addNewRow}
+                            onClick={() => {
+                                setFormData({
+                                    ...formData,
+                                    session: [
+                                        ...formData?.session,
+                                        addNewRow(formData?.session?.length),
+                                    ],
+                                });
+                            }}
+                            disabled={
+                                formData.session?.length ===
+                                Number(formData.class_number)
+                            }
                         >
                             اضافه کردن جلسه
                             <span className={styles["session-add-btn-icon"]}>

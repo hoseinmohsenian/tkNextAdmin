@@ -80,7 +80,7 @@ function StudentManualTransactions(props) {
                         setter={setOpenModal}
                         padding={true}
                     >
-                        <h3 className={"modal__title"}>جزئیات کلاس‌‌</h3>
+                        <h3 className={"modal__title"}>جزئیات افزایش اعتبار</h3>
                         <div className={"modal__wrapper"}>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>

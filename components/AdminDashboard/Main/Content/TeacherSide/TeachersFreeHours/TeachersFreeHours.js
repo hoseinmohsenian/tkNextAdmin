@@ -9,6 +9,7 @@ import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import API from "../../../../../../api/index";
+import { useGlobalContext } from "../../../../../../context";
 
 const filtersSchema = {
     gender: 0,
@@ -40,22 +41,9 @@ function TeachersFreeHours({ languages }) {
         type: "",
     });
     const router = useRouter();
-    let times = [];
+    const { constructTimes48 } = useGlobalContext();
+    let times = constructTimes48();
     moment.locale("fa", { useGregorianParser: true });
-
-    // Constructing times array for time filter inputs
-    const m = moment();
-    m.set("hour", 24);
-    m.set("minute", 0);
-    for (let i = 1; i <= 48; i++) {
-        let startHour = m.format("HH");
-        let startMinute = m.format("mm");
-        m.add(30, "minute");
-        let endHour = m.format("HH");
-        let endMinute = m.format("mm");
-        let newItem = { key: i, startHour, startMinute, endHour, endMinute };
-        times.push(newItem);
-    }
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -198,6 +186,7 @@ function TeachersFreeHours({ languages }) {
                     name: "لیست اساتید",
                     url: "/tkpanel/teachers",
                     color: "primary",
+                    blank: true,
                 }}
             >
                 <div className={styles["search"]}>
@@ -298,9 +287,7 @@ function TeachersFreeHours({ languages }) {
                                                     key={item.key}
                                                     value={item.key}
                                                 >
-                                                    {`${item.startHour}:${item.startMinute}`}{" "}
-                                                    تا{" "}
-                                                    {`${item.endHour}:${item.endMinute}`}
+                                                    {`${item.startHour}:${item.startMinute}`}
                                                 </option>
                                             ))}
                                         </select>
@@ -329,9 +316,7 @@ function TeachersFreeHours({ languages }) {
                                                     key={item.key}
                                                     value={item.key}
                                                 >
-                                                    {`${item.startHour}:${item.startMinute}`}{" "}
-                                                    تا{" "}
-                                                    {`${item.endHour}:${item.endMinute}`}
+                                                    {`${item.startHour}:${item.startMinute}`}
                                                 </option>
                                             ))}
                                         </select>
@@ -406,7 +391,7 @@ function TeachersFreeHours({ languages }) {
                                                 htmlFor="male"
                                                 className="radio-title"
                                             >
-                                                مرد
+                                                آقا
                                             </label>
                                             <input
                                                 type="radio"
@@ -424,7 +409,7 @@ function TeachersFreeHours({ languages }) {
                                                 htmlFor="desc"
                                                 className="radio-title"
                                             >
-                                                زن
+                                                خانم
                                             </label>
                                             <input
                                                 type="radio"

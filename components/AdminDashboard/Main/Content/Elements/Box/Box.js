@@ -13,6 +13,7 @@ function Box({ title, children, buttonInfo }) {
                             <Link href={buttonInfo.url}>
                                 <a
                                     className={`${styles.btn} ${buttonInfo.color}`}
+                                    target={!!buttonInfo.blank && "_blank"}
                                 >
                                     {buttonInfo.name}
                                 </a>

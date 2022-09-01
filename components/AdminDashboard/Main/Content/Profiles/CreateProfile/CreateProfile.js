@@ -360,7 +360,7 @@ function CreateProfile({ token, countries }) {
                         <div className="form-control form-control-radio">
                             <div className="input-radio-wrapper">
                                 <label htmlFor="male" className="radio-title">
-                                    مرد
+                                    آقا
                                 </label>
                                 <input
                                     type="radio"
@@ -375,7 +375,7 @@ function CreateProfile({ token, countries }) {
 
                             <div className="input-radio-wrapper">
                                 <label htmlFor="female" className="radio-title">
-                                    زن
+                                    خانم
                                 </label>
                                 <input
                                     type="radio"

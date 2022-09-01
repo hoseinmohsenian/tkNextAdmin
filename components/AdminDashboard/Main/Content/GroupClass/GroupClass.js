@@ -9,6 +9,7 @@ import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
 import styles from "./GroupClass.module.css";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import DeleteModal from "../../../../DeleteModal/DeleteModal";
 
 const filtersSchema = {
     teacher_name: "",
@@ -44,6 +45,7 @@ function GroupClass(props) {
     });
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
+    const [dModalVisible, setDModalVisible] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
 
     const handleFilterOnChange = (e) => {
@@ -146,10 +148,11 @@ function GroupClass(props) {
                 let message = `این کلاس ${
                     status === 0 ? "فعال" : "غیرفعال"
                 } شد`;
-                showAlert(true, status === 0 ? "success" : "warning", message);
+                showAlert(true, status === 0 ? "success" : "danger", message);
                 let updated = [...classes];
                 updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
                 setClasses(() => updated);
+                setDModalVisible(false);
             }
             loadingHandler(i, false);
         } catch (error) {
@@ -175,10 +178,11 @@ function GroupClass(props) {
             );
             if (res.ok) {
                 let message = `این کلاس ${show === 0 ? "نمایان" : "پنهان"} شد`;
-                showAlert(true, show === 0 ? "success" : "warning", message);
+                showAlert(true, show === 0 ? "success" : "danger", message);
                 let updated = [...classes];
                 updated[i] = { ...updated[i], show: show === 0 ? 1 : 0 };
                 setClasses(() => updated);
+                setDModalVisible(false);
             }
             loadingHandler(i, false);
         } catch (error) {
@@ -240,12 +244,22 @@ function GroupClass(props) {
                 }}
             />
 
+            <DeleteModal
+                visible={dModalVisible}
+                setVisible={setDModalVisible}
+                title={selectedClass.modalTitle}
+                bodyDesc={selectedClass.modalDesc}
+                handleOk={selectedClass.onClick}
+                confirmLoading={loadings[selectedClass.index]}
+            />
+
             <Box
                 title="لیست کلاس های گروهی"
                 buttonInfo={{
                     name: "ایجاد کلاس گروهی",
                     url: "/tkpanel/groupClass/create",
                     color: "primary",
+                    blank: true,
                 }}
             >
                 {openModal && (
@@ -264,6 +278,43 @@ function GroupClass(props) {
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedClass?.class_capacity} نفر
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تعداد جلسات
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.class_number
+                                        ? `${selectedClass?.class_number} جلسه`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    قیمت
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.price
+                                        ? `${Intl.NumberFormat().format(
+                                              selectedClass?.price
+                                          )} تومان`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تصویر
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedClass?.image ? (
+                                        <img
+                                            src={selectedClass?.image}
+                                            alt="تصویر کلاس گروهی"
+                                        />
+                                    ) : (
+                                        "-"
+                                    )}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -491,13 +542,29 @@ function GroupClass(props) {
                                                     ? "danger"
                                                     : "success"
                                             }`}
-                                            onClick={() =>
-                                                changeStatus(
-                                                    cls?.id,
-                                                    cls?.status,
-                                                    i
-                                                )
-                                            }
+                                            onClick={() => {
+                                                setSelectedClass({
+                                                    ...cls,
+                                                    index: i,
+                                                    modalTitle:
+                                                        "فعال و غیرفعال کردن کلاس",
+                                                    modalDesc: `شما در حال ${
+                                                        cls.status === 1
+                                                            ? "غیرفعال"
+                                                            : "فعال"
+                                                    } سازی کلاس «${
+                                                        cls.title
+                                                    }» هستید؛ آیا اطمینان دارید؟`,
+                                                    onClick: () => {
+                                                        changeStatus(
+                                                            cls?.id,
+                                                            cls?.status,
+                                                            i
+                                                        );
+                                                    },
+                                                });
+                                                setDModalVisible(true);
+                                            }}
                                             disabled={loadings[i]}
                                         >
                                             {cls?.status === 1
@@ -511,13 +578,23 @@ function GroupClass(props) {
                                                     ? "danger"
                                                     : "success"
                                             }`}
-                                            onClick={() =>
-                                                changeShow(
-                                                    cls?.id,
-                                                    cls?.show,
-                                                    i
-                                                )
-                                            }
+                                            onClick={() => {
+                                                setSelectedClass({
+                                                    ...cls,
+                                                    index: i,
+                                                    modalTitle:
+                                                        "تغییر وضعیت نمایش کلاس",
+                                                    modalDesc: `آیا از تغییر وضعیت نمایش کلاس «${cls.title}» اطمینان دارید؟`,
+                                                    onClick: () => {
+                                                        changeShow(
+                                                            cls?.id,
+                                                            cls?.show,
+                                                            i
+                                                        );
+                                                    },
+                                                });
+                                                setDModalVisible(true);
+                                            }}
                                             disabled={loadings[i]}
                                         >
                                             {cls?.show === 1

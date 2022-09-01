@@ -29,7 +29,7 @@ function CreateUser({ token, permissions, admin }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.email.trim() && formData.password.trim()) {
+        if (formData.email.trim()) {
             const fd = new FormData();
             if (formData.email && formData.email !== admin.email) {
                 fd.append("email", formData.email);

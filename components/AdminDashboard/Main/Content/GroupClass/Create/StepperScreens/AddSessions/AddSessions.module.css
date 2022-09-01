@@ -64,6 +64,10 @@
     display: flex;
     align-items: center;
 }
+.session-add-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
 .session-add-btn-icon {
     margin-right: 0.3rem;
     font-size: 1.2rem;

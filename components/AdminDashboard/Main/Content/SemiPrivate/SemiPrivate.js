@@ -8,6 +8,7 @@ import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import DeleteModal from "../../../../DeleteModal/DeleteModal";
 
 function SemiPrivate(props) {
     const {
@@ -25,6 +26,7 @@ function SemiPrivate(props) {
     });
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
+    const [dModalVisible, setDModalVisible] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
 
     const readClasses = async (page = 1) => {
@@ -66,7 +68,7 @@ function SemiPrivate(props) {
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
-
+    console.log(classes);
     const changeStatus = async (class_id, status, i) => {
         loadingHandler(i, true);
 
@@ -87,10 +89,11 @@ function SemiPrivate(props) {
                 let message = `این کلاس ${
                     status === 0 ? "فعال" : "غیرفعال"
                 } شد`;
-                showAlert(true, status === 0 ? "success" : "warning", message);
+                showAlert(true, status === 0 ? "success" : "danger", message);
                 let updated = [...classes];
                 updated[i] = { ...updated[i], status: status === 0 ? 1 : 0 };
                 setClasses(() => updated);
+                setDModalVisible(false);
             }
             loadingHandler(i, false);
         } catch (error) {
@@ -117,6 +120,23 @@ function SemiPrivate(props) {
                 substituteObj={{
                     "semi-private-admin": "کلاس نیمه خصوصی",
                 }}
+            />
+
+            <DeleteModal
+                visible={dModalVisible}
+                setVisible={setDModalVisible}
+                title="تغییر وضعیت کلاس"
+                bodyDesc={`شما در حال ${
+                    selectedClass.status === 1 ? "غیرفعال" : "فعال"
+                } سازی کلاس «${selectedClass.title}» هستید؛ آیا اطمینان دارید؟`}
+                handleOk={() => {
+                    changeStatus(
+                        selectedClass?.id,
+                        selectedClass?.status,
+                        selectedClass.index
+                    );
+                }}
+                confirmLoading={loadings[selectedClass.index]}
             />
 
             <Box
@@ -269,13 +289,13 @@ function SemiPrivate(props) {
                                                     ? "danger"
                                                     : "success"
                                             }`}
-                                            onClick={() =>
-                                                changeStatus(
-                                                    cls?.id,
-                                                    cls?.status,
-                                                    i
-                                                )
-                                            }
+                                            onClick={() => {
+                                                setSelectedClass({
+                                                    ...cls,
+                                                    index: i,
+                                                });
+                                                setDModalVisible(true);
+                                            }}
                                             disabled={loadings[i]}
                                         >
                                             {cls?.status === 1

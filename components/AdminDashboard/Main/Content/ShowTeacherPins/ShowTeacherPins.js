@@ -73,7 +73,14 @@ function ShowTeacherPins({ teachers: fetchedTeachers, token }) {
                 }}
             />
 
-            <Box title="لیست اساتید پین شده">
+            <Box
+                title="لیست اساتید پین شده"
+                buttonInfo={{
+                    name: "ایجاد پین",
+                    url: "/tkpanel/pinTeacher",
+                    color: "primary",
+                }}
+            >
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">

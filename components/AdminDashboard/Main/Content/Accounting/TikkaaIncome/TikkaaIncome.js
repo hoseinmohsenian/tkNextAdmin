@@ -138,6 +138,7 @@ function TikkaaIncome() {
                                             inputClassName="date-input"
                                             colorPrimary="#545cd8"
                                             inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
                                         />
                                     </div>
                                 </div>
@@ -161,6 +162,7 @@ function TikkaaIncome() {
                                             inputClassName="date-input"
                                             colorPrimary="#545cd8"
                                             inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
                                         />
                                     </div>
                                 </div>

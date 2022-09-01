@@ -48,14 +48,9 @@ import {
     BiTable,
     BiSitemap,
 } from "react-icons/bi";
-import { BsArrowRepeat, BsFillFileSpreadsheetFill } from "react-icons/bs";
+import { BsArrowRepeat } from "react-icons/bs";
 import { GiSkills, GiDirectionSign, GiPlatform } from "react-icons/gi";
-import {
-    RiArticleFill,
-    RiAdminLine,
-    RiNumber1,
-    RiNumber2,
-} from "react-icons/ri";
+import { RiArticleFill, RiAdminLine } from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
 import { FiPercent, FiUserX } from "react-icons/fi";
 import { GoReport } from "react-icons/go";
@@ -196,23 +191,6 @@ export default [
                 ],
             },
             {
-                title: "مانیتورینگ",
-                icon: <MdOutlineMonitor />,
-                path: "#",
-                subNav: [
-                    {
-                        title: "مانیتورینگ امروز",
-                        path: "/tkpanel/monitoring/getTodayClasses",
-                        icon: <IoToday />,
-                    },
-                    {
-                        title: "مانیتورینگ انجام شده",
-                        path: "/tkpanel/monitoring/getTodayMonitoring",
-                        icon: <IoCheckmarkDoneSharp />,
-                    },
-                ],
-            },
-            {
                 title: "کلاس اعتباری",
                 icon: <MdSchool />,
                 path: "#",
@@ -275,6 +253,23 @@ export default [
                 title: "۵ جلسه / ۱۰ جلسه",
                 path: "/tkpanel/multiSessionsList",
                 icon: <FaListUl />,
+            },
+            {
+                title: "مانیتورینگ",
+                icon: <MdOutlineMonitor />,
+                path: "#",
+                subNav: [
+                    {
+                        title: "مانیتورینگ امروز",
+                        path: "/tkpanel/monitoring/getTodayClasses",
+                        icon: <IoToday />,
+                    },
+                    {
+                        title: "مانیتورینگ انجام شده",
+                        path: "/tkpanel/monitoring/getTodayMonitoring",
+                        icon: <IoCheckmarkDoneSharp />,
+                    },
+                ],
             },
         ],
     },
@@ -442,23 +437,6 @@ export default [
                 ],
             },
             {
-                title: "آزمون تعیین سطح",
-                icon: <BsFillFileSpreadsheetFill />,
-                path: "#",
-                subNav: [
-                    {
-                        title: "لیست سطح اول",
-                        path: "/tkpanel/levelingTests",
-                        icon: <RiNumber1 />,
-                    },
-                    {
-                        title: "لیست سطح دوم",
-                        path: "/tkpanel/levelingTestDetails",
-                        icon: <RiNumber2 />,
-                    },
-                ],
-            },
-            {
                 title: "سئو",
                 icon: <IoPulseOutline />,
                 path: "#",
@@ -530,14 +508,21 @@ export default [
                 icon: <FaCommentDots />,
             },
             {
-                title: "اساتید پین شده",
-                path: "/tkpanel/showPinTeachers",
-                icon: <BsPinAngleFill />,
-            },
-            {
-                title: "پین کردن استاد",
-                path: "/tkpanel/pinTeacher",
-                icon: <BsPinAngleFill />,
+                title: "پین استاد",
+                icon: <FaChalkboardTeacher />,
+                path: "#",
+                subNav: [
+                    {
+                        title: "پین کردن استاد",
+                        path: "/tkpanel/pinTeacher",
+                        icon: <BsPinAngleFill />,
+                    },
+                    {
+                        title: "اساتید پین شده",
+                        path: "/tkpanel/showPinTeachers",
+                        icon: <BsPinAngleFill />,
+                    },
+                ],
             },
         ],
     },
@@ -579,44 +564,65 @@ export default [
         path: "#",
         subNav: [
             {
-                title: "لیست کوپن های تخفیف",
-                path: "/tkpanel/copens",
+                title: "کد تخفیف(کوپن)",
                 icon: <AiOutlinePercentage />,
+                path: "#",
+                subNav: [
+                    {
+                        title: "لیست کوپن های تخفیف",
+                        path: "/tkpanel/copens",
+                        icon: <AiOutlinePercentage />,
+                    },
+                    {
+                        title: "کدهای تخفیف استفاده شده",
+                        path: "/tkpanel/useCopen",
+                        icon: <AiOutlinePercentage />,
+                    },
+                ],
             },
             {
-                title: "کدهای تخفیف استفاده شده",
-                path: "/tkpanel/useCopen",
-                icon: <AiOutlinePercentage />,
-            },
-            {
-                title: "گزارش گیری استاد",
-                path: "/tkpanel/report/teachers",
+                title: "گزارش ها",
                 icon: <GoReport />,
+                path: "#",
+                subNav: [
+                    {
+                        title: "گزارش گیری استاد",
+                        path: "/tkpanel/report/teachers",
+                        icon: <GoReport />,
+                    },
+                    {
+                        title: "لیست جدول در کوئری",
+                        path: "/tkpanel/database/query/building",
+                        icon: <BiTable />,
+                    },
+                ],
             },
             {
-                title: "لیست جدول در کوئری",
-                path: "/tkpanel/database/query/building",
-                icon: <BiTable />,
-            },
-            {
-                title: "وضعیت لاگ های سیستم",
-                path: "/tkpanel/logReport/status",
-                icon: <SiStatuspage />,
-            },
-            {
-                title: "لیست ادمین ها",
-                path: "/tkpanel/users",
-                icon: <RiAdminLine />,
-            },
-            {
-                title: "لیست سیاه کاربران",
-                path: "/tkpanel/blackLists",
-                icon: <FiUserX />,
-            },
-            {
-                title: "پلتفرم ها",
-                path: "/tkpanel/multiplatform",
-                icon: <GiPlatform />,
+                title: "تنظیمات",
+                icon: <GoReport />,
+                path: "#",
+                subNav: [
+                    {
+                        title: "وضعیت لاگ های سیستم",
+                        path: "/tkpanel/logReport/status",
+                        icon: <SiStatuspage />,
+                    },
+                    {
+                        title: "لیست ادمین ها",
+                        path: "/tkpanel/users",
+                        icon: <RiAdminLine />,
+                    },
+                    {
+                        title: "لیست سیاه کاربران",
+                        path: "/tkpanel/blackLists",
+                        icon: <FiUserX />,
+                    },
+                    {
+                        title: "پلتفرم ها",
+                        path: "/tkpanel/multiplatform",
+                        icon: <GiPlatform />,
+                    },
+                ],
             },
         ],
     },

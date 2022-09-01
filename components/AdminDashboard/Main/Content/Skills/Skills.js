@@ -33,6 +33,7 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
     const [dModalVisible, setDModalVisible] = useState(false);
     const [selectedSkill, setSelectedSkill] = useState({});
     const router = useRouter();
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -287,9 +288,12 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
                                 <tr className="table__body-row" key={sk?.id}>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`/content/skill/${sk?.id}/edit`}
+                                            href={`${SITE_URL}/find-teachers/${sk.language?.english_name}/${sk.speciality?.english_name}/${sk.url}`}
                                         >
-                                            <a className="table__body-link">
+                                            <a
+                                                className="table__body-link"
+                                                target="_blank"
+                                            >
                                                 {sk?.persian_name}
                                             </a>
                                         </Link>

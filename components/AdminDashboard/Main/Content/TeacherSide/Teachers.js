@@ -11,6 +11,7 @@ import Modal from "../../../../Modal/Modal";
 import ReactTooltip from 'react-tooltip';
 import { AiOutlineInfoCircle, AiFillEye } from "react-icons/ai";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import DeleteModal from "../../../../DeleteModal/DeleteModal";
 
 const filtersSchema = { name: "", mobile: "", email: "" };
 const appliedFiltersSchema = { name: false, mobile: false, email: false };
@@ -33,6 +34,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
     const [selectedTeacher, setSelectedTeacher] = useState({});
+    const [dModalVisible, setDModalVisible] = useState(false);
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -61,6 +63,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                     status === 0 ? "فعال" : "غیرفعال"
                 } شد`;
                 showAlert(true, status === 0 ? "success" : "danger", message);
+                setDModalVisible(false);
                 await readTeachers(pagData?.current_page);
             }
             let temp = [...loadings];
@@ -94,6 +97,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                     show === 0 ? "فعال" : "غیرفعال"
                 } شد`;
                 showAlert(true, show === 0 ? "success" : "danger", message);
+                setDModalVisible(false);
                 await readTeachers(pagData?.current_page);
             }
             let temp = [...loadings];
@@ -312,7 +316,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
         e.preventDefault();
         await readTeachers();
     }
-
+console.log(selectedTeacher);
     return (
         <div>
             <BreadCrumbs substituteObj={{ teachers: "استاد" }} />
@@ -323,6 +327,16 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                 removeAlert={showAlert}
                 envoker={changeStatus}
             />
+
+            <DeleteModal
+                visible={dModalVisible}
+                setVisible={setDModalVisible}
+                title={selectedTeacher.modalTitle}
+                bodyDesc={selectedTeacher.modalDesc}
+                handleOk={selectedTeacher.onClick}
+                confirmLoading={loadings[selectedTeacher.index]}
+            />
+
             <Box
                 title="لیست اساتید"
             >
@@ -335,39 +349,52 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                         padding={true}
                     >
                         <h3 className={"modal__title"}>جزئیات استاد</h3>
-                        <div className={"modal__wrapper"}>                            
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    ایمیل
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedTeacher?.email || "-"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    جنسیت
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedTeacher?.gender === 1 ? "مرد" : "زن"}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    استپ
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedTeacher?.step}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    ویدئو
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedTeacher?.video ? "دارد" : "ندارد"}
-                                </span>
-                            </div>
+                        <div className={"modal__wrapper"}>
+                            {selectedTeacher.showDesc ? (
+                                <div className={"modal__item"}>
+                                    <span className={"modal__item-title"}>
+                                        توضیحات ادمین
+                                    </span>
+                                    <span className={"modal__item-body"}>
+                                        {selectedTeacher?.admin_desc || "-"}
+                                    </span>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className={"modal__item"}>
+                                        <span className={"modal__item-title"}>
+                                            ایمیل
+                                        </span>
+                                        <span className={"modal__item-body"}>
+                                            {selectedTeacher?.email || "-"}
+                                        </span>
+                                    </div>
+                                    <div className={"modal__item"}>
+                                        <span className={"modal__item-title"}>
+                                            جنسیت
+                                        </span>
+                                        <span className={"modal__item-body"}>
+                                            {selectedTeacher?.gender === 1 ? "مرد" : "زن"}
+                                        </span>
+                                    </div>
+                                    <div className={"modal__item"}>
+                                        <span className={"modal__item-title"}>
+                                            استپ
+                                        </span>
+                                        <span className={"modal__item-body"}>
+                                            {selectedTeacher?.step}
+                                        </span>
+                                    </div>
+                                    <div className={"modal__item"}>
+                                        <span className={"modal__item-title"}>
+                                            ویدئو
+                                        </span>
+                                        <span className={"modal__item-body"}>
+                                            {selectedTeacher?.video ? "دارد" : "ندارد"}
+                                        </span>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </Modal>
                 )}
@@ -512,7 +539,10 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                     </td>
                                     <td className="table__body-item" data-tip={teacher.mobile || "-"}>
                                         {teacher.family}
-                                        <span className="info-icon">
+                                        <span 
+                                            className="info-icon" 
+                                            onClick={() => { navigator.clipboard.writeText(teacher.mobile) }}
+                                        >
                                             <AiOutlineInfoCircle />
                                         </span>
                                     </td>
@@ -533,32 +563,52 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                         )}
                                     </td>
                                     <td className="table__body-item">
-                                        <div className="form-control" style={{width:"130px",margin:0}}>
-                                            <input
-                                                type="text"
-                                                name="admin_desc"
-                                                id="admin_desc"
-                                                className="form__input"
-                                                onChange={(e) =>
-                                                    handleOnChange(
-                                                        e,
-                                                        i,
-                                                        "admin_desc"
-                                                    )
-                                                }
-                                                value={formData[i]?.admin_desc || ""}
-                                                onBlur={(e) =>
-                                                    addDescHandler(
-                                                        e,
-                                                        teacher?.id,
-                                                        i
-                                                    )
-                                                }
-                                                disabled={loadings[i]}
-
-                                                spellCheck={false}
-                                                required
-                                            />
+                                        <div style={{ display:"flex", alignItems: "center" }}>
+                                            <div className="form-control" style={{width:"130px",margin:0}}>
+                                                <input
+                                                    type="text"
+                                                    name="admin_desc"
+                                                    id="admin_desc"
+                                                    className="form__input"
+                                                    onChange={(e) =>
+                                                        handleOnChange(
+                                                            e,
+                                                            i,
+                                                            "admin_desc"
+                                                        )
+                                                    }
+                                                    value={formData[i]?.admin_desc || ""}
+                                                    onBlur={(e) =>
+                                                        addDescHandler(
+                                                            e,
+                                                            teacher?.id,
+                                                            i
+                                                        )
+                                                    }
+                                                    disabled={loadings[i]}
+                                                    spellCheck={false}
+                                                    required
+                                                    style={{fontSize: 13}}
+                                                />
+                                            </div>
+                                            <button 
+                                                className="primary-color" 
+                                                style={{ 
+                                                    cursor:"pointer", 
+                                                    marginRight:5,
+                                                    display: "flex"
+                                                }}
+                                                onClick={() => {
+                                                    setSelectedTeacher({
+                                                        admin_desc: formData[i]?.admin_desc,
+                                                        showDesc: true
+                                                    });
+                                                    setOpenModal(true);
+                                                }}
+                                                title="نمایش کامل"
+                                            >
+                                                <AiFillEye fontSize={20} />
+                                            </button>
                                         </div>
                                     </td>
                                     <td className="table__body-item">
@@ -607,13 +657,22 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             <div 
                                                 className={`${styles["status-circle"]} ${teacher.show === 1 ? "success" : "danger"}`} 
                                                 data-tip={`وضعیت نمایش در لیست اساتید:‌ ${teacher.show === 1 ? "فعال" : "غیرفعال"}`}
-                                                onClick={() =>
-                                                    changeShow(
-                                                        teacher.id,
-                                                        teacher.show,
-                                                        i
-                                                    )
-                                                }
+                                                onClick={() => {
+                                                    setSelectedTeacher({
+                                                        ...teacher,
+                                                        index: i,
+                                                        modalTitle: "تغییر وضعیت نمایش استاد",
+                                                        modalDesc: `آیا از تغییر وضعیت نمایش استاد «${teacher.name + " " + teacher.family}» اطمینان دارید؟`,
+                                                        onClick: () => {
+                                                            changeShow(
+                                                                teacher.id,
+                                                                teacher.show,
+                                                                i
+                                                            )               
+                                                        }
+                                                    });
+                                                    setDModalVisible(true);
+                                                }}
                                                 disabled={loadings[i]}
                                             ></div>
                                         </div>
@@ -627,13 +686,22 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                     ? "danger"
                                                     : "success"
                                             }`}
-                                            onClick={() =>
-                                                changeStatus(
-                                                    teacher.id,
-                                                    teacher.status,
-                                                    i
-                                                )
-                                            }
+                                            onClick={() => {
+                                                setSelectedTeacher({
+                                                    ...teacher,
+                                                    index: i,
+                                                    modalTitle: "فعال و غیرفعال کردن استاد",
+                                                    modalDesc: `شما در حال ${teacher.status === 1 ? 'غیرفعال' : 'فعال' } سازی استاد «${teacher.name + " " + teacher.family}» هستید؛ آیا اطمینان دارید؟`,
+                                                    onClick: () => {
+                                                        changeStatus(
+                                                            teacher.id,
+                                                            teacher.status,
+                                                            i
+                                                        )
+                                                    }
+                                                });
+                                                setDModalVisible(true);
+                                            }}
                                             disabled={loadings[i]}
                                         >
                                             {teacher.status === 0

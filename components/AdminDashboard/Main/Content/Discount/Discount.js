@@ -87,7 +87,7 @@ function Discount({ discounts }) {
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">عنوان</th>
+                                <th className="table__head-item">کد تخفیف</th>
                                 <th className="table__head-item">مبلغ تخفیف</th>
                                 <th className="table__head-item">حداقل قیمت</th>
                                 <th className="table__head-item">درصد تخفیف</th>

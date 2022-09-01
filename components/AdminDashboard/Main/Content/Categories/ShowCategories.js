@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Box from "../Elements/Box/Box";
 import Modal from "../../../../Modal/Modal";
-import { BASE_URL } from "../../../../../constants/index";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import API from "../../../../../api/index";
 
 const filtersSchema = {
     title: "",
@@ -20,7 +20,6 @@ function ShowCategories({
     createPage,
     addressPage,
     type,
-    token,
 }) {
     const [categories, setCategories] = useState(fetchedCategories);
     const { asPath } = useRouter();
@@ -29,6 +28,7 @@ function ShowCategories({
     const [filters, setFilters] = useState(filtersSchema);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
     const searchCategories = async (avoidFilters = false) => {
         setLoading(true);
@@ -51,18 +51,20 @@ function ShowCategories({
         }
 
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/blog/category?type=${type}&${searchQuery}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/blog/category?type=${type}&${searchQuery}`
             );
-            const { data } = await res.json();
-            setCategories(data);
+
+            if (status === 200) {
+                setCategories(data?.data);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -268,7 +270,7 @@ function ShowCategories({
                                         className={`table__body-item ${styles["table-item"]}`}
                                     >
                                         <Link
-                                            href={`${addressPage}/${ctg?.title}`}
+                                            href={`${SITE_URL}/${addressPage}/${ctg?.url}`}
                                         >
                                             <a
                                                 className="action-btn primary"

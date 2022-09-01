@@ -851,7 +851,7 @@ function CreateClass(props) {
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
                                 <label htmlFor="price" className="form__label">
-                                    قیمت دوره :
+                                    قیمت کل دوره :
                                     <span className="form__star">*</span>
                                 </label>
                                 <div className="form-control">
@@ -869,6 +869,7 @@ function CreateClass(props) {
                                         }
                                         placeholder="تومان"
                                     />
+                                    تومان
                                 </div>
                             </div>
                         </div>
@@ -889,7 +890,7 @@ function CreateClass(props) {
                                         value={formData.commission || 0}
                                     >
                                         <option value={0}>انتخاب کنید</option>
-                                        {Array(13)
+                                        {Array(15)
                                             .fill(0)
                                             ?.map((_, i) => (
                                                 <option key={i} value={i * 5}>

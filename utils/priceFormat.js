@@ -18,7 +18,9 @@ export function getFormattedPrice(price) {
     let result =
         typeof price === "number"
             ? Intl.NumberFormat().format(price)
-            : Intl.NumberFormat().format(price.replace(/,/g, "")) || "";
+            : (price === ""
+                  ? ""
+                  : Intl.NumberFormat().format(price.replace(/,/g, ""))) || "";
     return result;
 }
 

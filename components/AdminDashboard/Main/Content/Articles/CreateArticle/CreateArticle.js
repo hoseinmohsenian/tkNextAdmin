@@ -63,7 +63,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
             desc.trim() &&
             formData.image
         ) {
-            if (formData?.id && selectedCatg1.id && selectedCatg2.length > 0) {
+            if (formData.id && selectedCatg1.id && selectedCatg2.length > 0) {
                 router.push("/tkpanel/siteNews");
             } else {
                 const fd = new FormData();

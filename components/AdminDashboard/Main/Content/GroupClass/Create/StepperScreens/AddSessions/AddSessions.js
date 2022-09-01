@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./AddSessions.module.css";
 import Box from "../../../../Elements/Box/Box";
 import Alert from "../../../../../../../Alert/Alert";
@@ -23,7 +23,7 @@ function AddSessions(props) {
         for (let i = 0; i < formData.session.length; i++) {
             if (isEmpty(i)) {
                 emptySessionInput = true;
-                return;
+                break;
             }
         }
 
@@ -53,16 +53,17 @@ function AddSessions(props) {
         }
     };
 
-    const addNewRow = () => {
+    const addNewRow = (currLen) => {
         let newRow = ["title", "desc", "time", "date"].reduce(
             (acc, curr) => ((acc[curr] = ""), acc),
             {}
         );
-        newRow = { ...newRow, time: "00:00" };
-        setFormData({
-            ...formData,
-            session: [...formData?.session, newRow],
-        });
+        newRow = {
+            ...newRow,
+            title: `جلسه ${currLen + 1}`,
+            time: "00:00",
+        };
+        return newRow;
     };
 
     const handleOnChange = (value, rowInd, name) => {
@@ -120,6 +121,18 @@ function AddSessions(props) {
         }
         return false;
     };
+
+    useEffect(() => {
+        let sessions = [];
+        for (let i = 0; i < Number(formData.class_number); i++) {
+            sessions.push(addNewRow(i));
+        }
+
+        setFormData({
+            ...formData,
+            session: sessions,
+        });
+    }, [formData.id]);
 
     return (
         <div>
@@ -322,7 +335,19 @@ function AddSessions(props) {
                         <button
                             className={`success ${styles["session-add-btn"]}`}
                             type="button"
-                            onClick={addNewRow}
+                            onClick={() => {
+                                setFormData({
+                                    ...formData,
+                                    session: [
+                                        ...formData?.session,
+                                        addNewRow(formData?.session?.length),
+                                    ],
+                                });
+                            }}
+                            disabled={
+                                formData.session?.length ===
+                                Number(formData.class_number)
+                            }
                         >
                             اضافه کردن جلسه
                             <span className={styles["session-add-btn-icon"]}>

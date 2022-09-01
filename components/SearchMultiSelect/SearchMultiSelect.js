@@ -14,6 +14,7 @@ function SearchMultiSelect(props) {
         noResText,
         onRemove,
         max,
+        maxErrorMsg,
         showAlert,
         onAdd,
         disabled = false,
@@ -71,7 +72,7 @@ function SearchMultiSelect(props) {
     }
 
     const addNewItem = (newItem) => {
-        let errorMessage = `حداکثر ${max} مقدار قابل انتخاب است`;
+        let errorMessage = maxErrorMsg || `حداکثر ${max} مقدار قابل انتخاب است`;
         if (selected?.length <= max - 1) {
             setSelected((oldSelects) => [...oldSelects, newItem]);
             if (onAdd && id) {

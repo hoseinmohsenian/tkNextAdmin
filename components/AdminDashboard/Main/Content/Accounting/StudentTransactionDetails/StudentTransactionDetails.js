@@ -137,7 +137,7 @@ function StudentTransactionDetails(props) {
             <BreadCrumbs
                 substituteObj={{
                     user: "حسابداری",
-                    credits: "جزئیات پرداخت زبان آموز"
+                    credits: "جزئیات پرداخت زبان آموز",
                 }}
             />
 
@@ -308,9 +308,15 @@ function StudentTransactionDetails(props) {
                                         تومان
                                     </td>
                                     <td className="table__body-item">
-                                        {cls.status === 1
-                                            ? "کاهش اعتبار"
-                                            : "افزایش اعتبار"}
+                                        {cls.status === 1 ? (
+                                            <span className="danger-color">
+                                                کاهش اعتبار
+                                            </span>
+                                        ) : (
+                                            <span className="success-color">
+                                                افزایش اعتبار
+                                            </span>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         <button

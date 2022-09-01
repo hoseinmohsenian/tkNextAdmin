@@ -402,6 +402,10 @@ function Step1({ token, alertData, showAlert }) {
                 envoker={handleClick}
             />
 
+            <h1 style={{ fontSize: "1.5rem", marginBottom: 40 }}>
+                مشخصات استاد {formData.name + " " + formData.family}
+            </h1>
+
             {pageLoaded ? (
                 <form onSubmit={handleClick}>
                     <div className="input-wrapper">
@@ -411,7 +415,7 @@ function Step1({ token, alertData, showAlert }) {
                         <div className="form-control form-control-radio">
                             <div className="input-radio-wrapper">
                                 <label htmlFor="male" className="radio-title">
-                                    مرد
+                                    آقا
                                 </label>
                                 <input
                                     type="radio"
@@ -426,7 +430,7 @@ function Step1({ token, alertData, showAlert }) {
 
                             <div className="input-radio-wrapper">
                                 <label htmlFor="female" className="radio-title">
-                                    زن
+                                    خانم
                                 </label>
                                 <input
                                     type="radio"
@@ -486,6 +490,7 @@ function Step1({ token, alertData, showAlert }) {
                                 inputClassName="date-input"
                                 colorPrimary="#545cd8"
                                 inputPlaceholder="انتخاب کنید"
+                                calendarPopperPosition="bottom"
                             />
                         </div>
                     </div>

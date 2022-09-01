@@ -9,15 +9,19 @@ import { useRouter } from "next/router";
 import Caresoul from "../../../../../Carousel/Carousel";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import { useGlobalContext } from "../../../../../../context";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+    getUnformattedPrice,
+} from "../../../../../../utils/priceFormat";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name_family: "", mobile: "" };
 
-function AddNewClass({ token, platforms, courses }) {
+function AddNewClass({ token, courses }) {
     const [formData, setFormData] = useState({
         language_id: 1,
         course_id: 1,
-        platform_id: 1,
         time: 30,
         data: {},
         price: 0,
@@ -55,7 +59,6 @@ function AddNewClass({ token, platforms, courses }) {
             formData.language_id &&
             formData.course_id &&
             formData.time &&
-            formData.platform_id &&
             selectedHours.length !== 0
         ) {
             let body = {
@@ -64,10 +67,13 @@ function AddNewClass({ token, platforms, courses }) {
                 language_id: Number(formData.language_id),
                 course_id: Number(formData.course_id),
                 time: Number(formData.time),
-                platform_id: Number(formData.platform_id),
             };
-            if (Number(formData.price)) {
-                body = { ...body, price: Number(formData.price) };
+            let price = Number(getUnformattedPrice(formData.price));
+            if (price) {
+                body = {
+                    ...body,
+                    price: price,
+                };
             }
 
             let modifyhour = selectedHours.map((item) => ({
@@ -108,7 +114,18 @@ function AddNewClass({ token, platforms, courses }) {
         const type = e.target.type;
         const name = e.target.name;
         const value = type === "checkbox" ? e.target.checked : e.target.value;
-        setFormData({ ...formData, [name]: value });
+
+        let updatedFormData = { ...formData, [name]: value };
+
+        // if course_id is testing session
+        if (name === "course_id") {
+            if (value === "1") {
+                updatedFormData = { ...updatedFormData, time: 30 };
+            } else {
+                updatedFormData = { ...updatedFormData, time: 60 };
+            }
+        }
+        setFormData(updatedFormData);
     };
 
     const searchTeachers = async (teacher_name) => {
@@ -387,31 +404,6 @@ function AddNewClass({ token, platforms, courses }) {
                     </div>
 
                     <div className="input-wrapper">
-                        <label htmlFor="platform_id" className="form__label">
-                            پلتفرم :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control">
-                            <select
-                                name="platform_id"
-                                id="platform_id"
-                                className="form__input input-select"
-                                onChange={handleOnChange}
-                                value={formData.platform_id}
-                                required
-                            >
-                                {platforms?.map((platform) => (
-                                    <option
-                                        key={platform?.id}
-                                        value={platform?.id}
-                                    >
-                                        {platform?.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="input-wrapper">
                         <label htmlFor="course_id" className="form__label">
                             نوع جلسه :<span className="form__star">*</span>
                         </label>
@@ -460,13 +452,16 @@ function AddNewClass({ token, platforms, courses }) {
                         </label>
                         <div className="form-control">
                             <input
-                                type="number"
+                                type="text"
                                 name="price"
                                 id="price"
                                 className="form__input form__input--ltr"
+                                autoComplete="off"
+                                onKeyDown={(e) => checkValidPriceKeys(e)}
                                 onChange={handleOnChange}
-                                value={formData.price}
+                                value={getFormattedPrice(formData.price)}
                             />
+                            تومان
                         </div>
                     </div>
 

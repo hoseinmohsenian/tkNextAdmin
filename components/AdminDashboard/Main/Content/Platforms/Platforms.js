@@ -53,12 +53,26 @@ function Platforms({ fetchedPlatforms }) {
                                         {pf?.desc || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {pf?.status === 1 ? "فعال" : "غیر فعال"}
+                                        {pf?.status === 1 ? (
+                                            <span className="success-color">
+                                                فعال
+                                            </span>
+                                        ) : (
+                                            <span className="danger-color">
+                                                غیر فعال
+                                            </span>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
-                                        {pf?.suggestion === 1
-                                            ? "پیشنهاد شده"
-                                            : "پیشنهاد نشده"}
+                                        {pf?.suggestion === 1 ? (
+                                            <span className="success-color">
+                                                پیشنهاد شده
+                                            </span>
+                                        ) : (
+                                            <span className="danger-color">
+                                                پیشنهاد نشده
+                                            </span>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

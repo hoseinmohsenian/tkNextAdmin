@@ -6,9 +6,10 @@ import Pagination from "../../Pagination/Pagination";
 import Link from "next/link";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
-import { AiOutlineWhatsApp } from "react-icons/ai"
+import { AiOutlineWhatsApp, AiFillEye } from "react-icons/ai"
 import { useRouter } from "next/router";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import Modal from "../../../../../Modal/Modal";
 
 const filtersSchema = {
     mobile: "",
@@ -39,6 +40,8 @@ function UsersLanding(props) {
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const router= useRouter();
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedLanding, setSelectedLanding] = useState({});
     moment.locale("fa", { useGregorianParser: true });
 
     const filtersOnChange = (e) => {
@@ -217,8 +220,27 @@ function UsersLanding(props) {
                 }}
             />
 
-            <Box title="لندینگ تعاملی کاربران">
+            {openModal && (
+                <Modal
+                    backgroundColor="white"
+                    showHeader={true}
+                    show={openModal}
+                    setter={setOpenModal}
+                    padding={true}
+                >
+                    <h3 className={"modal__title"}>جزئیات لندینگ</h3>
+                    <div className={"modal__wrapper"}>
+                        <div className={"modal__item"}>
+                            <span className={"modal__item-title"}>توضیحات ادمین</span>
+                            <span className={"modal__item-body"}>
+                                {selectedLanding.admin_desc || "-"}
+                            </span>
+                        </div>
+                    </div>
+                </Modal>
+            )}
 
+            <Box title="لندینگ تعاملی کاربران">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`row ${styles["search-row"]}`}>
@@ -371,41 +393,58 @@ function UsersLanding(props) {
                                         {landing?.language_name}
                                     </td>
                                     <td className="table__body-item">
-                                        <div
-                                            className="form-control"
-                                            style={{
-                                                width: "130px",
-                                                margin: 0,
-                                            }}
-                                        >
-                                            <input
-                                                type="text"
-                                                name="admin_desc"
-                                                id="admin_desc"
-                                                className="form__input"
-                                                onChange={(e) =>
-                                                    handleOnChange(
-                                                        e,
-                                                        i,
-                                                        "admin_desc"
-                                                    )
-                                                }
-                                                value={
-                                                    formData[i]?.admin_desc ||
-                                                    ""
-                                                }
-                                                onBlur={(e) =>
-                                                    addDescHandler(
-                                                        e,
-                                                        landing?.id,
-                                                        i
-                                                    )
-                                                }
-                                                disabled={loadings[i]}
-                                                autoComplete="off"
-                                                spellCheck={false}
-                                                required
-                                            />
+                                        <div style={{ display:"flex", alignItems: "center" }}>
+                                            <div
+                                                className="form-control"
+                                                style={{
+                                                    width: "130px",
+                                                    margin: 0,
+                                                }}
+                                            >
+                                                <input
+                                                    type="text"
+                                                    name="admin_desc"
+                                                    id="admin_desc"
+                                                    className="form__input"
+                                                    onChange={(e) =>
+                                                        handleOnChange(
+                                                            e,
+                                                            i,
+                                                            "admin_desc"
+                                                        )
+                                                    }
+                                                    value={
+                                                        formData[i]?.admin_desc ||
+                                                        ""
+                                                    }
+                                                    onBlur={(e) =>
+                                                        addDescHandler(
+                                                            e,
+                                                            landing?.id,
+                                                            i
+                                                        )
+                                                    }
+                                                    disabled={loadings[i]}
+                                                    autoComplete="off"
+                                                    spellCheck={false}
+                                                    required
+                                                />
+                                            </div>
+                                            <button 
+                                                className="primary-color" 
+                                                style={{ 
+                                                    cursor:"pointer", 
+                                                    marginRight:5,
+                                                    display: "flex"
+                                                }}
+                                                onClick={() => {
+                                                    setSelectedLanding(landing);
+                                                    setOpenModal(true);
+                                                }}
+                                                title="نمایش کامل"
+                                            >
+                                                <AiFillEye fontSize={20} />
+                                            </button>
                                         </div>
                                     </td>
                                     <td className="table__body-item">
@@ -420,7 +459,7 @@ function UsersLanding(props) {
                                         {landing?.day === 7 && "جمعه"}
                                     </td>
                                     <td className="table__body-item">
-                                        {landing?.status === 1 ? "انجام شده" : 'انجام نشده'}  
+                                        {landing?.status === 1 ? "انجام شده" : <span className="danger">انجام نشده</span>}  
                                     </td>
                                     <td className="table__body-item">
                                         {landing.status === 0 ?

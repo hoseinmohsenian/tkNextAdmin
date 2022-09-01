@@ -1,8 +1,11 @@
 import Link from "next/link";
 import Box from "../Elements/Box/Box";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import { AiFillEye } from "react-icons/ai";
 
 function SitePages({ pages }) {
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+
     return (
         <div>
             <BreadCrumbs
@@ -41,6 +44,17 @@ function SitePages({ pages }) {
                                     </td>
                                     <td className="table__body-item">
                                         {page?.url}
+                                        <Link
+                                            href={`${SITE_URL}/other-pages/${page.url}`}
+                                        >
+                                            <a
+                                                target="_blank"
+                                                style={{ marginRight: 5 }}
+                                                title="مشاهده صفحه"
+                                            >
+                                                <AiFillEye fontSize={16} />
+                                            </a>
+                                        </Link>
                                     </td>
                                     <td className="table__body-item">
                                         <div
@@ -54,12 +68,11 @@ function SitePages({ pages }) {
                                                 <img
                                                     src={page?.image}
                                                     alt={page?.name}
-                                                    height={40}
-                                                    width={40}
+                                                    height={100}
+                                                    width={300}
                                                     style={{
-                                                        width: 40,
-                                                        height: 40,
-                                                        borderRadius: "50%",
+                                                        width: 90,
+                                                        height: 30,
                                                         marginLeft: 10,
                                                     }}
                                                 />

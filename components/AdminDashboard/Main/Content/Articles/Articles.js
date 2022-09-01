@@ -376,7 +376,7 @@ function Articles(props) {
                                         htmlFor="admin_id"
                                         className={`form__label ${styles["search-label"]}`}
                                     >
-                                        ادمین :
+                                        نویسنده :
                                     </label>
                                     <div className="form-control">
                                         <select

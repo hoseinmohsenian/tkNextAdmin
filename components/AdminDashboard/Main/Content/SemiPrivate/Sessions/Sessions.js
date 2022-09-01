@@ -201,7 +201,7 @@ function SemiPrivateSessions() {
             <Box
                 title="جلسات کلاس نیمه خصوصی"
                 buttonInfo={{
-                    name: "کلاس های نیمه خصوصی",
+                    name: "لیست کلاس های نیمه خصوصی",
                     url: "/tkpanel/semi-private-admin",
                     color: "primary",
                 }}

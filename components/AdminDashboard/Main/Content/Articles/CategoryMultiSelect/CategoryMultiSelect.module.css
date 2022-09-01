@@ -20,7 +20,7 @@
     transition: var(--transition);
 }
 .search-select__selected-list {
-    font-size: 1.2rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -114,7 +114,7 @@
     color: #666;
     text-align: right;
     padding: 0.3rem 0.5rem;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     width: 100%;
@@ -145,4 +145,10 @@
 }
 .search-select__content-text {
     width: 100%;
+}
+
+.ant-message {
+    position: absolute;
+    bottom: 20px !important;
+    top: unset !important;
 }

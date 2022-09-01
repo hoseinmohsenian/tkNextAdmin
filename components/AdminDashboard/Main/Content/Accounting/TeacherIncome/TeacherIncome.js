@@ -139,6 +139,7 @@ function TeacherIncome({ token }) {
                                             inputClassName="date-input"
                                             colorPrimary="#545cd8"
                                             inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
                                         />
                                     </div>
                                 </div>
@@ -162,6 +163,7 @@ function TeacherIncome({ token }) {
                                             inputClassName="date-input"
                                             colorPrimary="#545cd8"
                                             inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
                                         />
                                     </div>
                                 </div>

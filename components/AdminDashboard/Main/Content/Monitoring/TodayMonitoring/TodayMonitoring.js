@@ -12,6 +12,7 @@ import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
 import Link from "next/link";
 import ReactTooltip from "react-tooltip";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import { Select } from "antd";
 
 function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -30,6 +31,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const { formatTime } = useGlobalContext();
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
+    const { Option } = Select;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -111,9 +113,9 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
         handleLoadings(i, false);
     };
 
-    const handleOnChange = (e, rowInd) => {
+    const handleOnChange = (value, rowInd) => {
         let updated = [...monitoringList];
-        const monitoring_follower = e.target.value;
+        const monitoring_follower = value;
         updated[rowInd] = {
             ...updated[rowInd],
             monitoring_follower: monitoring_follower,
@@ -203,16 +205,6 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                         : "-"}
                                 </span>
                             </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
-                                    ساعت کلاس
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedClass.time
-                                        ? formatTime(selectedClass.time)
-                                        : "-"}
-                                </span>
-                            </div>
                         </div>
                     </Modal>
                 )}
@@ -241,6 +233,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                         inputClassName="date-input"
                                         colorPrimary="#545cd8"
                                         inputPlaceholder="انتخاب کنید"
+                                        calendarPopperPosition="bottom"
                                     />
                                 </div>
                             </div>
@@ -356,37 +349,50 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                         </td>
                                         <td className="table__body-item">
                                             <div
-                                                className="form-control"
                                                 style={{
                                                     width: "130px",
-                                                    margin: 0,
                                                 }}
                                             >
-                                                <select
-                                                    name="monitoring_follower"
-                                                    id="monitoring_follower"
-                                                    className="form__input input-select"
-                                                    onChange={(e) =>
-                                                        handleOnChange(e, i)
+                                                <Select
+                                                    showSearch
+                                                    placeholder="انتخاب کنید"
+                                                    optionFilterProp="children"
+                                                    onChange={(value) => {
+                                                        handleOnChange(
+                                                            value,
+                                                            i
+                                                        );
+                                                    }}
+                                                    filterOption={(
+                                                        input,
+                                                        option
+                                                    ) =>
+                                                        option.children
+                                                            .toLowerCase()
+                                                            .includes(
+                                                                input.toLowerCase()
+                                                            )
                                                     }
-                                                    value={
+                                                    defaultValue={
                                                         item.monitoring_follower ||
                                                         0
                                                     }
-                                                    required
+                                                    style={{
+                                                        width: 130,
+                                                    }}
                                                 >
-                                                    <option value={0}>
+                                                    <Option value={0}>
                                                         انتخاب کنید
-                                                    </option>
+                                                    </Option>
                                                     {admins.map((admin) => (
-                                                        <option
+                                                        <Option
                                                             key={admin.id}
                                                             value={admin.id}
                                                         >
                                                             {admin.name}
-                                                        </option>
+                                                        </Option>
                                                     ))}
-                                                </select>
+                                                </Select>
                                             </div>
                                         </td>
                                         <td className="table__body-item">
@@ -410,6 +416,11 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                                       .locale("fa")
                                                       .format("DD MMMM YYYY")}`
                                                 : "-"}
+                                            {item.time
+                                                ? `, ساعت ${formatTime(
+                                                      item.time
+                                                  )}`
+                                                : "-"}
                                         </td>
                                         <td className="table__body-item">
                                             <button
@@ -423,6 +434,16 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                             >
                                                 جزئیات
                                             </button>
+                                            <Link
+                                                href={`/tkpanel/logReport/show/create?type=class&user_name=${item.user_name}&user_id=${item.user_id}&teacher_name=${item.teacher_name}&teacher_id=${item.teacher_id}`}
+                                            >
+                                                <a
+                                                    className={`action-btn warning`}
+                                                    target="_blank"
+                                                >
+                                                    لاگ پیگیری
+                                                </a>
+                                            </Link>
                                         </td>
                                     </tr>
                                 );

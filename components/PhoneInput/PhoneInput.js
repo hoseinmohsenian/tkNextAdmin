@@ -104,9 +104,11 @@ function PhoneInput({
                         value={mobile || ""}
                         pattern={`${
                             selectedCountry.code === "98"
-                                ? "09[0-3][0-9]-?[0-9]{3}-?[0-9]{4}"
+                                ? // "^(0\?9[0-9]{9,9}?)$"   THIS IS THE CORRECT REGEX IN CASE OF FUTURE UNWANTED CHANGES
+                                  "^(0\?9[0-9]{9,9}?)$"
                                 : ".*"
                         }`}
+						title="لطفا به فرمت صحیح شماره همراه توجه کنید"
                         maxLength={11}
                         disabled={!!disabled}
                     />

@@ -4,7 +4,7 @@ import Header from "../../../../components/Head/Head";
 import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function MultiSessionPage({ token, platforms, courses, notAllowed }) {
+function MultiSessionPage({ token, courses, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -12,11 +12,7 @@ function MultiSessionPage({ token, platforms, courses, notAllowed }) {
         <div>
             <Header title="ایجاد کلاس جدید | تیکا"></Header>
             <AdminDashboard>
-                <AddNewClass
-                    token={token}
-                    platforms={platforms}
-                    courses={courses}
-                />
+                <AddNewClass token={token} courses={courses} />
             </AdminDashboard>
         </div>
     );
@@ -38,13 +34,6 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/platform`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }),
         fetch(`${BASE_URL}/data/course`, {
             headers: {
                 "Content-type": "application/json",
@@ -64,8 +53,7 @@ export async function getServerSideProps(context) {
     return {
         props: {
             token,
-            platforms: dataArr[0].data,
-            courses: dataArr[1].data,
+            courses: dataArr[0].data,
         },
     };
 }

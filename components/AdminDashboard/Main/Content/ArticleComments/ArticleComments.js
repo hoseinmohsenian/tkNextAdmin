@@ -5,6 +5,8 @@ import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import API from "../../../../../api/index";
+import moment from "jalali-moment";
+import { AiFillEye } from "react-icons/ai";
 
 function ArticleComments({ fetchedComments: { data, ...restData } }) {
     const [comments, setComments] = useState(data);
@@ -17,6 +19,8 @@ function ArticleComments({ fetchedComments: { data, ...restData } }) {
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const router = useRouter();
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+    moment.locale("fa", { useGregorianParser: true });
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -122,6 +126,7 @@ function ArticleComments({ fetchedComments: { data, ...restData } }) {
                                     موضوع مقاله
                                 </th>
                                 <th className="table__head-item">کامنت</th>
+                                <th className="table__head-item">تاریخ ثبت</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -136,9 +141,26 @@ function ArticleComments({ fetchedComments: { data, ...restData } }) {
                                     </td>
                                     <td className="table__body-item">
                                         {comment.article_header}
+                                        <Link
+                                            href={`${SITE_URL}/blog/c/${comment.url}`}
+                                        >
+                                            <a
+                                                target="_blank"
+                                                style={{ marginRight: 5 }}
+                                            >
+                                                <AiFillEye fontSize={20} />
+                                            </a>
+                                        </Link>
                                     </td>
                                     <td className="table__body-item">
                                         {comment.comment}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {comment?.created_at
+                                            ? moment(
+                                                  comment?.created_at
+                                              ).format("YYYY/MM/DD hh:mm")
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <button

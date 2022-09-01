@@ -7,6 +7,8 @@ import Box from "../../Elements/Box/Box";
 import ReactTooltip from "react-tooltip";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import { Typography } from "antd";
+import Ellipsis from "../../../../../Ellipsis/Ellipsis";
 
 function TeachersScore(props) {
     const {
@@ -15,6 +17,9 @@ function TeachersScore(props) {
     } = props;
     const [teachers, setTeachers] = useState(data);
     const [pagData, setPagData] = useState(restData);
+    const [ellipsis, setEllipsis] = useState(
+        [...Array(data.length)].fill(true)
+    );
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
@@ -76,18 +81,25 @@ function TeachersScore(props) {
             >
                 <ReactTooltip className="tooltip" />
 
-                <div className="table__wrapper">
+                <div className="table__wrapper table__wrapper--wrap">
                     <table className="table">
                         <thead className="table__head">
                             <tr>
-                                <th className="table__head-item">استاد</th>
+                                <th
+                                    className="table__head-item"
+                                    style={{
+                                        width: 130,
+                                    }}
+                                >
+                                    استاد
+                                </th>
                                 <th className="table__head-item">امتیاز</th>
                                 <th className="table__head-item">
                                     تاثیر در حسابداری
                                 </th>
                                 <th
-                                    className="table__head-item table__head-item-ellipsis"
-                                    style={{ width: 300 }}
+                                    className="table__head-item table__head-ite-ellipsis"
+                                    style={{ width: 380 }}
                                 >
                                     توضیحات
                                 </th>
@@ -108,6 +120,9 @@ function TeachersScore(props) {
                                         data-tip={
                                             teacher?.teacher_mobile || "-"
                                         }
+                                        style={{
+                                            width: 130,
+                                        }}
                                     >
                                         {teacher?.teacher_name}
                                         <span className="info-icon">
@@ -127,12 +142,21 @@ function TeachersScore(props) {
                                             : "خیر"}
                                     </td>
                                     <td
-                                        className="table__body-item table__body-item--ellipsis"
+                                        className="table__body-item table__body-ite--ellipsis"
                                         style={{
-                                            width: 300,
+                                            width: 380,
                                         }}
                                     >
-                                        {teacher?.desc}
+                                        <Ellipsis
+                                            ellipsis={ellipsis[i]}
+                                            width={290}
+                                            onClick={() => {
+                                                let temp = [...ellipsis];
+                                                temp[i] = !temp[i];
+                                                setEllipsis(() => temp);
+                                            }}
+                                            text={teacher.desc || ""}
+                                        />
                                     </td>
                                     <td className="table__body-item">
                                         {teacher?.admin_name}

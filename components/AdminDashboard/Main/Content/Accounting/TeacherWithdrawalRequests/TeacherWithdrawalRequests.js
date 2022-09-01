@@ -136,12 +136,7 @@ function TeacherWithdrawalRequests(props) {
             if (res.ok) {
                 let message = "برداشت تایید شد";
                 showAlert(true, "success", message);
-                // let updated = [...requests];
-                // updated[i] = {
-                //     ...updated[i],
-                //     account: { admin_verified: admin_verified === 0 ? 1 : 0 },
-                // };
-                // setRequests(() => updated);
+                await readRequests();
             } else {
                 const errData = await res.json();
                 showAlert(
@@ -169,7 +164,7 @@ function TeacherWithdrawalRequests(props) {
     const handleAcceptWithdrawal = () => {
         requests.map(async (request, i) => {
             if (request.selected) {
-                await acceptWithdrawal(request.id, i);
+                await acceptWithdrawal(request.account?.id, i);
             }
         });
     };
@@ -320,13 +315,12 @@ function TeacherWithdrawalRequests(props) {
                                         </div>
                                     </td>
                                     <td className="table__body-item">
-                                        {Intl.NumberFormat().format(
+                                        {request.amount ? `${Intl.NumberFormat().format(
                                             request.amount
-                                        )}{" "}
-                                        تومان
+                                        )} تومان` : "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {request.account?.card_number}
+                                        {request.account?.card_number || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <div className="form-control" style={{width:"220px",margin:0}}>
@@ -359,7 +353,7 @@ function TeacherWithdrawalRequests(props) {
                                         {request.account?.name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {request.account?.bank_name}
+                                        {request.account?.bank_name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {!request.pay_time && (
@@ -368,7 +362,7 @@ function TeacherWithdrawalRequests(props) {
                                                 className={`action-btn primary`}
                                                 onClick={() =>
                                                     acceptWithdrawal(
-                                                        request.id,
+                                                        request.accept?.id,
                                                         i
                                                     )
                                                 }
@@ -389,7 +383,7 @@ function TeacherWithdrawalRequests(props) {
                                                 }`}
                                                 onClick={() =>
                                                     verifyAccount(
-                                                        request.id,
+                                                        request.account?.id,
                                                         request.account
                                                             ?.admin_verified,
                                                         i

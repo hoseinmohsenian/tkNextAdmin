@@ -3,6 +3,7 @@ import { useGlobalContext } from "../../../../../../context";
 import styles from "./CategoryMultiSelect.module.css";
 import { BsPinAngleFill } from "react-icons/bs";
 import { BsPin } from "react-icons/bs";
+// import { message, notification } from "antd";
 
 function CategoryMultiSelect(props) {
     const {
@@ -27,6 +28,10 @@ function CategoryMultiSelect(props) {
     const [openTop, setOpenTop] = useState(true);
     const { useOutsideAlerter } = useGlobalContext();
     const [pins, setPins] = useState(Array(list?.length).fill(0));
+
+    // message.config({
+    //     duration: 4.5,
+    // });
 
     useEffect(() => {
         if (!openBottom) {
@@ -58,7 +63,23 @@ function CategoryMultiSelect(props) {
             setSelected((oldSelects) => [...oldSelects, newItem]);
             onAdd(newItem?.id, pins[ind]);
         } else {
-            showAlert(true, "warning", errorMessage);
+            // showAlert(true, "warning", errorMessage);
+            // message.error({
+            //     content: errorMessage,
+            //     style: {
+            //         bottom: 20,
+            //         top: "initial",
+            //     },
+            //     // className: styles["ant-message"],
+            //     transitionName: "move-down",
+            // });
+            alert(errorMessage);
+
+            // notification.error({
+            //     message: errorMessage,
+            //     // description: errorMessage,
+            //     placement: "bottom",
+            // });
         }
     };
 

@@ -19,7 +19,7 @@
     transition: var(--transition);
 }
 .search-select__selected-label {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
 }
 .search-select__selected-icon {
     font-size: 1.2rem;
@@ -89,7 +89,7 @@
     color: #666;
     text-align: right;
     padding: 0.3rem 0.5rem;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     width: 100%;

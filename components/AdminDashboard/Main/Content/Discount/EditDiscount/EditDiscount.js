@@ -8,6 +8,11 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+    getUnformattedPrice,
+} from "../../../../../../utils/priceFormat";
 
 function EditDiscount({ token, discount }) {
     const [formData, setFormData] = useState({
@@ -169,7 +174,7 @@ function EditDiscount({ token, discount }) {
                 <div className="form">
                     <div className="input-wrapper">
                         <label htmlFor="name" className="form__label">
-                            عنوان :<span className="form__star">*</span>
+                            کد تخفیف :<span className="form__star">*</span>
                         </label>
                         <div className="form-control">
                             <input
@@ -411,131 +416,206 @@ function EditDiscount({ token, discount }) {
                             </div>
                         </div>
                     </div>
-                    <div className={`row ${styles["row"]}`}>
-                        <div className={`col-sm-6 ${styles["col"]}`}>
-                            <div className="input-wrapper">
-                                <label
-                                    htmlFor="value"
-                                    className={`form__label ${
-                                        Number(formData.discount_type) === 0
-                                            ? "form__label--disabled"
-                                            : undefined
-                                    }`}
-                                >
-                                    مبلغ تخفیف :
-                                </label>
-                                <div className="form-control">
-                                    <input
-                                        type="number"
-                                        name="value"
-                                        id="value"
-                                        className="form__input form__input--ltr"
-                                        onChange={handleOnChange}
-                                        spellCheck={false}
-                                        disabled={
-                                            Number(formData.discount_type) === 0
-                                        }
-                                        value={formData.value || ""}
-                                    />
+                    {Number(formData.discount_type) === 1 && (
+                        <>
+                            <div className={`row ${styles["row"]}`}>
+                                <div className={`col-sm-6 ${styles["col"]}`}>
+                                    <div className="input-wrapper">
+                                        <label
+                                            htmlFor="value"
+                                            className={`form__label ${
+                                                Number(
+                                                    formData.discount_type
+                                                ) === 0
+                                                    ? "form__label--disabled"
+                                                    : undefined
+                                            }`}
+                                        >
+                                            مبلغ تخفیف :
+                                        </label>
+                                        <div className="form-control">
+                                            <input
+                                                type="text"
+                                                name="value"
+                                                id="value"
+                                                className={`form__input form__input--ltr`}
+                                                onChange={handleOnChange}
+                                                value={getFormattedPrice(
+                                                    formData.value
+                                                )}
+                                                spellCheck={false}
+                                                disabled={
+                                                    Number(
+                                                        formData.discount_type
+                                                    ) === 0
+                                                }
+                                            />
+                                            <span
+                                                className={
+                                                    Number(
+                                                        formData.discount_type
+                                                    ) === 0
+                                                        ? "form__label--disabled"
+                                                        : undefined
+                                                }
+                                            >
+                                                تومان
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`col-sm-6`}>
+                                    <div className="input-wrapper">
+                                        <label
+                                            htmlFor="min"
+                                            className={`form__label ${
+                                                Number(
+                                                    formData.discount_type
+                                                ) === 0
+                                                    ? "form__label--disabled"
+                                                    : undefined
+                                            }`}
+                                        >
+                                            حداقل قیمت :
+                                        </label>
+                                        <div className="form-control">
+                                            <input
+                                                type="text"
+                                                name="min"
+                                                id="min"
+                                                className={`form__input form__input--ltr`}
+                                                onChange={handleOnChange}
+                                                value={getFormattedPrice(
+                                                    formData.min
+                                                )}
+                                                spellCheck={false}
+                                                disabled={
+                                                    Number(
+                                                        formData.discount_type
+                                                    ) === 0
+                                                }
+                                            />
+                                            <span
+                                                className={
+                                                    Number(
+                                                        formData.discount_type
+                                                    ) === 0
+                                                        ? "form__label--disabled"
+                                                        : undefined
+                                                }
+                                            >
+                                                تومان
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className={`col-sm-6`}>
-                            <div className="input-wrapper">
-                                <label
-                                    htmlFor="percent"
-                                    className={`form__label ${
-                                        Number(formData.discount_type) === 1
-                                            ? "form__label--disabled"
-                                            : undefined
-                                    }`}
-                                >
-                                    درصد تخفیف :
-                                </label>
-                                <div className="form-control">
-                                    <select
-                                        name="percent"
-                                        id="percent"
-                                        className={`form__input input-select‍`}
-                                        onChange={handleOnChange}
-                                        value={formData.percent || ""}
-                                        disabled={
-                                            Number(formData.discount_type) === 1
-                                        }
-                                    >
-                                        {Array(20)
-                                            .fill(0)
-                                            .map((_, i) => (
-                                                <option
-                                                    key={i}
-                                                    value={(i + 1) * 5}
-                                                >
-                                                    {(i + 1) * 5}%
-                                                </option>
-                                            ))}
-                                    </select>
+                            <p style={{ color: "#444" }}>
+                                <b>حداقل قیمت</b>، قیمت کف می باشد، یعنی اگر
+                                خرید کاربر از این عدد بیشتر باشد، مبلغ تخفیف
+                                کاملا برای کاربر اعمال می شود
+                            </p>
+                        </>
+                    )}
+
+                    {Number(formData.discount_type) === 0 && (
+                        <>
+                            <div className={`row ${styles["row"]}`}>
+                                <div className={`col-sm-6 ${styles["col"]}`}>
+                                    <div className="input-wrapper">
+                                        <label
+                                            htmlFor="percent"
+                                            className={`form__label ${
+                                                Number(
+                                                    formData.discount_type
+                                                ) === 1
+                                                    ? "form__label--disabled"
+                                                    : undefined
+                                            }`}
+                                        >
+                                            درصد تخفیف :
+                                        </label>
+                                        <div className="form-control">
+                                            <select
+                                                name="percent"
+                                                id="percent"
+                                                className={`form__input input-select‍`}
+                                                onChange={handleOnChange}
+                                                value={formData.percent || ""}
+                                                disabled={
+                                                    Number(
+                                                        formData.discount_type
+                                                    ) === 1
+                                                }
+                                            >
+                                                {Array(20)
+                                                    .fill(0)
+                                                    .map((_, i) => (
+                                                        <option
+                                                            key={i}
+                                                            value={(i + 1) * 5}
+                                                        >
+                                                            {(i + 1) * 5}%
+                                                        </option>
+                                                    ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`col-sm-6`}>
+                                    <div className="input-wrapper">
+                                        <label
+                                            htmlFor="max"
+                                            className={`form__label ${
+                                                Number(
+                                                    formData.discount_type
+                                                ) === 1
+                                                    ? "form__label--disabled"
+                                                    : undefined
+                                            }`}
+                                        >
+                                            سقف قیمت کل خرید :
+                                        </label>
+                                        <div className="form-control">
+                                            <input
+                                                type="text"
+                                                name="max"
+                                                id="max"
+                                                className={`form__input form__input--ltr`}
+                                                onChange={handleOnChange}
+                                                value={getFormattedPrice(
+                                                    formData.max
+                                                )}
+                                                spellCheck={false}
+                                                autoComplete="off"
+                                                disabled={
+                                                    Number(
+                                                        formData.discount_type
+                                                    ) === 1
+                                                }
+                                            />
+                                            <span
+                                                className={
+                                                    Number(
+                                                        formData.discount_type
+                                                    ) === 1
+                                                        ? "form__label--disabled"
+                                                        : undefined
+                                                }
+                                            >
+                                                تومان
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className={`row ${styles["row"]}`}>
-                        <div className={`col-sm-6 ${styles["col"]}`}>
-                            <div className="input-wrapper">
-                                <label
-                                    htmlFor="min"
-                                    className={`form__label ${
-                                        Number(formData.discount_type) === 0
-                                            ? "form__label--disabled"
-                                            : undefined
-                                    }`}
-                                >
-                                    حداقل قیمت :
-                                </label>
-                                <div className="form-control">
-                                    <input
-                                        type="number"
-                                        name="min"
-                                        id="min"
-                                        className="form__input form__input--ltr"
-                                        onChange={handleOnChange}
-                                        spellCheck={false}
-                                        disabled={
-                                            Number(formData.discount_type) === 0
-                                        }
-                                        value={formData.min || ""}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className={`col-sm-6`}>
-                            <div className="input-wrapper">
-                                <label
-                                    htmlFor="max"
-                                    className={`form__label ${
-                                        Number(formData.discount_type) === 1
-                                            ? "form__label--disabled"
-                                            : undefined
-                                    }`}
-                                >
-                                    حداکثر قیمت :
-                                </label>
-                                <div className="form-control">
-                                    <input
-                                        type="number"
-                                        name="max"
-                                        id="max"
-                                        className="form__input form__input--ltr"
-                                        onChange={handleOnChange}
-                                        spellCheck={false}
-                                        disabled={
-                                            Number(formData.discount_type) === 1
-                                        }
-                                        value={formData.max || ""}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            <p style={{ color: "#444" }}>
+                                <b>سقف قیمت کل خرید</b>،حداکثر قیمت می باشد،
+                                یعنی فالن درصد تخفیف(با توجه به درصد تخفیف)
+                                اعمال می شودتا حداکثر قیمت کل خریدی که مشخص شده
+                            </p>
+                        </>
+                    )}
 
                     <button
                         type="submit"

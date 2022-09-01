@@ -4,7 +4,7 @@
 .category-delete-btn {
     color: white;
     border-radius: 0.4rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     padding: 0.05rem 0.3rem;
     cursor: pointer;
     transition: var(--transition);

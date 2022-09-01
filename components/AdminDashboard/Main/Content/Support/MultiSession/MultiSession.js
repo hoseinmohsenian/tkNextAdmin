@@ -9,8 +9,10 @@ import Link from "next/link";
 import Modal from "../../../../../Modal/Modal";
 import { useGlobalContext } from "../../../../../../context";
 import { AiOutlineWhatsApp } from "react-icons/ai";
+import { MdOutlineDoNotDisturbAlt } from "react-icons/md";
 import API from "../../../../../../api";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import ReactTooltip from "react-tooltip";
 
 function MultiSession() {
     const [classes, setClasses] = useState([]);
@@ -106,6 +108,8 @@ function MultiSession() {
                     multiSessionsList: "۵ جلسه ۱۰ جلسه",
                 }}
             />
+
+            <ReactTooltip className="tooltip" type="dark" />
 
             <Box title="۵ جلسه ۱۰ جلسه">
                 {openModal && (
@@ -225,6 +229,7 @@ function MultiSession() {
                                         inputClassName="date-input"
                                         colorPrimary="#545cd8"
                                         inputPlaceholder="انتخاب کنید"
+                                        calendarPopperPosition="bottom"
                                     />
                                 </div>
                             </div>
@@ -297,6 +302,18 @@ function MultiSession() {
                                     </td>
                                     <td className="table__body-item">
                                         {item?.teacher_name}
+                                        {item.status === 0 && (
+                                            <span
+                                                data-tip="وضعیت غیرفعال"
+                                                className="danger-color"
+                                                style={{
+                                                    marginRight: 2,
+                                                    cursor: "pointer",
+                                                }}
+                                            >
+                                                <MdOutlineDoNotDisturbAlt />
+                                            </span>
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         <Link

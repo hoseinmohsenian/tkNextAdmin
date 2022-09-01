@@ -14,7 +14,7 @@ function CreateScore() {
     const [formData, setFormData] = useState({
         desc: "",
         desc: false,
-        point_type: "1",
+        point_type: "0",
         notify_teacher: false,
         number: 1,
         teacher_side_desc: "",
@@ -124,7 +124,6 @@ function CreateScore() {
 
             if (status === 200) {
                 setTeachers(data?.data);
-                showAlert(true, "success", "اکنون استاد را انتخاب کنید");
             } else {
                 showAlert(
                     true,
@@ -231,7 +230,7 @@ function CreateScore() {
                                     htmlFor="language_id"
                                     className={`form__label ${styles.form__label}`}
                                 >
-                                    زبان آموزان‌ :
+                                    بابت زبان آموز :
                                 </label>
                                 <div
                                     className={`form-control form-control-searchselect`}
@@ -406,37 +405,62 @@ function CreateScore() {
                         </div>
                     )} */}
                     {Number(formData.point_type) === 0 && (
-                        <div className="input-wrapper">
-                            <label
-                                htmlFor="accounting_effect"
-                                className={`form__label`}
-                            >
-                                تاثیر در حسابداری :
-                            </label>
-                            <div className="form-control form-control-radio">
-                                <div className="input-radio-wrapper">
-                                    <label
-                                        htmlFor="accounting_effect"
-                                        className="radio-title"
+                        <>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="accounting_effect"
+                                    className={`form__label`}
+                                >
+                                    تاثیر در حسابداری :
+                                </label>
+                                <div
+                                    className="form-control form-control-radio"
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <div
+                                        className="input-radio-wrapper"
+                                        style={{
+                                            marginRight: 10,
+                                        }}
                                     >
-                                        داده شود
-                                    </label>
-                                    <input
-                                        type="checkbox"
-                                        name="accounting_effect"
-                                        onChange={handleOnChange}
-                                        checked={
-                                            Number(
-                                                formData.accounting_effect
-                                            ) === 1
-                                        }
-                                        id="accounting_effect"
-                                    />
+                                        <label
+                                            htmlFor="accounting_effect"
+                                            className="radio-title"
+                                        >
+                                            داده شود
+                                        </label>
+                                        <input
+                                            type="checkbox"
+                                            name="accounting_effect"
+                                            onChange={handleOnChange}
+                                            checked={
+                                                Number(
+                                                    formData.accounting_effect
+                                                ) === 1
+                                            }
+                                            id="accounting_effect"
+                                        />
+                                    </div>
+                                    <p
+                                        style={{
+                                            marginRight: 10,
+                                            marginBottom: 0,
+                                        }}
+                                        className="danger-color"
+                                    >
+                                        با اعمال این گزینه مبلغ{" "}
+                                        {Intl.NumberFormat().format(
+                                            10 * formData.number
+                                        )}{" "}
+                                        هزار تومان از اعتبار استاد کسر می گردد.
+                                    </p>
                                 </div>
                             </div>
-                        </div>
+                        </>
                     )}
-
                     <button
                         type="submit"
                         className="btn primary"

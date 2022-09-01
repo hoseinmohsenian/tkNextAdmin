@@ -280,14 +280,6 @@ function RequestDetails(props) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
-                                    استپ
-                                </span>
-                                <span className={"modal__item-body"}>
-                                    {selectedRequest?.step}
-                                </span>
-                            </div>
-                            <div className={"modal__item"}>
-                                <span className={"modal__item-title"}>
                                     تاریخ ثبت
                                 </span>
                                 <span className={"modal__item-body"}>

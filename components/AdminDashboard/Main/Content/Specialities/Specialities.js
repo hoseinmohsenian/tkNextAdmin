@@ -33,6 +33,7 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
     const [dModalVisible, setDModalVisible] = useState(false);
     const [selectedSpec, setSelectedSpec] = useState({});
     const router = useRouter();
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -288,9 +289,12 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
                                 <tr className="table__body-row" key={spec?.id}>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`/content/specialty/${spec?.id}/edit`}
+                                            href={`${SITE_URL}/find-teachers/${spec.language?.english_name}/${spec.url}`}
                                         >
-                                            <a className="table__body-link">
+                                            <a
+                                                className="table__body-link"
+                                                target="_blank"
+                                            >
                                                 {spec?.language?.persian_name}
                                             </a>
                                         </Link>

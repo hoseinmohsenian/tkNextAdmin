@@ -7,6 +7,11 @@ import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelec
 import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
 import API from "../../../../../../api/index";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import {
+    checkValidPriceKeys,
+    getFormattedPrice,
+    getUnformattedPrice,
+} from "../../../../../../utils/priceFormat";
 
 const teacherSchema = { id: "", name: "", family: "" };
 const studentSchema = { id: "", name: "", family: "" };
@@ -14,7 +19,7 @@ const studentSchema = { id: "", name: "", family: "" };
 function CreateSemiPrivate() {
     const [formData, setFormData] = useState({
         title: "",
-        price: 0,
+        price: "",
         language_id: 1,
         rate: 0,
     });
@@ -34,12 +39,13 @@ function CreateSemiPrivate() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        let price = Number(getUnformattedPrice(formData.price));
         if (
             formData.title.trim() &&
             formData.language_id &&
             selectedTeacher.id &&
             selectedStudents.length >= 2 &&
-            Number(formData.price) !== 0
+            formData.price
         ) {
             const fd = new FormData();
             fd.append("title", formData.title);
@@ -48,7 +54,7 @@ function CreateSemiPrivate() {
             for (let i = 0; i < selectedStudents.length; i++) {
                 fd.append(`user_id[${i}]`, selectedStudents[i].id);
             }
-            fd.append("price", Number(formData.price));
+            fd.append("price", price);
             await addClass(fd);
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
@@ -164,7 +170,10 @@ function CreateSemiPrivate() {
             );
 
             if (status === 200) {
-                setFormData({ ...formData, rate: data === null ? 0 : data });
+                setFormData({
+                    ...formData,
+                    rate: data === null ? 0 : data?.data,
+                });
             } else {
                 showAlert(
                     true,
@@ -361,6 +370,7 @@ function CreateSemiPrivate() {
                                             }}
                                             background="#fafafa"
                                             max={4}
+                                            maxErrorMsg="حداکثر ۴ شاگرد می توانند برای کالس نیمه خصوصی اضافه شودند"
                                             showAlert={showAlert}
                                         />
                                     </div>
@@ -397,13 +407,19 @@ function CreateSemiPrivate() {
                                 </label>
                                 <div className="form-control">
                                     <input
-                                        type="number"
+                                        type="text"
                                         name="price"
                                         id="price"
                                         className="form__input form__input--ltr"
                                         onChange={handleOnChange}
-                                        value={formData.price}
+                                        value={getFormattedPrice(
+                                            formData.price
+                                        )}
+                                        onKeyDown={(e) =>
+                                            checkValidPriceKeys(e)
+                                        }
                                     />
+                                    تومان
                                 </div>
                             </div>
                         </div>
