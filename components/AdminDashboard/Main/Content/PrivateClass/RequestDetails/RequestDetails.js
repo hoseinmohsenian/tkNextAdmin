@@ -253,7 +253,7 @@ function RequestDetails(props) {
                                     ایجاد کننده
                                 </span>
                                 <span className={"modal__item-body"}>
-                                    {selectedRequest.classroom?.admin_id ? "ادمین" : "زبان آموز"}
+                                    {selectedRequest.classroom?.admin_id ? `ادمین (${selectedRequest.classroom?.admin_name})` : "زبان آموز"}
                                 </span>
                             </div>
                             <div className={"modal__item"}>

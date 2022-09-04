@@ -10,7 +10,7 @@ function DoneMonitoringPage({
     monitorings,
     shamsi_date_obj,
     notAllowed,
-    admins
+    admins,
 }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
@@ -86,8 +86,8 @@ export async function getServerSideProps(context) {
     };
 
     return {
-        props: { 
-            token, 
+        props: {
+            token,
             monitorings: dataArr[0].data,
             shamsi_date_obj,
             admins: dataArr[1].data,

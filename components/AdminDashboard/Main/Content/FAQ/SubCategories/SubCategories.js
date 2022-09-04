@@ -6,6 +6,7 @@ import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import API from "../../../../../../api/index";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import DeleteModal from "../../../../../DeleteModal/DeleteModal";
 
 function SubCategories({ categories }) {
     const [subCategories, setSubCategories] = useState([]);
@@ -21,7 +22,10 @@ function SubCategories({ categories }) {
         created_at: "",
         updated_at: "",
     });
+    const [selectedSubCatg, setSelectedSubCatg] = useState({});
     const [loading, setLoading] = useState(false);
+    const [dModalVisible, setModalVisible] = useState(false);
+    const [loadings, setLoadings] = useState([]);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -41,6 +45,7 @@ function SubCategories({ categories }) {
 
             if (status === 200) {
                 setSubCategories(data.data || []);
+                setLoadings(Array(data.data?.length).fill(false));
             } else {
                 showAlert(
                     true,
@@ -66,6 +71,39 @@ function SubCategories({ categories }) {
         }
     };
 
+    const deleteSubCategory = async (subCatg_id, i) => {
+        let temp = [...loadings];
+        temp[i] = true;
+        setLoadings(() => temp);
+
+        try {
+            const { status, response } = await API.delete(
+                `/admin/faq/category/sub/${subCatg_id}`
+            );
+
+            if (status === 200) {
+                showAlert(true, "danger", "این زیرگروه حذف شد");
+                setModalVisible(false);
+                setSubCategories(() =>
+                    subCategories.filter((subCatg) => subCatg.id !== subCatg_id)
+                );
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
+            temp = [...loadings];
+            temp[i] = false;
+            setLoadings(() => temp);
+        } catch (error) {
+            console.log("Error deleting sub category", error);
+        }
+    };
+
     return (
         <div>
             <BreadCrumbs
@@ -82,10 +120,20 @@ function SubCategories({ categories }) {
                     color: "primary",
                 }}
             >
-                <Alert
-                    {...alertData}
-                    removeAlert={showAlert}
-                    envoker={handleClick}
+                <Alert {...alertData} removeAlert={showAlert} />
+
+                <DeleteModal
+                    visible={dModalVisible}
+                    setVisible={setModalVisible}
+                    title="حذف زیرگروه"
+                    bodyDesc={`آیا از حذف زیرگروه «${selectedSubCatg.title}» اطمینان دارید؟`}
+                    handleOk={() => {
+                        deleteSubCategory(
+                            selectedSubCatg?.id,
+                            selectedSubCatg.index
+                        );
+                    }}
+                    confirmLoading={loadings[selectedSubCatg.index]}
                 />
 
                 <div className={styles["search"]}>
@@ -156,7 +204,7 @@ function SubCategories({ categories }) {
                             </tr>
                         </thead>
                         <tbody className="table__body">
-                            {subCategories?.map((catg) => (
+                            {subCategories?.map((catg, i) => (
                                 <tr className="table__body-row" key={catg?.id}>
                                     <td className="table__body-item">
                                         {catg.title}
@@ -170,7 +218,7 @@ function SubCategories({ categories }) {
                                     <td className="table__body-item">
                                         <img
                                             src={catg.image}
-                                            alt={catg.title}
+                                            alt={"تصویر زیرگروه"}
                                             style={{ height: 40, width: 40 }}
                                         />
                                     </td>
@@ -182,6 +230,20 @@ function SubCategories({ categories }) {
                                                 ویرایش
                                             </a>
                                         </Link>
+                                        <button
+                                            type="button"
+                                            className={`action-btn danger`}
+                                            onClick={() => {
+                                                setSelectedSubCatg({
+                                                    ...catg,
+                                                    index: i,
+                                                });
+                                                setModalVisible(true);
+                                            }}
+                                            disabled={loadings[i]}
+                                        >
+                                            حذف
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

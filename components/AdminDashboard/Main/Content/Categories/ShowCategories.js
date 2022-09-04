@@ -270,7 +270,7 @@ function ShowCategories({
                                         className={`table__body-item ${styles["table-item"]}`}
                                     >
                                         <Link
-                                            href={`${SITE_URL}/${addressPage}/${ctg?.url}`}
+                                            href={`${SITE_URL}/${addressPage}/${ctg?.title}`}
                                         >
                                             <a
                                                 className="action-btn primary"

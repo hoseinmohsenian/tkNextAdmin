@@ -234,7 +234,7 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                                         htmlFor="discount_name"
                                         className={`form__label ${styles["search-label"]}`}
                                     >
-                                        کد تخفیف :
+                                        کد تخفیف و عنوان :
                                     </label>
                                     <div className="form-control">
                                         <input

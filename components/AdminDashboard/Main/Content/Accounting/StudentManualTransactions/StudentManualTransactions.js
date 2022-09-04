@@ -9,28 +9,53 @@ import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import styles from "./StudentManualTransactions.module.css";
+
+const filtersSchema = { user_name: "", user_mobile: "" };
+const appliedFiltersSchema = { user_name: false, user_mobile: false };
 
 function StudentManualTransactions(props) {
     const {
         fetchedTransactions: { data, ...restData },
         token,
+        searchData,
     } = props;
     const [transactions, setTransactions] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState({});
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
+    const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
 
-    const readTransactions = async (page = 1) => {
+    const readTransactions = async (page = 1, avoidFilters = false) => {
         let searchParams = {};
 
-        if (page !== 1) {
-            searchParams = {
-                ...searchParams,
-                page,
-            };
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== 0 &&
+            filters[key] !== undefined &&
+            filters[key];
+
+        // Constructing search parameters
+        let searchQuery = "";
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams = { ...searchParams, [key]: filters[key] };
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
         }
+        searchQuery += `page=${page}`;
 
         router.push({
             pathname: `/tkpanel/logUser/profile/accountingCredite`,
@@ -39,7 +64,7 @@ function StudentManualTransactions(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/student/manual/transactions?page=${page}`,
+                `${BASE_URL}/admin/accounting/student/manual/transactions?${searchQuery}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -59,6 +84,41 @@ function StudentManualTransactions(props) {
         } catch (error) {
             console.log("Error reading transactions", error);
         }
+    };
+
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readTransactions(1, true);
+        router.push({
+            pathname: `/tkpanel/logUser/profile/accountingCredite`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await readTransactions();
     };
 
     return (
@@ -113,9 +173,107 @@ function StudentManualTransactions(props) {
                                         .format("YYYY/MM/DD hh:mm:ss")}
                                 </span>
                             </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تصویر
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTransaction.image ? (
+                                        <img
+                                            src={selectedTransaction.image}
+                                            alt="تصویر"
+                                            style={{ width: 150, height: 150 }}
+                                        />
+                                    ) : (
+                                        "-"
+                                    )}
+                                </span>
+                            </div>
                         </div>
                     </Modal>
                 )}
+
+                <div className={styles["search"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_name"
+                                        className={`form__label`}
+                                    >
+                                        نام زبان آموز :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="user_name"
+                                            id="user_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.user_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_mobile"
+                                        className={`form__label`}
+                                    >
+                                        موبایل زبان آموز :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="number"
+                                            name="user_mobile"
+                                            id="user_mobile"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.user_mobile}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="submit"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                            >
+                                {loading ? "در حال انجام ..." : "اعمال فیلتر"}
+                            </button>
+                            {showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
+                        </div>
+                    </form>
+                </div>
 
                 {transactions.length !== 0 && (
                     <ExportCSV

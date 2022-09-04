@@ -55,7 +55,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/student/search?${params}`, {
+        fetch(`${BASE_URL}/admin/student/return?${params}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

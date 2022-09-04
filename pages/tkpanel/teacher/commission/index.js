@@ -5,7 +5,7 @@ import { BASE_URL } from "../../../../constants";
 import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function CommissionsPage({ commissions, token, notAllowed }) {
+function CommissionsPage({ commissions, token, notAllowed, searchData }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -13,7 +13,11 @@ function CommissionsPage({ commissions, token, notAllowed }) {
         <div>
             <Header title="لیست کمیسیون متغیر استاد | تیکا"></Header>
             <AdminDashboard>
-                <Commission fetchedCommissions={commissions} token={token} />
+                <Commission
+                    fetchedCommissions={commissions}
+                    token={token}
+                    searchData={searchData}
+                />
             </AdminDashboard>
         </div>
     );
@@ -33,14 +37,37 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    const { teacher_name, user_name, page } = context?.query;
+    let searchData = {
+        teacher_name: "",
+        user_name: "",
+    };
+    let searchQuery = "";
+
+    if (isKeyValid(teacher_name)) {
+        searchQuery += `teacher_name=${teacher_name}&`;
+        searchData = { ...searchData, teacher_name: teacher_name };
+    }
+    if (isKeyValid(user_name)) {
+        searchQuery += `user_name=${user_name}&`;
+        searchData = { ...searchData, user_name: user_name };
+    }
+    if (isKeyValid(page)) {
+        searchQuery += `page=${page}&`;
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/teacher/changeable/commission`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }),
+        fetch(
+            `${BASE_URL}/admin/teacher/changeable/commission?${searchQuery}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                },
+            }
+        ),
     ]);
 
     if (!checkResponseArrAuth(responses)) {
@@ -55,6 +82,7 @@ export async function getServerSideProps(context) {
         props: {
             commissions: dataArr[0].data,
             token,
+            searchData,
         },
     };
 }

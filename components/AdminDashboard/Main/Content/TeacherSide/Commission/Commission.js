@@ -8,8 +8,12 @@ import Modal from "../../../../../Modal/Modal";
 import AddCommission from "./AddCommission/AddCommission";
 import moment from "jalali-moment";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import styles from "../Teachers.module.css";
 
-function Commission({ fetchedCommissions: { data, ...restData }, token }) {
+const filtersSchema = { user_name:'',teacher_name:'' };
+const appliedFiltersSchema = { user_name:false,teacher_name:false };
+
+function Commission({ fetchedCommissions: { data, ...restData }, token, searchData }) {
     const [commissions, setCommissions] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [formData, setFormData] = useState(data);
@@ -20,6 +24,9 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const router = useRouter();
 
     const showAlert = (show, type, message) => {
@@ -62,16 +69,34 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         }
     };
 
-    const readCommissions = async (page = 1) => {
+    const readCommissions = async (page = 1, avoidFilters = false) => {
+        setLoading(true);
         let searchParams = {};
+
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== 0 &&
+            filters[key] !== undefined &&
+            filters[key];
+            
+        // Constructing search parameters
         let searchQuery = "";
-        searchQuery += `page=${page}`;
-        if (page !== 1) {
-            searchParams = {
-                ...searchParams,
-                page,
-            };
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if ((filters[key])) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams ={ ...searchParams, [key]:filters[key] }
+                }
+                else{
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
         }
+        searchQuery += `page=${page}`;
 
         router.push({
             pathname: `/tkpanel/teacher/commission`,
@@ -101,6 +126,7 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         } catch (error) {
             console.log("Error reading commissions", error);
         }
+        setLoading(false);
     };
 
     const changeCommission = async (e, id, i) => {
@@ -162,6 +188,41 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
         setFormData(() => updated);
     };
 
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);        
+        readCommissions(1, true);
+        router.push({
+            pathname: `/tkpanel/teacher/commission`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await readCommissions();
+    }
+
     return (
         <div>
             <BreadCrumbs substituteObj={{ teacher:"استاد", commission:"کمیسیون متغیر استاد" }} />
@@ -181,6 +242,93 @@ function Commission({ fetchedCommissions: { data, ...restData }, token }) {
                     color: "primary",
                 }}
             >
+                <div className={styles["search"]}>
+                    <form className={styles["search-wrapper"]} onSubmit={handleSubmit}>
+                        <div className={`row ${styles["search-row"]}`}>
+                        <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="teacher_name"
+                                        className={`form__label`}
+                                    >
+                                        نام استاد :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="teacher_name"
+                                            id="teacher_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.teacher_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_name"
+                                        className={`form__label`}
+                                    >
+                                        نام زبان آموز :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="user_name"
+                                            id="user_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.user_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className={styles["btn-wrapper"]}>
+                                    <button
+                                        type="submit"
+                                        className={`btn primary ${styles["btn"]}`}
+                                        disabled={loading}
+                                    >
+                                        {loading
+                                            ? "در حال جستجو ..."
+                                            : "اعمال فیلتر"}
+                                    </button>
+                                    {!showFilters() && (
+                                        <button
+                                            type="button"
+                                            className={`btn danger-outline ${styles["btn"]}`}
+                                            disabled={loading}
+                                            onClick={() => removeFilters()}
+                                        >
+                                            {loading
+                                                ? "در حال انجام ..."
+                                                : "حذف فیلتر"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
                 <Modal
                     show={isModalOpen}
                     setter={setIsModalOpen}

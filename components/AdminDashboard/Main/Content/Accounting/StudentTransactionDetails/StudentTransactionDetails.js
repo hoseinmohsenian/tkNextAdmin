@@ -10,8 +10,12 @@ import Link from "next/link";
 import styles from "./StudentTransactionDetails.module.css";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
-const filtersSchema = { tracking_code: "" };
-const appliedFiltersSchema = { tracking_code: false };
+const filtersSchema = { tracking_code: "", user_name: "", user_mobile: "" };
+const appliedFiltersSchema = {
+    tracking_code: false,
+    user_name: false,
+    user_mobile: false,
+};
 
 function StudentTransactionDetails(props) {
     const {
@@ -206,6 +210,60 @@ function StudentTransactionDetails(props) {
                                     className={`input-wrapper ${styles["search-input-wrapper"]}`}
                                 >
                                     <label
+                                        htmlFor="user_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام زبان آموز :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="user_name"
+                                            id="user_name"
+                                            className="form__input form__input--ltr"
+                                            onChange={handleOnChange}
+                                            value={filters.user_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_mobile"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        شماره زبان آموز :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="user_mobile"
+                                            id="user_mobile"
+                                            className="form__input form__input--ltr"
+                                            onChange={handleOnChange}
+                                            value={filters.user_mobile}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
                                         htmlFor="tracking_code"
                                         className={`form__label ${styles["search-label"]}`}
                                     >
@@ -270,6 +328,7 @@ function StudentTransactionDetails(props) {
                                 <th className="table__head-item">
                                     اعتبار زبان آموز
                                 </th>
+                                <th className="table__head-item">درگاه</th>
                                 <th className="table__head-item">نوع تراکنش</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -302,10 +361,15 @@ function StudentTransactionDetails(props) {
                                         تومان
                                     </td>
                                     <td className="table__body-item">
-                                        {Intl.NumberFormat().format(
-                                            cls.user_wallet
-                                        )}{" "}
-                                        تومان
+                                        {cls.user_wallet
+                                            ? `${Intl.NumberFormat().format(
+                                                  cls.user_wallet
+                                              )}
+                                        تومان`
+                                            : "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {cls.pay_method || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {cls.status === 1 ? (

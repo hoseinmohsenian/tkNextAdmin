@@ -63,7 +63,7 @@ function Profiles(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/student/search?${searchQuery}`,
+                `${BASE_URL}/admin/student/return?${searchQuery}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -169,6 +169,14 @@ function Profiles(props) {
                                 </span>
                             </div>
                             <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>سطح</span>
+                                <span className={"modal__item-body"}>
+                                    {selectedStudent?.academy
+                                        ? selectedStudent?.academy
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
                                     کشور
                                 </span>
@@ -256,6 +264,7 @@ function Profiles(props) {
                             <tr>
                                 <th className="table__head-item">نام</th>
                                 <th className="table__head-item">موبایل</th>
+                                <th className="table__head-item">موجودی</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -263,14 +272,14 @@ function Profiles(props) {
                             {students?.map((student) => (
                                 <tr
                                     className="table__body-row"
-                                    key={student?.id}
+                                    key={student.id}
                                 >
                                     <td className="table__body-item">
-                                        {student?.name_family}
+                                        {student.name_family}
                                     </td>
                                     <td className="table__body-item">
                                         {student.mobile || "-"}
-                                        {student?.mobile && (
+                                        {student.mobile && (
                                             <Link
                                                 href={`https://wa.me/${student.mobile}`}
                                             >
@@ -286,8 +295,15 @@ function Profiles(props) {
                                         )}
                                     </td>
                                     <td className="table__body-item">
+                                        {student.credit !== null
+                                            ? `${Intl.NumberFormat().format(
+                                                  student.credit
+                                              )} تومان`
+                                            : "-"}
+                                    </td>
+                                    <td className="table__body-item">
                                         <Link
-                                            href={`/tkpanel/profiles/${student?.id}/edit`}
+                                            href={`/tkpanel/profiles/${student.id}/edit`}
                                         >
                                             <a className={`action-btn primary`}>
                                                 ویرایش

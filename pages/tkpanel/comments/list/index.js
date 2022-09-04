@@ -5,7 +5,7 @@ import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 import ArticleComments from "../../../../components/AdminDashboard/Main/Content/ArticleComments/ArticleComments";
 
-function CommentsPage({ comments, notAllowed }) {
+function CommentsPage({ comments, notAllowed, searchData }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -13,7 +13,10 @@ function CommentsPage({ comments, notAllowed }) {
         <div>
             <Header title="کامنت مقالات | تیکا"></Header>
             <AdminDashboard>
-                <ArticleComments fetchedComments={comments} />
+                <ArticleComments
+                    fetchedComments={comments}
+                    searchData={searchData}
+                />
             </AdminDashboard>
         </div>
     );
@@ -33,8 +36,23 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    const { article_title, page } = context?.query;
+    let searchData = {
+        article_title: "",
+    };
+    let searchQuery = "";
+
+    if (isKeyValid(article_title)) {
+        searchQuery += `article_title=${article_title}&`;
+        searchData = { ...searchData, article_title: article_title };
+    }
+    if (isKeyValid(page)) {
+        searchQuery += `page=${page}&`;
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/blog/article/detail/comment`, {
+        fetch(`${BASE_URL}/admin/blog/article/detail/comment?${searchQuery}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -52,6 +70,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { comments: dataArr[0]?.data },
+        props: { comments: dataArr[0]?.data, searchData },
     };
 }

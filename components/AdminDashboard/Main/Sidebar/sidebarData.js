@@ -48,7 +48,6 @@ import {
     BiTable,
     BiSitemap,
 } from "react-icons/bi";
-import { BsArrowRepeat } from "react-icons/bs";
 import { GiSkills, GiDirectionSign, GiPlatform } from "react-icons/gi";
 import { RiArticleFill, RiAdminLine } from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
@@ -201,11 +200,6 @@ export default [
                         icon: <IoIosListBox />,
                     },
                     {
-                        title: "لیست اقساط",
-                        path: "/tkpanel/installment/installments/list",
-                        icon: <FaMoneyBill />,
-                    },
-                    {
                         title: "لیست اساتید اعتباری",
                         path: "/tkpanel/installment/teachers",
                         icon: <FaChalkboardTeacher />,
@@ -297,21 +291,6 @@ export default [
                         title: "لیست افزایش اعتبار دستی ",
                         path: "/tkpanel/logUser/profile/accountingCredite",
                         icon: <FaListAlt />,
-                    },
-                    {
-                        title: "لیست پرداخت های درگاه ",
-                        path: "/tkpanel/payments/admin",
-                        icon: <FaListAlt />,
-                    },
-                    {
-                        title: "برگزار شده های تکراری ",
-                        path: "/tkpanel/penalties/duplicateHeldClasses",
-                        icon: <BsArrowRepeat />,
-                    },
-                    {
-                        title: "پرداخت های مشابه ",
-                        path: "/tkpanel/penalties",
-                        icon: <FaMoneyBill />,
                     },
                 ],
             },

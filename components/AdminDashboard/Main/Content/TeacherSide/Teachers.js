@@ -316,7 +316,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
         e.preventDefault();
         await readTeachers();
     }
-console.log(selectedTeacher);
+
     return (
         <div>
             <BreadCrumbs substituteObj={{ teachers: "استاد" }} />

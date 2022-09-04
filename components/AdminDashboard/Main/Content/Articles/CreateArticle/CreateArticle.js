@@ -8,6 +8,7 @@ import CategoryMultiSelect from "../CategoryMultiSelect/CategoryMultiSelect";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
+import TimePicker from "../../../../../TimePicker/TimePicker";
 import Box from "../../Elements/Box/Box";
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../Editor/Editor"), {
@@ -294,6 +295,8 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
         setCategories2([]);
     }, [selectedCatg1]);
 
+    const [time, setTime] = useState({ hour: "00", min: "00" });
+
     return (
         <form onSubmit={handleSubmit}>
             {/* Alert */}
@@ -422,7 +425,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                     زمان انتشار :
                                 </label>
                                 <div className="form-control">
-                                    <input
+                                    {/* <input
                                         type="time"
                                         step="1"
                                         name="time"
@@ -436,7 +439,8 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                         autoComplete="off"
                                         disabled={Boolean(formData?.id)}
                                         placeholder="ffff"
-                                    />
+                                    /> */}
+                                    <TimePicker time={time} setTime={setTime} />
                                 </div>
                             </div>
                         </div>

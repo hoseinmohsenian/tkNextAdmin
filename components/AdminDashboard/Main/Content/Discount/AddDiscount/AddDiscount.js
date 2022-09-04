@@ -16,6 +16,7 @@ import {
 
 function AddDiscount() {
     const [formData, setFormData] = useState({
+        desc: "",
         name: "",
         percent: "5",
         value: "",
@@ -45,6 +46,7 @@ function AddDiscount() {
         e.preventDefault();
 
         if (
+            formData.desc.trim() &&
             formData.name.trim() &&
             Number(formData.number) !== 0 &&
             formData.start_at.year &&
@@ -191,6 +193,22 @@ function AddDiscount() {
 
             <Box title="کوپن تخفیف جدید">
                 <div className="form">
+                    <div className="input-wrapper">
+                        <label htmlFor="desc" className="form__label">
+                            عنوان :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="text"
+                                name="desc"
+                                id="desc"
+                                className="form__input"
+                                onChange={handleOnChange}
+                                spellCheck={false}
+                                required
+                            />
+                        </div>
+                    </div>
                     <div className="input-wrapper">
                         <label htmlFor="name" className="form__label">
                             کد تخفیف :<span className="form__star">*</span>

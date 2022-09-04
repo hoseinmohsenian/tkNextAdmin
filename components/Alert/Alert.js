@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import styles from "./Alert.module.css";
 import { IoMdClose } from "react-icons/io";
 
-const Alert = ({ type, message, removeAlert, envoker, time = 5000, show }) => {
+const Alert = ({ type, message, removeAlert, time = 5000, show }) => {
     const showAlert = Boolean(show) && typeof show !== "object";
 
     useEffect(() => {
@@ -10,7 +10,7 @@ const Alert = ({ type, message, removeAlert, envoker, time = 5000, show }) => {
             removeAlert();
         }, time);
         return () => clearTimeout(timeout);
-    }, [envoker]);
+    }, [time, show]);
 
     if (!showAlert) {
         return null;

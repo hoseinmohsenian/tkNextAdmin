@@ -32,7 +32,7 @@ function CreateProfile({ token, countries }) {
     const [formData, setFormData] = useState({
         name_family: "",
         mobile: "",
-        gender: 1,
+        gender: 0,
         second_mobile: "",
         second_mobile_type: 0,
         email: "",
@@ -83,7 +83,6 @@ function CreateProfile({ token, countries }) {
 
         if (
             formData.name_family.trim() &&
-            (Number(formData.gender) === 1 || Number(formData.gender) === 2) &&
             formData.mobile.trim() &&
             selectedPreCode.id
         ) {
@@ -91,7 +90,9 @@ function CreateProfile({ token, countries }) {
             fd.append("name_family", formData.name_family);
             fd.append("mobile", formData.mobile);
             fd.append("mobile_country", `+${selectedPreCode.code}`);
-            fd.append("gender", Number(formData.gender));
+            if (Number(formData.gender)) {
+                fd.append("gender", Number(formData.gender));
+            }
             if (selectedPreCode2.id && formData.second_mobile) {
                 fd.append("second_mobile", formData.second_mobile);
                 fd.append("second_mobile_country", `+${selectedPreCode2.code}`);
@@ -358,6 +359,21 @@ function CreateProfile({ token, countries }) {
                             جنسیت :<span className="form__star">*</span>
                         </label>
                         <div className="form-control form-control-radio">
+                            <div className="input-radio-wrapper">
+                                <label htmlFor="none" className="radio-title">
+                                    انتخاب کنید
+                                </label>
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    onChange={handleOnChange}
+                                    value={0}
+                                    checked={Number(formData.gender) === 0}
+                                    id="none"
+                                    required
+                                />
+                            </div>
+
                             <div className="input-radio-wrapper">
                                 <label htmlFor="male" className="radio-title">
                                     آقا

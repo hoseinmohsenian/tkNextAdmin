@@ -9,22 +9,58 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import { Typography } from "antd";
 import Ellipsis from "../../../../../Ellipsis/Ellipsis";
+import styles from "../Teachers.module.css";
+
+const filtersSchema = { teacher_name: "" };
+const appliedFiltersSchema = { teacher_name: false };
 
 function TeachersScore(props) {
     const {
         fetchedTeachers: { data, ...restData },
         token,
+        searchData,
     } = props;
     const [teachers, setTeachers] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [ellipsis, setEllipsis] = useState(
         [...Array(data.length)].fill(true)
     );
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
 
-    const readTeachers = async (page = 1) => {
+    const readTeachers = async (page = 1, avoidFilters = false) => {
+        setLoading(true);
         let searchParams = {};
+
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== 0 &&
+            filters[key] !== undefined &&
+            filters[key];
+
+        // Constructing search parameters
+        let searchQuery = "";
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams = {
+                        ...searchParams,
+                        [key]: filters[key],
+                    };
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
+        searchQuery += `page=${page}`;
 
         if (page !== 1) {
             searchParams = {
@@ -40,7 +76,7 @@ function TeachersScore(props) {
 
         try {
             const res = await fetch(
-                `${BASE_URL}/admin/teacher/point?page=${page}`,
+                `${BASE_URL}/admin/teacher/point?${searchQuery}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -60,6 +96,42 @@ function TeachersScore(props) {
         } catch (error) {
             console.log("Error reading teachers", error);
         }
+        setLoading(false);
+    };
+
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readTeachers(1, true);
+        router.push({
+            pathname: `/score/minus/getAllScores`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await readTeachers();
     };
 
     return (
@@ -79,6 +151,68 @@ function TeachersScore(props) {
                     color: "primary",
                 }}
             >
+                <div className={styles["search"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="teacher_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                        style={{ minWidth: 70, maxWidth: 70 }}
+                                    >
+                                        نام استاد‌ :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="teacher_name"
+                                            id="teacher_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.teacher_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className={styles["btn-wrapper"]}>
+                                    <button
+                                        type="submit"
+                                        className={`btn primary ${styles["btn"]}`}
+                                        disabled={loading}
+                                    >
+                                        {loading
+                                            ? "در حال جستجو ..."
+                                            : "اعمال فیلتر"}
+                                    </button>
+                                    {!showFilters() && (
+                                        <button
+                                            type="button"
+                                            className={`btn danger-outline ${styles["btn"]}`}
+                                            disabled={loading}
+                                            onClick={() => removeFilters()}
+                                        >
+                                            {loading
+                                                ? "در حال انجام ..."
+                                                : "حذف فیلتر"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
                 <ReactTooltip className="tooltip" />
 
                 <div className="table__wrapper table__wrapper--wrap">

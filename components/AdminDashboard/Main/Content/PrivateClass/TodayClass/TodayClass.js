@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "./TodayClass.module.css";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
@@ -10,6 +9,10 @@ import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
+import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
+import API from "../../../../../../api";
+import Alert from "../../../../../Alert/Alert";
 
 const filtersSchema = {
     user_name: "",
@@ -33,8 +36,8 @@ const appliedFiltersSchema = {
 function TodayClass(props) {
     const {
         fetchedClasses: { data, ...restData },
-        token,
         fetchedMeta,
+        shamsi_date_obj,
     } = props;
     const [classes, setClasses] = useState(data);
     const [meta, setMeta] = useState(fetchedMeta);
@@ -44,9 +47,19 @@ function TodayClass(props) {
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
+    const [selectedDate, setSelectedDate] = useState(shamsi_date_obj);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
+    const [alertData, setAlertData] = useState({
+        show: false,
+        message: "",
+        type: "",
+    });
+
+    const showAlert = (show, type, message) => {
+        setAlertData({ show, type, message });
+    };
 
     const handleOnChange = (e) => {
         const type = e.target.type;
@@ -61,6 +74,19 @@ function TodayClass(props) {
         setLoading(true);
 
         let searchQuery = "";
+
+        let date = moment
+            .from(
+                `${selectedDate?.year}/${selectedDate?.month}/${selectedDate?.day}`,
+                "fa",
+                "YYYY/MM/DD"
+            )
+            .locale("en")
+            .format("YYYY/MM/DD")
+            .replace("/", "-")
+            .replace("/", "-");
+        searchQuery = `date=${date}&`;
+
         if (!avoidFilters) {
             let tempFilters = { ...appliedFilters };
             Object.keys(filters).forEach((key) => {
@@ -93,23 +119,24 @@ function TodayClass(props) {
         });
 
         try {
-            const res = await fetch(
-                `${BASE_URL}/admin/classroom/today?${searchQuery}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
+            const { data, status, response } = await API.get(
+                `/admin/classroom/today?${searchQuery}`
             );
-            const {
-                data: { data, ...restData },
-                meta,
-            } = await res.json();
-            setClasses(data);
-            setPagData(restData);
-            setMeta(meta);
+
+            if (status === 200) {
+                const { data: listData, ...restData } = data.data;
+                setClasses(listData);
+                setPagData(restData);
+                setMeta(data.meta);
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -145,6 +172,8 @@ function TodayClass(props) {
             <BreadCrumbs
                 substituteObj={{ class: "کلاس", today: "کلاس های امروز" }}
             />
+
+            <Alert {...alertData} removeAlert={showAlert} />
 
             <Box title="کلاس های امروز">
                 {openModal && (
@@ -229,6 +258,32 @@ function TodayClass(props) {
 
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
+                        <div className={`${styles["search-row"]}`}>
+                            <div
+                                className={`input-wrapper ${styles["input-wrapper"]}`}
+                            >
+                                <label
+                                    htmlFor="publish_time"
+                                    className={`form__label ${styles["search-label"]}`}
+                                >
+                                    تاریخ‌ :
+                                </label>
+                                <div className="form-control">
+                                    <DatePicker
+                                        value={selectedDate}
+                                        onChange={setSelectedDate}
+                                        shouldHighlightWeekends
+                                        locale="fa"
+                                        wrapperClassName="date-input-wrapper"
+                                        inputClassName="date-input"
+                                        colorPrimary="#545cd8"
+                                        inputPlaceholder="انتخاب کنید"
+                                        calendarPopperPosition="bottom"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div className="input-wrapper">

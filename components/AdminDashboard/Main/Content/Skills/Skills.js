@@ -288,7 +288,7 @@ function Skills({ fetchedSkills: { data, ...restData }, token }) {
                                 <tr className="table__body-row" key={sk?.id}>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`${SITE_URL}/find-teachers/${sk.language?.english_name}/${sk.speciality?.english_name}/${sk.url}`}
+                                            href={`${SITE_URL}/find-teachers/${sk.language?.url}/${sk.speciality?.english_name}/${sk.url}`}
                                         >
                                             <a
                                                 className="table__body-link"

@@ -8,13 +8,16 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { BASE_URL } from "../../../../../../constants/index";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import Pagination from "../../Pagination/Pagination";
 
 function TeacherIncome({ token }) {
-    const [chartData, setChartData] = useState({});
+    const [chartData, setChartData] = useState([]);
+    const [pagData, setPagData] = useState({});
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
+    console.log(chartData);
 
     // Chart init
     Chart.defaults.font = {
@@ -65,19 +68,21 @@ function TeacherIncome({ token }) {
             .replace("/", "-");
     };
 
-    const readData = async () => {
+    const readData = async (page = 1) => {
         setLoading(true);
         try {
             let from = "",
                 to = "";
             if (startDate?.year) {
-                from = `start=${convertDate(startDate)}&`;
+                from = `start=${convertDate(startDate)}`;
             }
             if (endDate?.year) {
                 to = `end=${convertDate(endDate)}`;
             }
+            let query = `page=${page}&${from}&${to}`;
+
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/teacher/income?${from}${to}`,
+                `${BASE_URL}/admin/accounting/teacher/income?${query}`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -87,8 +92,11 @@ function TeacherIncome({ token }) {
                 }
             );
             if (res.ok) {
-                const { data } = await res.json();
+                const {
+                    data: { data, ...restData },
+                } = await res.json();
                 setChartData(data);
+                setPagData(restData);
             } else {
                 const { error } = await res.json();
                 showAlert(
@@ -245,6 +253,10 @@ function TeacherIncome({ token }) {
                         </tbody>
                     </table>
                 </div>
+
+                {chartData.length !== 0 && (
+                    <Pagination read={readData} pagData={pagData} />
+                )}
             </Box>
         </div>
     );

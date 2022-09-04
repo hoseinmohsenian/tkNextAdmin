@@ -63,7 +63,7 @@ function CategoryMultiSelect(props) {
             setSelected((oldSelects) => [...oldSelects, newItem]);
             onAdd(newItem?.id, pins[ind]);
         } else {
-            // showAlert(true, "warning", errorMessage);
+            showAlert(true, "warning", errorMessage);
             // message.error({
             //     content: errorMessage,
             //     style: {
@@ -73,7 +73,6 @@ function CategoryMultiSelect(props) {
             //     // className: styles["ant-message"],
             //     transitionName: "move-down",
             // });
-            alert(errorMessage);
 
             // notification.error({
             //     message: errorMessage,
