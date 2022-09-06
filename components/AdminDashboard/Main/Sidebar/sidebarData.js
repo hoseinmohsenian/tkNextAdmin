@@ -187,6 +187,11 @@ export default [
                         path: "/tkpanel/semi-private-admin/all-sessions",
                         icon: <IoIosListBox />,
                     },
+                    {
+                        title: "زبان آموزان",
+                        path: "/tkpanel/semi-private-admin/students",
+                        icon: <FaUserGraduate />,
+                    },
                 ],
             },
             {

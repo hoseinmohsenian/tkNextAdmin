@@ -18,6 +18,7 @@ function SemiPrivate(props) {
     const [classes, setClasses] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const [alertData, setAlertData] = useState({
         show: false,
@@ -68,7 +69,7 @@ function SemiPrivate(props) {
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
-    console.log(classes);
+
     const changeStatus = async (class_id, status, i) => {
         loadingHandler(i, true);
 
@@ -105,6 +106,29 @@ function SemiPrivate(props) {
         let temp = [...loadings];
         temp[ind] = value;
         setLoadings(() => temp);
+    };
+
+    const readClassStudents = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/semi-private/student/${selectedClass.id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                const { data } = await res.json();
+                setSelectedClass({ ...selectedClass, students: data });
+            }
+        } catch (error) {
+            console.log("Error reading class students", error);
+        }
+        setLoading(false);
     };
 
     return (
@@ -206,6 +230,37 @@ function SemiPrivate(props) {
                                     {selectedClass?.student_number
                                         ? `${selectedClass.student_number} نفر`
                                         : "-"}
+
+                                    {!selectedClass.students && (
+                                        <button
+                                            type="button"
+                                            onClick={readClassStudents}
+                                            className={`action-btn primary-outline`}
+                                            style={{
+                                                marginRight: 10,
+                                            }}
+                                            disabled={loading}
+                                        >
+                                            نمایش زبان آموزان
+                                        </button>
+                                    )}
+
+                                    {selectedClass.students && (
+                                        <ul
+                                            style={{
+                                                marginTop: 10,
+                                                listStyleType: "disc",
+                                            }}
+                                        >
+                                            {selectedClass.students?.map(
+                                                (std) => (
+                                                    <li key={std.id}>
+                                                        {std.name_family}
+                                                    </li>
+                                                )
+                                            )}
+                                        </ul>
+                                    )}
                                 </span>
                             </div>
                         </div>

@@ -302,7 +302,7 @@ function MultiSession() {
                                     </td>
                                     <td className="table__body-item">
                                         {item?.teacher_name}
-                                        {item.status === 0 && (
+                                        {item.teacher_status === 0 && (
                                             <span
                                                 data-tip="وضعیت غیرفعال"
                                                 className="danger-color"

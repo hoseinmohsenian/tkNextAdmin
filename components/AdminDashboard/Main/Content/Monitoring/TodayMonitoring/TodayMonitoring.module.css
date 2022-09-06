@@ -23,10 +23,12 @@
 }
 .btn-wrapper {
     display: flex;
-    margin: 0.4rem 0;
+    justify-content: center;
+    margin: 0.8rem 0 0.4rem;
 }
 .btn-wrapper .btn {
     padding: 0.3rem;
+    margin: 0 0.2rem;
     width: 100px;
     display: flex;
     align-items: center;
@@ -46,7 +48,7 @@
 }
 
 @media all and (min-width: 576px) {
-    .btn-wrapper {
-        margin: 0;
+    .search-col {
+        padding-left: 0.6rem;
     }
 }

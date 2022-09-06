@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import Link from "next/link";
 import styles from "./Header.module.css";
 import Image from "next/image";
 import DefaultImg from "../../../public/images/tikka-default.png";
+import Logo from "../../../public/images/logopanel.png";
 import Toggle from "../../Toggle/Toggle";
 import { useGlobalContext } from "../../../context";
 import { IoIosArrowDown } from "react-icons/io";
@@ -37,11 +38,23 @@ function Header({ showSidebar, setShowSidebar }) {
 
     return (
         <header className={styles.header}>
-            <div>
+            <div className={styles.right}>
                 <Toggle
                     value={showSidebar}
                     onClick={() => setShowSidebar(!showSidebar)}
                 />
+
+                <div className={styles["logo"]}>
+                    <Link href="/">
+                        <a style={{ display: "flex" }}>
+                            <Image
+                                src={Logo}
+
+                                // height={40} width={40}
+                            />
+                        </a>
+                    </Link>
+                </div>
             </div>
 
             <div className={styles.left}>
@@ -115,4 +128,4 @@ function Header({ showSidebar, setShowSidebar }) {
     );
 }
 
-export default Header;
+export default memo(Header);

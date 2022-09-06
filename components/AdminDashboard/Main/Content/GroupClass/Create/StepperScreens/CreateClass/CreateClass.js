@@ -1031,6 +1031,21 @@ function CreateClass(props) {
                             spellCheck={false}
                         />
                     </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="url" className="form__label">
+                            URL :
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="text"
+                                name="url"
+                                id="url"
+                                className="form__input"
+                                onChange={handleOnChange}
+                                spellCheck={false}
+                            />
+                        </div>
+                    </div>
 
                     <div className={styles["step__row"]}>
                         {errors?.length !== 0 && <Error errorList={errors} />}

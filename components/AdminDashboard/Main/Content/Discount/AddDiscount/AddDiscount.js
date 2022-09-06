@@ -53,6 +53,7 @@ function AddDiscount() {
             formData.expired_at.year
         ) {
             const fd = new FormData();
+            fd.append("desc", formData.desc);
             fd.append("name", formData.name);
             fd.append("number", Number(formData.number));
             fd.append("active_status", Number(formData.active_status));

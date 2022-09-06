@@ -13,6 +13,7 @@ function CreateGroupClass({ token, levels }) {
         image: null,
         title_seo: "",
         seo_desc: "",
+        url: "",
         desc: "",
         teacher_name: "",
         level_id: 0,

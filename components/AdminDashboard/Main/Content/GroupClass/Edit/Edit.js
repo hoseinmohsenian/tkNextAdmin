@@ -6,7 +6,13 @@ import CreateClass from "./StepperScreens/EditClass/EditClass";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function EditGroupClass({ token, languages, levels, fetchedClass }) {
-    const [formData, setFormData] = useState(fetchedClass);
+    const [formData, setFormData] = useState({
+        ...fetchedClass,
+        session: fetchedClass.session?.map((session) => ({
+            ...session,
+            time: { hour: 0, min: 0 },
+        })),
+    });
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",

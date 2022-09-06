@@ -82,7 +82,7 @@ function AddNewClass({ token, courses }) {
                     "YYYY/MM/DD"
                 )
                     .locale("en")
-                    .format("YYYY-MM-D"),
+                    .format("YYYY-MM-DD"),
                 ids: item.hours.map((hour) =>
                     getKeyfromHourandMin(hour.start, hour.min)
                 ),
@@ -189,15 +189,21 @@ function AddNewClass({ token, courses }) {
         }
     };
 
+    const formatNumber = (number) =>
+        number.toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+        });
+
     const readTeacherFreeTime = async (weekInd = 0) => {
         setLoading(true);
 
         const today = new Date();
         const futureDay = new Date();
         futureDay.setDate(today.getDate() + weekInd * 7 + 1);
-        let start = `${futureDay.getFullYear()}-${
+        let start = `${formatNumber(futureDay.getFullYear())}-${formatNumber(
             futureDay.getMonth() + 1
-        }-${futureDay.getDate()}`;
+        )}-${formatNumber(futureDay.getDate())}`;
 
         try {
             const res = await fetch(

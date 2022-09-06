@@ -34,6 +34,7 @@ function EditDiscount({ token, discount }) {
         e.preventDefault();
 
         if (
+            formData.desc.trim() &&
             formData.name.trim() &&
             Number(formData.number) !== 0 &&
             formData.start_at.year &&

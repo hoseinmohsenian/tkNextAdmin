@@ -14,11 +14,15 @@ const Editor = dynamic(() => import("../../Editor/Editor"), {
     ssr: false,
 });
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import TimePicker from "../../../../../TimePicker/TimePicker";
 
 const categorySchema = { id: "", title: "", type: "" };
 
 function EditArticle({ token, categoriesLevel1, languages, article }) {
-    const [formData, setFormData] = useState(article);
+    const [formData, setFormData] = useState({
+        ...article,
+        time: { hour: 0, min: 0 },
+    });
     const [desc, setDesc] = useState(article.desc);
     const [selectedDate, setSelectedDate] = useState();
     const [selectedCatg1, setSelectedCatg1] = useState(
@@ -113,7 +117,8 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
             if (Number(formData.pin) !== article.pin) {
                 fd.append("pin", Number(formData.pin));
             }
-            if (selectedDate.year && formData.time) {
+            let time = `${formData.time.hour}:${formData.time.min}`;
+            if (selectedDate.year && time) {
                 let date = moment
                     .from(
                         `${selectedDate?.year}/${selectedDate?.month}/${selectedDate?.day}`,
@@ -124,7 +129,7 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                     .format("YYYY/MM/DD")
                     .replace("/", "-")
                     .replace("/", "-");
-                let publish_time = `${date} ${formData.time}`;
+                let publish_time = `${date} ${time}`;
                 if (formData.publish_time !== article.publish_time) {
                     fd.append("publish_time", publish_time);
                 }
@@ -297,6 +302,17 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
         setSelectedCatg3([]);
     };
 
+    const goToToday = () => {
+        const currDate = {
+            year: Number(moment().format("YYYY")),
+            month: Number(moment().format("MM")),
+            day: Number(moment().format("DD")),
+        };
+        const hour = moment().format("HH");
+        setSelectedDate(currDate);
+        setFormData({ ...formData, time: { hour: Number(hour), min: 0 } });
+    };
+
     useEffect(() => {
         let shamsi_date = moment
             .from(`${article.publish_time.substring(0, 8)}`, "en", "YYYY/MM/DD")
@@ -310,7 +326,10 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
 
         setFormData({
             ...formData,
-            time: article?.publish_time?.substring(11, 19),
+            time: {
+                hour: Number(article?.publish_time?.substring(11, 13)),
+                min: Number(article?.publish_time?.substring(14, 16)),
+            },
         });
 
         if (selectedCatg1.id) {
@@ -458,23 +477,27 @@ function EditArticle({ token, categoriesLevel1, languages, article }) {
                                     زمان انتشار :
                                 </label>
                                 <div className="form-control">
-                                    <input
-                                        type="time"
-                                        step="1"
-                                        name="time"
-                                        id="time"
-                                        className={`form__input form__input-time`}
-                                        style={{
-                                            width: 150,
+                                    <TimePicker
+                                        value={formData.time}
+                                        onChange={(value) => {
+                                            setFormData({
+                                                ...formData,
+                                                time: value,
+                                            });
                                         }}
-                                        onChange={handleOnChange}
-                                        value={formData?.time || ""}
-                                        autoComplete="off"
-                                        placeholder="ffff"
                                     />
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div style={{ marginTop: -10 }}>
+                        <button
+                            className="action-btn primary-outline"
+                            type="button"
+                            onClick={goToToday}
+                        >
+                            اکنون منتشر شود
+                        </button>
                     </div>
                     <div className={`row ${styles["row"]}`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>

@@ -357,6 +357,7 @@ function UsersLanding(props) {
                                 </th>
                                 <th className="table__head-item">هدف</th>
                                 <th className="table__head-item">زبان‌</th>
+                                <th className="table__head-item">نام لندینگ</th>
                                 <th className="table__head-item">توضیحات ادمین</th>
                                 <th className="table__head-item">روز</th>
                                 <th className="table__head-item">وضعیت</th>
@@ -391,6 +392,9 @@ function UsersLanding(props) {
                                     </td>
                                     <td className="table__body-item">
                                         {landing?.language_name}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {landing?.landing_title || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <div style={{ display:"flex", alignItems: "center" }}>

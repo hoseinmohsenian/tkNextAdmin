@@ -292,14 +292,12 @@ function Articles(props) {
                         <div className={"modal__wrapper"}>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>URL</span>
-                                &nbsp;:&nbsp;
                                 <span className={"modal__item-body"}>
                                     {selectedArticle?.url}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>نوع</span>
-                                &nbsp;:&nbsp;
                                 <span className={"modal__item-body"}>
                                     {selectedArticle?.type === 1
                                         ? "ویدئو"
@@ -308,7 +306,6 @@ function Articles(props) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>پین</span>
-                                &nbsp;:&nbsp;
                                 <span className={"modal__item-body"}>
                                     {selectedArticle?.pin === 1
                                         ? "پین شده"

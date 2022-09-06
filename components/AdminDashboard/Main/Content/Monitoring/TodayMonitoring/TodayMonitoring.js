@@ -14,10 +14,15 @@ import ReactTooltip from "react-tooltip";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import { Select } from "antd";
 
+const filtersSchema = { user_name: "", teacher_name: "" };
+const appliedFiltersSchema = { user_name: false, teacher_name: false };
+
 function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
     const [formData, setFormData] = useState(monitorings);
     const [selectedDate, setSelectedDate] = useState(shamsi_date_obj);
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -43,9 +48,27 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
         setLoadings(() => temp);
     };
 
-    const readMonitoring = async () => {
+    const readMonitoring = async (avoidFilters = false) => {
         // Constructing search parameters
         let searchQuery = "";
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== 0 &&
+            filters[key] !== undefined &&
+            filters[key];
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+            setAppliedFilters(tempFilters);
+        }
+
         let date = moment
             .from(
                 `${selectedDate?.year}/${selectedDate?.month}/${selectedDate?.day}`,
@@ -56,7 +79,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
             .format("YYYY/MM/DD")
             .replace("/", "-")
             .replace("/", "-");
-        searchQuery = `date=${date}`;
+        searchQuery += `date=${date}`;
 
         try {
             setLoading(true);
@@ -130,6 +153,37 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
         if (Number(monitoring_follower) !== 0) {
             addFollower(i, monitoring_id, monitoring_follower);
         }
+    };
+
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readMonitoring(true);
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await readTeachers();
     };
 
     return (
@@ -222,6 +276,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                     className={`form__label ${styles["search-label"]}`}
                                 >
                                     تاریخ‌ :
+                                    <span className="form__star">*</span>
                                 </label>
                                 <div className="form-control">
                                     <DatePicker
@@ -237,16 +292,75 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                     />
                                 </div>
                             </div>
-                            <div className={styles["btn-wrapper"]}>
+                        </div>
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام زبان آموز :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="user_name"
+                                            id="user_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.user_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="teacher_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        نام استاد :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="teacher_name"
+                                            id="teacher_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.teacher_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readMonitoring()}
+                            >
+                                {loading ? "در حال جستجو ..." : "جستجو"}
+                            </button>
+                            {showFilters() && (
                                 <button
                                     type="button"
-                                    className={`btn primary ${styles["btn"]}`}
+                                    className={`btn danger-outline ${styles["btn"]}`}
                                     disabled={loading}
-                                    onClick={() => readMonitoring()}
+                                    onClick={() => removeFilters()}
                                 >
-                                    {loading ? "در حال جستجو ..." : "جستجو"}
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
                                 </button>
-                            </div>
+                            )}
                         </div>
                     </form>
                 </div>

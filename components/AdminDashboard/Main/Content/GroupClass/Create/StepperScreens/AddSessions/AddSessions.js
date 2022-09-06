@@ -8,14 +8,19 @@ import { IoAddSharp } from "react-icons/io5";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
-import { TimePicker } from "antd";
-// import TimePicker from "../../../../../TimePicker/TimePicker"
+import TimePicker from "../../../../../../../TimePicker/TimePicker";
 import API from "../../../../../../../../api";
 
 function AddSessions(props) {
     const { showAlert, alertData, formData, setFormData } = props;
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+
+    const formatNumber = (number) =>
+        number.toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+        });
 
     const handleSubmit = async () => {
         let emptySessionInput = false;
@@ -43,10 +48,13 @@ function AddSessions(props) {
                     .format("YYYY/MM/DD")
                     .replace("/", "-")
                     .replace("/", "-");
+                let time = `${formatNumber(
+                    formData.session[i].time.hour
+                )}:${formatNumber(formData.session[i].time.min)}`;
                 let newItem = {
                     title: formData.session[i].title,
                     desc: formData.session[i].desc,
-                    date: `${date}T${formData.session[i].time}:00`,
+                    date: `${date}T${time}:00`,
                 };
                 res.push(newItem);
             }
@@ -62,7 +70,7 @@ function AddSessions(props) {
         newRow = {
             ...newRow,
             title: `جلسه ${currLen + 1}`,
-            time: "00:00",
+            time: { hour: 0, min: 0 },
         };
         return newRow;
     };
@@ -301,27 +309,14 @@ function AddSessions(props) {
                                                 </label>
                                                 <div className="form-control">
                                                     <TimePicker
-                                                        minuteStep={30}
-                                                        format="HH:mm"
-                                                        placeholder="انتخاب ساعت"
-                                                        bordered={false}
-                                                        onChange={(value) =>
+                                                        value={item.time}
+                                                        onChange={(value) => {
                                                             handleOnChange(
-                                                                moment(
-                                                                    value
-                                                                ).format(
-                                                                    "HH:mm"
-                                                                ),
+                                                                value,
                                                                 i,
                                                                 "time"
-                                                            )
-                                                        }
-                                                        value={moment(
-                                                            item.time || "",
-                                                            "HH:mm"
-                                                        )}
-                                                        className="time-picker"
-                                                        popupClassName="popup-time-picker"
+                                                            );
+                                                        }}
                                                     />
                                                 </div>
                                             </div>

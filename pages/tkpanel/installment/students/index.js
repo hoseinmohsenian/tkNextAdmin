@@ -4,7 +4,7 @@ import Header from "../../../../components/Head/Head";
 import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function StudentsCreditsPage({ students, teachers, notAllowed }) {
+function StudentsCreditsPage({ students, teachers, notAllowed, searchData }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -15,6 +15,7 @@ function StudentsCreditsPage({ students, teachers, notAllowed }) {
                 <StudentsCredit
                     fetchedStudents={students}
                     teachers={teachers}
+                    searchData={searchData}
                 />
             </AdminDashboard>
         </>
@@ -36,8 +37,25 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    const { page, teacher_name } = context?.query;
+    let searchData = {
+        teacher_name: "",
+    };
+    let searchParams = "";
+    if (isKeyValid(teacher_name)) {
+        searchParams += `teacher_name=${teacher_name}&`;
+        searchData = { ...searchData, teacher_name: teacher_name };
+    }
+    if (isKeyValid(page)) {
+        if (Number(page) > 0) {
+            searchParams += `page=${page}`;
+            searchParams = { ...searchParams, page: page };
+        }
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/credit/enable`, {
+        fetch(`${BASE_URL}/admin/credit/enable?${searchParams}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -64,7 +82,8 @@ export async function getServerSideProps(context) {
     return {
         props: {
             students: dataArr[0].data,
-            teachers: dataArr[1].data,
+            teachers: dataArr[1].data?.data || [],
+            searchData,
         },
     };
 }

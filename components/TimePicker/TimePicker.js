@@ -1,34 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import styles from "./TimePicker.module.css";
-const TimePicker = ({ time, setTime, className }) => {
-    const [isNight, setIsNight] = useState(false);
+const TimePicker = ({ value, onChange, className }) => {
+    const isNight = !(value.hour >= 0 && value.hour < 12);
     const [showTimePicker, setShowTimePicker] = useState(false);
-
-    useEffect(() => {
-        if (time.hour >= 0 && time.hour < 12) {
-            setIsNight(false);
-        } else {
-            setIsNight(true);
-        }
-    }, [time.hour]);
 
     const handleUp = (type) => {
         if (type === "hour") {
-            let hour = time.hour;
+            let hour = value.hour;
 
             if (hour + 1 >= 24) {
                 hour = 0;
             } else {
                 hour += 1;
             }
-            setTime({ ...time, hour });
+            onChange({ ...value, hour });
         } else if (type === "min") {
-            let min = time.min;
+            let min = value.min;
             if (min + 30 >= 60) min = 0;
             else min += 30;
-            setTime({
-                ...time,
+            onChange({
+                ...value,
                 min,
             });
         }
@@ -38,8 +30,8 @@ const TimePicker = ({ time, setTime, className }) => {
         const { value } = e.target;
 
         if (value >= 0 && value < 24) {
-            setTime({
-                ...time,
+            onChange({
+                ...value,
                 hour: value,
             });
         }
@@ -47,31 +39,31 @@ const TimePicker = ({ time, setTime, className }) => {
 
     const handleDown = (type) => {
         if (type === "hour") {
-            let hour = time.hour;
+            let hour = value.hour;
             if (hour - 1 < 0) {
                 hour = 0;
             } else {
                 hour -= 1;
             }
-            setTime({ ...time, hour });
+            onChange({ ...value, hour });
         } else if (type === "min") {
-            let min = time.min;
+            let min = value.min;
             if (min - 30 < 0) min = 0;
             else min -= 30;
-            setTime({
-                ...time,
+            onChange({
+                ...value,
                 min,
             });
         }
     };
 
     return (
-        <div>
+        <>
             <input
                 readOnly
                 type="text"
-                className={className}
-                value={`${time.hour}:${time.min == 0 ? "00" : time.min}`}
+                className={`form__input ${className}`}
+                value={`${value.hour}:${value.min == 0 ? "00" : value.min}`}
                 onClick={setShowTimePicker}
             />
             {showTimePicker && (
@@ -79,7 +71,6 @@ const TimePicker = ({ time, setTime, className }) => {
                     <div className={styles["modal"]}>
                         <div>
                             <p
-                                c
                                 style={{
                                     fontSize: "0.8rem",
                                     width: "70px",
@@ -96,11 +87,12 @@ const TimePicker = ({ time, setTime, className }) => {
                             </p>
                         </div>
                         <div className={styles["container"]}>
-                            <div className={`col-5 ${styles.time}`}>
+                            <div className={`col-xs-5 ${styles.time}`}>
                                 <div>دقیقه</div>
                                 <div className={styles["box-wrapper"]}>
                                     <div>
                                         <button
+                                            type="button"
                                             onClick={() => handleUp("min")}
                                             className={`btn ${styles["arrow-btn"]}`}
                                         >
@@ -111,10 +103,11 @@ const TimePicker = ({ time, setTime, className }) => {
                                         className={styles.timeInput}
                                         type="number"
                                         readOnly
-                                        value={time.min}
+                                        value={value.min}
                                     />
                                     <div>
                                         <button
+                                            type="button"
                                             onClick={() => handleDown("min")}
                                             className={`btn ${styles["arrow-btn"]}`}
                                         >
@@ -123,14 +116,15 @@ const TimePicker = ({ time, setTime, className }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div clasName={`col-2 ${styles["devider"]}`}>
+                            <div clasName={`col-xs-2 ${styles["devider"]}`}>
                                 <span> : </span>
                             </div>
-                            <div className={`col-5 ${styles.time}`}>
+                            <div className={`col-xs-5 ${styles.time}`}>
                                 <div>ساعت</div>
                                 <div className={styles["box-wrapper"]}>
                                     <div>
                                         <button
+                                            type="button"
                                             onClick={() => handleUp("hour")}
                                             className={`btn ${styles["arrow-btn"]}`}
                                         >
@@ -141,10 +135,11 @@ const TimePicker = ({ time, setTime, className }) => {
                                         className={styles.timeInput}
                                         type="number"
                                         onChange={handleChangeHour}
-                                        value={time.hour}
+                                        value={value.hour}
                                     />
                                     <div>
                                         <button
+                                            type="button"
                                             onClick={() => handleDown("hour")}
                                             className={`btn ${styles["arrow-btn"]}`}
                                         >
@@ -159,14 +154,12 @@ const TimePicker = ({ time, setTime, className }) => {
                             onClick={() => setShowTimePicker(false)}
                             className={styles["btn-container"]}
                         >
-                            <button
-                                className={`btn btn-primary ${styles["btn"]}`}
-                            >
+                            <button className={`btn primary ${styles["btn"]}`}>
                                 تایید
                             </button>
                             <button
                                 onClick={() => setShowTimePicker(false)}
-                                className={`btn btn-outline-danger ${styles["btn"]}`}
+                                className={`btn danger-outline ${styles["btn"]}`}
                             >
                                 انصراف
                             </button>
@@ -174,7 +167,7 @@ const TimePicker = ({ time, setTime, className }) => {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 

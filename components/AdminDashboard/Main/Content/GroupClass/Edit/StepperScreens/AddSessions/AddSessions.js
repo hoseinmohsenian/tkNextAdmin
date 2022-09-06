@@ -10,7 +10,7 @@ import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import { BASE_URL } from "../../../../../../../../constants";
-import { TimePicker } from "antd";
+import TimePicker from "../../../../../../../TimePicker/TimePicker";
 
 function AddSessions(props) {
     const { token, showAlert, alertData, formData, setFormData, fetchedClass } =
@@ -21,9 +21,11 @@ function AddSessions(props) {
     );
     const router = useRouter();
 
-    const isMinuteValid = (time) => {
-        return Number(time.substring(3, 5)) % 30 === 0;
-    };
+    const formatNumber = (number) =>
+        number.toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+        });
 
     const handleSubmit = async () => {
         let emptySessionInput = false;
@@ -52,10 +54,13 @@ function AddSessions(props) {
                         .format("YYYY/MM/DD")
                         .replace("/", "-")
                         .replace("/", "-");
+                    let time = `${formatNumber(
+                        formData.session[i].time.hour
+                    )}:${formatNumber(formData.session[i].time.min)}`;
                     let newItem = {
                         title: formData.session[i].title,
                         desc: formData.session[i].desc,
-                        date: `${date}T${formData.session[i].time}:00`,
+                        date: `${date}T${time}:00`,
                     };
                     res.push(newItem);
                 }
@@ -72,7 +77,7 @@ function AddSessions(props) {
         newRow = {
             ...newRow,
             title: `جلسه ${currLen + 1}`,
-            time: "00:00",
+            time: { hour: 0, min: 0 },
         };
         return newRow;
     };
@@ -141,7 +146,10 @@ function AddSessions(props) {
             .format("YYYY/MM/DD")
             .replace("/", "-")
             .replace("/", "-");
-        date = `${date} ${formData.session[i].time}:00`;
+        let time = `${formatNumber(
+            formData.session[i].time.hour
+        )}:${formatNumber(formData.session[i].time.min)}`;
+        date = `${date} ${time}:00`;
         if (fetchedClass.session[i].date.replace(" ", "T") !== date) {
             body = { ...body, date };
         }
@@ -178,11 +186,7 @@ function AddSessions(props) {
 
     const onEditHandler = async (rowInd, id) => {
         if (!isEmpty(rowInd)) {
-            if (!isMinuteValid(formData.session[rowInd].time)) {
-                showAlert(true, "danger", "دقیقه باید ۳۰ یا ۰ باشد");
-            } else {
-                await editSession(rowInd, id);
-            }
+            await editSession(rowInd, id);
         } else {
             showAlert(true, "danger", "لطفا فیلدها را تکمیل کنید");
         }
@@ -226,7 +230,10 @@ function AddSessions(props) {
                     month: Number(shamsi_date?.substring(5, 7)),
                     day: Number(shamsi_date?.substring(8, 10)),
                 },
-                time: formData.session[i].date?.substring(11, 16),
+                time: {
+                    hour: Number(formData.session[i].date?.substring(11, 13)),
+                    min: Number(formData.session[i].date?.substring(14, 16)),
+                },
             };
         }
         setFormData({
@@ -418,32 +425,16 @@ function AddSessions(props) {
                                                 >
                                                     ساعت :
                                                 </label>
-                                                <div
-                                                    className={`form-control ${styles["form-control-time"]}`}
-                                                >
+                                                <div className={`form-control`}>
                                                     <TimePicker
-                                                        minuteStep={30}
-                                                        format="HH:mm"
-                                                        placeholder="انتخاب ساعت"
-                                                        bordered={false}
-                                                        onChange={(value) =>
+                                                        value={item.time}
+                                                        onChange={(value) => {
                                                             handleOnChange(
-                                                                moment(
-                                                                    value
-                                                                ).format(
-                                                                    "HH:mm"
-                                                                ),
+                                                                value,
                                                                 i,
                                                                 "time"
-                                                            )
-                                                        }
-                                                        value={moment(
-                                                            item.time || "",
-                                                            "HH:mm"
-                                                        )}
-                                                        className="time-picker"
-                                                        popupClassName="popup-time-picker"
-                                                        disabled={loadings[i]}
+                                                            );
+                                                        }}
                                                     />
                                                 </div>
                                             </div>

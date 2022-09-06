@@ -8,15 +8,23 @@ import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import API from "../../../../../../api";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
+const filtersSchema = { teacher_name: "" };
+const appliedFiltersSchema = { teacher_name: false };
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
-function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
+function StudentsCredit({
+    fetchedStudents: { data, ...restData },
+    teachers,
+    searchData,
+}) {
     const [list, setList] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [students, setStudents] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [selectedStudent, setSelectedStudent] = useState(studentSchema);
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
@@ -26,8 +34,29 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const router = useRouter();
 
-    const readStudentsCredit = async (page = 1) => {
+    const readStudentsCredit = async (page = 1, avoidFilters = false) => {
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== 0 &&
+            filters[key] !== undefined &&
+            filters[key];
+        let searchQuery = "";
         let searchParams = {};
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams = { ...searchParams, [key]: filters[key] };
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
+        }
+        searchQuery += `page=${page}`;
 
         if (page !== 1) {
             searchParams = {
@@ -43,7 +72,7 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
 
         try {
             const { data, status, response } = await API.get(
-                `/admin/credit/enable`
+                `/admin/credit/enable?${searchQuery}`
             );
 
             if (status === 200) {
@@ -171,6 +200,41 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
         setAlertData({ show, type, message });
     };
 
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readStudentsCredit(1, true);
+        router.push({
+            pathname: `/tkpanel/installment/teachers`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await readStudentsCredit();
+    };
+
     useEffect(() => {
         if (selectedTeacher.id) {
             readStudents();
@@ -191,7 +255,10 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
 
             <Box title="لیست زبان آموزان اعتباری">
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`row ${styles["search-row"]}`}>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
                                 <div
@@ -316,6 +383,51 @@ function StudentsCredit({ fetchedStudents: { data, ...restData }, teachers }) {
                             >
                                 {loading ? "در حال جستجو ..." : "افزودن"}
                             </button>
+                        </div>
+
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div
+                                className={`input-wrapper ${styles["input-wrapper"]}`}
+                            >
+                                <label
+                                    htmlFor="teacher_name"
+                                    className={`form__label`}
+                                >
+                                    نام استاد :
+                                </label>
+                                <div className="form-control">
+                                    <input
+                                        type="text"
+                                        name="teacher_name"
+                                        id="teacher_name"
+                                        className="form__input"
+                                        onChange={filtersOnChangeHandler}
+                                        value={filters?.teacher_name}
+                                        spellCheck={false}
+                                    />
+                                </div>
+                            </div>
+                            <div className={styles["btn-wrapper"]}>
+                                <button
+                                    type="submit"
+                                    className={`btn primary ${styles["btn"]}`}
+                                    disabled={loading}
+                                >
+                                    {loading ? "در حال جستجو ..." : "جستجو"}
+                                </button>
+                                {showFilters() && (
+                                    <button
+                                        type="button"
+                                        className={`btn danger-outline ${styles["btn"]}`}
+                                        disabled={loading}
+                                        onClick={() => removeFilters()}
+                                    >
+                                        {loading
+                                            ? "در حال انجام ..."
+                                            : "حذف فیلتر"}
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </form>
                 </div>

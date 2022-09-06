@@ -10,6 +10,9 @@ import Modal from "../../../../Modal/Modal";
 import styles from "./GroupClass.module.css";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
+import DefaultGCImg from "../../../../../public/images/gc.png";
+import Image from "next/image";
+import { AiFillEye } from "react-icons/ai";
 
 const filtersSchema = {
     teacher_name: "",
@@ -46,6 +49,7 @@ function GroupClass(props) {
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
     const [dModalVisible, setDModalVisible] = useState(false);
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const handleFilterOnChange = (e) => {
@@ -229,6 +233,29 @@ function GroupClass(props) {
         await readClasses();
     };
 
+    const readClassStudents = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/group-class/student/${selectedClass.id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                const { data } = await res.json();
+                setSelectedClass({ ...selectedClass, students: data });
+            }
+        } catch (error) {
+            console.log("Error reading class students", error);
+        }
+        setLoading(false);
+    };
+
     return (
         <div>
             {/* Alert */}
@@ -278,6 +305,41 @@ function GroupClass(props) {
                                 </span>
                                 <span className={"modal__item-body"}>
                                     {selectedClass?.class_capacity} نفر
+                                    {!selectedClass.students && (
+                                        <button
+                                            type="button"
+                                            onClick={readClassStudents}
+                                            className={`action-btn primary-outline`}
+                                            style={{
+                                                marginRight: 10,
+                                            }}
+                                            disabled={loading}
+                                        >
+                                            نمایش زبان آموزان
+                                        </button>
+                                    )}
+                                    {selectedClass.students &&
+                                        selectedClass.students.length === 0 && (
+                                            <div className="warning-color">
+                                                زبان آموزی وجود ندارد!
+                                            </div>
+                                        )}
+                                    {selectedClass.students && (
+                                        <ul
+                                            style={{
+                                                marginTop: 10,
+                                                listStyleType: "disc",
+                                            }}
+                                        >
+                                            {selectedClass.students?.map(
+                                                (std) => (
+                                                    <li key={std.id}>
+                                                        {std.name_family}
+                                                    </li>
+                                                )
+                                            )}
+                                        </ul>
+                                    )}
                                 </span>
                             </div>
                             <div className={"modal__item"}>
@@ -313,7 +375,12 @@ function GroupClass(props) {
                                             alt="تصویر کلاس گروهی"
                                         />
                                     ) : (
-                                        "-"
+                                        <Image
+                                            src={DefaultGCImg}
+                                            alt="تصویر کلاس گروهی"
+                                            height={405}
+                                            width={700}
+                                        />
                                     )}
                                 </span>
                             </div>
@@ -499,6 +566,19 @@ function GroupClass(props) {
                                 <tr className="table__body-row" key={cls.id}>
                                     <td className="table__body-item">
                                         {cls.title}
+                                        <Link
+                                            href={`${SITE_URL}/courses/${cls.url}`}
+                                        >
+                                            <a
+                                                style={{
+                                                    fontSize: 15,
+                                                    marginRight: 6,
+                                                }}
+                                                target="_blank"
+                                            >
+                                                <AiFillEye />
+                                            </a>
+                                        </Link>
                                     </td>
                                     <td className="table__body-item">
                                         {cls.teacher_name}

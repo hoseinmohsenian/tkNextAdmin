@@ -189,6 +189,22 @@ function StudentManualTransactions(props) {
                                     )}
                                 </span>
                             </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تصویر کاربر
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedTransaction.user_image ? (
+                                        <img
+                                            src={selectedTransaction.user_image}
+                                            alt="تصویر کاربر"
+                                            style={{ width: 60, height: 60 }}
+                                        />
+                                    ) : (
+                                        "-"
+                                    )}
+                                </span>
+                            </div>
                         </div>
                     </Modal>
                 )}

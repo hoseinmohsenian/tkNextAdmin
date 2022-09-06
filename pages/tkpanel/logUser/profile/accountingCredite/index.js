@@ -5,7 +5,12 @@ import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function StudentManualTransactionsPage({ transactions, token, notAllowed }) {
+function StudentManualTransactionsPage({
+    transactions,
+    token,
+    notAllowed,
+    searchData,
+}) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -16,6 +21,7 @@ function StudentManualTransactionsPage({ transactions, token, notAllowed }) {
                 <StudentManualTransactions
                     fetchedTransactions={transactions}
                     token={token}
+                    searchData={searchData}
                 />
             </AdminDashboard>
         </div>
@@ -26,9 +32,22 @@ export default StudentManualTransactionsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
-    const { page } = context?.query;
+    const { page, user_name, user_mobile } = context?.query;
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    let searchData = {
+        user_name: "",
+        user_mobile: "",
+    };
     let searchParams = "";
+
+    if (isKeyValid(user_name)) {
+        searchParams += `user_name=${user_name}&`;
+        searchData = { ...searchData, user_name: user_name };
+    }
+    if (isKeyValid(user_mobile)) {
+        searchParams += `user_mobile=${user_mobile}&`;
+        searchData = { ...searchData, user_mobile: user_mobile };
+    }
 
     if (!token) {
         return {
@@ -67,6 +86,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { transactions: dataArr[0].data, token },
+        props: { transactions: dataArr[0].data, token, searchData },
     };
 }

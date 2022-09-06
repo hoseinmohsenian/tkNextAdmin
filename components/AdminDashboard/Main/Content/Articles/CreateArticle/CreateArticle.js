@@ -35,7 +35,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
         type: 0,
         pin: 0,
         draft: 0,
-        time: "",
+        time: { hour: 0, min: 0 },
     });
     const [desc, setDesc] = useState("");
     const [selectedDate, setSelectedDate] = useState();
@@ -64,8 +64,16 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
             desc.trim() &&
             formData.image
         ) {
-            if (formData.id && selectedCatg1.id && selectedCatg2.length > 0) {
-                router.push("/tkpanel/siteNews");
+            if (formData.id) {
+                if (selectedCatg1.id && selectedCatg2.length > 0) {
+                    router.push("/tkpanel/siteNews");
+                } else {
+                    showAlert(
+                        true,
+                        "danger",
+                        "لطفا دسته بندی اول و دوم را انتخاب کنید"
+                    );
+                }
             } else {
                 const fd = new FormData();
                 fd.append("title", formData.title);
@@ -104,7 +112,8 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                 if (Boolean(formData.pin)) {
                     fd.append("pin", Number(formData.pin));
                 }
-                if (selectedDate?.year && formData.time) {
+                let time = `${formData.time.hour}:${formData.time.min}`;
+                if (selectedDate?.year && time) {
                     let date = moment
                         .from(
                             `${selectedDate?.year}/${selectedDate?.month}/${selectedDate?.day}`,
@@ -115,7 +124,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                         .format("YYYY/MM/DD")
                         .replace("/", "-")
                         .replace("/", "-");
-                    let publish_time = `${date} ${formData.time}`;
+                    let publish_time = `${date} ${time}`;
                     fd.append("publish_time", publish_time);
                 }
 
@@ -286,16 +295,14 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
             month: Number(moment().format("MM")),
             day: Number(moment().format("DD")),
         };
-        const currTime = moment().format("hh:mm:ss");
+        const hour = moment().format("HH");
         setSelectedDate(currDate);
-        setFormData({ ...formData, time: currTime });
+        setFormData({ ...formData, time: { hour: Number(hour), min: 0 } });
     };
 
     useEffect(() => {
         setCategories2([]);
     }, [selectedCatg1]);
-
-    const [time, setTime] = useState({ hour: "00", min: "00" });
 
     return (
         <form onSubmit={handleSubmit}>
@@ -425,22 +432,15 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
                                     زمان انتشار :
                                 </label>
                                 <div className="form-control">
-                                    {/* <input
-                                        type="time"
-                                        step="1"
-                                        name="time"
-                                        id="time"
-                                        className={`form__input form__input-time`}
+                                    <TimePicker
                                         value={formData.time}
-                                        style={{
-                                            width: 150,
+                                        onChange={(value) => {
+                                            setFormData({
+                                                ...formData,
+                                                time: value,
+                                            });
                                         }}
-                                        onChange={handleOnChange}
-                                        autoComplete="off"
-                                        disabled={Boolean(formData?.id)}
-                                        placeholder="ffff"
-                                    /> */}
-                                    <TimePicker time={time} setTime={setTime} />
+                                    />
                                 </div>
                             </div>
                         </div>

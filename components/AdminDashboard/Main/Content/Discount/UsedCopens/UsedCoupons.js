@@ -281,6 +281,7 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                                     نام زبان آموز
                                 </th>
                                 <th className="table__head-item">نام استاد</th>
+                                <th className="table__head-item">عنوان</th>
                                 <th className="table__head-item">کد تخفیف</th>
                                 <th className="table__head-item">تاریخ</th>
                             </tr>
@@ -295,7 +296,10 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                                         {copen.teacher_name || "-"}
                                     </td>
                                     <td className="table__body-item">
-                                        {copen.discount?.name}
+                                        {copen.discount?.desc || "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        {copen.discount?.name || "-"}
                                     </td>
                                     <td className="table__body-item">
                                         {copen.discount?.expired_at
@@ -311,7 +315,7 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
                                 <tr className="table__body-row">
                                     <td
                                         className="table__body-item"
-                                        colSpan={4}
+                                        colSpan={5}
                                     >
                                         کوپنی یافت نشد
                                     </td>

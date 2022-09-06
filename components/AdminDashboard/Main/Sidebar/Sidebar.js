@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styles from "./Sidebar.module.css";
 import MenuItem from "./MenuItem/MenuItem";
 import sidebarData from "./sidebarData";
@@ -33,12 +34,12 @@ function Sidebar({ showSidebar }) {
                                     setOpenItem(ind);
                                 }
 
-                                if(it.subNav){
+                                if (it.subNav) {
                                     it.subNav?.subNav.map((innerItem) => {
                                         if (innerItem.path === asPath) {
                                             setOpenItem(ind);
                                         }
-                                    })
+                                    });
                                 }
                             });
                         }
@@ -73,4 +74,4 @@ function Sidebar({ showSidebar }) {
     );
 }
 
-export default Sidebar;
+export default memo(Sidebar);

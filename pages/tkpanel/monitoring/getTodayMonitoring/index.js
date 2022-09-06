@@ -45,10 +45,16 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const formatNumber = (number) =>
+        number.toLocaleString("en-US", {
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+        });
+
     const date = new Date();
-    let startDate = `${date.getFullYear()}-${
+    let startDate = `${formatNumber(date.getFullYear())}-${formatNumber(
         date.getMonth() + 1
-    }-${date.getDate()}`;
+    )}-${formatNumber(date.getDate())}`;
 
     const responses = await Promise.all([
         fetch(`${BASE_URL}/admin/classroom/monitoring/done?date=${startDate}`, {

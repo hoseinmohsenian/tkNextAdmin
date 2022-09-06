@@ -16,6 +16,15 @@
     padding: 0 0.7rem;
 }
 
+.right {
+    display: flex;
+    align-items: center;
+}
+.logo {
+    margin-right: 1rem;
+    width: 5.5rem !important;
+}
+
 .left {
     display: flex;
     align-items: center;
@@ -142,6 +151,9 @@
 }
 
 @media all and (min-width: 576px) {
+    .logo {
+        width: 8.5rem !important;
+    }
     .list-btn {
         padding: 0.2rem 0.5rem;
         margin-left: 1.6rem;

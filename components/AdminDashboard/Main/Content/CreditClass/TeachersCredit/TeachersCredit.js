@@ -6,11 +6,20 @@ import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelec
 import styles from "./TeachersCredit.module.css";
 import API from "../../../../../../api/index";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import Pagination from "../../Pagination/Pagination";
+import { useRouter } from "next/router";
 
+const filtersSchema = { teacher_name: "" };
+const appliedFiltersSchema = { teacher_name: false };
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 
-function TeachersCredit({ fetchedTeachers, token }) {
-    const [list, setList] = useState(fetchedTeachers);
+function TeachersCredit({
+    fetchedTeachers: { data, ...restData },
+    token,
+    searchData,
+}) {
+    const [list, setList] = useState(data);
+    const [pagData, setPagData] = useState(restData);
     const [teachers, setTeachers] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(teacherSchema);
     const [alertData, setAlertData] = useState({
@@ -19,21 +28,59 @@ function TeachersCredit({ fetchedTeachers, token }) {
         type: "",
     });
     const [loading, setLoading] = useState(false);
-    const [loadings, setLoadings] = useState(
-        Array(fetchedTeachers?.length).fill(false)
-    );
+    const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
+    const router = useRouter();
 
-    const readTeachersCredit = async () => {
-        try {
-            const res = await fetch(`${BASE_URL}/admin/credit/teacher`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
+    const readTeachersCredit = async (page = 1, avoidFilters = false) => {
+        const isFilterEnabled = (key) =>
+            Number(filters[key]) !== 0 &&
+            filters[key] !== undefined &&
+            filters[key];
+        let searchQuery = "";
+        let searchParams = {};
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams = { ...searchParams, [key]: filters[key] };
+                } else {
+                    tempFilters[key] = false;
+                }
             });
-            const { data } = await res.json();
-            setList(data);
+
+            setAppliedFilters(tempFilters);
+        }
+        searchQuery += `page=${page}`;
+
+        router.push({
+            pathname: `/tkpanel/installment/teachers`,
+            query: searchParams,
+        });
+
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/credit/teacher?${searchQuery}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                const {
+                    data: { data, ...restData },
+                } = await res.json();
+                setList(data);
+                setPagData(restData);
+            }
+
             // Scroll to top
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
@@ -146,6 +193,41 @@ function TeachersCredit({ fetchedTeachers, token }) {
         setAlertData({ show, type, message });
     };
 
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readTeachersCredit(1, true);
+        router.push({
+            pathname: `/tkpanel/installment/teachers`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await readTeachersCredit();
+    };
+
     return (
         <div>
             <BreadCrumbs
@@ -157,7 +239,10 @@ function TeachersCredit({ fetchedTeachers, token }) {
 
             <Box title="لیست اساتید اعتباری">
                 <div className={styles["search"]}>
-                    <form className={styles["search-wrapper"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
                         <div className={`${styles["search-row"]}`}>
                             <div
                                 className={`input-wrapper ${styles["input-wrapper"]}`}
@@ -214,6 +299,51 @@ function TeachersCredit({ fetchedTeachers, token }) {
                                 >
                                     {loading ? "در حال جستجو ..." : "افزودن"}
                                 </button>
+                            </div>
+                        </div>
+
+                        <div className={`${styles["search-row"]}`}>
+                            <div
+                                className={`input-wrapper ${styles["input-wrapper"]}`}
+                            >
+                                <label
+                                    htmlFor="teacher_name"
+                                    className={`form__label`}
+                                >
+                                    نام استاد :
+                                </label>
+                                <div className="form-control">
+                                    <input
+                                        type="text"
+                                        name="teacher_name"
+                                        id="teacher_name"
+                                        className="form__input"
+                                        onChange={filtersOnChangeHandler}
+                                        value={filters?.teacher_name}
+                                        spellCheck={false}
+                                    />
+                                </div>
+                            </div>
+                            <div className={styles["btn-wrapper"]}>
+                                <button
+                                    type="submit"
+                                    className={`btn primary ${styles["btn"]}`}
+                                    disabled={loading}
+                                >
+                                    {loading ? "در حال جستجو ..." : "جستجو"}
+                                </button>
+                                {showFilters() && (
+                                    <button
+                                        type="button"
+                                        className={`btn danger-outline ${styles["btn"]}`}
+                                        disabled={loading}
+                                        onClick={() => removeFilters()}
+                                    >
+                                        {loading
+                                            ? "در حال انجام ..."
+                                            : "حذف فیلتر"}
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </form>
@@ -275,6 +405,10 @@ function TeachersCredit({ fetchedTeachers, token }) {
                         </tbody>
                     </table>
                 </div>
+
+                {list.length !== 0 && (
+                    <Pagination read={readTeachersCredit} pagData={pagData} />
+                )}
             </Box>
         </div>
     );
