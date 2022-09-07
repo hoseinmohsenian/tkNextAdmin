@@ -26,9 +26,9 @@ function Step3({ token, alertData, showAlert }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    const addTitle = async (formData, tokenS) => {
+    const editTitle = async (formData) => {
         try {
-            const res = await fetch(`${BASE_URL}/teacher/profile/add/title`, {
+            const res = await fetch(`${BASE_URL}/teacher/profile/edit/title`, {
                 method: "POST",
                 body: JSON.stringify(formData),
                 headers: {
@@ -69,9 +69,9 @@ function Step3({ token, alertData, showAlert }) {
             let body = {
                 title: formData.title.trim(),
                 desc: formData.desc.trim(),
-                experience: formData.experience,
+                experience: Number(formData.experience),
             };
-            addTitle(body, token);
+            editTitle(body);
         } else {
             // Error Handling
             let temp = errors;

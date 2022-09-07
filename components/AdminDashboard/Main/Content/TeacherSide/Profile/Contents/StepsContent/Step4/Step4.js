@@ -5,6 +5,7 @@ import Error from "../../../../../../../../Error/Error";
 import DeleteModal from "../../../../../../../../DeleteModal/DeleteModal";
 import { AiFillDelete } from "react-icons/ai";
 import Alert from "../../../../../../../../Alert/Alert";
+import { BsFillPlusCircleFill } from "react-icons/bs";
 
 const languageSchema = {
     id: "",
@@ -177,12 +178,7 @@ function Step4(props) {
                                 type="button"
                                 onClick={() => setOpenModal(true)}
                             >
-                                <img
-                                    src="/icons/plus.png"
-                                    alt="plus icon"
-                                    width={38}
-                                    height={38}
-                                />
+                                <BsFillPlusCircleFill size={25} />
                                 <span>اضافه کردن زبان جدید</span>
                             </button>
                         </div>

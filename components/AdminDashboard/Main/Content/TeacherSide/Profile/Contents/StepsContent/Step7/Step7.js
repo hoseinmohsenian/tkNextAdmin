@@ -49,6 +49,7 @@ function Step7({ token, BASE_URL, alertData, showAlert }) {
             if (res.ok) {
                 showAlert(true, "success", "ویدئو معرفی با موفقیت آپلود شد");
                 await getVideo();
+                await acceptRules();
             } else {
                 const errData = await res.json();
                 showAlert(
@@ -62,6 +63,20 @@ function Step7({ token, BASE_URL, alertData, showAlert }) {
             console.log("Error adding video ", error);
         }
         setLoading(false);
+    };
+
+    const acceptRules = async () => {
+        try {
+            const res = await fetch(`${BASE_URL}/teacher/profile/add/rule`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-type": "application/json",
+                },
+            });
+        } catch (error) {
+            console.log("Error accepting the rules", error);
+        }
     };
 
     useEffect(() => {

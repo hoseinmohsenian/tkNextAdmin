@@ -454,13 +454,6 @@ function LanModal(props) {
                         <>
                             <button
                                 type="button"
-                                onClick={() => setCurrentStep(1)}
-                                className={`${styles["modal__fooer-btn"]} ${styles["modal__fooer-btn--gray"]}`}
-                            >
-                                مرحله قبل
-                            </button>
-                            <button
-                                type="button"
                                 onClick={checkLanguageStatus}
                                 className={`${styles["modal__fooer-btn"]} ${styles["modal__fooer-btn--purple"]}`}
                             >

@@ -8,10 +8,11 @@ import Box from "../Elements/Box/Box";
 import styles from "./Teachers.module.css";
 import Link from "next/link";
 import Modal from "../../../../Modal/Modal";
-import ReactTooltip from 'react-tooltip';
-import { AiOutlineInfoCircle, AiFillEye } from "react-icons/ai";
+import { Tooltip } from "antd";
+import { AiFillEye } from "react-icons/ai";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
+import TeacherMobileTooltip from "../../../../TeacherMobileTooltip/TeacherMobileTooltip";
 
 const filtersSchema = { name: "", mobile: "", email: "" };
 const appliedFiltersSchema = { name: false, mobile: false, email: false };
@@ -511,8 +512,6 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                         </div>
                     </form>
                 </div>
-                
-                <ReactTooltip className="tooltip" type="dark" />
 
                 <div className="table__wrapper">
                     <table className="table">
@@ -539,12 +538,9 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                     </td>
                                     <td className="table__body-item" data-tip={teacher.mobile || "-"}>
                                         {teacher.family}
-                                        <span 
-                                            className="info-icon" 
-                                            onClick={() => { navigator.clipboard.writeText(teacher.mobile) }}
-                                        >
-                                            <AiOutlineInfoCircle />
-                                        </span>
+                                        <TeacherMobileTooltip
+                                            mobile={teacher.mobile}
+                                        />
                                     </td>
                                     <td className="table__body-item">
                                         {teacher.language_name?.map((lan, ind) => (
@@ -654,27 +650,31 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                                 </a>
                                             </Link>
 
-                                            <div 
-                                                className={`${styles["status-circle"]} ${teacher.show === 1 ? "success" : "danger"}`} 
-                                                data-tip={`وضعیت نمایش در لیست اساتید:‌ ${teacher.show === 1 ? "فعال" : "غیرفعال"}`}
-                                                onClick={() => {
-                                                    setSelectedTeacher({
-                                                        ...teacher,
-                                                        index: i,
-                                                        modalTitle: "تغییر وضعیت نمایش استاد",
-                                                        modalDesc: `آیا از تغییر وضعیت نمایش استاد «${teacher.name + " " + teacher.family}» اطمینان دارید؟`,
-                                                        onClick: () => {
-                                                            changeShow(
-                                                                teacher.id,
-                                                                teacher.show,
-                                                                i
-                                                            )               
-                                                        }
-                                                    });
-                                                    setDModalVisible(true);
-                                                }}
-                                                disabled={loadings[i]}
-                                            ></div>
+                                            <Tooltip 
+                                                title={`وضعیت نمایش در لیست اساتید:‌ ${teacher.show === 1 ? "فعال" : "غیرفعال"}`}
+                                                overlayStyle={{fontSize:12}}
+                                            >
+                                                <div 
+                                                    className={`${styles["status-circle"]} ${teacher.show === 1 ? "success" : "danger"}`} 
+                                                    onClick={() => {
+                                                        setSelectedTeacher({
+                                                            ...teacher,
+                                                            index: i,
+                                                            modalTitle: "تغییر وضعیت نمایش استاد",
+                                                            modalDesc: `آیا از تغییر وضعیت نمایش استاد «${teacher.name + " " + teacher.family}» اطمینان دارید؟`,
+                                                            onClick: () => {
+                                                                changeShow(
+                                                                    teacher.id,
+                                                                    teacher.show,
+                                                                    i
+                                                                )               
+                                                            }
+                                                        });
+                                                        setDModalVisible(true);
+                                                    }}
+                                                    disabled={loadings[i]}
+                                                ></div>
+                                            </Tooltip>
                                         </div>
                                     </td>
 
