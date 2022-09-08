@@ -234,6 +234,11 @@ export default [
                 icon: <AiFillInteraction />,
             },
             {
+                title: "لندینگ شرکتی",
+                path: "/tkpanel/landing/company",
+                icon: <AiFillInteraction />,
+            },
+            {
                 title: "لیست درخواست مشاوره",
                 path: "/tkpanel/adviceRequests/list",
                 icon: <IoIosListBox />,

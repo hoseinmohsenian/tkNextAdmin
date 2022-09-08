@@ -210,6 +210,7 @@ function SearchMultiSelect(props) {
                                 }}
                                 disabled={findItem(item) !== undefined}
                                 style={{ fontSize: `${fontSize}px` }}
+                                type="button"
                             >
                                 {displayKeySecond !== undefined && (
                                     <>{item[displayKeySecond]} - </>

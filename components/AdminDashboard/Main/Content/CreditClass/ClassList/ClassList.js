@@ -7,6 +7,9 @@ import { useRouter } from "next/router";
 import API from "../../../../../../api";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import TeacherMobileTooltip from "../../../../../TeacherMobileTooltip/TeacherMobileTooltip";
+import { AiFillEye } from "react-icons/ai";
+import Link from "next/link";
+import Modal from "../../../../../Modal/Modal";
 import moment from "jalali-moment";
 
 const filtersSchema = {
@@ -33,7 +36,10 @@ function ClassList({ fetchedList: { data, ...restData }, searchData }) {
         type: "",
     });
     const [loading, setLoading] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({});
     const router = useRouter();
+    moment.locale("fa", { useGregorianParser: true });
 
     const readClassList = async (page = 1, avoidFilters = false) => {
         const isFilterEnabled = (key) =>
@@ -136,6 +142,30 @@ function ClassList({ fetchedList: { data, ...restData }, searchData }) {
         await readClassList();
     };
 
+    const readInstalment = async () => {
+        setLoading(true);
+        try {
+            const { data, status, response } = await API.get(
+                `/admin/credit/reserve/${selectedItem.credit_id}`
+            );
+
+            if (status === 200) {
+                console.log(data.data);
+                setSelectedItem({ ...selectedItem, list: data?.data });
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+        } catch (error) {
+            console.log("Error reading credit list", error);
+        }
+        setLoading(false);
+    };
+
     return (
         <div>
             <BreadCrumbs
@@ -146,6 +176,133 @@ function ClassList({ fetchedList: { data, ...restData }, searchData }) {
             />
 
             <Box title="لیست کلاس های اعتباری">
+                {openModal && (
+                    <Modal
+                        backgroundColor="white"
+                        showHeader={true}
+                        show={openModal}
+                        setter={setOpenModal}
+                        padding={true}
+                    >
+                        <h3 className={"modal__title"}>جزئیات کلاس اعتباری</h3>
+                        <div className={"modal__wrapper"}>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    مدت زمان
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedItem.credit?.time
+                                        ? `${selectedItem.credit?.time} دقیقه`
+                                        : "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    تعداد قسط
+                                </span>
+                                <span
+                                    className={"modal__item-body"}
+                                    style={{ overflowX: "auto" }}
+                                >
+                                    {selectedItem.credit?.month_number} قسط
+                                    {!selectedItem.list && (
+                                        <button
+                                            type="button"
+                                            onClick={readInstalment}
+                                            className={`action-btn primary-outline`}
+                                            style={{
+                                                marginRight: 10,
+                                            }}
+                                            disabled={loading}
+                                        >
+                                            نمایش اقساط
+                                        </button>
+                                    )}
+                                    {selectedItem.list &&
+                                        selectedItem.list.length === 0 && (
+                                            <div className="warning-color">
+                                                قسطی وجود ندارد!
+                                            </div>
+                                        )}
+                                    {selectedItem.list && (
+                                        <div className="table__wrapper">
+                                            <table className="table">
+                                                <thead className="table__head">
+                                                    <tr>
+                                                        <th className="table__head-item">
+                                                            تاریخ
+                                                        </th>
+                                                        <th className="table__head-item">
+                                                            تاریخ پرداخت
+                                                        </th>
+                                                        <th className="table__head-item">
+                                                            قیمت
+                                                        </th>
+                                                        <th className="table__head-item">
+                                                            first
+                                                        </th>
+                                                        <th className="table__head-item">
+                                                            last
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="table__body">
+                                                    {selectedItem.list?.map(
+                                                        (item, i) => (
+                                                            <tr
+                                                                className="table__body-row"
+                                                                key={item.id}
+                                                            >
+                                                                <td className="table__body-item">
+                                                                    {item.date
+                                                                        ? moment(
+                                                                              item.date
+                                                                          ).format(
+                                                                              "YYYY-MM-DD"
+                                                                          )
+                                                                        : "-"}
+                                                                </td>
+                                                                <td className="table__body-item">
+                                                                    {item.pay_time
+                                                                        ? moment(
+                                                                              item.pay_time
+                                                                          ).format(
+                                                                              "YYYY-MM-DD"
+                                                                          )
+                                                                        : "-"}
+                                                                </td>
+                                                                <td className="table__body-item">
+                                                                    {item.price
+                                                                        ? `${Intl.NumberFormat().format(
+                                                                              item.price
+                                                                          )} تومان`
+                                                                        : "-"}
+                                                                </td>
+                                                                <td className="table__body-item">
+                                                                    {item.first ===
+                                                                    0
+                                                                        ? `0`
+                                                                        : `1`}
+                                                                </td>
+                                                                <td className="table__body-item">
+                                                                    {item.last ===
+                                                                    0
+                                                                        ? `0`
+                                                                        : `1`}
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+                                </span>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
                 <div className={styles["search"]}>
                     <form
                         className={styles["search-wrapper"]}
@@ -294,7 +451,7 @@ function ClassList({ fetchedList: { data, ...restData }, searchData }) {
                                 </th>
                                 <th className="table__head-item">قیمت کل</th>
                                 <th className="table__head-item">قیمت قسط</th>
-                                {/* <th className="table__head-item">اقدامات</th> */}
+                                <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
                         <tbody className="table__body">
@@ -336,6 +493,18 @@ function ClassList({ fetchedList: { data, ...restData }, searchData }) {
                                                   item.credit?.list_price
                                               )} تومان`
                                             : "-"}
+                                    </td>
+                                    <td className="table__body-item">
+                                        <button
+                                            className={`primary-color`}
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => {
+                                                setOpenModal(true);
+                                                setSelectedItem(item);
+                                            }}
+                                        >
+                                            <AiFillEye size={20} />
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

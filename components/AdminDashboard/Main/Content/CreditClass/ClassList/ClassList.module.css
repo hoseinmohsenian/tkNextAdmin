@@ -27,6 +27,9 @@
     align-items: center;
     justify-content: center;
 }
+.installment-item {
+    background-color: pink;
+}
 
 @media all and (min-width: 768px) {
     .search-row {
