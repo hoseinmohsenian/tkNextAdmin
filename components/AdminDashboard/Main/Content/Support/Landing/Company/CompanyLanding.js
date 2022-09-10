@@ -4,6 +4,7 @@ import moment from "jalali-moment";
 import Box from "../../../Elements/Box/Box";
 import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 import Modal from "../../../../../../Modal/Modal";
+import { AiFillEye } from "react-icons/ai";
 
 function CompanyLanding({ landings }) {
     const [openModal, setOpenModal] = useState(false);
@@ -12,6 +13,7 @@ function CompanyLanding({ landings }) {
         gender: 0,
     });
     moment.locale("fa", { useGregorianParser: true });
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
     return (
         <div>
@@ -106,8 +108,20 @@ function CompanyLanding({ landings }) {
                                     <td className="table__body-item">
                                         {landing.title}
                                     </td>
-                                    <td className="table__body-item table__body-item--ltr">
+                                    <td className="table__body-item">
                                         {landing.url}
+                                        <Link
+                                            href={`${SITE_URL}/organization/${landing.url}`}
+                                        >
+                                            <a
+                                                target="_blank"
+                                                style={{
+                                                    marginRight: 5,
+                                                }}
+                                            >
+                                                <AiFillEye size={20} />
+                                            </a>
+                                        </Link>
                                     </td>
                                     <td className="table__body-item">
                                         {landing.image ? (
@@ -134,6 +148,26 @@ function CompanyLanding({ landings }) {
                                         >
                                             <a className={`action-btn primary`}>
                                                 ویرایش
+                                            </a>
+                                        </Link>
+                                        <Link
+                                            href={`/tkpanel/landing/company/${landing?.id}/groupClass`}
+                                        >
+                                            <a
+                                                className={`action-btn primary`}
+                                                target="_blank"
+                                            >
+                                                &nbsp;اضافه کردن کلاس گروهی
+                                            </a>
+                                        </Link>
+                                        <Link
+                                            href={`/tkpanel/landing/company/${landing?.id}/faq`}
+                                        >
+                                            <a
+                                                className={`action-btn primary`}
+                                                target="_blank"
+                                            >
+                                                FAQ
                                             </a>
                                         </Link>
                                         <button

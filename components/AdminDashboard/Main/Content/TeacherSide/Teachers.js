@@ -639,7 +639,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                     <td className="table__body-item" >
                                         <div style={{display:"flex"}}>
                                             <Link
-                                                href={`${SITE_URL}/teachers/${teacher.id}`}
+                                                href={`${SITE_URL}/teachers/${teacher.url}`}
                                             >
                                                 <a 
                                                     className={styles["profile-link"]} 
