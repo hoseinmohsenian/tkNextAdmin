@@ -16,14 +16,9 @@
     border-radius: 3.1rem;
     padding: 0.5rem;
     cursor: pointer;
-}
-.step__newlan-btn img {
-    height: 2.1rem;
-    width: 2.1rem;
-    border-radius: 50%;
+    color: #01af8f;
 }
 .step__newlan-btn span {
-    color: #01af8f;
     font-weight: 700;
     margin-right: 0.5rem;
     font-size: 1rem;
