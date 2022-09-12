@@ -72,7 +72,13 @@ function EditSpecialty({ token, specialty }) {
                 );
                 router.push("/content/specialty");
             } else {
-                showAlert(true, "warning", "مشکلی پیش آمده");
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
             }
             setLoading(false);
         } catch (error) {

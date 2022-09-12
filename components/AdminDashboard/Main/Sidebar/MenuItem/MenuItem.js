@@ -18,9 +18,11 @@ function MenuItem({ data, openItem, setOpenItem, ind, showSidebar, asPath }) {
                     ? styles["group--active"]
                     : undefined
             } ${showSidebar ? styles["sidebar--show"] : undefined}`}
-            onClick={openMenuHandler}
         >
-            <div className={styles["group-header-wrapper"]}>
+            <div
+                className={styles["group-header-wrapper"]}
+                onClick={openMenuHandler}
+            >
                 <div className={styles["group-header"]}>
                     <span className={styles["group-icon"]}>{icon}</span>
                     <span className={styles["group-title"]}>{title}</span>

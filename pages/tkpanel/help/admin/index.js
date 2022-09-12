@@ -4,7 +4,7 @@ import Header from "../../../../components/Head/Head";
 import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function HelpPage({ token, fetchedList, notAllowed }) {
+function HelpPage({ token, fetchedList, notAllowed, searchData }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -12,7 +12,11 @@ function HelpPage({ token, fetchedList, notAllowed }) {
         <div>
             <Header title="راهنما | تیکا"></Header>
             <AdminDashboard>
-                <Help token={token} fetchedList={fetchedList} />
+                <Help
+                    token={token}
+                    fetchedList={fetchedList}
+                    searchData={searchData}
+                />
             </AdminDashboard>
         </div>
     );
@@ -33,8 +37,20 @@ export async function getServerSideProps(context) {
         };
     }
 
+    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
+    const { helpUrl } = context?.query;
+    let searchData = {
+        helpUrl: "",
+    };
+    let searchQuery = "";
+
+    if (isKeyValid(helpUrl)) {
+        searchQuery += `helpUrl=${helpUrl}&`;
+        searchData = { ...searchData, helpUrl: helpUrl };
+    }
+
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/help/all`, {
+        fetch(`${BASE_URL}/admin/help/search/url?${searchQuery}`, {
             headers: {
                 "Content-type": "application/json",
                 Authorization: `Bearer ${token}`,
@@ -55,6 +71,7 @@ export async function getServerSideProps(context) {
         props: {
             token,
             fetchedList: dataArr[0].data,
+            searchData,
         },
     };
 }

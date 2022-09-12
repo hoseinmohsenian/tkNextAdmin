@@ -179,7 +179,7 @@ function TeacherInterview({ teachers: teachersInterviews, token, searchData }) {
                 }}
             />
 
-            <Box title="مصاحبه اساتید">
+            <Box title="افزودن مصاحبه">
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -242,7 +242,8 @@ function TeacherInterview({ teachers: teachersInterviews, token, searchData }) {
                         </div>
                     </form>
                 </div>
-
+            </Box>
+            <Box title="مصاحبه اساتید">
                 <div className={styles["search"]}>
                     <form
                         className={styles["search-wrapper"]}

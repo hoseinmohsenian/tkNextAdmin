@@ -153,7 +153,8 @@ function CreateHelp({ token }) {
                             htmlFor="redirect_status"
                             className={`form__label`}
                         >
-                            ریدایرکت : <span className="form__star">*</span>
+                            وضعیت ریدایرکت :{" "}
+                            <span className="form__star">*</span>
                         </label>
                         <div className="form-control form-control-radio">
                             <div className="input-radio-wrapper">

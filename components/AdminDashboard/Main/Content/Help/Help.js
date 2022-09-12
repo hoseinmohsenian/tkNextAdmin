@@ -3,18 +3,27 @@ import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
 import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
-import Pagination from "../Pagination/Pagination";
+// import Pagination from "../Pagination/Pagination";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
+import { useRouter } from "next/router";
+import styles from "./Help.module.css";
 
-function Help({ fetchedList: { data, ...restData }, token }) {
+const filtersSchema = { helpUrl: "" };
+const appliedFiltersSchema = { helpUrl: false };
+
+function Help({ fetchedList: data, token, searchData }) {
     const [list, setList] = useState(data);
-    const [pagData, setPagData] = useState(restData);
+    // const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
         show: false,
         message: "",
         type: "",
     });
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
     const deleteItem = async (id, i) => {
         let temp = [...loadings];
@@ -42,27 +51,97 @@ function Help({ fetchedList: { data, ...restData }, token }) {
         setLoadings(() => temp);
     };
 
-    const readList = async () => {
-        try {
-            const res = await fetch(`${BASE_URL}/admin/help/all`, {
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
+    const readList = async (avoidFilters = false) => {
+        setLoading(true);
+
+        // Constructing search parameters
+        let searchQuery = "";
+        let searchParams = {};
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams = {
+                        ...searchParams,
+                        [key]: filters[key],
+                    };
+                } else {
+                    tempFilters[key] = false;
+                }
             });
+
+            setAppliedFilters(tempFilters);
+        }
+
+        router.push({
+            pathname: `/tkpanel/help/admin`,
+            query: searchParams,
+        });
+
+        try {
+            const res = await fetch(
+                `${BASE_URL}/admin/help/search/url?${searchQuery}`,
+                {
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
             const {
-                data: { data, ...restData },
+                // data: { data, ...restData },
+                data,
             } = await res.json();
-            setPagData(restData);
+            // setPagData(restData);
             setList(data);
         } catch (error) {
-            console.log("Error reading courses", error);
+            console.log("Error reading help list", error);
         }
+        setLoading(false);
     };
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
+    };
+
+    const handleOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readStudents(true);
+        router.push({
+            pathname: `/tkpanel/help/admin`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readList();
     };
 
     return (
@@ -81,6 +160,67 @@ function Help({ fetchedList: { data, ...restData }, token }) {
                     color: "primary",
                 }}
             >
+                <div className={styles["search"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="helpUrl"
+                                        className={`form__label`}
+                                    >
+                                        URL :
+                                    </label>
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0 }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="helpUrl"
+                                            id="helpUrl"
+                                            className="form__input form__input--ltr"
+                                            onChange={handleOnChange}
+                                            value={filters?.helpUrl}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className={styles["btn-wrapper"]}>
+                                    <button
+                                        type="submit"
+                                        className={`btn primary ${styles["btn"]}`}
+                                        disabled={loading}
+                                    >
+                                        {loading
+                                            ? "در حال انجام ..."
+                                            : "اعمال فیلتر"}
+                                    </button>
+                                    {showFilters() && (
+                                        <button
+                                            type="button"
+                                            className={`btn danger-outline ${styles["btn"]}`}
+                                            disabled={loading}
+                                            onClick={() => removeFilters()}
+                                        >
+                                            {loading
+                                                ? "در حال انجام ..."
+                                                : "حذف فیلتر"}
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
                 <div className="table__wrapper">
                     <table className="table">
                         <thead className="table__head">
@@ -138,9 +278,9 @@ function Help({ fetchedList: { data, ...restData }, token }) {
                     </table>
                 </div>
 
-                {list.length !== 0 && (
+                {/* {list.length !== 0 && (
                     <Pagination read={readList} pagData={pagData} />
-                )}
+                )} */}
             </Box>
 
             {/* Alert */}

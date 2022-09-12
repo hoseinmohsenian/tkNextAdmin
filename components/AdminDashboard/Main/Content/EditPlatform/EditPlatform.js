@@ -14,7 +14,7 @@ function EditPlatform({ token, platform }) {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-
+    console.log(formData);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -30,7 +30,7 @@ function EditPlatform({ token, platform }) {
                 fd.append("image", formData.image);
             }
             if (Number(formData.status) !== platform?.status) {
-                fd.append("status", formData.status);
+                fd.append("status", Number(formData.status));
             }
             if (Number(formData.suggestion) !== platform?.suggestion) {
                 fd.append("suggestion", formData.suggestion);
@@ -43,8 +43,8 @@ function EditPlatform({ token, platform }) {
     };
 
     const handleOnChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
+        const { name, type } = e.target;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
         setFormData({ ...formData, [name]: value });
     };
 

@@ -682,7 +682,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                         <button
                                             type="button"
                                             className={`action-btn ${
-                                                teacher.status === 1
+                                                teacher.status === 0
                                                     ? "danger"
                                                     : "success"
                                             }`}
@@ -704,7 +704,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             }}
                                             disabled={loadings[i]}
                                         >
-                                            {teacher.status === 0
+                                            {teacher.status === 1
                                                 ? "فعال"
                                                 : "غیر فعال"}
                                         </button>

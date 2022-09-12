@@ -178,11 +178,11 @@ function Step1({ token, alertData, showAlert }) {
             });
             const { data } = await res.json();
             setLanguages(() => [
-                ...data,
                 {
                     id: 0,
                     persian_name: "فارسی",
                 },
+                ...data,
             ]);
         } catch (error) {
             console.log("error fetching languages ", error);

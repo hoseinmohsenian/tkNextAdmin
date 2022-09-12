@@ -9,7 +9,7 @@ import Alert from "../../../../../../../../Alert/Alert";
 
 const formSchema = {
     language_id: "",
-    pricePerTest: 0,
+    pricePerTest: -1,
     pricePerTestID: 0,
     perTestCourseId: 0,
     pricePer1: 0,
@@ -38,7 +38,8 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
     const [addedLanguages, setAddedLanguages] = useState([]);
     const [selectedLanguage, setSelectedLanguage] = useState({});
     const [formData, setFormData] = useState([]);
-    const [targetGroups, setTargetGroups] = useState(new Array(4).fill(false));
+    const [ageCategories, setAgeCategories] = useState([]);
+    const [targetGroups, setTargetGroups] = useState([]);
     const [loadings, setLoadings] = useState(loadingsSchema);
     const [pricesLoaded, setPricesLoaded] = useState(false);
     const [catgsLoaded, setCatgsLoaded] = useState(false);
@@ -71,9 +72,9 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
             oldValues.map((item, index) => {
                 if (index === position) {
                     if (item === true) {
-                        deleteAgeCategory(position + 1);
+                        deleteAgeCategory(position);
                     } else {
-                        addAgeCategory(position + 1);
+                        addAgeCategory(position);
                     }
                 }
                 return index === position ? !item : item;
@@ -157,7 +158,6 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
     };
 
     const readCourses = async (language_id, tempFormData, lanInd) => {
-        setPricesLoaded(false);
         try {
             const res = await fetch(`${BASE_URL}/teacher/course/language/${language_id}`,
                 {
@@ -208,7 +208,6 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         } catch (error) {
             console.log("Error fetching language courses ", error);
         }
-        setPricesLoaded(true);
     };
 
     const addAgeCategory = async (category_id) => {
@@ -247,8 +246,35 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         }
     };
 
-    const readAgeCategorys = async () => {
+    const readAgeCategories =  async () => {
         setCatgsLoaded(false);
+        try {
+            const res = await fetch(
+                `${BASE_URL}/data/age-category`,
+                {
+                    headers: {
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if(res.ok){
+                const { data } = await res.json();
+                setAgeCategories(data);
+
+                const newTargetGroups = new Array(data.length + 1).fill(false);
+                setTargetGroups(newTargetGroups);
+                await readAddedAgeCategorys(newTargetGroups);
+            }
+
+            
+        } catch (error) {
+            console.log("Error adding age category groups", error);
+        }
+        setCatgsLoaded(true);
+    };
+
+    const readAddedAgeCategorys = async (currTargetGroups) => {
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/age`,
@@ -261,22 +287,20 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                 }
             );
             const { data } = await res.json();
-
-            setTargetGroups([false, false, false, false]);
-            const updatedTargets = data?.map((item) => item?.id - 1);
-            let temp = [...targetGroups];
-            updatedTargets?.map((item) => {
-                temp[item] = true;
+            let temp = [...currTargetGroups];
+            data?.map((item) => {
+                const id = item.id;
+                temp[id] = true;
                 return item;
             });
             setTargetGroups(() => temp);
         } catch (error) {
             console.log("Error adding category ", error);
         }
-        setCatgsLoaded(true);
     };
 
     const fetchAddedLanguages = async () => {
+        setPricesLoaded(false);
         try {
             const res = await fetch(
                 `${BASE_URL}/teacher/profile/return/languages`,
@@ -304,13 +328,13 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         } catch (error) {
             console.log("Error fetching added languages ", error);
         }
+        setPricesLoaded(true);
     };
 
     useEffect(() => {
         if (token) {
             fetchAddedLanguages();
-
-            readAgeCategorys();
+            readAgeCategories();
         }
     }, [token]);
 
@@ -656,7 +680,33 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                         گروه سنی مدنظر زبان آموزان شما
                     </h4>
                     <div className={`row`}>
-                        <div
+                        {ageCategories.map((age) => (
+                            <div
+                                key={age.id}
+                                className={`col-sm-6 col-md-6 ${styles["ages__item"]}`}
+                            >
+                                <label className={styles.checkbox__wrapper}>
+                                    <input
+                                        type="checkbox"
+                                        id={`age${age.id}`}
+                                        // name="age0"
+                                        className={styles.checkbox__input}
+                                        // value="age0"
+                                        onChange={() => handleOnChange(age.id)}
+                                        checked={targetGroups[age.id]}
+                                    />
+                                    <span className={styles.checkmark}></span>
+                                </label>
+                                <label
+                                    htmlFor={`age${age.id}`}
+                                    className={styles["ages__item-text"]}
+                                >
+                                    {age.persian_name}
+                                </label>
+                            </div>
+                        ))}
+
+                        {/* <div
                             className={`col-sm-6 col-md-6 ${styles["ages__item"]}`}
                         >
                             <label className={styles.checkbox__wrapper}>
@@ -677,73 +727,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                             >
                                 کودک (۳ تا ۱۲ سال)
                             </label>
-                        </div>
-                        <div
-                            className={`col-sm-6 col-md-6 ${styles["ages__item"]}`}
-                        >
-                            <label className={styles.checkbox__wrapper}>
-                                <input
-                                    type="checkbox"
-                                    id="age1"
-                                    name="age1"
-                                    className={styles.checkbox__input}
-                                    value="age01"
-                                    onChange={() => handleOnChange(1)}
-                                    checked={targetGroups[1]}
-                                />
-                                <span className={styles.checkmark}></span>
-                            </label>
-                            <label
-                                htmlFor="age1"
-                                className={styles["ages__item-text"]}
-                            >
-                                نوجوان (۱۲ تا ۱۵ سال)
-                            </label>
-                        </div>
-                        <div
-                            className={`col-sm-6 col-md-6 ${styles["ages__item"]}`}
-                        >
-                            <label className={styles.checkbox__wrapper}>
-                                <input
-                                    type="checkbox"
-                                    id="age2"
-                                    name="age2"
-                                    className={styles.checkbox__input}
-                                    value="age2"
-                                    onChange={() => handleOnChange(2)}
-                                    checked={targetGroups[2]}
-                                />
-                                <span className={styles.checkmark}></span>
-                            </label>
-                            <label
-                                htmlFor="age2"
-                                className={styles["ages__item-text"]}
-                            >
-                                بزرگسال (۱۵ تا ۴۰ سال)
-                            </label>
-                        </div>
-                        <div
-                            className={`col-sm-6 col-md-6 ${styles["ages__item"]}`}
-                        >
-                            <label className={styles.checkbox__wrapper}>
-                                <input
-                                    type="checkbox"
-                                    id="age3"
-                                    name="age3"
-                                    className={styles.checkbox__input}
-                                    value="age3"
-                                    onChange={() => handleOnChange(3)}
-                                    checked={targetGroups[3]}
-                                />
-                                <span className={styles.checkmark}></span>
-                            </label>
-                            <label
-                                htmlFor="age3"
-                                className={styles["ages__item-text"]}
-                            >
-                                میانسال (بالای ۴۰ سال)
-                            </label>
-                        </div>
+                        </div> */}
                     </div>
                 </div>) : (
                     <div>

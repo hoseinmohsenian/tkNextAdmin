@@ -118,15 +118,10 @@ function Levels({ fetchedLevels, token }) {
                                         {lv?.url}
                                     </td>
                                     <td className="table__body-item">
-                                        <Link href={`/content/level/${lv?.id}`}>
-                                            <a className={`action-btn primary`}>
-                                                افزودن&nbsp;
-                                            </a>
-                                        </Link>
                                         <Link
                                             href={`/content/level/${lv?.id}/edit`}
                                         >
-                                            <a className={`action-btn warning`}>
+                                            <a className={`action-btn primary`}>
                                                 ویرایش
                                             </a>
                                         </Link>

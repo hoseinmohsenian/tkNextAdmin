@@ -45,13 +45,9 @@ function Header({ showSidebar, setShowSidebar }) {
                 />
 
                 <div className={styles["logo"]}>
-                    <Link href="/">
+                    <Link href="/tkpanel">
                         <a style={{ display: "flex" }}>
-                            <Image
-                                src={Logo}
-
-                                // height={40} width={40}
-                            />
+                            <Image src={Logo} />
                         </a>
                     </Link>
                 </div>

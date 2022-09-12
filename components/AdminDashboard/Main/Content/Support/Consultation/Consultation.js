@@ -13,7 +13,7 @@ function Consultation(props) {
         fetchedConsultaions: { data, ...restData },
         token,
     } = props;
-    // const [formData, setFormData] = useState(data);
+    const [formData, setFormData] = useState(data);
     const [consultaions, setConsultaions] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const [alertData, setAlertData] = useState({
@@ -22,12 +22,13 @@ function Consultation(props) {
         type: "",
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
+    moment.locale("fa", { useGregorianParser: true });
 
-    // const handleOnChange = (e, rowInd, name) => {
-    //     let updated = [...formData];
-    //     updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
-    //     setFormData(() => updated);
-    // };
+    const handleOnChange = (e, rowInd, name) => {
+        let updated = [...formData];
+        updated[rowInd] = { ...updated[rowInd], [name]: e.target.value };
+        setFormData(() => updated);
+    };
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -39,44 +40,44 @@ function Consultation(props) {
         setLoadings(() => temp);
     };
 
-    // const addDesc = async (e, cslt_id, i) => {
-    //     try {
-    //         handleLoadings(i, true);
+    const addDesc = async (e, cslt_id, i) => {
+        try {
+            handleLoadings(i, true);
 
-    //         const res = await fetch(
-    //             `${BASE_URL}/admin/support/consultation/${cslt_id}`,
-    //             {
-    //                 method: "POST",
-    //                 body: JSON.stringify({ admin_desc: e.target.value }),
-    //                 headers: {
-    //                     "Content-type": "application/json",
-    //                     Authorization: `Bearer ${token}`,
-    //                     "Access-Control-Allow-Origin": "*",
-    //                 },
-    //             }
-    //         );
-    //         if (res.ok) {
-    //             showAlert(
-    //                 true,
-    //                 "success",
-    //                 e.target.value ? "توضیحات اضافه شد" : "توضیحات برداشته شد"
-    //             );
-    //         }
+            const res = await fetch(
+                `${BASE_URL}/admin/support/consultation/${cslt_id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ desc: e.target.value }),
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                showAlert(
+                    true,
+                    "success",
+                    e.target.value ? "توضیحات اضافه شد" : "توضیحات برداشته شد"
+                );
+            }
 
-    //         handleLoadings(i, false);
-    //     } catch (error) {
-    //         console.log("Error adding description", error);
-    //     }
-    // };
+            handleLoadings(i, false);
+        } catch (error) {
+            console.log("Error adding description", error);
+        }
+    };
 
-    // const addDescHandler = async (e, consult_id, i) => {
-    //     if (e.target.value !== consultaions[i]?.admin_desc) {
-    //         await addDesc(e, consult_id, i);
-    //         let temp = [...consultaions];
-    //         temp[i]?.admin_desc = (e.target.value);
-    //         setConsultaions(() => temp);
-    //     }
-    // };
+    const addDescHandler = async (e, consult_id, i) => {
+        if (e.target.value !== consultaions[i]?.desc) {
+            await addDesc(e, consult_id, i);
+            let temp = [...consultaions];
+            temp[i]?.desc = (e.target.value);
+            setConsultaions(() => temp);
+        }
+    };
 
     const changeStatus = async (cslt_id, status, i) => {
         handleLoadings(i, true);
@@ -123,6 +124,7 @@ function Consultation(props) {
                 data: { data, ...restData },
             } = await res.json();
             setConsultaions(data);
+            setFormData(data);
             setPagData(restData);
             // Scroll to top
             document.body.scrollTop = 0;
@@ -157,7 +159,8 @@ function Consultation(props) {
                                     شماره موبایل
                                 </th>
                                 <th className="table__head-item">وضعیت</th>
-                                {/* <th className="table__head-item">توضیحات</th> */}
+                                <th className="table__head-item">لینک</th>
+                                <th className="table__head-item">توضیحات</th>
                                 <th className="table__head-item">تاریخ ثبت</th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
@@ -193,7 +196,10 @@ function Consultation(props) {
                                             </span>
                                         )}
                                     </td>
-                                    {/* <td className="table__body-item">
+                                    <td className="table__body-item">
+                                        {clt?.link || "-"}
+                                    </td>
+                                    <td className="table__body-item">
                                         <div
                                             className="form-control"
                                             style={{
@@ -203,18 +209,18 @@ function Consultation(props) {
                                         >
                                             <input
                                                 type="text"
-                                                name="admin_desc"
-                                                id="admin_desc"
+                                                name="desc"
+                                                id="desc"
                                                 className="form__input"
                                                 onChange={(e) =>
                                                     handleOnChange(
                                                         e,
                                                         i,
-                                                        "admin_desc"
+                                                        "desc"
                                                     )
                                                 }
                                                 value={
-                                                    formData[i]?.admin_desc ||
+                                                    formData[i]?.desc ||
                                                     ""
                                                 }
                                                 onBlur={(e) =>
@@ -228,10 +234,10 @@ function Consultation(props) {
                                                 spellCheck={false}
                                             />
                                         </div>
-                                    </td> */}
+                                    </td>
                                     <td className="table__body-item">
                                         {moment(clt?.created_at).format(
-                                            "DD MMMM YYYY , hh:mm:ss"
+                                            "DD MMMM YYYY , HH:mm:ss"
                                         )}
                                     </td>
                                     <td className="table__body-item">

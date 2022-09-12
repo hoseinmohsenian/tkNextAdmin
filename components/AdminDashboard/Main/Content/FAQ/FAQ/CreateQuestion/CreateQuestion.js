@@ -111,7 +111,7 @@ function CreateQuestion({ token, categories }) {
         try {
             const { response, status } = await API.post(
                 `/admin/faq/question`,
-                fd
+                JSON.stringify(body)
             );
 
             if (status === 200) {
