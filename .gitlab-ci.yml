@@ -1,3 +1,7 @@
+stages:
+  - build
+  - deploy-prod
+
 image: "docker:20"
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -18,3 +22,12 @@ build:
     - docker push $REGISTRY_IMAGE_LST
     - echo "IMAGE IS= $REGISTRY_IMAGE_URL"
     - echo "IMAGE LST= $REGISTRY_IMAGE_LST"
+deploy-prod:
+  stage: deploy-prod
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: on_success
+    - when: never
+  image: iran-registry.itsmj.ir/tikka-server-access:secureaccess
+  script:
+    - ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i /access/tikka-prod-key root@31.7.74.104 "cd /tikka-operation-project; docker-compose pull tknextadmin; docker-compose stop tknextadmin; docker-compose rm -f tknextadmin; docker-compose up -d tknextadmin"
