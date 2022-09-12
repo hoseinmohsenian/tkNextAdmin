@@ -12,8 +12,6 @@ variables:
   REGISTRY_IMAGE_LST: $REGISTRY_URL/tikka-tknextadmin:latest
 services:
   - docker:20.10.16-dind
-before_script:
-  - docker info
 build:
   stage: build
   script:
