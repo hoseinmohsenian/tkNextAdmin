@@ -171,9 +171,15 @@ function Editor(props) {
                                 "print",
                                 "save",
                                 "template",
+                                "codeView",
                             ],
                         ],
                         "lang(In nodejs)": "en",
+                        // iframe: true,
+                        // iframeAttributes: {
+                            // scrolling: "no",
+                        // },
+                        // iframeCSSFileName: "",
                     }}
                     setContents={value}
                 />

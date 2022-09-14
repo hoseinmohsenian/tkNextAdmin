@@ -310,16 +310,16 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
                                     </td>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`/content/specialty/${spec?.id}`}
+                                            href={`/content/specialty/information/desc/${spec?.id}/edit`}
                                         >
-                                            <a className={`action-btn primary`}>
-                                                افزودن&nbsp;
+                                            <a className={`action-btn warning`}>
+                                                ویرایش توضیحات&nbsp;
                                             </a>
                                         </Link>
                                         <Link
                                             href={`/content/specialty/${spec?.id}/edit`}
                                         >
-                                            <a className={`action-btn warning`}>
+                                            <a className={`action-btn primary`}>
                                                 ویرایش
                                             </a>
                                         </Link>

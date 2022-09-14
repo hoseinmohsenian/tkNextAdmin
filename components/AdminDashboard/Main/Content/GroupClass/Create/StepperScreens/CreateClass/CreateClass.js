@@ -54,6 +54,7 @@ function CreateClass(props) {
             formData.language_id &&
             selectedTeacher.id &&
             formData.title.trim() &&
+            formData.url.trim() &&
             selectedSpecialitys.length >= 2 &&
             selectedSkills.length >= 3 &&
             formData.class_capacity &&
@@ -70,6 +71,9 @@ function CreateClass(props) {
                 }
                 if (formData.title !== addedData.title) {
                     fd.append("title", formData.title);
+                }
+                if (formData.url !== addedData.url) {
+                    fd.append("url", formData.url);
                 }
                 if (
                     Number(formData.class_capacity) !== addedData.class_capacity
@@ -185,6 +189,7 @@ function CreateClass(props) {
                 fd.append("teacher_id", selectedTeacher.id);
                 fd.append("language_id", Number(formData.language_id));
                 fd.append("title", formData.title);
+                fd.append("url", formData.url);
                 fd.append("class_capacity", Number(formData.class_capacity));
                 fd.append("class_number", Number(formData.class_number));
                 fd.append("price", Number(price));
@@ -1033,7 +1038,7 @@ function CreateClass(props) {
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="url" className="form__label">
-                            URL :
+                            URL :<span className="form__star">*</span>
                         </label>
                         <div className="form-control">
                             <input
@@ -1043,6 +1048,7 @@ function CreateClass(props) {
                                 className="form__input"
                                 onChange={handleOnChange}
                                 spellCheck={false}
+                                required
                             />
                         </div>
                     </div>

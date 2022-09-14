@@ -318,6 +318,62 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
         await readTeachers();
     }
 
+    const handleURLOnChange = (e, i) => {
+        let updatedItem = { ...teachers[i], ...selectedTeacher, url: e.target.value };
+        setSelectedTeacher(updatedItem);
+    };
+
+    const changeURL = async (i) => {
+        try {
+            let temp = [...loadings];
+            temp[i] = true;
+            setLoadings(() => temp);
+
+            const res = await fetch(
+                `${BASE_URL}/admin/teacher/url/${selectedTeacher.id}`,
+                {
+                    method: "POST",
+                    body: JSON.stringify({ url: selectedTeacher.url }),
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+            if (res.ok) {
+                showAlert(true, "success", `URL استاد ${selectedTeacher.family} باموفقیت ویرایش شد`);
+
+                // Updating the teachers list
+                let updatedList = [...teachers];
+                updatedList[i].url = selectedTeacher.url;
+                setTeachers(() => updatedList);
+            } else {
+                const errData = await res.json();
+                showAlert(
+                    true,
+                    "warning",
+                    errData?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+
+            temp = [...loadings];
+            temp[i] = false;
+            setLoadings(() => temp);
+        } catch (error) {
+            console.log("Error changing teacher URL", error);
+        }
+    };
+
+    const changeURLHandler = async (i) => {
+        if (
+            selectedTeacher.url !== teachers[i]?.url 
+        ) {
+            await changeURL(i);
+        }
+    };
+
     return (
         <div>
             <BreadCrumbs substituteObj={{ teachers: "استاد" }} />
@@ -394,6 +450,42 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             {selectedTeacher?.video ? "دارد" : "ندارد"}
                                         </span>
                                     </div>
+                                    <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
+                                    URL
+                                </span>
+                                <span
+                                    className={"modal__item-body"}
+                                    style={{ display: "flex", width: '100%' }}
+                                >
+                                    <div
+                                        className="form-control"
+                                        style={{ margin: 0, width: '100%' }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="url"
+                                            id="url"
+                                            className="form__input"
+                                            onChange={(e) =>
+                                                handleURLOnChange(
+                                                    e,
+                                                    selectedTeacher.index
+                                                )
+                                            }
+                                            value={selectedTeacher?.url || ""}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                    <button
+                                        className={`action-btn primary`}
+                                        onClick={() => changeURLHandler(selectedTeacher.index)}
+                                        disabled={loading}
+                                    >
+                                        ثبت
+                                    </button>
+                                </span>
+                            </div>
                                 </>
                             )}
                         </div>
@@ -732,7 +824,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                         <button
                                             className={`action-btn success`}
                                             onClick={() => {
-                                                setSelectedTeacher(teacher);
+                                                setSelectedTeacher({...teacher, index: i});
                                                 setOpenModal(true);
                                             }}
                                         >

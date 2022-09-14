@@ -53,6 +53,7 @@ function EditClass(props) {
             formData.language_id &&
             selectedTeacher.id &&
             formData.title.trim() &&
+            formData.url.trim() &&
             selectedSpecialitys.length >= 2 &&
             selectedSkills.length >= 3 &&
             formData.class_capacity &&
@@ -68,6 +69,9 @@ function EditClass(props) {
             }
             if (formData.title !== addedData.title) {
                 fd.append("title", formData.title);
+            }
+            if (formData.url !== addedData.url) {
+                fd.append("url", formData.url);
             }
             if (Number(formData.class_capacity) !== addedData.class_capacity) {
                 fd.append("class_capacity", Number(formData.class_capacity));
@@ -241,7 +245,7 @@ function EditClass(props) {
             } else {
                 temp = temp?.filter((item) => item !== countMessage);
             }
-            if (!Number(formData.price.replace(/,/g, ""))) {
+            if (!Number(getUnformattedPrice(formData.price))) {
                 if (findError(errors, priceMessage) === undefined) {
                     temp = [...temp, priceMessage];
                 }
@@ -920,7 +924,7 @@ function EditClass(props) {
                     </div>
                     <div className="input-wrapper">
                         <label htmlFor="url" className="form__label">
-                            URL :
+                            URL :<span className="form__star">*</span>
                         </label>
                         <div className="form-control">
                             <input
@@ -931,6 +935,7 @@ function EditClass(props) {
                                 onChange={handleOnChange}
                                 value={formData.url || ""}
                                 spellCheck={false}
+                                required
                             />
                         </div>
                     </div>

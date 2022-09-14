@@ -334,7 +334,8 @@ function GroupClass(props) {
                                             {selectedClass.students?.map(
                                                 (std) => (
                                                     <li key={std.id}>
-                                                        {std.name_family}
+                                                        {std.name_family} -{" "}
+                                                        {std.mobile}
                                                     </li>
                                                 )
                                             )}

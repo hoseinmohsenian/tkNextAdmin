@@ -5,6 +5,7 @@ import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Alert from "../../../../../../../../Alert/Alert";
 import PhoneInput from "../../../../../../../../PhoneInput/PhoneInput";
+import API from "../../../../../../../../../api";
 
 const countrySchema = {
     id: "",
@@ -325,6 +326,38 @@ function Step1({ token, alertData, showAlert }) {
         return list?.find((item) => item?.id === id);
     };
 
+    const changeURL = async () => {
+        try {
+            const { response, status } = await API.post(
+                `/admin/teacher/url/${formData.id}`,
+                JSON.stringify({ url: formData.url })
+            );
+
+            if (status === 200) {
+                showAlert(
+                    true,
+                    "success",
+                    `URL استاد ${formData.family} باموفقیت ویرایش شد`
+                );
+            } else {
+                showAlert(
+                    true,
+                    "warning",
+                    response?.data?.error?.invalid_params[0]?.message ||
+                        "مشکلی پیش آمده"
+                );
+            }
+        } catch (error) {
+            console.log("Error changing teacher URL", error);
+        }
+    };
+
+    const changeURLHandler = async (i) => {
+        if (formData.url !== fetchedData.url) {
+            await changeURL();
+        }
+    };
+
     // Fetching form data, countries list and languages list
     useEffect(() => {
         if (token) {
@@ -626,6 +659,23 @@ function Step1({ token, alertData, showAlert }) {
                                 }}
                                 id="id"
                                 openBottom={false}
+                            />
+                        </div>
+                    </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="url" className="form__label">
+                            URL :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="text"
+                                name="url"
+                                id="url"
+                                className="form__input"
+                                onChange={handleOnChange}
+                                value={formData.url || ""}
+                                spellCheck={false}
+                                onBlur={changeURLHandler}
                             />
                         </div>
                     </div>
