@@ -9,15 +9,23 @@ import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
+import styles from "./SemiPrivate.module.css";
+
+const filtersSchema = { teacher_name: "", language_id: "" };
+const appliedFiltersSchema = { teacher_name: false, language_id: false };
 
 function SemiPrivate(props) {
     const {
         fetchedClasses: { data, ...restData },
         token,
+        languages,
+        searchData,
     } = props;
     const [classes, setClasses] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
+    const [filters, setFilters] = useState(searchData);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const [alertData, setAlertData] = useState({
@@ -30,15 +38,31 @@ function SemiPrivate(props) {
     const [dModalVisible, setDModalVisible] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
 
-    const readClasses = async (page = 1) => {
-        let searchParams = {};
+    const readClasses = async (page = 1, avoidFilters = false) => {
+        setLoading(true);
 
-        if (page !== 1) {
-            searchParams = {
-                ...searchParams,
-                page,
-            };
+        // Constructing search parameters
+        let searchQuery = "";
+        let searchParams = {};
+        if (!avoidFilters) {
+            let tempFilters = { ...appliedFilters };
+
+            Object.keys(filters).forEach((key) => {
+                if (filters[key]) {
+                    searchQuery += `${key}=${filters[key]}&`;
+                    tempFilters[key] = true;
+                    searchParams = {
+                        ...searchParams,
+                        [key]: filters[key],
+                    };
+                } else {
+                    tempFilters[key] = false;
+                }
+            });
+
+            setAppliedFilters(tempFilters);
         }
+        searchQuery += `page=${page}`;
 
         router.push({
             pathname: `/tkpanel/semi-private-admin`,
@@ -46,13 +70,16 @@ function SemiPrivate(props) {
         });
 
         try {
-            const res = await fetch(`${BASE_URL}/admin/semi-private`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-type": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
+            const res = await fetch(
+                `${BASE_URL}/admin/semi-private?${searchQuery}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
             const {
                 data: { data, ...restData },
             } = await res.json();
@@ -64,6 +91,7 @@ function SemiPrivate(props) {
         } catch (error) {
             console.log("Error reading semi-private classes", error);
         }
+        setLoading(false);
     };
 
     const showAlert = (show, type, message) => {
@@ -129,6 +157,42 @@ function SemiPrivate(props) {
             console.log("Error reading class students", error);
         }
         setLoading(false);
+    };
+
+    const handleOnChange = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const removeFilters = () => {
+        setFilters(filtersSchema);
+        setAppliedFilters(appliedFiltersSchema);
+        readClasses(1, true);
+        router.push({
+            pathname: `/tkpanel/semi-private-admin`,
+            query: {},
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        await readClasses();
     };
 
     return (
@@ -267,6 +331,90 @@ function SemiPrivate(props) {
                         </div>
                     </Modal>
                 )}
+
+                <div className={styles["search"]}>
+                    <form
+                        className={styles["search-wrapper"]}
+                        onSubmit={handleSubmit}
+                    >
+                        <div className={`row ${styles["search-row"]}`}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="teacher_name"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        استاد :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="teacher_name"
+                                            id="teacher_name"
+                                            className="form__input"
+                                            onChange={handleOnChange}
+                                            value={filters?.teacher_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div className="input-wrapper">
+                                    <label
+                                        htmlFor="language_id"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        زبان :
+                                    </label>
+                                    <div className="form-control">
+                                        <select
+                                            name="language_id"
+                                            id="language_id"
+                                            className="form__input input-select"
+                                            onChange={handleOnChange}
+                                            value={filters.language_id}
+                                        >
+                                            <option value={0}>
+                                                انتخاب کنید
+                                            </option>
+                                            {languages?.map((lan) => (
+                                                <option
+                                                    key={lan?.id}
+                                                    value={lan?.id}
+                                                >
+                                                    {lan?.persian_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="submit"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                            >
+                                {loading ? "در حال انجام ..." : "اعمال فیلتر"}
+                            </button>
+                            {showFilters() && (
+                                <button
+                                    type="button"
+                                    className={`btn danger-outline ${styles["btn"]}`}
+                                    disabled={loading}
+                                    onClick={() => removeFilters()}
+                                >
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
+                                </button>
+                            )}
+                        </div>
+                    </form>
+                </div>
 
                 <div className="table__wrapper">
                     <table className="table">

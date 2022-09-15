@@ -12,7 +12,7 @@ import { AiOutlineWhatsApp } from "react-icons/ai";
 import { MdOutlineDoNotDisturbAlt } from "react-icons/md";
 import API from "../../../../../../api";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "antd";
 
 function MultiSession() {
     const [classes, setClasses] = useState([]);
@@ -108,8 +108,6 @@ function MultiSession() {
                     multiSessionsList: "۵ جلسه ۱۰ جلسه",
                 }}
             />
-
-            <ReactTooltip className="tooltip" type="dark" />
 
             <Box title="۵ جلسه ۱۰ جلسه">
                 {openModal && (
@@ -303,16 +301,20 @@ function MultiSession() {
                                     <td className="table__body-item">
                                         {item?.teacher_name}
                                         {item.teacher_status === 0 && (
-                                            <span
-                                                data-tip="وضعیت غیرفعال"
-                                                className="danger-color"
-                                                style={{
-                                                    marginRight: 2,
-                                                    cursor: "pointer",
-                                                }}
+                                            <Tooltip
+                                                title="وضعیت غیرفعال"
+                                                overlayStyle={{ fontSize: 12 }}
                                             >
-                                                <MdOutlineDoNotDisturbAlt />
-                                            </span>
+                                                <span
+                                                    className="danger-color"
+                                                    style={{
+                                                        marginRight: 2,
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
+                                                    <MdOutlineDoNotDisturbAlt />
+                                                </span>
+                                            </Tooltip>
                                         )}
                                     </td>
                                     <td className="table__body-item">

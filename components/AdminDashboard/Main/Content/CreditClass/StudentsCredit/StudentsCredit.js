@@ -8,8 +8,8 @@ import SearchSelect from "../../../../../SearchSelect/SearchSelect";
 import API from "../../../../../../api";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
-const filtersSchema = { teacher_name: "" };
-const appliedFiltersSchema = { teacher_name: false };
+const filtersSchema = { teacher_name: "", user_name: "" };
+const appliedFiltersSchema = { teacher_name: false, user_name: false };
 const teacherSchema = { id: "", name: "", family: "", mobile: "" };
 const studentSchema = { id: "", name_family: "", mobile: "", email: "" };
 
@@ -386,25 +386,50 @@ function StudentsCredit({
                         </div>
 
                         <div className={`row ${styles["search-row"]}`}>
-                            <div
-                                className={`input-wrapper ${styles["input-wrapper"]}`}
-                            >
-                                <label
-                                    htmlFor="teacher_name"
-                                    className={`form__label`}
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["input-wrapper"]}`}
                                 >
-                                    نام استاد :
-                                </label>
-                                <div className="form-control">
-                                    <input
-                                        type="text"
-                                        name="teacher_name"
-                                        id="teacher_name"
-                                        className="form__input"
-                                        onChange={filtersOnChangeHandler}
-                                        value={filters?.teacher_name}
-                                        spellCheck={false}
-                                    />
+                                    <label
+                                        htmlFor="teacher_name"
+                                        className={`form__label`}
+                                    >
+                                        نام استاد :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="teacher_name"
+                                            id="teacher_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.teacher_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="user_name"
+                                        className={`form__label`}
+                                    >
+                                        نام زبان آموز :
+                                    </label>
+                                    <div className="form-control">
+                                        <input
+                                            type="text"
+                                            name="user_name"
+                                            id="user_name"
+                                            className="form__input"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters?.user_name}
+                                            spellCheck={false}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className={styles["btn-wrapper"]}>

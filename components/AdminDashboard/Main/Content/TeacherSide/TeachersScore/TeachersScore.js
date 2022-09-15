@@ -4,8 +4,7 @@ import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
-import ReactTooltip from "react-tooltip";
-import { AiOutlineInfoCircle } from "react-icons/ai";
+import TeacherMobileTooltip from "../../../../../TeacherMobileTooltip/TeacherMobileTooltip";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import { Typography } from "antd";
 import Ellipsis from "../../../../../Ellipsis/Ellipsis";
@@ -213,8 +212,6 @@ function TeachersScore(props) {
                     </form>
                 </div>
 
-                <ReactTooltip className="tooltip" />
-
                 <div className="table__wrapper table__wrapper--wrap">
                     <table className="table">
                         <thead className="table__head">
@@ -251,17 +248,14 @@ function TeachersScore(props) {
                                 >
                                     <td
                                         className="table__body-item"
-                                        data-tip={
-                                            teacher?.teacher_mobile || "-"
-                                        }
                                         style={{
                                             width: 130,
                                         }}
                                     >
                                         {teacher?.teacher_name}
-                                        <span className="info-icon">
-                                            <AiOutlineInfoCircle />
-                                        </span>
+                                        <TeacherMobileTooltip
+                                            mobile={teacher.teacher_mobile}
+                                        />
                                     </td>
                                     <td className="table__body-item table__body-item--ltr">
                                         {`${
@@ -281,16 +275,20 @@ function TeachersScore(props) {
                                             width: 380,
                                         }}
                                     >
-                                        <Ellipsis
-                                            ellipsis={ellipsis[i]}
-                                            width={290}
-                                            onClick={() => {
-                                                let temp = [...ellipsis];
-                                                temp[i] = !temp[i];
-                                                setEllipsis(() => temp);
-                                            }}
-                                            text={teacher.desc || ""}
-                                        />
+                                        {teacher.desc ? (
+                                            <Ellipsis
+                                                ellipsis={ellipsis[i]}
+                                                width={290}
+                                                onClick={() => {
+                                                    let temp = [...ellipsis];
+                                                    temp[i] = !temp[i];
+                                                    setEllipsis(() => temp);
+                                                }}
+                                                text={teacher.desc}
+                                            />
+                                        ) : (
+                                            "-"
+                                        )}
                                     </td>
                                     <td className="table__body-item">
                                         {teacher?.admin_name}

@@ -16,11 +16,11 @@ function Profiles(props) {
     const {
         fetchedStudents: { data, ...restData },
         token,
-        searchData: fetchedData,
+        searchData,
     } = props;
     const [students, setStudents] = useState(data);
     const [pagData, setPagData] = useState(restData);
-    const [filters, setFilters] = useState(fetchedData);
+    const [filters, setFilters] = useState(searchData);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
     const [openModal, setOpenModal] = useState(false);

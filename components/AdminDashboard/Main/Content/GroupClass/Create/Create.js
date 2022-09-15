@@ -17,7 +17,7 @@ function CreateGroupClass({ token, levels }) {
         desc: "",
         teacher_name: "",
         level_id: 0,
-        class_number: "",
+        class_number: "1",
         class_capacity: "",
         session_time: "60",
         price: "",

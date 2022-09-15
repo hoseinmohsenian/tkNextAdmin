@@ -419,106 +419,25 @@ function TodayClass(props) {
                                 </div>
                             </div>
                             <div className={`col-sm-6 ${styles["search-col"]}`}>
-                                <div
-                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
-                                >
-                                    <label
-                                        htmlFor="pay"
-                                        className={`form__label ${styles["search-label"]}`}
-                                    >
-                                        پرداخت :
-                                    </label>
-                                    <div className="form-control form-control-radio">
-                                        <div className="input-radio-wrapper">
-                                            <label
-                                                htmlFor="pay"
-                                                className="radio-title"
-                                            >
-                                                پرداخت شده
-                                            </label>
-                                            <input
-                                                type="checkbox"
-                                                name="pay"
-                                                onChange={handleOnChange}
-                                                value={1}
-                                                checked={
-                                                    Number(filters.pay) === 1
-                                                }
-                                                id="pay"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={`row ${styles["search-row"]}`}>
-                            <div
-                                className={`col-sm-12 ${styles["search-col"]}`}
-                            >
-                                <div
-                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
-                                >
+                                <div className="input-wrapper">
                                     <label
                                         htmlFor="status"
                                         className={`form__label ${styles["search-label"]}`}
                                     >
                                         وضعیت :
                                     </label>
-                                    <div className="form-control form-control-radio">
-                                        <div className="input-radio-wrapper">
-                                            <label
-                                                htmlFor="canceled"
-                                                className="radio-title"
-                                            >
-                                                کنسل شده
-                                            </label>
-                                            <input
-                                                type="radio"
-                                                name="status"
-                                                onChange={handleOnChange}
-                                                value={2}
-                                                checked={
-                                                    Number(filters.status) === 2
-                                                }
-                                                id="canceled"
-                                            />
-                                        </div>
-                                        <div className="input-radio-wrapper">
-                                            <label
-                                                htmlFor="held"
-                                                className="radio-title"
-                                            >
-                                                برگزار شده
-                                            </label>
-                                            <input
-                                                type="radio"
-                                                name="status"
-                                                onChange={handleOnChange}
-                                                value={1}
-                                                checked={
-                                                    Number(filters.status) === 1
-                                                }
-                                                id="held"
-                                            />
-                                        </div>
-                                        <div className="input-radio-wrapper">
-                                            <label
-                                                htmlFor="both"
-                                                className="radio-title"
-                                            >
-                                                هردو
-                                            </label>
-                                            <input
-                                                type="radio"
-                                                name="status"
-                                                onChange={handleOnChange}
-                                                value={0}
-                                                checked={
-                                                    Number(filters.status) === 0
-                                                }
-                                                id="both"
-                                            />
-                                        </div>
+                                    <div className="form-control">
+                                        <select
+                                            name="status"
+                                            id="status"
+                                            className="form__input input-select"
+                                            onChange={handleOnChange}
+                                            value={filters.status}
+                                        >
+                                            <option value={0}>
+                                                انتخاب کنید
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

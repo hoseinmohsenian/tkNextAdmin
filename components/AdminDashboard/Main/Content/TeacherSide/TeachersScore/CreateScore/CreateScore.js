@@ -13,11 +13,10 @@ const studentSchema = { id: "", name: "", family: "" };
 function CreateScore() {
     const [formData, setFormData] = useState({
         desc: "",
-        desc: false,
         point_type: "0",
         notify_teacher: false,
         number: 1,
-        teacher_side_desc: "",
+        // teacher_side_desc: "",
         accounting_effect: false,
     });
     const [teachers, setTeachers] = useState([]);
@@ -31,7 +30,7 @@ function CreateScore() {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-
+    console.log(formData);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -40,28 +39,32 @@ function CreateScore() {
             fd.append("teacher_id", selectedTeacher.id);
             fd.append("number", Number(formData.number));
             fd.append("point_type", Number(formData.point_type));
-            if (
-                Number(formData.point_type) === 0 &&
-                formData.accounting_effect
-            ) {
-                fd.append(
-                    "accounting_effect",
-                    Number(formData.accounting_effect)
-                );
-                if (
-                    !formData.teacher_side_desc &&
-                    Number(formData.notify_teacher) === 1
-                ) {
-                    showAlert(
-                        true,
-                        "danger",
-                        "توضیحات سمت استاد در صورت فعال بودن ارسال اعلان، اجباری است"
+            if (Number(formData.point_type) === 0) {
+                if (formData.accounting_effect) {
+                    fd.append(
+                        "accounting_effect",
+                        Number(formData.accounting_effect)
                     );
+                }
+                if (formData.notify_teacher) {
+                    fd.append(
+                        "notify_teacher",
+                        Number(formData.notify_teacher)
+                    );
+                }
+                if (!formData.desc && Number(formData.notify_teacher) === 1) {
+                    setFormData({
+                        ...formData,
+                        notify_error:
+                            "توضیحات در صورت فعال بودن ارسال اعلان، توضیحات اجباری است",
+                    });
+                    return;
                 } else if (
-                    formData.teacher_side_desc &&
+                    formData.desc &&
                     Number(formData.notify_teacher) === 0
                 ) {
-                    fd.append("teacher_side_desc", formData.teacher_side_desc);
+                    setFormData({ ...formData, notify_error: "" });
+                    fd.append("desc", formData.desc);
                 }
             }
             if (formData.desc) {
@@ -70,7 +73,6 @@ function CreateScore() {
             if (selectedStudent.id) {
                 fd.append("user_id", Number(selectedStudent.id));
             }
-            fd.append("notify_teacher", Number(formData.notify_teacher));
 
             await addScore(fd);
         } else {
@@ -147,7 +149,6 @@ function CreateScore() {
 
             if (status === 200) {
                 setStudents(data?.data || []);
-                showAlert(true, "success", "اکنون زبان آموز را انتخاب کنید");
             } else {
                 showAlert(
                     true,
@@ -273,33 +274,6 @@ function CreateScore() {
                             spellCheck={false}
                         />
                     </div>
-                    <div className="input-wrapper">
-                        <label
-                            htmlFor="notify_teacher"
-                            className={`form__label`}
-                        >
-                            اعلان برای استاد :
-                        </label>
-                        <div className="form-control form-control-radio">
-                            <div className="input-radio-wrapper">
-                                <label
-                                    htmlFor="notify_teacher"
-                                    className="radio-title"
-                                >
-                                    ارسال شود
-                                </label>
-                                <input
-                                    type="checkbox"
-                                    name="notify_teacher"
-                                    onChange={handleOnChange}
-                                    checked={
-                                        Number(formData.notify_teacher) === 1
-                                    }
-                                    id="notify_teacher"
-                                />
-                            </div>
-                        </div>
-                    </div>
                     <div className={`row`}>
                         <div className={`col-sm-6 ${styles["col"]}`}>
                             <div className="input-wrapper">
@@ -406,6 +380,40 @@ function CreateScore() {
                     )} */}
                     {Number(formData.point_type) === 0 && (
                         <>
+                            <div className="input-wrapper">
+                                <label
+                                    htmlFor="notify_teacher"
+                                    className={`form__label`}
+                                >
+                                    اعلان برای استاد :
+                                </label>
+                                <div className="form-control form-control-radio">
+                                    <div className="input-radio-wrapper">
+                                        <label
+                                            htmlFor="notify_teacher"
+                                            className="radio-title"
+                                        >
+                                            ارسال شود
+                                        </label>
+                                        <input
+                                            type="checkbox"
+                                            name="notify_teacher"
+                                            onChange={handleOnChange}
+                                            checked={
+                                                Number(
+                                                    formData.notify_teacher
+                                                ) === 1
+                                            }
+                                            id="notify_teacher"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            {formData.notify_error && (
+                                <span className="danger-color">
+                                    {formData.notify_error}
+                                </span>
+                            )}
                             <div className="input-wrapper">
                                 <label
                                     htmlFor="accounting_effect"

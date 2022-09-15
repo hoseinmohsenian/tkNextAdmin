@@ -361,6 +361,14 @@ function CreateSemiPrivate() {
                                             defaultText="انتخاب کنید"
                                             selected={selectedStudents}
                                             displayKey="name_family"
+                                            displayPattern={[
+                                                {
+                                                    member: true,
+                                                    key: "name_family",
+                                                },
+                                                { member: false, key: " - " },
+                                                { member: true, key: "mobile" },
+                                            ]}
                                             id="id"
                                             setSelected={setSelectedStudents}
                                             noResText="یافت نشد"

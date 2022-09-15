@@ -38,14 +38,19 @@ export async function getServerSideProps(context) {
     }
 
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
-    const { page, teacher_name } = context?.query;
+    const { page, teacher_name, user_name } = context?.query;
     let searchData = {
         teacher_name: "",
+        user_name: "",
     };
     let searchParams = "";
     if (isKeyValid(teacher_name)) {
         searchParams += `teacher_name=${teacher_name}&`;
         searchData = { ...searchData, teacher_name: teacher_name };
+    }
+    if (isKeyValid(user_name)) {
+        searchParams += `user_name=${user_name}&`;
+        searchData = { ...searchData, user_name: user_name };
     }
     if (isKeyValid(page)) {
         if (Number(page) > 0) {

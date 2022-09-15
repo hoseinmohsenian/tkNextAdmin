@@ -3,7 +3,7 @@ import Link from "next/link";
 import styles from "./Header.module.css";
 import Image from "next/image";
 import DefaultImg from "../../../public/images/tikka-default.png";
-import Logo from "../../../public/images/logopanel.png";
+import Logo from "../../../public/images/logo.png";
 import Toggle from "../../Toggle/Toggle";
 import { useGlobalContext } from "../../../context";
 import { IoIosArrowDown } from "react-icons/io";

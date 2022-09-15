@@ -177,6 +177,7 @@ function EditClass(props) {
             let teacherMessage = "لطفا استاد را انتخاب کنید.";
             let langMessage = "لطفا زبان را انتخاب کنید.";
             let titleMessage = "لطفا عنوان را وارد کنید.";
+            let titleMessage = "لطفا URL را وارد کنید.";
             let descMessage = "لطفا توضیحات را وارد کنید.";
             let specMessage = "لطفا حداقل ۲ تخصص انتخاب کنید.";
             let skillMessage = "لطفا حداقل ۳ مهارت انتخاب کنید.";
@@ -209,8 +210,14 @@ function EditClass(props) {
             } else {
                 temp = temp?.filter((item) => item !== titleMessage);
             }
+            if (formData.url.trim() === "") {
+                if (findError(errors, urlMessage) === undefined) {
+                    temp = [...temp, urlMessage];
+                }
+            } else {
+                temp = temp?.filter((item) => item !== urlMessage);
+            }
             if (desc.trim() === "") {
-                console.log("here");
                 if (findError(errors, descMessage) === undefined) {
                     temp = [...temp, descMessage];
                 }
@@ -699,6 +706,11 @@ function EditClass(props) {
                                         onChange={handleOnChange}
                                         value={formData.class_capacity}
                                         required
+                                        onKeyDown={(e) => {
+                                            if (e.key === "-") {
+                                                e.preventDefault();
+                                            }
+                                        }}
                                     />
                                 </div>
                             </div>

@@ -496,7 +496,7 @@ function TeachersFreeHours({ languages }) {
                                     </td>
                                     <td className="table__body-item">
                                         <Link
-                                            href={`https://barmansms.ir/teachers/${teacher?.id}`}
+                                            href={`https://barmansms.ir/teachers/${teacher?.url}`}
                                         >
                                             <a
                                                 className={`action-btn primary`}

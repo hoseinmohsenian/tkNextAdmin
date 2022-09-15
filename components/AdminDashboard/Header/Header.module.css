@@ -22,7 +22,7 @@
 }
 .logo {
     margin-right: 1rem;
-    width: 5.5rem !important;
+    width: 5rem !important;
 }
 
 .left {
@@ -152,7 +152,7 @@
 
 @media all and (min-width: 576px) {
     .logo {
-        width: 8.5rem !important;
+        width: 6.5rem !important;
     }
     .list-btn {
         padding: 0.2rem 0.5rem;

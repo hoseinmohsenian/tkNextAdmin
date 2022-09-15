@@ -61,7 +61,6 @@ export async function getServerSideProps(context) {
     if (isKeyValid(page)) {
         if (Number(page) > 0) {
             searchParams += `page=${page}`;
-            searchParams = { ...searchParams, page: page };
         }
     }
 
