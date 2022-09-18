@@ -177,7 +177,7 @@ function EditClass(props) {
             let teacherMessage = "لطفا استاد را انتخاب کنید.";
             let langMessage = "لطفا زبان را انتخاب کنید.";
             let titleMessage = "لطفا عنوان را وارد کنید.";
-            let titleMessage = "لطفا URL را وارد کنید.";
+            let urlMessage = "لطفا URL را وارد کنید.";
             let descMessage = "لطفا توضیحات را وارد کنید.";
             let specMessage = "لطفا حداقل ۲ تخصص انتخاب کنید.";
             let skillMessage = "لطفا حداقل ۳ مهارت انتخاب کنید.";
