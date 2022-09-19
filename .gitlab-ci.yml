@@ -2,7 +2,7 @@ stages:
   - build
   - deploy-prod
 
-image: "iran-registry.itsmj.ir/docker:20"
+image: "docker:20"
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
@@ -11,7 +11,7 @@ variables:
   REGISTRY_IMAGE_URL: $REGISTRY_URL/tikka-tknextadmin:$IMAGE_TAG
   REGISTRY_IMAGE_LST: $REGISTRY_URL/tikka-tknextadmin:latest
 services:
-  - iran-registry.itsmj.ir/docker:20.10.16-dind
+  - docker:20.10.16-dind
 build:
   stage: build
   script:
