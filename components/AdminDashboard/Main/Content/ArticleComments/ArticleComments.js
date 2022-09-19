@@ -9,8 +9,12 @@ import moment from "jalali-moment";
 import { AiFillEye } from "react-icons/ai";
 import styles from "./ArticleComments.module.css";
 
-const filtersSchema = { article_title: "" };
-const appliedFiltersSchema = { article_title: false };
+const filtersSchema = { article_title: "", order_by: "desc", status: "both" };
+const appliedFiltersSchema = {
+    article_title: false,
+    order_by: true,
+    status: false,
+};
 
 function ArticleComments({
     fetchedComments: { data, ...restData },
@@ -31,15 +35,6 @@ function ArticleComments({
     const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
-    const handleOnChange = (e) => {
-        const type = e.target.type;
-        const name = e.target.name;
-        const value = type === "checkbox" ? e.target.checked : e.target.value;
-        setFilters((oldFilters) => {
-            return { ...oldFilters, [name]: value };
-        });
-    };
-
     const readComments = async (page = 1, avoidFilters = false) => {
         let searchParams = {};
 
@@ -55,9 +50,11 @@ function ArticleComments({
 
             Object.keys(filters).forEach((key) => {
                 if (filters[key]) {
-                    searchQuery += `${key}=${filters[key]}&`;
-                    tempFilters[key] = true;
-                    searchParams = { ...searchParams, [key]: filters[key] };
+                    if (!(key === "status" && filters["status"] === "both")) {
+                        searchQuery += `${key}=${filters[key]}&`;
+                        tempFilters[key] = true;
+                        searchParams = { ...searchParams, [key]: filters[key] };
+                    }
                 } else {
                     tempFilters[key] = false;
                 }
@@ -139,7 +136,7 @@ function ArticleComments({
         }
     };
 
-    const filtersOnChangeHandler = (e) => {
+    const filtersOnChange = (e) => {
         const type = e.target.type;
         const name = e.target.name;
         const value = type === "checkbox" ? e.target.checked : e.target.value;
@@ -160,9 +157,10 @@ function ArticleComments({
 
     const showFilters = () => {
         let values = Object.values(appliedFilters);
+        let keys = Object.keys(appliedFilters);
         for (let i = 0; i < values.length; i++) {
             let value = values[i];
-            if (value) {
+            if (value && keys[i] !== "order_by") {
                 return false;
             }
         }
@@ -202,10 +200,118 @@ function ArticleComments({
                                             name="article_title"
                                             id="article_title"
                                             className="form__input"
-                                            onChange={filtersOnChangeHandler}
+                                            onChange={filtersOnChange}
                                             value={filters?.article_title}
                                             spellCheck={false}
                                         />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label className={`form__label`}>
+                                        وضعیت :
+                                    </label>
+                                    <div className="form-control form-control-radio">
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="verified"
+                                                className="radio-title"
+                                            >
+                                                تایید‌شده
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                onChange={filtersOnChange}
+                                                value="1"
+                                                checked={filters.status === "1"}
+                                                id="verified"
+                                            />
+                                        </div>
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="notverified"
+                                                className="radio-title"
+                                            >
+                                                تایید‌نشده
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                onChange={filtersOnChange}
+                                                value="0"
+                                                checked={filters.status === "0"}
+                                                id="notverified"
+                                            />
+                                        </div>
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="both"
+                                                className="radio-title"
+                                            >
+                                                هردو
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="status"
+                                                onChange={filtersOnChange}
+                                                value={"both"}
+                                                checked={
+                                                    filters.status === "both"
+                                                }
+                                                id="both"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label className={`form__label`}>
+                                        مرتب :
+                                    </label>
+                                    <div className="form-control form-control-radio">
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="asc"
+                                                className="radio-title"
+                                            >
+                                                صعودی
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="order_by"
+                                                onChange={filtersOnChange}
+                                                value="asc"
+                                                checked={
+                                                    filters.order_by === "asc"
+                                                }
+                                                id="asc"
+                                            />
+                                        </div>
+                                        <div className="input-radio-wrapper">
+                                            <label
+                                                htmlFor="desc"
+                                                className="radio-title"
+                                            >
+                                                نزولی
+                                            </label>
+                                            <input
+                                                type="radio"
+                                                name="order_by"
+                                                onChange={filtersOnChange}
+                                                value="desc"
+                                                checked={
+                                                    filters.order_by === "desc"
+                                                }
+                                                id="desc"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

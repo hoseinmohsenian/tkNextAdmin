@@ -52,8 +52,9 @@ import { GiSkills, GiDirectionSign, GiPlatform } from "react-icons/gi";
 import { RiArticleFill, RiAdminLine } from "react-icons/ri";
 import { BsPinAngleFill } from "react-icons/bs";
 import { FiPercent, FiUserX } from "react-icons/fi";
-import { GoReport } from "react-icons/go";
+import { GoReport, GoLaw } from "react-icons/go";
 import { SiStatuspage } from "react-icons/si";
+import { CgUnavailable } from "react-icons/cg";
 
 export default [
     {
@@ -149,6 +150,16 @@ export default [
                 title: "کلاس برگزار نشده",
                 path: "/tkpanel/class/paymentForClassNotStatus",
                 icon: <MdSchool />,
+            },
+            {
+                title: "گزارش غیبت",
+                path: "/tkpanel/class/absenceReport",
+                icon: <CgUnavailable />,
+            },
+            {
+                title: "گزارش تخلف",
+                path: "/tkpanel/class/ViolationReport",
+                icon: <GoLaw />,
             },
             {
                 title: "کلاس گروهی",

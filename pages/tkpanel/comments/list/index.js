@@ -36,16 +36,29 @@ export async function getServerSideProps(context) {
         };
     }
 
-    const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
-    const { article_title, page } = context?.query;
+    const isKeyValid = (key) => key !== undefined;
+    const { article_title, order_by, status, page } = context?.query;
     let searchData = {
         article_title: "",
+        order_by: "desc",
+        status: "both",
     };
     let searchQuery = "";
 
     if (isKeyValid(article_title)) {
         searchQuery += `article_title=${article_title}&`;
         searchData = { ...searchData, article_title: article_title };
+    }
+    if (isKeyValid(order_by) && ["desc", "asc"].includes(order_by)) {
+        searchQuery += `order_by=${order_by}&`;
+        searchData = { ...searchData, order_by: order_by };
+    } else {
+        searchQuery += `order_by=desc&`;
+        searchData = { ...searchData, order_by: "desc" };
+    }
+    if (isKeyValid(status)) {
+        searchQuery += `status=${status}&`;
+        searchData = { ...searchData, status: status };
     }
     if (isKeyValid(page)) {
         searchQuery += `page=${page}&`;

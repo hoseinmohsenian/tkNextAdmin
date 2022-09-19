@@ -335,7 +335,7 @@ function MultiSession() {
                                                 className={`action-btn primary`}
                                                 target="_blank"
                                             >
-                                                ورودی به پنل
+                                                ورود به پنل
                                             </a>
                                         </Link>
                                         <button

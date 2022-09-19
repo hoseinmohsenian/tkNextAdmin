@@ -8,9 +8,9 @@ import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import moment from "jalali-moment";
 import { useGlobalContext } from "../../../../../../context";
 import Modal from "../../../../../Modal/Modal";
-import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
+import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
-import ReactTooltip from "react-tooltip";
+import TeacherMobileTooltip from "../../../../../TeacherMobileTooltip/TeacherMobileTooltip";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import { Select } from "antd";
 
@@ -263,8 +263,6 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                     </Modal>
                 )}
 
-                <ReactTooltip className="tooltip" />
-
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
@@ -411,7 +409,7 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                         key={item?.id}
                                     >
                                         <td className="table__body-item">
-                                            {item?.user_name}
+                                            {item?.user_name || "-"}
                                         </td>
                                         <td className="table__body-item">
                                             {item?.user_mobile || "-"}
@@ -436,16 +434,11 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                                 </Link>
                                             )}
                                         </td>
-                                        <td
-                                            className="table__body-item"
-                                            data-tip={
-                                                item?.teacher_mobile || "-"
-                                            }
-                                        >
+                                        <td className="table__body-item">
                                             {item?.teacher_name}
-                                            <span className="info-icon">
-                                                <AiOutlineInfoCircle />
-                                            </span>
+                                            <TeacherMobileTooltip
+                                                mobile={item.teacher_mobile}
+                                            />
                                         </td>
                                         <td className="table__body-item">
                                             {item?.status === 0 &&

@@ -14,6 +14,7 @@ function EditCategory({ token, category }) {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    console.log(formData);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,7 +42,7 @@ function EditCategory({ token, category }) {
             ) {
                 fd.append("meta_title", formData.meta_title);
             }
-            if (formData.image && typeof category.image !== "string") {
+            if (formData.image && typeof formData.image !== "string") {
                 fd.append("image", formData.image);
             }
 

@@ -9,10 +9,13 @@ import moment from "jalali-moment";
 import Link from "next/link";
 import { useGlobalContext } from "../../../../../../context";
 import Modal from "../../../../../Modal/Modal";
-import { AiOutlineWhatsApp, AiOutlineInfoCircle } from "react-icons/ai";
-import ReactTooltip from "react-tooltip";
+import { AiOutlineWhatsApp } from "react-icons/ai";
+import TeacherMobileTooltip from "../../../../../TeacherMobileTooltip/TeacherMobileTooltip";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import { Select } from "antd";
+
+const filtersSchema = { admin_id: "0" };
+const appliedFiltersSchema = { admin_id: false };
 
 function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [monitoringList, setMonitoringList] = useState(monitorings);
@@ -31,6 +34,8 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
         Array(monitorings?.length).fill(false)
     );
     const { Option } = Select;
+    const [filters, setFilters] = useState(filtersSchema);
+    const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -108,7 +113,11 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
             .format("YYYY/MM/DD")
             .replace("/", "-")
             .replace("/", "-");
-        searchQuery = `date=${date}`;
+        searchQuery = `date=${date}&`;
+
+        if (filters.admin_id !== "0") {
+            searchQuery += `admin_id=${filters.admin_id}`;
+        }
 
         try {
             setLoading(true);
@@ -128,6 +137,26 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
         } catch (error) {
             console.log("Error reading monitoring list", error);
         }
+    };
+
+    const filtersOnChangeHandler = (e) => {
+        const type = e.target.type;
+        const name = e.target.name;
+        const value = type === "checkbox" ? e.target.checked : e.target.value;
+        setFilters((oldFilters) => {
+            return { ...oldFilters, [name]: value };
+        });
+    };
+
+    const showFilters = () => {
+        let values = Object.values(appliedFilters);
+        for (let i = 0; i < values.length; i++) {
+            let value = values[i];
+            if (value) {
+                return true;
+            }
+        }
+        return false;
     };
 
     return (
@@ -206,44 +235,90 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                     </Modal>
                 )}
 
-                <ReactTooltip className="tooltip" />
-
                 <div className={styles["search"]}>
                     <form className={styles["search-wrapper"]}>
                         <div className={`${styles["search-row"]}`}>
-                            <div
-                                className={`input-wrapper ${styles["input-wrapper"]}`}
-                            >
-                                <label
-                                    htmlFor="publish_time"
-                                    className={`form__label ${styles["search-label"]}`}
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["input-wrapper"]}`}
                                 >
-                                    تاریخ‌ :
-                                </label>
-                                <div className="form-control">
-                                    <DatePicker
-                                        value={selectedDate}
-                                        onChange={setSelectedDate}
-                                        shouldHighlightWeekends
-                                        locale="fa"
-                                        wrapperClassName="date-input-wrapper"
-                                        inputClassName="date-input"
-                                        colorPrimary="#545cd8"
-                                        inputPlaceholder="انتخاب کنید"
-                                        calendarPopperPosition="bottom"
-                                    />
+                                    <label
+                                        htmlFor="publish_time"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        تاریخ‌ :
+                                        <span className="form__star">*</span>
+                                    </label>
+                                    <div className="form-control">
+                                        <DatePicker
+                                            value={selectedDate}
+                                            onChange={setSelectedDate}
+                                            shouldHighlightWeekends
+                                            locale="fa"
+                                            wrapperClassName="date-input-wrapper"
+                                            inputClassName="date-input"
+                                            colorPrimary="#545cd8"
+                                            inputPlaceholder="انتخاب کنید"
+                                            calendarPopperPosition="bottom"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className={styles["btn-wrapper"]}>
+                            <div className={`col-sm-6 ${styles["search-col"]}`}>
+                                <div
+                                    className={`input-wrapper ${styles["search-input-wrapper"]}`}
+                                >
+                                    <label
+                                        htmlFor="admin_id"
+                                        className={`form__label ${styles["search-label"]}`}
+                                    >
+                                        ادمین :
+                                    </label>
+                                    <div className="form-control">
+                                        <select
+                                            name="admin_id"
+                                            id="admin_id"
+                                            className="form__input input-select"
+                                            onChange={filtersOnChangeHandler}
+                                            value={filters.admin_id}
+                                            required
+                                        >
+                                            <option value={0}>
+                                                انتخاب کنید
+                                            </option>
+                                            {admins?.map((admin) => (
+                                                <option
+                                                    key={admin?.id}
+                                                    value={admin?.id}
+                                                >
+                                                    {admin?.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles["btn-wrapper"]}>
+                            <button
+                                type="button"
+                                className={`btn primary ${styles["btn"]}`}
+                                disabled={loading}
+                                onClick={() => readMonitoring()}
+                            >
+                                {loading ? "در حال جستجو ..." : "جستجو"}
+                            </button>
+                            {showFilters() && (
                                 <button
                                     type="button"
-                                    className={`btn primary ${styles["btn"]}`}
+                                    className={`btn danger-outline ${styles["btn"]}`}
                                     disabled={loading}
-                                    onClick={() => readMonitoring()}
+                                    onClick={() => removeFilters()}
                                 >
-                                    {loading ? "در حال جستجو ..." : "جستجو"}
+                                    {loading ? "در حال انجام ..." : "حذف فیلتر"}
                                 </button>
-                            </div>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -294,7 +369,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                         key={item?.id}
                                     >
                                         <td className="table__body-item">
-                                            {item?.user_name}
+                                            {item?.user_name || "-"}
                                         </td>
                                         <td className="table__body-item">
                                             {item?.user_mobile || "-"}
@@ -326,9 +401,9 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                             }
                                         >
                                             {item?.teacher_name}
-                                            <span className="info-icon">
-                                                <AiOutlineInfoCircle />
-                                            </span>
+                                            <TeacherMobileTooltip
+                                                mobile={item.teacher_mobile}
+                                            />
                                         </td>
                                         <td className="table__body-item">
                                             {item?.status === 0 &&

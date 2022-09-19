@@ -628,7 +628,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                     <td className="table__body-item">
                                         {teacher.name}
                                     </td>
-                                    <td className="table__body-item" data-tip={teacher.mobile || "-"}>
+                                    <td className="table__body-item">
                                         {teacher.family}
                                         <TeacherMobileTooltip
                                             mobile={teacher.mobile}
@@ -804,7 +804,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
                                             href={`/dashboard/teacher/${teacher.id}?step=${teacher.step}`}
                                         >
                                             <a className={`action-btn primary`} target="_blank">
-                                                {"ورودی به پنل "}
+                                                {"ورود به پنل "}
                                             </a>
                                         </Link>
                                         <Link

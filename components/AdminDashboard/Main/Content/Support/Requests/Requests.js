@@ -8,6 +8,7 @@ import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
+import moment from "jalali-moment";
 
 function Requests(props) {
     const {
@@ -25,6 +26,7 @@ function Requests(props) {
     const [openModal, setOpenModal] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState({});
     const router = useRouter();
+    moment.locale("fa", { useGregorianParser: true });
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -137,6 +139,14 @@ function Requests(props) {
                             </div>
                             <div className={"modal__item"}>
                                 <span className={"modal__item-title"}>
+                                    دوره
+                                </span>
+                                <span className={"modal__item-body"}>
+                                    {selectedRequest?.course_name || "-"}
+                                </span>
+                            </div>
+                            <div className={"modal__item"}>
+                                <span className={"modal__item-title"}>
                                     زبان
                                 </span>
                                 <span className={"modal__item-body"}>
@@ -191,6 +201,9 @@ function Requests(props) {
                                     قابل پرداخت
                                 </th>
                                 <th className="table__head-item">تخفیف</th>
+                                <th className="table__head-item">
+                                    تاریخ ایجاد
+                                </th>
                                 <th className="table__head-item">اقدامات</th>
                             </tr>
                         </thead>
@@ -236,6 +249,13 @@ function Requests(props) {
                                             req?.discount
                                         )}{" "}
                                         تومان
+                                    </td>
+                                    <td className="table__body-item">
+                                        {req.created_at
+                                            ? moment(req.created_at).format(
+                                                  "YYYY/MM/DD ساعت HH:mm"
+                                              )
+                                            : "-"}
                                     </td>
                                     <td className="table__body-item">
                                         <button

@@ -12,16 +12,16 @@ const formSchema = {
     pricePerTest: -1,
     pricePerTestID: 0,
     perTestCourseId: 0,
-    pricePer1: 0,
+    pricePer1: "",
     pricePer1ID: 0,
     per1CourseId: 0,
-    pricePer5: 0,
+    pricePer5: "",
     pricePer5ID: 0,
     per5CourseId: 0,
-    pricePer10: 0,
+    pricePer10: "",
     pricePer10ID: 0,
     per10CourseId: 0,
-    pricePer16: 0,
+    pricePer16: "",
     pricePer16ID: 0,
     per16CourseId: 0,
 };
@@ -505,7 +505,7 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
                                                                 onBlurHandler(formItem.pricePer5ID, formItem.pricePer5, "3")
                                                             }
                                                             id="pricePer5"
-                                                            disabled={loadings["3"]}
+                                                            disabled={loadings["3"] || !formItem.pricePer1ID}
                                                         />
                                                     </div>
                                                 </div>
