@@ -2,7 +2,7 @@ stages:
   - build
   - deploy-prod
 
-image: "docker:20"
+image: "iran-registry.itsmj.ir/docker:20"
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
