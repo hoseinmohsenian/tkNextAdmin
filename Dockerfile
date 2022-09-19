@@ -1,4 +1,4 @@
-FROM iran-registry.itsmj.ir/node:16.6.0
+FROM node:16.6.0
 RUN apt-get update -y
 RUN apt-get install -y net-tools
 WORKDIR /app
