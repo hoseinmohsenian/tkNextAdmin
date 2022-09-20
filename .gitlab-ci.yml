@@ -1,8 +1,10 @@
 stages:
   - build
+  - deploy-stg
   - deploy-prod
 
 image: "docker:20"
+
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_TLS_CERTDIR: ""
@@ -10,16 +12,38 @@ variables:
   IMAGE_TAG: $CI_PIPELINE_ID-$CI_COMMIT_BRANCH-$CI_COMMIT_SHORT_SHA
   REGISTRY_IMAGE_URL: $REGISTRY_URL/tikka-tknextadmin:$IMAGE_TAG
   REGISTRY_IMAGE_LST: $REGISTRY_URL/tikka-tknextadmin:latest
+  REGISTRY_IMAGE_STG_LST: $REGISTRY_URL/tikka-tknextadmin:stg-latest
+
 services:
   - docker:20.10.16-dind
+
 build:
   stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: on_success
+    - if: $CI_COMMIT_BRANCH == "stg"
+      when: on_success
+    - when: never
   script:
-    - docker build -t $REGISTRY_IMAGE_URL -t $REGISTRY_IMAGE_LST .
+    - docker build -t $REGISTRY_IMAGE_URL -t $REGISTRY_IMAGE_LST -t $REGISTRY_IMAGE_STG_LST .
     - docker push $REGISTRY_IMAGE_URL
     - docker push $REGISTRY_IMAGE_LST
+    - docker push $REGISTRY_IMAGE_STG_LST
     - echo "IMAGE IS= $REGISTRY_IMAGE_URL"
     - echo "IMAGE LST= $REGISTRY_IMAGE_LST"
+    - echo "IMAGE STG LST= $REGISTRY_IMAGE_STG_LST"
+
+deploy-stg:
+  stage: deploy-stg
+  rules:
+    - if: $CI_COMMIT_BRANCH == "stg"
+      when: on_success
+    - when: never
+  image: iran-registry.itsmj.ir/tikka-server-access:secureaccess
+  script:
+    - ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i /access/tikka-stg-key root@31.7.74.117 "cd /root/tikka-operation-project; docker-compose pull tknextadmin; docker-compose stop tknextadmin; docker-compose rm -f tknextadmin; docker-compose up -d tknextadmin"
+
 deploy-prod:
   stage: deploy-prod
   rules:
