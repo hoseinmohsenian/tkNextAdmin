@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
@@ -15,6 +14,7 @@ function Levels({ fetchedLevels, token }) {
     const [loadings, setLoadings] = useState(
         Array(fetchedLevels?.length).fill(false)
     );
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const deleteLevel = async (level_id, i) => {
         let temp = [...loadings];

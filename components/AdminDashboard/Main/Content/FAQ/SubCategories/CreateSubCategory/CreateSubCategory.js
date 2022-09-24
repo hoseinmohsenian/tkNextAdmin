@@ -22,6 +22,7 @@ function CreateSubCategory({ categories }) {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -110,7 +111,7 @@ function CreateSubCategory({ categories }) {
             <BreadCrumbs
                 substituteObj={{
                     FaqSubCategory: "زیرگروه دسته بندی FAQ",
-                    create:"ایجاد"
+                    create: "ایجاد",
                 }}
             />
 

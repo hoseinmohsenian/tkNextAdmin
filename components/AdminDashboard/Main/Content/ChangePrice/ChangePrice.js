@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "./ChangePrice.module.css";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Pagination from "../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../Elements/Box/Box";
@@ -44,6 +43,7 @@ function ChangePrice(props) {
     const router = useRouter()
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext()
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleOnChange = (e) => {
         const type = e.target.type;

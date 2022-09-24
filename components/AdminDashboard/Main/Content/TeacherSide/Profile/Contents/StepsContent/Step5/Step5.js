@@ -82,8 +82,33 @@ function Step5({ token, BASE_URL, alertData, showAlert }) {
         );
     };
 
-    const onBlurHandler = (id, price, course_id) => {
+    const onBlurHandler = async (id, price, course_id) => {
         let unformattedPrice = Number(getUnformattedPrice(price));
+        const formItem = formData.find((formItem, ind) => formItem?.language_id === selectedLanguage?.id)
+
+        // const callPriceAPI = async (id, price, course_id) => {
+        //     if(id){
+        //         await editCourse(id, price, course_id);
+        //     } else{
+        //         await createCourse(price, course_id);
+        //     }
+        // }
+
+        // // Single session
+        // if(Number(course_id) === 2){
+        //     const res = await callPriceAPI(id, unformattedPrice, "2");
+        //     console.log(res);
+        //     if(res.ok){
+        //         await Promise.all([
+        //             callPriceAPI(formItem.pricePer5ID, "0", "3"),
+        //             callPriceAPI(formItem.pricePer10ID, "0", "4"),
+        //             callPriceAPI(formItem.pricePer16ID, "0", "5"),
+        //         ])
+        //     }
+        // } else{
+        //     await callPriceAPI(id, unformattedPrice, course_id);
+        // }
+
         if(id){
             editCourse(id, unformattedPrice, course_id);
         } else{

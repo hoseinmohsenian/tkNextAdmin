@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../../../components/AdminDashboard/Dashboard";
 import EditSpecialitiesDesc from "../../../../../../../components/AdminDashboard/Main/Content/Specialities/SpecialitiesDesc/EditSpecialitiesDesc/EditSpecialitiesDesc";
 import Header from "../../../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -24,6 +23,7 @@ export default EditSpecialtyDescPage;
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
     const id = context.params.id;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

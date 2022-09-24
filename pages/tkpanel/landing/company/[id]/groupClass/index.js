@@ -1,5 +1,5 @@
 import AdminDashboard from "../../../../../../components/AdminDashboard/Dashboard";
-import GroupClass from "../../../../../../components/AdminDashboard/Main/Content/Support/Landing/Company/GroupClass/GroupClass";
+import GroupClass from "../../../../../../components/AdminDashboard/Main/Content/Marketing/Landing/Company/GroupClass/GroupClass";
 import Header from "../../../../../../components/Head/Head";
 import { checkResponseArrAuth } from "../../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../../components/Errors/NotAuthorized/NotAllowed";

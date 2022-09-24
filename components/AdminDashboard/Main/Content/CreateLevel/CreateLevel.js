@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Alert from "../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 import API from "../../../../../api";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
@@ -19,6 +18,7 @@ function CreateLevel() {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();

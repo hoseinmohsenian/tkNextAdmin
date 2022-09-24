@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Box from "../../Elements/Box/Box";
-import { BASE_URL } from "../../../../../../constants";
 import Alert from "../../../../../Alert/Alert";
 import FetchSearchSelect from "../../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./TeachersCredit.module.css";
@@ -32,6 +31,7 @@ function TeachersCredit({
     const [filters, setFilters] = useState(searchData);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readTeachersCredit = async (page = 1, avoidFilters = false) => {
         const isFilterEnabled = (key) =>

@@ -1,5 +1,5 @@
 import AdminDashboard from "../../../../../../components/AdminDashboard/Dashboard";
-import FAQ from "../../../../../../components/AdminDashboard/Main/Content/Support/Landing/Company/FAQ/FAQ";
+import FAQ from "../../../../../../components/AdminDashboard/Main/Content/Marketing/Landing/Company/FAQ/FAQ";
 import Header from "../../../../../../components/Head/Head";
 import { checkResponseArrAuth } from "../../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../../components/Errors/NotAuthorized/NotAllowed";

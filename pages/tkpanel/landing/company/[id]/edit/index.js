@@ -1,5 +1,5 @@
 import AdminDashboard from "../../../../../../components/AdminDashboard/Dashboard";
-import EditCompanyLanding from "../../../../../../components/AdminDashboard/Main/Content/Support/Landing/Company/Edit/EditCompanyLanding";
+import EditCompanyLanding from "../../../../../../components/AdminDashboard/Main/Content/Marketing/Landing/Company/Edit/EditCompanyLanding";
 import Header from "../../../../../../components/Head/Head";
 import { checkResponseArrAuth } from "../../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../../components/Errors/NotAuthorized/NotAllowed";

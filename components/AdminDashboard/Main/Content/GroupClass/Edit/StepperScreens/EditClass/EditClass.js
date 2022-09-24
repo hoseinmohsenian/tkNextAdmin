@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "../../../Create/StepperScreens/CreateClass/CreateClass.module.css";
 import Alert from "../../../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../../../constants";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
@@ -44,6 +43,7 @@ function EditClass(props) {
     const [loading, setLoading] = useState(false);
     const [addedData, setAddedData] = useState({});
     const [errors, setErrors] = useState([]);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const handleSubmit = async () => {
@@ -52,8 +52,8 @@ function EditClass(props) {
         if (
             formData.language_id &&
             selectedTeacher.id &&
-            formData.title.trim() &&
-            formData.url.trim() &&
+            formData.title &&
+            formData.url &&
             selectedSpecialitys.length >= 2 &&
             selectedSkills.length >= 3 &&
             formData.class_capacity &&
@@ -210,7 +210,7 @@ function EditClass(props) {
             } else {
                 temp = temp?.filter((item) => item !== titleMessage);
             }
-            if (formData.url.trim() === "") {
+            if (!formData.url?.trim()) {
                 if (findError(errors, urlMessage) === undefined) {
                     temp = [...temp, urlMessage];
                 }
@@ -579,6 +579,24 @@ function EditClass(props) {
                     </div>
 
                     <div className="input-wrapper">
+                        <label htmlFor="url" className="form__label">
+                            URL :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="text"
+                                name="url"
+                                id="url"
+                                className="form__input"
+                                onChange={handleOnChange}
+                                value={formData.url || ""}
+                                spellCheck={false}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="input-wrapper">
                         <label htmlFor="level_id" className="form__label">
                             سطح :
                         </label>
@@ -933,23 +951,6 @@ function EditClass(props) {
                             value={formData.seo_desc || ""}
                             spellCheck={false}
                         />
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="url" className="form__label">
-                            URL :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                name="url"
-                                id="url"
-                                className="form__input"
-                                onChange={handleOnChange}
-                                value={formData.url || ""}
-                                spellCheck={false}
-                                required
-                            />
-                        </div>
                     </div>
 
                     <div className={styles["step__row"]}>

@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import Discount from "../../../components/AdminDashboard/Main/Content/Discount/Discount";
 import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
 import { checkResponseArrAuth } from "../../../utils/helperFunctions";
 import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -23,6 +22,7 @@ export default DiscountPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

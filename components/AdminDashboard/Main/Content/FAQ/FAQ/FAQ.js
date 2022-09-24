@@ -2,7 +2,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function FAQ({ faqs: fetchedData, token }) {
@@ -13,6 +12,7 @@ function FAQ({ faqs: fetchedData, token }) {
         message: "",
         type: "",
     });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

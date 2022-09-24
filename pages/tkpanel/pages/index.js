@@ -1,11 +1,10 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import SitePages from "../../../components/AdminDashboard/Main/Content/SitePages/SitePages";
 import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
 import { checkResponseArrAuth } from "../../../utils/helperFunctions";
 import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function SitePagesPage({ pages,notAllowed }) {
+function SitePagesPage({ pages, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
@@ -23,6 +22,7 @@ export default SitePagesPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

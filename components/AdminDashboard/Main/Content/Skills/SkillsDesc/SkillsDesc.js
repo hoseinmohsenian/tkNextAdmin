@@ -3,7 +3,6 @@ import Link from "next/link";
 import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
 import Modal from "../../../../../Modal/Modal";
-import { BASE_URL } from "../../../../../../constants";
 import { useRouter } from "next/router";
 import styles from "../Skills.module.css";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
@@ -26,6 +25,7 @@ function SkillsDesc({ fetchedSkills: { data, ...restData }, token }) {
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readSkills = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters

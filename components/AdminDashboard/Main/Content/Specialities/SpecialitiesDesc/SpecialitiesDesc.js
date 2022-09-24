@@ -5,7 +5,6 @@ import Pagination from "../../Pagination/Pagination";
 import Modal from "../../../../../Modal/Modal";
 import styles from "../Specialities.module.css";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
@@ -29,6 +28,7 @@ function SpecialitiesDesc({
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readSpecialtys = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters

@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import AddNewClass from "../../../../components/AdminDashboard/Main/Content/PrivateClass/AddNewClass/AddNewClass";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 import moment from "jalali-moment";
 
 function MultiSessionPage({ token, day, schedulerData }) {
@@ -23,6 +22,7 @@ export default MultiSessionPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

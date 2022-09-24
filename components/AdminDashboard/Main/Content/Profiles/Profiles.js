@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Box from "../Elements/Box/Box";
 import Link from "next/link";
-import { BASE_URL } from "../../../../../constants";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import styles from "./Profile.module.css";
@@ -29,6 +28,7 @@ function Profiles(props) {
         gender: 0,
     });
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readStudents = async (page = 1, avoidFilters = false) => {
         setLoading(true);

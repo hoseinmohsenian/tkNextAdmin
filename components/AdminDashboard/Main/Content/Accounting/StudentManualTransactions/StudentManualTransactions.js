@@ -3,7 +3,6 @@ import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
-import { BASE_URL } from "../../../../../../constants";
 import { ExportCSV } from "../../../../../exportToCSV/exportToCSV";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
@@ -29,6 +28,7 @@ function StudentManualTransactions(props) {
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readTransactions = async (page = 1, avoidFilters = false) => {
         let searchParams = {};

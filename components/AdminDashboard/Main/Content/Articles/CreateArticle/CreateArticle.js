@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styles from "./CreateArticle.module.css";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import CategorySelect from "../CategorySelect/CategorySelect";
 import CategoryMultiSelect from "../CategoryMultiSelect/CategoryMultiSelect";
 import moment from "jalali-moment";
@@ -51,6 +50,7 @@ function CreateArticle({ token, categoriesLevel1, languages }) {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const handleSubmit = async (e) => {

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styles from "./EditDiscount.module.css";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
@@ -29,6 +28,7 @@ function EditDiscount({ token, discount }) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();

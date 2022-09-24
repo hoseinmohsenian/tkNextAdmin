@@ -1,28 +1,28 @@
-import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import TeacherIncome from "../../../../../components/AdminDashboard/Main/Content/Accounting/TeacherIncome/TeacherIncome";
-import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
-import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
-import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
+import Courses from "../../../components/AdminDashboard/Main/Content/Courses/Courses";
+import Header from "../../../components/Head/Head";
+import { checkResponseArrAuth } from "../../../utils/helperFunctions";
+import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
-function TeacherIncomeDetailsPage({ token, chartData, notAllowed }) {
+function CoursesPage({ token, courses, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
     return (
-        <div>
-            <Header title="جزئیات درآمد اساتید | تیکا"></Header>
+        <>
+            <Header title="مدل های رزرو | تیکا"></Header>
             <AdminDashboard>
-                <TeacherIncome token={token} chartData={chartData} />
+                <Courses fetchedCourses={courses} token={token} />
             </AdminDashboard>
-        </div>
+        </>
     );
 }
 
-export default TeacherIncomeDetailsPage;
+export default CoursesPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {
@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/accounting/teacher/income`, {
+        fetch(`${BASE_URL}/admin/management/course`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -52,6 +52,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: { chartData: dataArr[0].data, token },
+        props: { token, courses: dataArr[0].data },
     };
 }

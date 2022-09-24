@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Alert from "../../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../../constants";
 import Box from "../../../Elements/Box/Box";
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../../Editor/Editor"), {
@@ -20,6 +19,7 @@ function EditSkillsDesc({ token, skill }) {
     const [desc2, setDesc2] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();

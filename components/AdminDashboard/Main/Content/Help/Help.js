@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 // import Pagination from "../Pagination/Pagination";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
@@ -24,6 +23,7 @@ function Help({ fetchedList: data, token, searchData }) {
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const deleteItem = async (id, i) => {
         let temp = [...loadings];

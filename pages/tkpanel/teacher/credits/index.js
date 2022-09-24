@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import TeacherTransactionDetails from "../../../../components/AdminDashboard/Main/Content/Accounting/TeacherTransactionDetails/TeacherTransactionDetails";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 
 function TeacherTransactionDetailsPage({ transactions, token }) {
     return (
@@ -21,6 +20,7 @@ export default TeacherTransactionDetailsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const { page } = context?.query;
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
     let searchParams = "";

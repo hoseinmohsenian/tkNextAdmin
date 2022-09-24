@@ -19,9 +19,9 @@ const filtersSchema = {
     teacher_name: "",
     teacher_mobile: "",
     user_mobile: "",
-    status: 0,
+    status: -1,
     first_class: false,
-    pay: false,
+    // pay: false,
 };
 const appliedFiltersSchema = {
     user_name: false,
@@ -30,7 +30,7 @@ const appliedFiltersSchema = {
     user_mobile: false,
     status: false,
     first_class: false,
-    pay: false,
+    // pay: false,
 };
 
 function TodayClass(props) {
@@ -56,7 +56,8 @@ function TodayClass(props) {
         message: "",
         type: "",
     });
-
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+console.log(filters);
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
     };
@@ -91,12 +92,14 @@ function TodayClass(props) {
             let tempFilters = { ...appliedFilters };
             Object.keys(filters).forEach((key) => {
                 if (Number(filters[key]) !== 0) {
-                    if (["first_class", "pay"].includes(key)) {
-                        searchQuery += `${key}=${Number(filters[key])}&`;
-                    } else {
-                        searchQuery += `${key}=${filters[key]}&`;
+                    if(key !== "status" || (key === "status" && Number(filters[key]) !== -1)){
+                        if (["first_class"].includes(key)) {
+                            searchQuery += `${key}=${Number(filters[key])}&`;
+                        } else {
+                            searchQuery += `${key}=${filters[key]}&`;
+                        }
+                        tempFilters[key] = true;
                     }
-                    tempFilters[key] = true;
                 } else {
                     tempFilters[key] = false;
                 }
@@ -434,8 +437,21 @@ function TodayClass(props) {
                                             onChange={handleOnChange}
                                             value={filters.status}
                                         >
-                                            <option value={0}>
-                                                انتخاب کنید
+                                            <option value={-1}>
+                                                همه وضعیت ها
+                                            </option>
+                                            <option value={0}>تعیین وضعیت نشده</option>
+                                            <option value={1}>
+                                                برگزار شده
+                                            </option>
+                                            <option value={2}>
+                                                کنسل شده
+                                            </option>
+                                            <option value={3}>
+                                                لغو بازگشت پول
+                                            </option>
+                                            <option value={4}>
+                                                غیبت                                        
                                             </option>
                                         </select>
                                     </div>
@@ -599,6 +615,16 @@ function TodayClass(props) {
                                         >
                                             جزئیات
                                         </button>
+                                        <Link
+                                                href={`${SITE_URL}/class-link/${item.url}`}
+                                            >
+                                                <a
+                                                    className={`action-btn primary`}
+                                                    target="_blank"
+                                                >
+                                                    برو به کلاس
+                                                </a>
+                                            </Link>
                                     </td>
                                 </tr>
                             ))}

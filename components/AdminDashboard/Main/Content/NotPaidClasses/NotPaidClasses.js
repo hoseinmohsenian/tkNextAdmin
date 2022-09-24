@@ -3,7 +3,6 @@ import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
-import { BASE_URL } from "../../../../../constants";
 import { useGlobalContext } from "../../../../../context/index";
 import Modal from "../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
@@ -22,6 +21,7 @@ function NotPaidClasses(props) {
     const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readClasses = async (page = 1) => {
         let searchParams = {};

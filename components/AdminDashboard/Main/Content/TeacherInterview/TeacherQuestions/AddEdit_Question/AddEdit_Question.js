@@ -1,6 +1,5 @@
 import { memo, useState } from "react";
 import Alert from "../../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../../constants";
 import styles from "./AddEdit_Question.module.css";
 
 function AddEdit_Question({
@@ -15,6 +14,7 @@ function AddEdit_Question({
 }) {
     const [loading, setLoading] = useState(false);
     const isEditing = Boolean(formData.id);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleOnChange = (e) => {
         const name = e.target.name;

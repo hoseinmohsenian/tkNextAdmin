@@ -50,7 +50,7 @@ import {
 } from "react-icons/bi";
 import { GiSkills, GiDirectionSign, GiPlatform } from "react-icons/gi";
 import { RiArticleFill, RiAdminLine } from "react-icons/ri";
-import { BsPinAngleFill } from "react-icons/bs";
+import { BsPinAngleFill, BsFillCalendarFill } from "react-icons/bs";
 import { FiPercent, FiUserX } from "react-icons/fi";
 import { GoReport, GoLaw } from "react-icons/go";
 import { SiStatuspage } from "react-icons/si";
@@ -100,9 +100,9 @@ export default [
                 icon: <FaUserMinus />,
             },
             {
-                title: "جستجو ساعات خالی",
-                path: "/tkpanel/search/calender/view",
-                icon: <FaSearch />,
+                title: "تقویم استاد",
+                path: "/tkpanel/teachers/calendar",
+                icon: <BsFillCalendarFill />,
             },
         ],
     },
@@ -130,11 +130,6 @@ export default [
                 title: "کلاس های امروز",
                 path: "/tkpanel/class/requestDetails/today",
                 icon: <IoToday />,
-            },
-            {
-                title: "نمودار ثبت کلاس",
-                path: "/tkpanel/class/request/chart",
-                icon: <FaChartArea />,
             },
             {
                 title: "وضعیت کلی کلاس ها",
@@ -235,21 +230,6 @@ export default [
         path: "#",
         subNav: [
             {
-                title: "لندینگ تعاملی",
-                path: "/tkpanel/landing/interactive/list",
-                icon: <AiFillInteraction />,
-            },
-            {
-                title: "لندینگ کاربران",
-                path: "/tkpanel/landing/users/list",
-                icon: <AiFillInteraction />,
-            },
-            {
-                title: "لندینگ شرکتی",
-                path: "/tkpanel/landing/company",
-                icon: <AiFillInteraction />,
-            },
-            {
                 title: "لیست درخواست مشاوره",
                 path: "/tkpanel/adviceRequests/list",
                 icon: <IoIosListBox />,
@@ -270,6 +250,16 @@ export default [
                 icon: <FaListUl />,
             },
             {
+                title: "لیست سیاه کاربران",
+                path: "/tkpanel/blackLists",
+                icon: <FiUserX />,
+            },
+            {
+                title: "جستجو ساعات خالی استاد",
+                path: "/tkpanel/search/calender/view",
+                icon: <FaSearch />,
+            },
+            {
                 title: "مانیتورینگ",
                 icon: <MdOutlineMonitor />,
                 path: "#",
@@ -283,6 +273,60 @@ export default [
                         title: "مانیتورینگ انجام شده",
                         path: "/tkpanel/monitoring/getTodayMonitoring",
                         icon: <IoCheckmarkDoneSharp />,
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        title: "مارکتینگ",
+        icon: <FaMoneyBill />,
+        path: "#",
+        subNav: [
+            {
+                title: "لندینگ تعاملی",
+                path: "/tkpanel/landing/interactive/list",
+                icon: <AiFillInteraction />,
+            },
+            {
+                title: "لندینگ کاربران",
+                path: "/tkpanel/landing/users/list",
+                icon: <AiFillInteraction />,
+            },
+            {
+                title: "لندینگ شرکتی",
+                path: "/tkpanel/landing/company",
+                icon: <AiFillInteraction />,
+            },
+            {
+                title: "جزئیات درآمد اساتید",
+                path: "/tkpanel/marketing/teacher/list",
+                icon: <FaRegMoneyBillAlt />,
+            },
+            {
+                title: "جزئیات درآمد تیکا",
+                path: "/tkpanel/marketing/tk/today",
+                icon: <FaRegMoneyBillAlt />,
+            },
+            {
+                title: "نمودار ثبت کلاس",
+                path: "/tkpanel/marketing/request/chart",
+                icon: <FaChartArea />,
+            },
+            {
+                title: "گزارش ها",
+                icon: <GoReport />,
+                path: "#",
+                subNav: [
+                    {
+                        title: "گزارش گیری استاد",
+                        path: "/tkpanel/report/teachers",
+                        icon: <GoReport />,
+                    },
+                    {
+                        title: "لیست جدول در کوئری",
+                        path: "/tkpanel/database/query/building",
+                        icon: <BiTable />,
                     },
                 ],
             },
@@ -333,16 +377,6 @@ export default [
                     {
                         title: "جزئیات پرداختی برای استاد",
                         path: "/tkpanel/teacher/credits",
-                        icon: <FaRegMoneyBillAlt />,
-                    },
-                    {
-                        title: "جزئیات درآمد اساتید",
-                        path: "/tkpanel/accounting/teacher/list",
-                        icon: <FaRegMoneyBillAlt />,
-                    },
-                    {
-                        title: "جزئیات درآمد تیکا",
-                        path: "/tkpanel/accounting/tk/today",
                         icon: <FaRegMoneyBillAlt />,
                     },
                 ],
@@ -419,18 +453,6 @@ export default [
                                 title: "سطح ها",
                                 path: "/content/level",
                                 icon: <FaLevelUpAlt />,
-                            },
-                        ],
-                    },
-                    {
-                        title: "مدل رزرو",
-                        path: "#",
-                        icon: <MdGolfCourse />,
-                        subNav: [
-                            {
-                                title: "مدل های رزرو",
-                                path: "/content/course",
-                                icon: <MdGolfCourse />,
                             },
                         ],
                     },
@@ -581,23 +603,6 @@ export default [
                 ],
             },
             {
-                title: "گزارش ها",
-                icon: <GoReport />,
-                path: "#",
-                subNav: [
-                    {
-                        title: "گزارش گیری استاد",
-                        path: "/tkpanel/report/teachers",
-                        icon: <GoReport />,
-                    },
-                    {
-                        title: "لیست جدول در کوئری",
-                        path: "/tkpanel/database/query/building",
-                        icon: <BiTable />,
-                    },
-                ],
-            },
-            {
                 title: "تنظیمات",
                 icon: <GoReport />,
                 path: "#",
@@ -613,14 +618,21 @@ export default [
                         icon: <RiAdminLine />,
                     },
                     {
-                        title: "لیست سیاه کاربران",
-                        path: "/tkpanel/blackLists",
-                        icon: <FiUserX />,
-                    },
-                    {
                         title: "پلتفرم ها",
                         path: "/tkpanel/multiplatform",
                         icon: <GiPlatform />,
+                    },
+                ],
+            },
+            {
+                title: "مدل رزرو",
+                path: "#",
+                icon: <MdGolfCourse />,
+                subNav: [
+                    {
+                        title: "مدل های رزرو",
+                        path: "/tkpanel/course",
+                        icon: <MdGolfCourse />,
                     },
                 ],
             },

@@ -5,7 +5,6 @@ import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
 import styles from "./GroupClass.module.css";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
@@ -50,6 +49,7 @@ function GroupClass(props) {
     const [selectedClass, setSelectedClass] = useState({});
     const [dModalVisible, setDModalVisible] = useState(false);
     const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const handleFilterOnChange = (e) => {

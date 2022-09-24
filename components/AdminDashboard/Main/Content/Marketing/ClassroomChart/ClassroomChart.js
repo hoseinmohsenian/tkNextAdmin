@@ -71,7 +71,7 @@ function ClassroomChart() {
         setLoading(true);
         try {
             const { data, status, response } = await API.get(
-                `/admin/classroom/first-class/chart?start_date=${convertDate(
+                `/admin/marketing/classroom/first-class/chart?start_date=${convertDate(
                     startDate
                 )}&end_date=${convertDate(endDate)}`
             );
@@ -182,7 +182,10 @@ function ClassroomChart() {
     return (
         <div>
             <BreadCrumbs
-                substituteObj={{ class: "کلاس", chart: "نمودار ثبت کلاس" }}
+                substituteObj={{
+                    marketing: "مارکتینگ",
+                    chart: "نمودار ثبت کلاس",
+                }}
             />
 
             {/* Alert */}

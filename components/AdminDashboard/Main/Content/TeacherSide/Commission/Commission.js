@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
@@ -28,6 +27,7 @@ function Commission({ fetchedCommissions: { data, ...restData }, token, searchDa
     const [filters, setFilters] = useState(searchData);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

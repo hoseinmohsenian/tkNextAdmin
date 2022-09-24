@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import BlackList from "../../../components/AdminDashboard/Main/Content/BlackList/BlackList";
 import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
 import { checkResponseArrAuth } from "../../../utils/helperFunctions";
 import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -23,6 +22,7 @@ export default BlackListPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {
@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/management/block-user`, {
+        fetch(`${BASE_URL}/admin/support/block-user`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

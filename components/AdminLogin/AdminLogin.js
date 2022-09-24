@@ -3,7 +3,6 @@ import { useGlobalContext } from "../../context";
 import styles from "./AdminLogin.module.css";
 import Alert from "../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../constants";
 import ReCAPTCHA from "react-google-recaptcha";
 
 function AdminLogin() {
@@ -18,6 +17,7 @@ function AdminLogin() {
     const { setCookie } = useGlobalContext();
     const router = useRouter();
     const [captchaValue, setCaptchaValue] = useState(null);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleOnChange = (e) => {
         const name = e.target.name;

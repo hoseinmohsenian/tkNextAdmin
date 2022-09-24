@@ -3,7 +3,6 @@ import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
-import { BASE_URL } from "../../../../../../constants";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 function TeacherTransactionDetails(props) {
@@ -14,6 +13,7 @@ function TeacherTransactionDetails(props) {
     const [transactions, setTransactions] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const readTransactions = async (page = 1) => {

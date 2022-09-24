@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../../../components/AdminDashboard/Dashboard";
 import EditPagesList from "../../../../../../../components/AdminDashboard/Main/Content/SitePages/SitePagesContent/Edit/EditContent";
 import Header from "../../../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -34,6 +33,7 @@ export default EditSitePageContentPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const { content_id, page_id } = context.params;
 
     if (!token) {

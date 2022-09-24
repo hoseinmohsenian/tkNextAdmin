@@ -1,11 +1,11 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import ClassroomChart from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/ClassroomChart/ClassroomChart";
+import ClassroomChart from "../../../../../components/AdminDashboard/Main/Content/Marketing/ClassroomChart/ClassroomChart";
 import Header from "../../../../../components/Head/Head";
 
 function ClassroomChartPage() {
     return (
         <div>
-            <Header title="ایجاد کلاس جدید | تیکا"></Header>
+            <Header title="نمودار ثبت کلاس | تیکا"></Header>
             <AdminDashboard>
                 <ClassroomChart />
             </AdminDashboard>

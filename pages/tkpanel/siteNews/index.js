@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../components/AdminDashboard/Dashboard";
 import Articles from "../../../components/AdminDashboard/Main/Content/Articles/Articles";
 import Header from "../../../components/Head/Head";
-import { BASE_URL } from "../../../constants";
 import { checkResponseArrAuth } from "../../../utils/helperFunctions";
 import NotAuthorized from "../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -36,6 +35,8 @@ export default ArticlesPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
     const findItem = (list, key, target) =>
         list.find((item) => item[key] === target);

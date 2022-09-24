@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
-import { BASE_URL } from "../../../../../../constants";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import moment from "jalali-moment";
@@ -17,6 +16,7 @@ function TeacherStudentLogs({
     const [logs, setLogs] = useState(data);
     const [pagData, setPagData] = useState(restData);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readSystemLogs = async (page = 1) => {
         let searchParams = {};

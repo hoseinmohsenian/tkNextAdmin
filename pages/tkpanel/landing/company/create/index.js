@@ -1,5 +1,5 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import CreateCompanyLanding from "../../../../../components/AdminDashboard/Main/Content/Support/Landing/Company/Create/CreateCompanyLanding";
+import CreateCompanyLanding from "../../../../../components/AdminDashboard/Main/Content/Marketing/Landing/Company/Create/CreateCompanyLanding";
 import Header from "../../../../../components/Head/Head";
 
 function CreateCompanyLandingPage({ token }) {

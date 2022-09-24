@@ -3,7 +3,6 @@ import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
-import { BASE_URL } from "../../../../../constants";
 import { useGlobalContext } from "../../../../../context";
 import Modal from "../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
@@ -28,6 +27,7 @@ function NotHeldClasses(props) {
     const [selectedClass, setSelectedClass] = useState({});
     moment.locale("fa", { useGregorianParser: true });
     const { formatTime } = useGlobalContext();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

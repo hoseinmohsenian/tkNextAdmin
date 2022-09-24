@@ -54,7 +54,7 @@ function CreateClass(props) {
             formData.language_id &&
             selectedTeacher.id &&
             formData.title.trim() &&
-            formData.url.trim() &&
+            formData.url?.trim() &&
             selectedSpecialitys.length >= 2 &&
             selectedSkills.length >= 3 &&
             formData.class_capacity &&
@@ -281,7 +281,7 @@ function CreateClass(props) {
             } else {
                 temp = temp?.filter((item) => item !== titleMessage);
             }
-            if (formData.url.trim() === "") {
+            if (formData.url?.trim() === "") {
                 if (findError(errors, urlMessage) === undefined) {
                     temp = [...temp, urlMessage];
                 }
@@ -698,6 +698,23 @@ function CreateClass(props) {
                     </div>
 
                     <div className="input-wrapper">
+                        <label htmlFor="url" className="form__label">
+                            URL :<span className="form__star">*</span>
+                        </label>
+                        <div className="form-control">
+                            <input
+                                type="text"
+                                name="url"
+                                id="url"
+                                className="form__input"
+                                onChange={handleOnChange}
+                                spellCheck={false}
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="input-wrapper">
                         <label htmlFor="level_id" className="form__label">
                             سطح :
                         </label>
@@ -1048,22 +1065,6 @@ function CreateClass(props) {
                             onChange={handleOnChange}
                             spellCheck={false}
                         />
-                    </div>
-                    <div className="input-wrapper">
-                        <label htmlFor="url" className="form__label">
-                            URL :<span className="form__star">*</span>
-                        </label>
-                        <div className="form-control">
-                            <input
-                                type="text"
-                                name="url"
-                                id="url"
-                                className="form__input"
-                                onChange={handleOnChange}
-                                spellCheck={false}
-                                required
-                            />
-                        </div>
                     </div>
 
                     <div className={styles["step__row"]}>

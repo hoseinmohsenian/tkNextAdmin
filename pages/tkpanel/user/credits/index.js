@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import StudentTransactionDetails from "../../../../components/AdminDashboard/Main/Content/Accounting/StudentTransactionDetails/StudentTransactionDetails";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -32,6 +31,7 @@ export default StudentTransactionDetailsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const { page, tracking_code } = context?.query;
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
     let searchParams = "";

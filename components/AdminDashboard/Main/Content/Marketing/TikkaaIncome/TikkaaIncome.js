@@ -83,7 +83,7 @@ function TikkaaIncome() {
             }
 
             const { data, status, response } = await API.get(
-                `/admin/accounting/tikkaa/income?${from}${to}`
+                `/admin/marketing/tikkaa/income?${from}${to}`
             );
 
             if (status === 200) {
@@ -106,7 +106,7 @@ function TikkaaIncome() {
         <div>
             <BreadCrumbs
                 substituteObj={{
-                    accounting: "حسابداری",
+                    marketing: "مارکتینگ",
                     tk: "تیکا",
                     today: "جزئیات درآمد تیکا",
                 }}

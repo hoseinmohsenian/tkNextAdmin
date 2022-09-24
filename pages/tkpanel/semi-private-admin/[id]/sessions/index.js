@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import AddSessions from "../../../../../components/AdminDashboard/Main/Content/SemiPrivate/Sessions/AddSession/AddSession";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -23,6 +22,7 @@ export default GroupClassPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const id = context.params.id;
 
     if (!token) {

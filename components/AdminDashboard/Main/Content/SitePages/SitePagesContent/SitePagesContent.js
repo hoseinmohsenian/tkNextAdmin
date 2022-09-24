@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import Box from "../../Elements/Box/Box";
 import Modal from "../../../../../Modal/Modal";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 
 function SitePagesContent({ list, token, parent }) {
     const router = useRouter();
@@ -18,6 +17,7 @@ function SitePagesContent({ list, token, parent }) {
         type: "",
     });
     const [loadings, setLoadings] = useState(Array(list?.length).fill(false));
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

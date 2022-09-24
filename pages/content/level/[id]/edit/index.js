@@ -1,19 +1,16 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import EditLevel from "../../../../../components/AdminDashboard/Main/Content/EditLevel/EditLevel";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
-function EditLevelPage({ token, level,notAllowed }) {
+function EditLevelPage({ token, level, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
     return (
         <>
-            <Header
-                title="ویرایش سطح | تیکا"
-            ></Header>
+            <Header title="ویرایش سطح | تیکا"></Header>
             <AdminDashboard>
                 <EditLevel token={token} level={level} />
             </AdminDashboard>
@@ -25,6 +22,7 @@ export default EditLevelPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const id = context.params.id;
 
     if (!token) {

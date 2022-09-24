@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import EditLanguage from "../../../../../components/AdminDashboard/Main/Content/EditLanguage/EditLanguage";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -24,6 +23,7 @@ export default EditLanguagePage;
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
     const id = context.params.id;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

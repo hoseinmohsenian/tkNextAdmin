@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "./Articles.module.css";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -50,6 +49,7 @@ function Articles(props) {
     const [dModalVisible, setDModalVisible] = useState(false);
     const router = useRouter();
     const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const handleOnChange = (e) => {

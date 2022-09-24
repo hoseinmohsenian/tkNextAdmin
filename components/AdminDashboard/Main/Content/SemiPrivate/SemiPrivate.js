@@ -5,7 +5,6 @@ import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Modal from "../../../../Modal/Modal";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 import DeleteModal from "../../../../DeleteModal/DeleteModal";
@@ -37,6 +36,7 @@ function SemiPrivate(props) {
     const [selectedClass, setSelectedClass] = useState({});
     const [dModalVisible, setDModalVisible] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readClasses = async (page = 1, avoidFilters = false) => {
         setLoading(true);

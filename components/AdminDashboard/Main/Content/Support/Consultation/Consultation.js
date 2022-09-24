@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import moment from "jalali-moment";
 import Box from "../../Elements/Box/Box";
@@ -23,6 +22,7 @@ function Consultation(props) {
     });
     const [loadings, setLoadings] = useState(Array(data?.length).fill(false));
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleOnChange = (e, rowInd, name) => {
         let updated = [...formData];

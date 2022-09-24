@@ -1,5 +1,5 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import TikkaaIncome from "../../../../../components/AdminDashboard/Main/Content/Accounting/TikkaaIncome/TikkaaIncome";
+import TikkaaIncome from "../../../../../components/AdminDashboard/Main/Content/Marketing/TikkaaIncome/TikkaaIncome";
 import Header from "../../../../../components/Head/Head";
 
 function TikkaaIncomeDetailsPage() {

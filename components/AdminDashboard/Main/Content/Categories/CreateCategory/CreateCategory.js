@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import cstyles from "./CreateCategory.module.css";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../Editor/Editor"), {
     ssr: false,
@@ -47,6 +46,7 @@ function CreateCategory({ token, categoriesLevel1, title, mainPage }) {
     const [loading, setLoading] = useState(false);
     const [loadings, setLoadings] = useState([]);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     let asPath = router.asPath,
         category_level;
 

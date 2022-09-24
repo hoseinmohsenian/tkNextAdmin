@@ -2,8 +2,6 @@ import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import ChangePrice from "../../../../../components/AdminDashboard/Main/Content/TeacherSide/ChangePrice/ChangePrice";
 import Header from "../../../../../components/Head/Head";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
 function MultiSessionPage({ token, languages }) {
     return (
         <div>
@@ -19,6 +17,7 @@ export default MultiSessionPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const id = context.params.id;
 
     if (!token) {

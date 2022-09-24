@@ -35,6 +35,15 @@ function CreateScore() {
         e.preventDefault();
 
         if (selectedTeacher.id && formData.number && formData.point_type) {
+            if (!formData.desc && Number(formData.notify_teacher) === 1) {
+                showAlert(
+                    true,
+                    "danger",
+                    "توضیحات در صورت فعال بودن ارسال اعلان، توضیحات اجباری است"
+                );
+                return;
+            }
+
             const fd = new FormData();
             fd.append("teacher_id", selectedTeacher.id);
             fd.append("number", Number(formData.number));
@@ -51,20 +60,6 @@ function CreateScore() {
                         "notify_teacher",
                         Number(formData.notify_teacher)
                     );
-                }
-                if (!formData.desc && Number(formData.notify_teacher) === 1) {
-                    setFormData({
-                        ...formData,
-                        notify_error:
-                            "توضیحات در صورت فعال بودن ارسال اعلان، توضیحات اجباری است",
-                    });
-                    return;
-                } else if (
-                    formData.desc &&
-                    Number(formData.notify_teacher) === 0
-                ) {
-                    setFormData({ ...formData, notify_error: "" });
-                    fd.append("desc", formData.desc);
                 }
             }
             if (formData.desc) {
@@ -409,6 +404,12 @@ function CreateScore() {
                                     </div>
                                 </div>
                             </div>
+                            {Number(formData.notify_teacher) === 1 && (
+                                <span className="warning-color">
+                                    با اعمال این گزینه، برای استاد پیامک ارسال
+                                    می شود.
+                                </span>
+                            )}
                             {formData.notify_error && (
                                 <span className="danger-color">
                                     {formData.notify_error}

@@ -50,13 +50,13 @@ function CreateCourse() {
         setLoading(true);
         try {
             const { response, status } = await API.post(
-                `/admin/course`,
+                `/admin/management/course`,
                 JSON.stringify(formData)
             );
 
             if (status === 200) {
                 showAlert(true, "success", "کورس جدید با موفقیت اضافه شد");
-                router.push("/content/course");
+                router.push("/tkpanel/course");
             } else {
                 showAlert(
                     true,

@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import EditGroupClass from "../../../../../components/AdminDashboard/Main/Content/GroupClass/Edit/Edit";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -34,6 +33,7 @@ export default EditGroupClassPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const id = context.params.id;
 
     if (!token) {

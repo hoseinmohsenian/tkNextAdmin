@@ -10,7 +10,6 @@ import { FaCheck } from "react-icons/fa";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
-import { BASE_URL } from "../../../../../../../constants";
 import { TimePicker } from "antd";
 import BreadCrumbs from "../../../Elements/Breadcrumbs/Breadcrumbs";
 
@@ -27,6 +26,7 @@ function AddSessions({ token, id, theClass }) {
         type: "",
     });
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleRouter = () => {
         router.push("/tkpanel/semi-private-admin");

@@ -4,7 +4,6 @@ import moment from "jalali-moment";
 import Pagination from "../../Pagination/Pagination";
 import styles from "./UsedCoupons.module.css";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants/index";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 
 const filtersSchema = {
@@ -31,6 +30,7 @@ function UsedCoupons({ fetchedCopens: { data, ...restData }, token }) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readCoupons = async (page = 1, avoidFilters = false) => {
         // Constructing search parameters

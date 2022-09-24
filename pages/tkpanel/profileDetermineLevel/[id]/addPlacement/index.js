@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import AddPlacement from "../../../../../components/AdminDashboard/Main/Content/StudentPlacements/AddPlacement/AddPlacement";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants/index";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -28,6 +27,7 @@ export default AddPlacementPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const id = context.params.id;
 
     if (!token) {

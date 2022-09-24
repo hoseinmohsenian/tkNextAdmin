@@ -3,7 +3,6 @@ import Box from "../../Elements/Box/Box";
 import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
-import { BASE_URL } from "../../../../../../constants";
 import Modal from "../../../../../Modal/Modal";
 import { AiOutlineWhatsApp } from "react-icons/ai";
 import Link from "next/link";
@@ -34,6 +33,7 @@ function StudentTransactionDetails(props) {
     const router = useRouter();
     const [openModal, setOpenModal] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState({});
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     moment.locale("fa", { useGregorianParser: true });
 
     const readTransactions = async (page = 1, avoidFilters = false) => {

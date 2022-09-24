@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import Box from "../../Elements/Box/Box";
 import { useRouter } from "next/router";
@@ -27,6 +26,7 @@ function Requests(props) {
     const [selectedRequest, setSelectedRequest] = useState({});
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

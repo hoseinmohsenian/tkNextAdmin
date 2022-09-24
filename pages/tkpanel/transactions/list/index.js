@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import TeacherWithdrawalRequests from "../../../../components/AdminDashboard/Main/Content/Accounting/TeacherWithdrawalRequests/TeacherWithdrawalRequests";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 import { checkResponseArrAuth } from "../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -26,6 +25,8 @@ export default TeacherWithdrawalRequestsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
     const { page } = context?.query;
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
     let searchParams = "";

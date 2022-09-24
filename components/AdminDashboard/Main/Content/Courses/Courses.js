@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
@@ -15,6 +14,7 @@ function Courses({ fetchedCourses, token }) {
     const [loadings, setLoadings] = useState(
         Array(fetchedCourses?.length).fill(false)
     );
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const deleteCourse = async (course_id, i) => {
         let temp = [...loadings];
@@ -22,14 +22,17 @@ function Courses({ fetchedCourses, token }) {
         setLoadings(() => temp);
 
         try {
-            const res = await fetch(`${BASE_URL}/admin/course/${course_id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    "Access-Control-Allow-Origin": "*",
-                },
-            });
+            const res = await fetch(
+                `${BASE_URL}/admin/management/course/${course_id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
             if (res.ok) {
                 showAlert(true, "danger", "این کورس حذف شد");
                 await readCourses();
@@ -44,7 +47,7 @@ function Courses({ fetchedCourses, token }) {
 
     const readCourses = async () => {
         try {
-            const res = await fetch(`${BASE_URL}/admin/course`, {
+            const res = await fetch(`${BASE_URL}/admin/management/course`, {
                 headers: {
                     "Content-type": "application/json",
                     Authorization: `Bearer ${token}`,

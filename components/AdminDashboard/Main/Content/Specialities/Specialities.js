@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import Box from "../Elements/Box/Box";
 import Pagination from "../Pagination/Pagination";
 import styles from "./Specialities.module.css";
@@ -34,6 +33,7 @@ function Specialities({ fetchedSpecialitys: { data, ...restData }, token }) {
     const [selectedSpec, setSelectedSpec] = useState({});
     const router = useRouter();
     const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleOnChange = (e) => {
         const type = e.target.type;

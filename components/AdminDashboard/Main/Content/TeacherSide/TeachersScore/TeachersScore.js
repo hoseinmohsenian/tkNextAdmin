@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import { useRouter } from "next/router";
 import moment from "jalali-moment";
@@ -29,6 +28,7 @@ function TeachersScore(props) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const readTeachers = async (page = 1, avoidFilters = false) => {
         setLoading(true);

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import styles from "./TodayMonitoring.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
@@ -37,6 +36,8 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const [openModal, setOpenModal] = useState(false);
     const [selectedClass, setSelectedClass] = useState({});
     const { Option } = Select;
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });
@@ -549,6 +550,16 @@ function TodayMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
                                                     target="_blank"
                                                 >
                                                     لاگ پیگیری
+                                                </a>
+                                            </Link>
+                                            <Link
+                                                href={`${SITE_URL}/class-link/${item.url}`}
+                                            >
+                                                <a
+                                                    className={`action-btn primary`}
+                                                    target="_blank"
+                                                >
+                                                    برو به کلاس
                                                 </a>
                                             </Link>
                                         </td>

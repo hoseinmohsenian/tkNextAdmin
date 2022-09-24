@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Alert from "../../../../../Alert/Alert";
 import { useRouter } from "next/router";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import styles from "../CreateUser/CreateUser.module.css";
 import SearchMultiSelect from "../../../../../SearchMultiSelect/SearchMultiSelect";
@@ -25,6 +24,7 @@ function CreateUser({ token, permissions, admin }) {
     const [selectedPermissions, setSelectedPermissions] = useState([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleSubmit = async (e) => {
         e.preventDefault();

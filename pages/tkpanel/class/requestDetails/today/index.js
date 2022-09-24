@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import TodayClass from "../../../../../components/AdminDashboard/Main/Content/PrivateClass/TodayClass/TodayClass";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 import moment from "jalali-moment";
@@ -28,6 +27,7 @@ export default TodayClassPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

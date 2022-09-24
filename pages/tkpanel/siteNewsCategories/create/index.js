@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateCategory from "../../../../components/AdminDashboard/Main/Content/Categories/CreateCategory/CreateCategory";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 
 function SiteNewsCategoriesCreatePage({ token, categoriesLevel1 }) {
     return (
@@ -23,6 +22,7 @@ export default SiteNewsCategoriesCreatePage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

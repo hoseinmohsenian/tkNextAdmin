@@ -1,29 +1,28 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import EditCourse from "../../../../../components/AdminDashboard/Main/Content/Courses/EditCourse/EditCourse";
-import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
-import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
+import TeacherIncome from "../../../../../components/AdminDashboard/Main/Content/Marketing/TeacherIncome/TeacherIncome";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
+import Header from "../../../../../components/Head/Head";
+import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 
-function EditCoursePage({ token, course, notAllowed }) {
+function TeacherIncomeDetailsPage({ token, chartData, notAllowed }) {
     if (!!notAllowed) {
         return <NotAuthorized />;
     }
     return (
-        <>
-            <Header title="ویرایش کورس | تیکا"></Header>
+        <div>
+            <Header title="جزئیات درآمد اساتید | تیکا"></Header>
             <AdminDashboard>
-                <EditCourse token={token} course={course} />
+                <TeacherIncome token={token} chartData={chartData} />
             </AdminDashboard>
-        </>
+        </div>
     );
 }
 
-export default EditCoursePage;
+export default TeacherIncomeDetailsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
-    const id = context.params.id;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {
@@ -35,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/course/${id}`, {
+        fetch(`${BASE_URL}/admin/marketing/teacher/income`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",
@@ -53,9 +52,6 @@ export async function getServerSideProps(context) {
     const dataArr = await Promise.all(responses.map((res) => res.json()));
 
     return {
-        props: {
-            course: dataArr[0].data,
-            token,
-        },
+        props: { chartData: dataArr[0].data, token },
     };
 }

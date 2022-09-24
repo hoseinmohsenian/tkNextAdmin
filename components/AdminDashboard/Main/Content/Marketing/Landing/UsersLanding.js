@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "./Landings.module.css";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import Pagination from "../../Pagination/Pagination";
 import Link from "next/link";
 import moment from "jalali-moment";
@@ -43,6 +42,7 @@ function UsersLanding(props) {
     const [openModal, setOpenModal] = useState(false);
     const [selectedLanding, setSelectedLanding] = useState({});
     moment.locale("fa", { useGregorianParser: true });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const filtersOnChange = (e) => {
         const type = e.target.type;

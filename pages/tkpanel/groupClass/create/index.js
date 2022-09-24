@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../components/AdminDashboard/Dashboard";
 import CreateGroupClass from "../../../../components/AdminDashboard/Main/Content/GroupClass/Create/Create";
 import Header from "../../../../components/Head/Head";
-import { BASE_URL } from "../../../../constants";
 
 function CreateGroupClassPage({ token, levels }) {
     return (
@@ -18,6 +17,7 @@ export default CreateGroupClassPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {

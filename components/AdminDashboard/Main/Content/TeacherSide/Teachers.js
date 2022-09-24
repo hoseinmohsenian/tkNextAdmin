@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Alert from "../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../constants";
 import { useGlobalContext } from "../../../../../context";
 import Pagination from "../Pagination/Pagination";
 import { useRouter } from "next/router";
@@ -36,6 +35,7 @@ function Teachers({ fetchedTeachers: { data, ...restData }, token,searchData: fe
     const [openModal, setOpenModal] = useState(false);
     const [selectedTeacher, setSelectedTeacher] = useState({});
     const [dModalVisible, setDModalVisible] = useState(false);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

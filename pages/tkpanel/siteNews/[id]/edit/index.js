@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import EditArticle from "../../../../../components/AdminDashboard/Main/Content/Articles/EditArticle/EditArticle";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 
 function ArticlesPage({ token, languages, categoriesLevel1, article }) {
     return (
@@ -23,6 +22,7 @@ export default ArticlesPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
     const id = context.params.id;
 
     if (!token) {

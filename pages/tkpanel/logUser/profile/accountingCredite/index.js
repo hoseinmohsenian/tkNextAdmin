@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
 import StudentManualTransactions from "../../../../../components/AdminDashboard/Main/Content/Accounting/StudentManualTransactions/StudentManualTransactions";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -32,6 +31,8 @@ export default StudentManualTransactionsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
     const { page, user_name, user_mobile } = context?.query;
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
     let searchData = {

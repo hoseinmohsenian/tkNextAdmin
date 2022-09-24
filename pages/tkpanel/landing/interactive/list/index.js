@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import Landing from "../../../../../components/AdminDashboard/Main/Content/Support/Landing/Landing";
+import Landing from "../../../../../components/AdminDashboard/Main/Content/Marketing/Landing/Landing";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -23,6 +22,7 @@ export default LandingsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     if (!token) {
         return {
@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
     }
 
     const responses = await Promise.all([
-        fetch(`${BASE_URL}/admin/support/landing`, {
+        fetch(`${BASE_URL}/admin/marketing/landing`, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-type": "application/json",

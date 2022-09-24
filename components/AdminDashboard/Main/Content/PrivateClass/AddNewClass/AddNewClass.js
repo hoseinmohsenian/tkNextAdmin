@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import moment from "jalali-moment";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
 import Box from "../../Elements/Box/Box";
@@ -45,6 +44,7 @@ function AddNewClass({ token, courses }) {
     moment.locale("fa", { useGregorianParser: true });
     const router = useRouter();
     const { getKeyfromHourandMin } = useGlobalContext();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

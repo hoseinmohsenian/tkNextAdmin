@@ -1,5 +1,5 @@
 import AdminDashboard from "../../../../../../components/AdminDashboard/Dashboard";
-import CreateLanding from "../../../../../../components/AdminDashboard/Main/Content/Support/Landing/CreateLanding/CreateLanding";
+import CreateLanding from "../../../../../../components/AdminDashboard/Main/Content/Marketing/Landing/CreateLanding/CreateLanding";
 import Header from "../../../../../../components/Head/Head";
 
 function CreateLandingPage() {

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Box from "../Elements/Box/Box";
-import { BASE_URL } from "../../../../../constants";
 import FetchSearchSelect from "../Elements/FetchSearchSelect/FetchSearchSelect";
 import styles from "./StudentPlacements.module.css";
 import Alert from "../../../../Alert/Alert";
@@ -23,6 +22,7 @@ function StudentPlacements({ token, levels }) {
         message: "",
         type: "",
     });
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

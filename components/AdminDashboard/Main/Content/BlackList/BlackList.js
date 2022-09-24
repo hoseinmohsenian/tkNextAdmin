@@ -43,7 +43,7 @@ function BlackList({ fetchedList: { data, ...restData } }) {
 
         try {
             const { data, status, response } = await API.get(
-                `/admin/management/block-user?page=${page}`
+                `/admin/support/block-user?page=${page}`
             );
 
             if (status === 200) {
@@ -86,7 +86,7 @@ function BlackList({ fetchedList: { data, ...restData } }) {
         handleLoadings(true, i);
         try {
             const { response, status } = await API.post(
-                `/admin/management/unblock-user/${user_id}`
+                `/admin/support/unblock-user/${user_id}`
             );
 
             if (status === 200) {
@@ -136,7 +136,7 @@ function BlackList({ fetchedList: { data, ...restData } }) {
         setLoading(true);
         try {
             const { response, status } = await API.post(
-                `/admin/management/block-user/${selectedStudent.id}`
+                `/admin/support/block-user/${selectedStudent.id}`
             );
 
             if (status === 200) {

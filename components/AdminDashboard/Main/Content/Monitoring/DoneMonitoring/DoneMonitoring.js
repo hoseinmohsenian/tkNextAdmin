@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Alert from "../../../../../Alert/Alert";
-import { BASE_URL } from "../../../../../../constants";
 import Box from "../../Elements/Box/Box";
 import styles from "./DoneMonitoring.module.css";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
@@ -36,6 +35,7 @@ function DoneMonitoring({ token, monitorings, shamsi_date_obj, admins }) {
     const { Option } = Select;
     const [filters, setFilters] = useState(filtersSchema);
     const [appliedFilters, setAppliedFilters] = useState(appliedFiltersSchema);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const showAlert = (show, type, message) => {
         setAlertData({ show, type, message });

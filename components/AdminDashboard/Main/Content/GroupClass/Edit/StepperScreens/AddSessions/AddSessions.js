@@ -9,7 +9,6 @@ import { MdEdit } from "react-icons/md";
 import moment from "jalali-moment";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
-import { BASE_URL } from "../../../../../../../../constants";
 import TimePicker from "../../../../../../../TimePicker/TimePicker";
 
 function AddSessions(props) {
@@ -20,6 +19,7 @@ function AddSessions(props) {
         Array(formData.session?.length).fill(false)
     );
     const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const formatNumber = (number) =>
         number.toLocaleString("en-US", {

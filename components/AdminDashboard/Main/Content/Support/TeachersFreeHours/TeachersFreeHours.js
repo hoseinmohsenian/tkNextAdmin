@@ -102,7 +102,7 @@ function TeachersFreeHours({ languages }) {
         try {
             setLoading(true);
             const { data, status, response } = await API.get(
-                `/admin/teacher/freetime/1?${searchQuery}`
+                `/admin/support/freetime/1?${searchQuery}`
             );
 
             if (status === 200) {

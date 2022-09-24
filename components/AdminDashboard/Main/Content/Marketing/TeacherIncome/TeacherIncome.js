@@ -6,7 +6,6 @@ import Chart from "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import DatePicker from "@hassanmojab/react-modern-calendar-datepicker";
 import "@hassanmojab/react-modern-calendar-datepicker/lib/DatePicker.css";
-import { BASE_URL } from "../../../../../../constants/index";
 import BreadCrumbs from "../../Elements/Breadcrumbs/Breadcrumbs";
 import Pagination from "../../Pagination/Pagination";
 
@@ -17,7 +16,7 @@ function TeacherIncome({ token }) {
     const [endDate, setEndDate] = useState();
     const [loading, setLoading] = useState(false);
     moment.locale("fa", { useGregorianParser: true });
-    console.log(chartData);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     // Chart init
     Chart.defaults.font = {
@@ -82,7 +81,7 @@ function TeacherIncome({ token }) {
             let query = `page=${page}&${from}&${to}`;
 
             const res = await fetch(
-                `${BASE_URL}/admin/accounting/teacher/income?${query}`,
+                `${BASE_URL}/admin/marketing/teacher/income?${query}`,
                 {
                     headers: {
                         "Content-type": "application/json",
@@ -115,7 +114,7 @@ function TeacherIncome({ token }) {
         <div>
             <BreadCrumbs
                 substituteObj={{
-                    accounting: "حسابداری",
+                    marketing: "مارکتینگ",
                     teacher: "استاد",
                     list: "جزئیات درآمد اساتید",
                 }}

@@ -2,7 +2,6 @@ import React from "react";
 import "suneditor/dist/css/suneditor.min.css";
 import styles from "./Editor.module.css";
 import SunEditor from "suneditor-react";
-import { BASE_URL } from "../../../../../constants";
 
 function Editor(props) {
     const {
@@ -13,6 +12,8 @@ function Editor(props) {
         uploadImageUrl,
         placeholder = "توضیحات",
     } = props;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
     const addImage = async (fd) => {
         try {
             const res = await fetch(`${BASE_URL}${uploadImageUrl}`, {
@@ -177,7 +178,7 @@ function Editor(props) {
                         "lang(In nodejs)": "en",
                         // iframe: true,
                         // iframeAttributes: {
-                            // scrolling: "no",
+                        // scrolling: "no",
                         // },
                         // iframeCSSFileName: "",
                     }}

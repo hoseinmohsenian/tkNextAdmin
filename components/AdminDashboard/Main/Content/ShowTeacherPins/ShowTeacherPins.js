@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Box from "../Elements/Box/Box";
-import { BASE_URL } from "../../../../../constants";
 import Alert from "../../../../Alert/Alert";
 import BreadCrumbs from "../Elements/Breadcrumbs/Breadcrumbs";
 
@@ -14,6 +13,7 @@ function ShowTeacherPins({ teachers: fetchedTeachers, token }) {
         type: "",
     });
     const [teachers, setTeachers] = useState(fetchedTeachers);
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const deleteTeacherPin = async (teacher_id, language_id, i) => {
         let temp = [...loadings];

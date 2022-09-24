@@ -1,7 +1,6 @@
 import AdminDashboard from "../../../../../components/AdminDashboard/Dashboard";
-import UsersLanding from "../../../../../components/AdminDashboard/Main/Content/Support/Landing/UsersLanding";
+import UsersLanding from "../../../../../components/AdminDashboard/Main/Content/Marketing/Landing/UsersLanding";
 import Header from "../../../../../components/Head/Head";
-import { BASE_URL } from "../../../../../constants";
 import { checkResponseArrAuth } from "../../../../../utils/helperFunctions";
 import NotAuthorized from "../../../../../components/Errors/NotAuthorized/NotAllowed";
 
@@ -23,6 +22,8 @@ export default UsersLandingsPage;
 
 export async function getServerSideProps(context) {
     const token = context.req.cookies["admin_token"];
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
     const isKeyValid = (key) => Number(key) !== 0 && key !== undefined;
     const { page } = context?.query;
 
